@@ -21,4 +21,5 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 - SQL
 - HTML
 - SCSS
+- Bootstrap
 - Docker
