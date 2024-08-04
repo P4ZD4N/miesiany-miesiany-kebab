@@ -12,8 +12,7 @@ import java.time.LocalDate;
 @Table(name = "managers")
 @NoArgsConstructor
 public class Manager extends Employee {
-
-    @Builder
+    
     public Manager(String firstName,
                    String lastName,
                    String email,
