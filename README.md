@@ -6,7 +6,7 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 
 ## 🔧 Tech Stack
 
-- Java 22
+- Java 21
 - Spring Boot 3
 - Spring Security
 - Spring Data
@@ -23,3 +23,4 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 - SCSS
 - Bootstrap
 - Docker
+- Bash
