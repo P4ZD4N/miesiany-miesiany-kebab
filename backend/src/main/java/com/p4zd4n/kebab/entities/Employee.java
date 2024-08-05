@@ -8,6 +8,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "employees")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "employee_type")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -46,15 +48,16 @@ public class Employee extends WithTimestamp{
     private LocalDate hiredAt;
 
     @Builder
-    public Employee(String firstName,
-                    String lastName,
-                    String email,
-                    String password,
-                    LocalDate dateOfBirth,
-                    String phoneNumber,
-                    BigDecimal monthlySalary,
-                    boolean isActive,
-                    LocalDate hiredAt
+    public Employee(
+        String firstName,
+        String lastName,
+        String email,
+        String password,
+        LocalDate dateOfBirth,
+        String phoneNumber,
+        BigDecimal monthlySalary,
+        boolean isActive,
+        LocalDate hiredAt
     ) {
         this.firstName = firstName;
         this.lastName = lastName;
