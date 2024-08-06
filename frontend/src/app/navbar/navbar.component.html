@@ -20,30 +20,30 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Strona glowna</a>
+            <a class="nav-link active" aria-current="page" href="#">{{ 'home' | translate }}</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Godziny otwarcia</a>
+            <a class="nav-link" href="#">{{ 'opening_hours' | translate }}</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Menu</a>
+            <a class="nav-link" href="#">{{ 'menu' | translate }}</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Promocje</a>
+            <a class="nav-link" href="#">{{ 'promotions' | translate }}</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Kontakt</a>
+            <a class="nav-link" href="#">{{ 'contact' | translate }}</a>
           </li>
         </ul>
 
         <ul class="navbar-nav d-flex">
           <li class="nav-item">
-            <button class="btn btn-outline-light" id="languageSwitcher">
-                🇺🇸
+            <button class="btn btn-outline-light" id="languageSwitcher" (click)="switchLanguage()">
+              {{ currentFlag }}
             </button>
           </li>
 
@@ -54,7 +54,7 @@
           </li>
 
           <li class="nav-item">
-              <a class="btn btn-danger" href="#">Zamów</a>
+              <a class="btn btn-danger" href="#">{{ 'order' | translate }}</a>
           </li>
         </ul>
       </div>
