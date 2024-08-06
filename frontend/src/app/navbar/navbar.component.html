@@ -4,8 +4,17 @@
         <img src="assets/images/logo.png" alt="Logo">
       </a>
       
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      <button class="navbar-toggler collapsed d-flex d-lg-none flex-column justify-content-around" 
+              type="button" 
+              data-bs-toggle="collapse" 
+              data-bs-target="#navbarNav" 
+              aria-controls="navbarNav" 
+              aria-expanded="false" 
+              aria-label="Toggle navigation"
+      >
+        <span class="toggler-icon top-bar"></span>
+        <span class="toggler-icon middle-bar"></span>
+        <span class="toggler-icon bottom-bar"></span>
       </button>
       
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -31,7 +40,7 @@
           </li>
         </ul>
 
-        <ul class="navbar-nav">
+        <ul class="navbar-nav d-flex">
           <li class="nav-item">
             <button class="btn btn-outline-light" id="languageSwitcher">
                 🇺🇸
@@ -40,7 +49,7 @@
 
           <li class="nav-item">
               <button class="btn btn-outline-light" id="darkModeToggle">
-                  🌙
+                ☀️
               </button>
           </li>
 
