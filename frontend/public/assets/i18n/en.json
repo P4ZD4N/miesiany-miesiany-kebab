@@ -1,8 +1,16 @@
 {
-    "home": "Home",
-    "opening_hours": "Opening hours",
-    "menu": "Menu",
-    "promotions": "Promotions",
-    "contact": "Contact",
-    "order": "Order"
+    "navbar": {
+        "home": "Home",
+        "opening_hours": "Opening hours",
+        "menu": "Menu",
+        "promotions": "Promotions",
+        "contact": "Contact",
+        "order": "Order"
+    },
+    "home": {
+        "hero_section": {
+            "headline": "Flavor, that’s addictive",
+            "paragraph": "Try our kebab and find out why our customers keep coming back for more. Juicy meat, crunchy vegetables, the perfect sauce – everything you crave in one bite!"
+        }
+    }
 }

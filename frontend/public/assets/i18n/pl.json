@@ -1,8 +1,16 @@
 {
-    "home": "Strona glowna",
-    "opening_hours": "Godziny otwarcia",
-    "menu": "Menu",
-    "promotions": "Promocje",
-    "contact": "Kontakt",
-    "order": "Zamów"
+    "navbar": {
+        "home": "Strona glowna",
+        "opening_hours": "Godziny otwarcia",
+        "menu": "Menu",
+        "promotions": "Promocje",
+        "contact": "Kontakt",
+        "order": "Zamów"
+    },
+    "home": {
+        "hero_section": {
+            "headline": "Smak, ktory uzaleznia",
+            "paragraph": "Sprobuj naszego kebaba i odkryj, dlaczego nasi klienci wracaja po wiecej. Soczyste mieso, chrupiace warzywa, idealny sos – wszystko, czego pragniesz, w jednym kesie!"
+        }
+    }
 }
