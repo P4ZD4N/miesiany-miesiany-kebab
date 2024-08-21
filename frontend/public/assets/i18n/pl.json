@@ -11,6 +11,12 @@
         "hero_section": {
             "headline": "Smak, ktory uzaleznia",
             "paragraph": "Sprobuj naszego kebaba i odkryj, dlaczego nasi klienci wracaja po wiecej. Soczyste mieso, chrupiace warzywa, idealny sos – wszystko, czego pragniesz, w jednym kesie!"
+        },
+        "about_section": {
+            "headline": "O nas",
+            "paragraph_top": "Witamy w Miesiany Miesiany Kebab! Jestesmy miejscem, gdzie tradycja spotyka sie z nowoczesnoscia, a pasja do kuchni wschodniej przeklada sie na niezapomniane doznania smakowe.",
+            "paragraph_center": "Nasze dania przygotowujemy z najwyzszej jakości skladnikow, starannie dobranych i zawsze swiezych. Naszym celem jest nie tylko zaspokoic Twoj glod, ale takze sprawic, by kazda wizyta u nas byla wyjatkowym przezyciem. Serwujemy autentyczne kebaby, które zachwyca Cie bogactwem smakow i aromatow.",
+            "paragraph_bottom": "Zapraszamy do sprobowania naszych specjalow i odkrycia, dlaczego tak czesto mowi sie o nas, jako o ulubionym kebabie w okolicy!" 
         }
     }
 }
