@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -22,6 +22,18 @@ export class NavbarComponent {
     } else {
       this.translate.use('pl');
       this.currentFlag = '🇺🇸';
+    }
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      if (window.scrollY > 30) { 
+        navbar.classList.add('shrink');
+      } else {
+        navbar.classList.remove('shrink');
+      }
     }
   }
 }
