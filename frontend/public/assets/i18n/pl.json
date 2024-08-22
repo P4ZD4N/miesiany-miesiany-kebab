@@ -1,11 +1,21 @@
 {
-    "navbar": {
-        "home": "Strona glowna",
-        "opening_hours": "Godziny otwarcia",
-        "menu": "Menu",
-        "promotions": "Promocje",
-        "contact": "Kontakt",
-        "order": "Zamów"
+    "common": {
+        "navbar": {
+            "home": "Strona glowna",
+            "opening_hours": "Godziny otwarcia",
+            "menu": "Menu",
+            "promotions": "Promocje",
+            "contact": "Kontakt",
+            "order": "Zamów"
+        },
+        "footer": {
+            "home": "Strona glowna",
+            "opening_hours": "Godziny otwarcia",
+            "menu": "Menu",
+            "promotions": "Promocje",
+            "jobs": "Praca",
+            "contact": "Kontakt"
+        }
     },
     "home": {
         "hero_section": {

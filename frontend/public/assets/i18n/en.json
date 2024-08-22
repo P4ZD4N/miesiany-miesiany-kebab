@@ -1,11 +1,21 @@
 {
-    "navbar": {
-        "home": "Home",
-        "opening_hours": "Opening hours",
-        "menu": "Menu",
-        "promotions": "Promotions",
-        "contact": "Contact",
-        "order": "Order"
+    "common": {
+        "navbar": {
+            "home": "Home",
+            "opening_hours": "Opening hours",
+            "menu": "Menu",
+            "promotions": "Promotions",
+            "contact": "Contact",
+            "order": "Order"
+        },
+        "footer": {
+            "home": "Home",
+            "opening_hours": "Opening hours",
+            "menu": "Menu",
+            "promotions": "Promotions",
+            "jobs": "Jobs",
+            "contact": "Contact"
+        }
     },
     "home": {
         "hero_section": {
