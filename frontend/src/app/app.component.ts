@@ -6,11 +6,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HeroSectionComponent } from './components/home/hero-section/hero-section.component';
 import { AboutSectionComponent } from './components/home/about-section/about-section.component';
 import { AwardsSectionComponent } from './components/home/awards-section/awards-section.component';
+import { LocationSectionComponent } from './components/home/location-section/location-section.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, HeroSectionComponent, AboutSectionComponent, AwardsSectionComponent, TranslateModule],
+  imports: [RouterOutlet, NavbarComponent, HeroSectionComponent, AboutSectionComponent, AwardsSectionComponent, LocationSectionComponent, TranslateModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
