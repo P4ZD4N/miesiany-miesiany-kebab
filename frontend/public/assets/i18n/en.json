@@ -1,0 +1,42 @@
+{
+    "common": {
+        "navbar": {
+            "home": "Home",
+            "opening_hours": "Opening hours",
+            "menu": "Menu",
+            "promotions": "Promotions",
+            "contact": "Contact",
+            "order": "Order"
+        },
+        "footer": {
+            "home": "Home",
+            "opening_hours": "Opening hours",
+            "menu": "Menu",
+            "promotions": "Promotions",
+            "jobs": "Jobs",
+            "contact": "Contact"
+        }
+    },
+    "home": {
+        "hero_section": {
+            "headline": "Flavor, that’s addictive",
+            "paragraph": "Try our kebab and find out why our customers keep coming back for more. Juicy meat, crunchy vegetables, the perfect sauce – everything you crave in one bite!"
+        },
+        "about_section": {
+            "headline": "About Us",
+            "paragraph_top": "Welcome to Miesiany Miesiany Kebab! We are a place where tradition meets modernity, and our passion for Eastern cuisine translates into unforgettable taste experiences.",
+            "paragraph_center": "We prepare our dishes using the highest quality ingredients, carefully selected and always fresh. Our goal is not only to satisfy your hunger but also to make every visit a unique experience. We serve authentic kebabs that will delight you with their richness of flavors and aromas.",
+             "paragraph_bottom": "We invite you to try our specialties and discover why we are often referred as the favorite kebab in the area!"
+        },
+        "awards_section": {
+            "headline": "Awards",
+            "paragraph_top": "We are proud that our kebab has gained recognition among food enthusiasts and culinary experts! Our passion for exceptional taste and quality has been acknowledged through numerous awards and accolades that we have received.",
+            "paragraph_bottom": "Each award motivates us to continue striving for perfection and delivering unforgettable taste experiences to our customers. Thank you for your support and trust – you are the reason for our success!"
+        },
+        "location_section": {
+            "headline": "Location",
+            "paragraph": "The kebab is located in small village Kopalnia, near Czestochowa. Getting to the place is very easy. It is placed at the intersection of Szkolna and Brzozowa Streets. The exact address is Kopalnia, Szkolna Street 89.",
+            "button": "Get directions"
+        }
+    }
+}

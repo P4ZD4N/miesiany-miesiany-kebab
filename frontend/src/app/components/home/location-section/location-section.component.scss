@@ -1,0 +1,57 @@
+.location {
+    display: flex;
+    gap: 5rem;
+    padding: 5rem 5rem 5rem 5rem;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+    color: red;
+    font-size: 58px;
+}
+
+p {
+    color: white;
+    font-size: 24px;
+}
+
+.btn-danger {
+    background-color: #ff0000;
+
+    &:hover {
+        background-color: #b90909;
+    }
+}
+
+#map {
+  height: 50vh;
+  width: 50vw;
+}
+
+@media (max-width: 1350px) {
+    #map {
+        height: 60vh;
+        width: 50vw;
+    }
+}
+
+@media (max-width: 1150px) {
+    .location {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .left {
+        align-items: center;
+        text-align: center;
+    }
+    #map {
+        height: 60vh;
+        width: 80vw;
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "common": {
+        "navbar": {
+            "home": "Strona glowna",
+            "opening_hours": "Godziny otwarcia",
+            "menu": "Menu",
+            "promotions": "Promocje",
+            "contact": "Kontakt",
+            "order": "Zamów"
+        },
+        "footer": {
+            "home": "Strona glowna",
+            "opening_hours": "Godziny otwarcia",
+            "menu": "Menu",
+            "promotions": "Promocje",
+            "jobs": "Praca",
+            "contact": "Kontakt"
+        }
+    },
+    "home": {
+        "hero_section": {
+            "headline": "Smak, ktory uzaleznia",
+            "paragraph": "Sprobuj naszego kebaba i odkryj, dlaczego nasi klienci wracaja po wiecej. Soczyste mieso, chrupiace warzywa, idealny sos – wszystko, czego pragniesz, w jednym kesie!"
+        },
+        "about_section": {
+            "headline": "O nas",
+            "paragraph_top": "Witamy w Miesiany Miesiany Kebab! Jestesmy miejscem, gdzie tradycja spotyka sie z nowoczesnoscia, a pasja do kuchni wschodniej przeklada sie na niezapomniane doznania smakowe.",
+            "paragraph_center": "Nasze dania przygotowujemy z najwyzszej jakości skladnikow, starannie dobranych i zawsze swiezych. Naszym celem jest nie tylko zaspokoic Twoj glod, ale takze sprawic, by kazda wizyta u nas byla wyjatkowym przezyciem. Serwujemy autentyczne kebaby, które zachwyca Cie bogactwem smakow i aromatow.",
+            "paragraph_bottom": "Zapraszamy do sprobowania naszych specjalow i odkrycia, dlaczego tak czesto mowi sie o nas, jako o ulubionym kebabie w okolicy!" 
+        },
+        "awards_section": {
+            "headline": "Nagrody",
+            "paragraph_top": "Jestesmy dumni z tego, ze nasz kebab zdobyl uznanie wsrod smakoszy i ekspertow kulinarnych! Nasza pasja do doskonalego smaku i jakosci zostala doceniona poprzez liczne nagrody i wyroznienia, ktore otrzymalismy.",
+            "paragraph_bottom": "Kazde wyroznienie motywuje nas do dalszego dazenia do perfekcji i dostarczania naszym klientom niezapomnianych doznan smakowych. Dziekujemy za Wasze wsparcie i zaufanie – to Wy jestescie powodem naszych sukcesow!"
+        },
+        "location_section": {
+            "headline": "Lokalizacja",
+            "paragraph": "Kebab znajduje sie w miejscowosci Kopalnia niedaleko Czestochowy. Dotarcie do lokalu jest bardzo proste. Znajduje sie on na skrzyzowaniu ulicy Szkolnej i Brzozowej. Dokladny adres to Kopalnia, ul. Szkolna 89",
+            "button": "Wyznacz trase"
+        }
+    }
+}
