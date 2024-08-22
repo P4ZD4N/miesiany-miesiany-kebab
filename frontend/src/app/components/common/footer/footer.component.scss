@@ -1,6 +1,7 @@
 img {
     max-width: 150px;
     height: auto;
+    cursor: pointer;
 }
 
 footer {
@@ -56,7 +57,7 @@ i {
     padding: 2rem 0 2rem 0;
 }
 
-a {
+a:not(.logo) {
     position: relative;
     overflow: hidden;
     color: white;

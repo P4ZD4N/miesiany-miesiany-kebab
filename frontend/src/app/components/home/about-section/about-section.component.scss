@@ -30,6 +30,12 @@ img {
     margin-bottom: -150px;
     width: 60%; 
     border: 5px solid #ff0000;
+    transition: width 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+        width: 62%;
+    }
 }
 
 @media (max-width: 1600px) {
