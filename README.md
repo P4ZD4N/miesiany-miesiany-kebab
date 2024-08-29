@@ -24,3 +24,30 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 - Bootstrap
 - Docker
 - Bash
+
+## 💡 Features
+
+- Eye-catching, well-tailored and well-thought user interface.
+- Responsive Web Design to improve accessibility of page at all types of devices,
+- Multilingual pages (Polish or English),
+- Multilingual validation for all forms,
+- Integration with TomTom Map API to add map with pointer, which aims to help potential customers easily locate restaurant.
+
+
+## 🔗 API
+
+#### POST /api/v1/auth/login
+
+**Description:**  
+Authenticates a user if the credentials are valid. Returns proper validation messages in specified in `Accept-Language` header language and error details, if any.
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl`. You can also set `en`.
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
