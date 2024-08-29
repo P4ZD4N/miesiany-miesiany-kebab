@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
+import { LangService } from '../../../services/lang/lang.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,16 +14,22 @@ import { TranslateService } from '@ngx-translate/core';
 export class NavbarComponent {
   currentFlag: string = '🇺🇸';
 
-  constructor(private translate: TranslateService) {}
+  constructor(
+    private translate: TranslateService,
+    private langService: LangService
+  ) {}
 
   switchLanguage() {
     if (this.translate.currentLang === 'pl') {
       this.translate.use('en');
       this.currentFlag = '🇵🇱';
+      this.langService.currentLang = 'en';
     } else {
       this.translate.use('pl');
       this.currentFlag = '🇺🇸';
+      this.langService.currentLang = 'pl';
     }
+    this.langService.notifyLanguageChange();
   }
 
   @HostListener('window:scroll', [])
@@ -35,5 +42,9 @@ export class NavbarComponent {
         navbar.classList.remove('shrink');
       }
     }
+  }
+
+  getCurrentFlag(): string {
+    return this.currentFlag;
   }
 }

@@ -41,7 +41,11 @@
     },
     "authentication": {
         "login_form": {
-            "password": "Hasło"
+            "headline": "Zaloguj",
+            "paragraph_top": "Sekcja przeznaczona tylko dla pracownikow.",
+            "password": "Haslo",
+            "button": "Zaloguj",
+            "paragraph_bottom": "Jesli nie pamietasz hasla, skontaktuj sie z managerem."
         }
     }
 }

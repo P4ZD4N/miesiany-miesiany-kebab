@@ -41,7 +41,11 @@
     },
     "authentication": {
         "login_form": {
-            "password": "Password"
+            "headline": "Log in",
+            "paragraph_top": "Section intended only for employees.",
+            "password": "Password",
+            "button": "Login",
+            "paragraph_bottom": "If you don't remember your password, then contact with manager."
         }
     }
 }
