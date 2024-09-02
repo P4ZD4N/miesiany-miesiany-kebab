@@ -2,7 +2,9 @@ package com.p4zd4n.kebab.requests.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
+@Builder
 public record AuthenticationRequest(
 
         @NotBlank(message = "{email.notBlank}")
