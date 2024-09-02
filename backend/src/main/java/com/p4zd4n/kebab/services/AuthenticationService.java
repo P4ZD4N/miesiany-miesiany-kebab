@@ -29,18 +29,13 @@ public class AuthenticationService {
         log.info("Attempting authentication for email '{}'", request.email());
 
         Employee employee = employeeRepository.findByEmail(request.email())
-                .orElseThrow(() -> {
-                    log.error("Employee not found with email '{}'", request.email());
-                    return new EmployeeNotFoundException(request.email());
-                });
+                .orElseThrow(() -> new EmployeeNotFoundException(request.email()));
 
         if (!PasswordEncoder.matches(request.password(), employee.getPassword())) {
-            log.error("Invalid credentials provided for email '{}'", request.email());
-            throw new InvalidCredentialsException();
+            throw new InvalidCredentialsException(request.email());
         }
 
         if (!employee.isActive()) {
-            log.error("Inactive employee attempted login with email '{}'", request.email());
             throw new EmployeeNotActiveException(request.email());
         }
 
