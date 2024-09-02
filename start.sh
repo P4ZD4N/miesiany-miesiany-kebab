@@ -75,4 +75,4 @@ cd backend
 ./mvnw spring-boot:run &
 
 cd ../frontend
-ng serve
+npm start
