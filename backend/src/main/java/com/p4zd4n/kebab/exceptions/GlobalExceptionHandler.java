@@ -2,7 +2,6 @@ package com.p4zd4n.kebab.exceptions;
 
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -58,14 +56,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({InvalidCredentialsException.class})
     public ResponseEntity<ExceptionResponse> handleInvalidCredentialsException(
-            InvalidCredentialsException exception
+            InvalidCredentialsException exception,
+            HttpServletRequest request
     ) {
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("employee.invalidCredentials", null, locale);
+
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.UNAUTHORIZED.value())
-                        .message(exception.getMessage())
+                        .message(message)
                         .build());
     }
 
@@ -93,5 +95,18 @@ public class GlobalExceptionHandler {
         }
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidAcceptLanguageHeaderValue.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidAcceptLanguageHeaderValue(
+            InvalidAcceptLanguageHeaderValue exception
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
     }
 }
