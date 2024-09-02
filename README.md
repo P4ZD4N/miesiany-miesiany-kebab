@@ -27,6 +27,7 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 
 ## 💡 Features
 
+- Authentication system, taking into data security. For this purpose, the bcrypt encryption algorithm was used.
 - Eye-catching, well-tailored and well-thought user interface.
 - Responsive Web Design to improve accessibility of page at all types of devices,
 - Multilingual pages (Polish or English),
