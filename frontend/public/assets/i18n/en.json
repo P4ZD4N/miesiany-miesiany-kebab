@@ -38,5 +38,14 @@
             "paragraph": "The kebab is located in small village Kopalnia, near Czestochowa. Getting to the place is very easy. It is placed at the intersection of Szkolna and Brzozowa Streets. The exact address is Kopalnia, Szkolna Street 89.",
             "button": "Get directions"
         }
+    },
+    "authentication": {
+        "login_form": {
+            "headline": "Log in",
+            "paragraph_top": "Section intended only for employees.",
+            "password": "Password",
+            "button": "Login",
+            "paragraph_bottom": "If you don't remember your password, then contact with manager."
+        }
     }
 }

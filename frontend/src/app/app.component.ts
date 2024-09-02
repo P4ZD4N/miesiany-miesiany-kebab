@@ -14,13 +14,6 @@ import { FooterComponent } from './components/common/footer/footer.component';
   standalone: true,
   imports: [
     RouterOutlet, 
-    NavbarComponent, 
-    HeroSectionComponent, 
-    AboutSectionComponent, 
-    AwardsSectionComponent, 
-    LocationSectionComponent,
-    FooterComponent, 
-    TranslateModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

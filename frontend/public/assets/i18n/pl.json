@@ -38,5 +38,14 @@
             "paragraph": "Kebab znajduje sie w miejscowosci Kopalnia niedaleko Czestochowy. Dotarcie do lokalu jest bardzo proste. Znajduje sie on na skrzyzowaniu ulicy Szkolnej i Brzozowej. Dokladny adres to Kopalnia, ul. Szkolna 89",
             "button": "Wyznacz trase"
         }
+    },
+    "authentication": {
+        "login_form": {
+            "headline": "Zaloguj",
+            "paragraph_top": "Sekcja przeznaczona tylko dla pracownikow.",
+            "password": "Haslo",
+            "button": "Zaloguj",
+            "paragraph_bottom": "Jesli nie pamietasz hasla, skontaktuj sie z managerem."
+        }
     }
 }
