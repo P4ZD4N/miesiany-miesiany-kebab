@@ -3,7 +3,7 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
-import com.p4zd4n.kebab.services.AuthenticationService;
+import com.p4zd4n.kebab.services.auth.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

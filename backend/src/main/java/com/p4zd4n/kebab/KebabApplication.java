@@ -2,7 +2,10 @@ package com.p4zd4n.kebab;
 
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.entities.Manager;
+import com.p4zd4n.kebab.entities.OpeningHour;
+import com.p4zd4n.kebab.enums.DayOfWeek;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;
+import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import com.p4zd4n.kebab.utils.PasswordEncoder;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -11,12 +14,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Arrays;
 
 @SpringBootApplication
 @AllArgsConstructor
 public class KebabApplication implements CommandLineRunner {
 
 	private EmployeeRepository employeeRepository;
+	private final OpeningHoursRepository openingHoursRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(KebabApplication.class, args);
@@ -51,5 +57,16 @@ public class KebabApplication implements CommandLineRunner {
 
 		employeeRepository.save(employee);
 		employeeRepository.save(manager);
+
+		if (openingHoursRepository.count() == 0) {
+			Arrays.stream(DayOfWeek.values()).forEach(dayOfWeek -> {
+				OpeningHour openingHour = OpeningHour.builder()
+						.dayOfWeek(dayOfWeek)
+						.openingTime(LocalTime.of(10, 0))
+						.closingTime(LocalTime.of(22, 0))
+						.build();
+				openingHoursRepository.save(openingHour);
+			});
+		}
 	}
 }

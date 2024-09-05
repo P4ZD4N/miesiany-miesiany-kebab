@@ -1,0 +1,20 @@
+<section class="opening-hours">
+    <h1>{{ 'opening-hours.headline' | translate }}</h1>
+    <p>{{ 'opening-hours.paragraph_top' | translate }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>{{ 'opening-hours.table.day' | translate }}</th>
+                <th>{{ 'opening-hours.table.opening' | translate }}</th>
+                <th>{{ 'opening-hours.table.closing' | translate }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let hour of openingHours">
+                <td>{{ 'opening-hours.days.' + hour.day_of_week | translate }}</td>
+                <td>{{ formatTime(hour.opening_time) }}</td>
+                <td>{{ formatTime(hour.closing_time) }}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>

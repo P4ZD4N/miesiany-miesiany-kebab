@@ -1,23 +1,28 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from '../../../services/lang/lang.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [TranslateModule],
+  imports: [RouterModule, TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   currentFlag: string = '🇺🇸';
 
   constructor(
     private translate: TranslateService,
     private langService: LangService
   ) {}
+
+  ngOnInit() {
+    this.currentFlag = this.langService.currentLang === 'pl' ? '🇺🇸' : '🇵🇱';
+  }
 
   switchLanguage() {
     if (this.translate.currentLang === 'pl') {

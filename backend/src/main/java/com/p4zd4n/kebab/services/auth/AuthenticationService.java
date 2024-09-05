@@ -1,4 +1,4 @@
-package com.p4zd4n.kebab.services;
+package com.p4zd4n.kebab.services.auth;
 
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.exceptions.EmployeeNotActiveException;
@@ -8,8 +8,6 @@ import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
 import com.p4zd4n.kebab.utils.PasswordEncoder;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

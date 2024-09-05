@@ -38,7 +38,7 @@ i {
 }
 
 .bottom {
-    padding: 2rem;
+    padding: 2rem 1rem 1rem 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -55,7 +55,7 @@ i {
 .copyright {
     color: white;
     text-align: center;
-    padding: 2rem 0 2rem 0;
+    padding: 2rem 0 0 0;
 }
 
 a:not(.logo) {
