@@ -40,6 +40,26 @@ td {
     background: none;
 }
 
+button {
+    color: white;
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: red;
+    }
+}
+
+.highlight-today-open {
+    background-color: rgb(13, 102, 25);
+}
+
+
+.highlight-today-closed {
+    background-color: rgb(56, 56, 56);
+}
+
 @media (max-width: 1000px) {
     table {
         width: 80%;

@@ -1,6 +1,8 @@
 package com.p4zd4n.kebab.services.auth;
 
 import com.p4zd4n.kebab.entities.Employee;
+import com.p4zd4n.kebab.entities.Manager;
+import com.p4zd4n.kebab.enums.Role;
 import com.p4zd4n.kebab.exceptions.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.InvalidCredentialsException;
@@ -37,12 +39,24 @@ public class AuthenticationService {
             throw new EmployeeNotActiveException(request.email());
         }
 
+        if (employee instanceof Manager) {
+            log.info("Successfully authenticated manager with email: {}", request.email());
+
+            return AuthenticationResponse
+                    .builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .message("Authenticated manager with email '" + request.email() + "'!")
+                    .role(Role.MANAGER)
+                    .build();
+        }
+
         log.info("Successfully authenticated employee with email: {}", request.email());
 
         return AuthenticationResponse
                 .builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Authenticated employee with email '" + request.email() + "'!")
+                .role(Role.EMPLOYEE)
                 .build();
     }
 }

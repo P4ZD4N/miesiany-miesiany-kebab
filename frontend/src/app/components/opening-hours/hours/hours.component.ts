@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { OpeningHoursService } from '../../../services/opening-hours/opening-hours.service';
 import { CommonModule } from '@angular/common';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-hours',
@@ -14,10 +15,14 @@ export class HoursComponent implements OnInit {
 
   openingHours: any[] = [];
 
-  constructor(private openingHoursService: OpeningHoursService) {}
+  constructor(private authenticationService: AuthenticationService, private openingHoursService: OpeningHoursService) {}
 
   ngOnInit(): void {
     this.loadOpeningHours();
+  }
+
+  isManager(): boolean {
+    return this.authenticationService.isManager();
   }
 
   loadOpeningHours(): void {
@@ -34,6 +39,25 @@ export class HoursComponent implements OnInit {
   formatTime(time: string): string {
     const hours = time.slice(0, 2);
     const minutes = time.slice(3, 5);
+    return `${hours}:${minutes}`;
+  }
+
+  getCurrentDayOfWeek(): string {
+    const daysOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+    const currentDayIndex = new Date().getDay();
+    return daysOfWeek[currentDayIndex];
+  }
+
+  checkWhetherIsOpenNow(): boolean {
+    const currentDayOfWeek: string = this.getCurrentDayOfWeek();
+    const currentTime = this.getCurrentTime();
+    return this.openingHours.some(hour => currentTime >= hour.opening_time && currentTime < hour.closing_time);
+  }
+
+  private getCurrentTime(): string {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   }
 }

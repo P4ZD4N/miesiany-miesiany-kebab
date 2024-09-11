@@ -1,13 +1,19 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { LangService } from '../lang/lang.service';
+import { Role } from '../../enums/role.enum';
+
+interface LoginResponse {
+  role: Role;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
   private apiUrl = 'http://localhost:8080/api/v1/auth';
+  private role: Role | null = null;
 
   constructor(
     private http: HttpClient,
@@ -19,9 +25,16 @@ export class AuthenticationService {
       'Accept-Language': this.langService.currentLang
     });
 
-    return this.http.post(`${this.apiUrl}/login`, { email, password }, { headers }).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }, { headers }).pipe(
+      map(response => {
+        this.role = response.role;
+      }),
       catchError(this.handleError)
     );
+  }
+
+  isManager(): boolean {
+    return this.role === Role.MANAGER;
   }
 
   handleError(error: HttpErrorResponse) {

@@ -51,6 +51,10 @@
     "opening-hours": {
         "headline": "Godziny otwarcia",
         "paragraph_top": "Nie zwlekaj i wpadaj do nas na pyszny kebab w nastepujacych dniach i godzinach!",
+        "status": {
+            "open": "Otwarte",
+            "closed": "Zamkniete"
+        },
         "table": {
             "day": "Dzien",
             "opening": "Godzina otwarcia",
@@ -64,6 +68,7 @@
             "FRIDAY": "Piatek",
             "SATURDAY": "Sobota",
             "SUNDAY": "Niedziela"
-        }
+        },
+        "update": "Aktualizuj"
     }
 }

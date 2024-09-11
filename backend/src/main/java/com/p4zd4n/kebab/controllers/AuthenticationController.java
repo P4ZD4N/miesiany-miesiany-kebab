@@ -32,7 +32,6 @@ public class AuthenticationController {
 
         log.info("Received login request for email '{}'", request.email());
         AuthenticationResponse response = authenticationService.authenticate(request);
-        log.info("Employee with email '{}' successfully logged in", request.email());
 
         return ResponseEntity.ok(response);
     }
