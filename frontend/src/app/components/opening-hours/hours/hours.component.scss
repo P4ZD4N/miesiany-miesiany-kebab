@@ -51,6 +51,17 @@ button {
     }
 }
 
+input[type="time"] {
+    background-color: #000000;
+    color: white;
+    border: none;
+    outline: none;
+
+    &::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+}
+
 .highlight-today-open {
     background-color: rgb(13, 102, 25);
 }
@@ -58,6 +69,10 @@ button {
 
 .highlight-today-closed {
     background-color: rgb(56, 56, 56);
+}
+
+.error {
+    color: rgb(126, 15, 15);
 }
 
 @media (max-width: 1000px) {

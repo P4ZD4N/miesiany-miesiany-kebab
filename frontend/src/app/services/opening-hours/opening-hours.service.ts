@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,5 +13,16 @@ export class OpeningHoursService {
   getOpeningHours(): Observable<any> {
 
     return this.http.get(`${this.apiUrl}/opening-hours`);
+  }
+
+  updateOpeningHour(hour: any): Observable<any> {
+
+    return this.http.put<any>(`${this.apiUrl}/update-opening-hour`, hour).pipe(
+      map(response => response),
+      catchError(error => {
+        console.error('Error updating opening hour', error);
+        return of(null);
+      })
+    )
   }
 }
