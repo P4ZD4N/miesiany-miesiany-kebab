@@ -4,6 +4,7 @@ import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
 import com.p4zd4n.kebab.services.auth.AuthenticationService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,15 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody AuthenticationRequest request
+            @Valid @RequestBody AuthenticationRequest request,
+            HttpSession session
     ) {
         if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
             throw new InvalidAcceptLanguageHeaderValue(language);
         }
 
         log.info("Received login request for email '{}'", request.email());
-        AuthenticationResponse response = authenticationService.authenticate(request);
+        AuthenticationResponse response = authenticationService.authenticate(request, session);
 
         return ResponseEntity.ok(response);
     }

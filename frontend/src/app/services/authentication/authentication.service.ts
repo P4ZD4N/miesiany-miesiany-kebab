@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { LangService } from '../lang/lang.service';
 import { Role } from '../../enums/role.enum';
 
@@ -13,7 +13,6 @@ interface LoginResponse {
 })
 export class AuthenticationService {
   private apiUrl = 'http://localhost:8080/api/v1/auth';
-  private role: Role | null = null;
 
   constructor(
     private http: HttpClient,
@@ -25,16 +24,17 @@ export class AuthenticationService {
       'Accept-Language': this.langService.currentLang
     });
 
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }, { headers }).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }, { headers, withCredentials: true }).pipe(
       map(response => {
-        this.role = response.role;
+        localStorage.setItem('userRole', response.role);
       }),
       catchError(this.handleError)
     );
   }
 
   isManager(): boolean {
-    return this.role === Role.MANAGER;
+    const storedRole = localStorage.getItem('userRole');
+    return storedRole === Role.MANAGER;
   }
 
   handleError(error: HttpErrorResponse) {

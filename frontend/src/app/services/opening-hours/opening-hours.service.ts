@@ -12,12 +12,12 @@ export class OpeningHoursService {
 
   getOpeningHours(): Observable<any> {
 
-    return this.http.get(`${this.apiUrl}/opening-hours`);
+    return this.http.get(`${this.apiUrl}/opening-hours`, { withCredentials: true });
   }
 
   updateOpeningHour(hour: any): Observable<any> {
 
-    return this.http.put<any>(`${this.apiUrl}/update-opening-hour`, hour).pipe(
+    return this.http.put<any>(`${this.apiUrl}/update-opening-hour`, hour, { withCredentials: true }).pipe(
       map(response => response),
       catchError(error => {
         console.error('Error updating opening hour', error);
