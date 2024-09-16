@@ -15,10 +15,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let hour of openingHours" 
-                [ngClass]="{
-                'highlight-today-open': getCurrentDayOfWeek() === hour.day_of_week.toUpperCase() && checkWhetherIsOpenNow(),
-                'highlight-today-closed': getCurrentDayOfWeek() === hour.day_of_week.toUpperCase() && !checkWhetherIsOpenNow()
-                }"
+                [ngClass]="getRowClass(hour)"
                 [formGroup]="hourForms[hour.day_of_week]"
             >
                 <td *ngIf="isManager()">

@@ -66,7 +66,24 @@ export class HoursComponent implements OnInit {
 
   checkWhetherIsOpenNow(): boolean {
     const currentTime = this.getCurrentTime();
-    return this.openingHours.some(hour => currentTime >= hour.opening_time && currentTime < hour.closing_time);
+    const currentDay = this.getCurrentDayOfWeek();
+    
+    const currentDayOpeningHours = this.openingHours.find(
+      hour => hour.day_of_week.toUpperCase() === currentDay
+    );
+  
+    if (!currentDayOpeningHours) return false; 
+  
+    const openingTime = this.convertToMinutes(currentDayOpeningHours.opening_time);
+    const closingTime = this.convertToMinutes(currentDayOpeningHours.closing_time);
+    const currentMinutes = this.convertToMinutes(currentTime);
+    
+    return currentMinutes >= openingTime && currentMinutes < closingTime;
+  }
+  
+  private convertToMinutes(time: string): number {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
   }
 
   private getCurrentTime(): string {
@@ -124,6 +141,16 @@ export class HoursComponent implements OnInit {
         }
       }
     );
+  }
+
+  getRowClass(hour: any): string {
+    const currentDay = this.getCurrentDayOfWeek();
+    
+    if (currentDay === hour.day_of_week.toUpperCase()) {
+      return this.checkWhetherIsOpenNow() ? 'highlight-today-open' : 'highlight-today-closed';
+    }
+
+    return '';
   }
 
   hideErrorMessages() {
