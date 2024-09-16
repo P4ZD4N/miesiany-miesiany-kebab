@@ -6,7 +6,9 @@
             "menu": "Menu",
             "promotions": "Promotions",
             "contact": "Contact",
-            "order": "Order"
+            "order": "Order",
+            "employee": "Employee Panel",
+            "manager": "Manager Panel"
         },
         "footer": {
             "home": "Home",
@@ -70,5 +72,13 @@
             "SUNDAY": "Sunday"
         },
         "update": "Update"
+    },
+    "manager-panel": {
+        "headline": "Manager panel",
+        "button_logout": "Logout"
+    },
+    "employee-panel": {
+        "headline": "Employee panel",
+        "button_logout": "Logout"
     }
 }

@@ -32,9 +32,23 @@ export class AuthenticationService {
     );
   }
 
+  logout(): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
+      tap(() => {
+        localStorage.removeItem('userRole');
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   isManager(): boolean {
     const storedRole = localStorage.getItem('userRole');
     return storedRole === Role.MANAGER;
+  }
+
+  isEmployee(): boolean {
+    const storedRole = localStorage.getItem('userRole');
+    return storedRole === Role.EMPLOYEE;
   }
 
   handleError(error: HttpErrorResponse) {

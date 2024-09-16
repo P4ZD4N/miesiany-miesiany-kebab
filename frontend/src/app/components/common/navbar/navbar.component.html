@@ -59,6 +59,13 @@
           <li class="nav-item">
               <a class="btn btn-danger" href="#">{{ 'common.navbar.order' | translate }}</a>
           </li>
+
+          <li class="nav-item" *ngIf="isManager()">
+            <a class="btn btn-danger" href="/manager-panel">{{ 'common.navbar.manager' | translate }}</a>
+          </li>
+          <li class="nav-item" *ngIf="isEmployee()">
+            <a class="btn btn-danger" href="/employee-panel">{{ 'common.navbar.employee' | translate }}</a>
+          </li>
         </ul>
       </div>
     </div>

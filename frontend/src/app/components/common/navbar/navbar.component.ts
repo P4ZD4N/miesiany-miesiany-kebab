@@ -3,11 +3,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from '../../../services/lang/lang.service';
 import { RouterModule } from '@angular/router';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
@@ -17,11 +19,20 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private translate: TranslateService,
-    private langService: LangService
+    private langService: LangService,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit() {
     this.currentFlag = this.langService.currentLang === 'pl' ? '🇺🇸' : '🇵🇱';
+  }
+
+  isManager(): boolean {
+    return this.authenticationService.isManager();
+  }
+
+  isEmployee(): boolean {
+    return this.authenticationService.isEmployee();
   }
 
   switchLanguage() {

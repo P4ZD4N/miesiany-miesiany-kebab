@@ -3,6 +3,7 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
+import com.p4zd4n.kebab.responses.auth.LogoutResponse;
 import com.p4zd4n.kebab.services.auth.AuthenticationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -34,6 +35,17 @@ public class AuthenticationController {
 
         log.info("Received login request for email '{}'", request.email());
         AuthenticationResponse response = authenticationService.authenticate(request, session);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        String email = (String) session.getAttribute("userEmail");
+
+        log.info("Received logout request for email '{}'", email);
+
+        LogoutResponse response = authenticationService.logout(session);
 
         return ResponseEntity.ok(response);
     }

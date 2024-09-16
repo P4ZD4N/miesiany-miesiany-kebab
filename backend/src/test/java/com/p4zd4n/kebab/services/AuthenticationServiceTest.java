@@ -8,6 +8,7 @@ import com.p4zd4n.kebab.exceptions.InvalidCredentialsException;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
+import com.p4zd4n.kebab.responses.auth.LogoutResponse;
 import com.p4zd4n.kebab.services.auth.AuthenticationService;
 import com.p4zd4n.kebab.utils.PasswordEncoder;
 import jakarta.servlet.http.HttpSession;
@@ -25,8 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class AuthenticationServiceTest {
@@ -126,5 +126,18 @@ public class AuthenticationServiceTest {
         when(employeeRepository.findByEmail("emp@example.com")).thenReturn(Optional.empty());
 
         assertThrows(EmployeeNotFoundException.class, () -> authenticationService.authenticate(request, session));
+    }
+
+    @Test
+    public void logout_ShouldInvalidateSession_WhenCalled() throws Exception {
+
+        when(session.getAttribute("userEmail")).thenReturn("test@example.com");
+
+        LogoutResponse logoutResponse = authenticationService.logout(session);
+
+        assertEquals(HttpStatus.OK.value(), logoutResponse.statusCode());
+        assertEquals("Logged out successfully", logoutResponse.message());
+
+        verify(session).invalidate();
     }
 }

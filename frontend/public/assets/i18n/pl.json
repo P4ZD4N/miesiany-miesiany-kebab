@@ -6,7 +6,9 @@
             "menu": "Menu",
             "promotions": "Promocje",
             "contact": "Kontakt",
-            "order": "Zamów"
+            "order": "Zamów",
+            "employee": "Panel Pracownika",
+            "manager": "Panel Managera"
         },
         "footer": {
             "home": "Strona glowna",
@@ -70,5 +72,13 @@
             "SUNDAY": "Niedziela"
         },
         "update": "Aktualizuj"
+    },
+    "manager-panel": {
+        "headline": "Panel managera",
+        "button_logout": "Wyloguj"
+    },
+    "employee-panel": {
+        "headline": "Panel pracownika",
+        "button_logout": "Wyloguj"
     }
 }

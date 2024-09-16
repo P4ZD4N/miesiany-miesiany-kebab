@@ -9,6 +9,7 @@ import com.p4zd4n.kebab.exceptions.InvalidCredentialsException;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
+import com.p4zd4n.kebab.responses.auth.LogoutResponse;
 import com.p4zd4n.kebab.utils.PasswordEncoder;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -84,5 +85,20 @@ public class AuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+        session.setAttribute("userEmail", request.email());
+    }
+
+    public LogoutResponse logout(HttpSession session) {
+
+        String email = (String) session.getAttribute("userEmail");
+        LogoutResponse response = LogoutResponse
+                .builder()
+                .statusCode(HttpStatus.OK.value()).message("Logged out successfully")
+                .build();
+
+        session.invalidate();
+        log.info("Successfully logged out employee with email '{}'", email);
+
+        return response;
     }
 }

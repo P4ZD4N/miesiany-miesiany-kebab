@@ -1,0 +1,8 @@
+<section class="employee-panel-forbidden" *ngIf="!isEmployee()">
+    <h1>:(</h1>
+</section>
+
+<section class="employee-panel" *ngIf="isEmployee()">
+    <h1>{{ 'employee-panel.headline' | translate }}</h1>
+    <a class="btn btn-danger" (click)="logout()"> {{ 'employee-panel.button_logout' | translate }}</a>
+</section>

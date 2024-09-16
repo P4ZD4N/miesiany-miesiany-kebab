@@ -5,6 +5,7 @@ import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
+import com.p4zd4n.kebab.responses.auth.LogoutResponse;
 import com.p4zd4n.kebab.services.auth.AuthenticationService;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthenticationController.class)
@@ -41,18 +45,18 @@ public class AuthenticationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private AuthenticationRequest request;
-    private AuthenticationResponse response;
+    private AuthenticationRequest authenticationRequest;
+    private AuthenticationResponse authenticationResponse;
     private HttpSession session;
 
     @BeforeEach
     void setUp() {
-        request = AuthenticationRequest
+        authenticationRequest = AuthenticationRequest
                 .builder()
                 .email("user@example.com")
                 .password("password123")
                 .build();
-        response = AuthenticationResponse
+        authenticationResponse = AuthenticationResponse
                 .builder()
                 .statusCode(200)
                 .message("Authenticated employee with email 'user@example.com'!")
@@ -65,10 +69,10 @@ public class AuthenticationControllerTest {
 
         String[] headers = {"en", "En", "eN", "EN", "pl", "Pl", "pL", "PL"};
 
-        when(authenticationService.authenticate(request, session)).thenReturn(response);
+        when(authenticationService.authenticate(authenticationRequest, session)).thenReturn(authenticationResponse);
 
-        String requestJson = objectMapper.writeValueAsString(request);
-        String responseJson = objectMapper.writeValueAsString(response);
+        String requestJson = objectMapper.writeValueAsString(authenticationRequest);
+        String responseJson = objectMapper.writeValueAsString(authenticationResponse);
 
         System.out.println("Request JSON: " + requestJson);
         System.out.println("Response JSON: " + responseJson);
@@ -77,7 +81,7 @@ public class AuthenticationControllerTest {
             mockMvc.perform(post("/api/v1/auth/login")
                     .header("Accept-Language", header)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
+                    .content(objectMapper.writeValueAsString(authenticationRequest)))
                     .andExpect(status().isOk());
         }
     }
@@ -87,7 +91,7 @@ public class AuthenticationControllerTest {
 
         mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(objectMapper.writeValueAsString(authenticationRequest)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -101,5 +105,24 @@ public class AuthenticationControllerTest {
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    @Test
+    public void logout_ShouldReturnOk_WhenEmailInSession() throws Exception {
+
+        LogoutResponse logoutResponse = LogoutResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Logged out successfully")
+                .build();
+
+        when(authenticationService.logout(any(HttpSession.class))).thenReturn(logoutResponse);
+
+        mockMvc.perform(post("/api/v1/auth/logout")
+                .sessionAttr("userEmail", "test@example.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.message").value("Logged out successfully"));
+
+        verify(authenticationService).logout(any(HttpSession.class));
     }
 }
