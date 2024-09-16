@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LangService } from '../../../services/lang/lang.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-hours',
@@ -18,13 +19,18 @@ export class HoursComponent implements OnInit {
   openingHours: any[] = [];
   hourForms: { [key: string]: FormGroup } = {};
   formErrorMessage: string | null = null;
+  languageChangeSubscription: Subscription;
 
   constructor(
     private authenticationService: AuthenticationService, 
     private openingHoursService: OpeningHoursService,
     private formBuilder: FormBuilder,
     private langService: LangService
-  ) {}
+  ) {
+    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
+      this.hideErrorMessages();
+    })
+  }
 
   ngOnInit(): void {
     this.loadOpeningHours();
@@ -96,7 +102,7 @@ export class HoursComponent implements OnInit {
 
     if (newClosingTime < newOpeningTime) {
       if (this.langService.currentLang === 'pl') {
-        this.formErrorMessage = 'Godzina zamknięcia nie może być wcześniejsza niż godzina otwarcia!';
+        this.formErrorMessage = 'Godzina zamkniecia nie moze byc wczesniejsza niz godzina otwarcia!';
       } else if (this.langService.currentLang === 'en') {
         this.formErrorMessage = 'Closing hour cannot be earlier than opening hour!';
       }
@@ -118,5 +124,9 @@ export class HoursComponent implements OnInit {
         }
       }
     );
+  }
+
+  hideErrorMessages() {
+    this.formErrorMessage = null;
   }
 }
