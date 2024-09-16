@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.OpeningHour;
+import com.p4zd4n.kebab.exceptions.InvalidClosingTimeException;
 import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
 import com.p4zd4n.kebab.services.hours.HoursService;
@@ -35,6 +36,10 @@ public class HoursController {
     public ResponseEntity<OpeningHour> updateOpeningHour(
             @RequestBody UpdatedHourRequest request
     ) {
+        if (request.closingTime().isBefore(request.openingTime())) {
+            throw new InvalidClosingTimeException();
+        }
+
         log.info("Received update opening hour request");
 
         OpeningHour existingHour = hoursService.findOpeningHourByDayOfWeek(request.dayOfWeek());
