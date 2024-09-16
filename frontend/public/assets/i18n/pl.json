@@ -71,7 +71,8 @@
             "SATURDAY": "Sobota",
             "SUNDAY": "Niedziela"
         },
-        "update": "Aktualizuj"
+        "update": "Aktualizuj",
+        "accept": "Akceptuj"
     },
     "manager-panel": {
         "headline": "Panel managera",

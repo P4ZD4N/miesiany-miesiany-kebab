@@ -23,7 +23,7 @@
             >
                 <td *ngIf="isManager()">
                     <button *ngIf="!hour.isEditing" (click)="editRow(hour)">{{ 'opening-hours.update' | translate }}</button>
-                    <button *ngIf="hour.isEditing" (click)="saveRow(hour)">Accept</button>
+                    <button *ngIf="hour.isEditing" (click)="saveRow(hour)">{{ 'opening-hours.accept' | translate }}</button>
                 </td>
 
                 <td>{{ 'opening-hours.days.' + hour.day_of_week | translate }}</td>
