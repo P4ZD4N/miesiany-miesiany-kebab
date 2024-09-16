@@ -33,6 +33,7 @@ table {
 th {
     background-color: black;
     color: red;
+    padding: 1rem;
 }
 
 td {
@@ -93,6 +94,12 @@ input[type="time"] {
 }
 
 @media (max-width: 500px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
     p {
         width: 80%;
     }
