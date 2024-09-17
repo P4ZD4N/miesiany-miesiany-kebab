@@ -10,11 +10,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "order_items")
+@Table(name = "meals")
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderItem extends WithTimestamp {
+public class Meal extends WithTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,18 +25,18 @@ public class OrderItem extends WithTimestamp {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Column(name = "item_name", nullable = false)
-    private String itemName;
+    @Column(name = "meal_name", nullable = false)
+    private String mealName;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "orderItem")
-    private List<OrderIngredient> orderIngredients;
+    @OneToMany(mappedBy = "meal")
+    private List<MealIngredient> mealIngredients;
 
     @Builder
-    public OrderItem(String itemName, BigDecimal price) {
-        this.itemName = itemName;
+    public Meal(String mealName, BigDecimal price) {
+        this.mealName = mealName;
         this.price = price;
     }
 }

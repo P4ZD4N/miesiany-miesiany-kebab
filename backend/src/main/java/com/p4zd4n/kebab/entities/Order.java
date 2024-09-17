@@ -57,7 +57,7 @@ public class Order extends WithTimestamp {
     private boolean isActive;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems;
+    private List<Meal> meals;
 
     @Builder
     public Order(LocalDateTime orderDateTime,
