@@ -20,8 +20,8 @@ public class Addon extends WithTimestamp {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "addon_name", nullable = false)
-    private String addonName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -31,8 +31,8 @@ public class Addon extends WithTimestamp {
     private Order order;
 
     @Builder
-    public Addon(String addonName, BigDecimal price) {
-        this.addonName = addonName;
+    public Addon(String name, BigDecimal price) {
+        this.name = name;
         this.price = price;
     }
 }

@@ -20,7 +20,7 @@ public class Beverage extends WithTimestamp {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "beverage_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "price", nullable = false)
