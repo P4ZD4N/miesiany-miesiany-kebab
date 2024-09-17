@@ -12,12 +12,14 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class MenuComponent implements OnInit {
   beverages: any[] = [];
+  addons: any[] = [];
 
 
   constructor(private menuService: MenuService) {}
 
   ngOnInit(): void {
     this.loadBeverages();
+    this.loadAddons();
   }
 
   loadBeverages(): void {
@@ -27,6 +29,17 @@ export class MenuComponent implements OnInit {
       },
       (error) => {
         console.log('Error loading beverages', error);
+      }
+    )
+  }
+
+  loadAddons(): void {
+    this.menuService.getAddons().subscribe(
+      (data: any[]) => {
+          this.addons = data;
+      },
+      (error) => {
+        console.log('Error loading addons', error);
       }
     )
   }

@@ -1,5 +1,20 @@
 <section class="menu">
     <h1>Menu</h1>
+
+    <p>{{ 'menu.addons.paragraph_addons' | translate }}</p>
+    <table>
+        <thead>
+            <th>{{ 'menu.addons.addon' | translate }}</th>
+            <th>{{ 'menu.addons.price' | translate }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let addon of addons">
+                <td>{{ 'menu.addons.' + addon.name | translate }}</td>
+                <td>{{ formatPrice(addon.price) }}</td>
+            </tr>
+        </tbody>
+    </table>
+
     <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
     <table>
         <thead>
@@ -9,7 +24,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let beverage of beverages">
-                <td>{{ beverage.name }}</td>
+                <td>{{ 'menu.beverages.' + beverage.name | translate }}</td>
                 <td>{{ formatCapacity(beverage.capacity) }}</td>
                 <td>{{ formatPrice(beverage.price) }}</td>
             </tr>

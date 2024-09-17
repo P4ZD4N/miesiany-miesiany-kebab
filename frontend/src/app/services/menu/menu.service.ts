@@ -8,6 +8,11 @@ interface BeverageResponse {
   price: number;
 }
 
+interface AddonResponse {
+  name: string,
+  price: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,5 +24,9 @@ export class MenuService {
 
   getBeverages(): Observable<BeverageResponse[]> {
     return this.http.get<BeverageResponse[]>(`${this.apiUrl}/beverages`, { withCredentials: true });
+  }
+
+  getAddons(): Observable<AddonResponse[]> {
+    return this.http.get<AddonResponse[]>(`${this.apiUrl}/addons`, { withCredentials: true });
   }
 }

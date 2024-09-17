@@ -83,11 +83,26 @@
         "button_logout": "Wyloguj"
     },
     "menu": {
+        "addons": {
+            "paragraph_addons": "Dodatki do twojego kebaba",
+            "addon": "Dodatek",
+            "price": "Cena",
+            "Jalapeno": "Jalapeno",
+            "Herbs": "Ziola",
+            "Olives": "Oliwki",
+            "Feta": "Feta"
+        },
         "beverages": {
             "paragraph_beverages": "Napoje",
             "beverage": "Napoj",
             "capacity": "Pojemnosc",
-            "price": "Cena"
+            "price": "Cena",
+            "Coca-Cola": "Coca-Cola",
+            "Coca-Cola Zero": "Coca-Cola Zero",
+            "Fanta": "Fanta",
+            "Sprite": "Sprite",
+            "Ayran": "Ayran",
+            "Water": "Woda"
         }
     }
 }

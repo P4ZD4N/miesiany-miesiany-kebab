@@ -83,11 +83,26 @@
         "button_logout": "Logout"
     },
     "menu": {
+        "addons": {
+            "paragraph_addons": "Addons to your kebab",
+            "addon": "Addon",
+            "price": "Price",
+            "Jalapeno": "Jalapeno",
+            "Herbs": "Herbs",
+            "Olives": "Olives",
+            "Feta": "Feta"
+        },
         "beverages": {
             "paragraph_beverages": "Beverages",
             "beverage": "Beverage",
             "capacity": "Capacity",
-            "price": "Price"
+            "price": "Price",
+            "Coca-Cola": "Coca-Cola",
+            "Coca-Cola Zero": "Coca-Cola Zero",
+            "Fanta": "Fanta",
+            "Sprite": "Sprite",
+            "Ayran": "Ayran",
+            "Water": "Water"
         }
     }
 }
