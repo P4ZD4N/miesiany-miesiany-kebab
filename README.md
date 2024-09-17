@@ -81,9 +81,9 @@ Updates the opening hours for a specific day of the week.
 **Request Body:**
 ```json
 {
-	"day_of_week":  "TUESDAY",
-	"opening_time":  "20:00",
-	"closing_time":  "23:00"
+  "day_of_week":  "TUESDAY",
+  "opening_time":  "20:00",
+  "closing_time":  "23:00"
 }
 ```
 
