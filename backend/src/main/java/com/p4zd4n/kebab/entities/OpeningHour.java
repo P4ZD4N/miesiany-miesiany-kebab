@@ -18,7 +18,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OpeningHour {
+public class OpeningHour extends WithTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
