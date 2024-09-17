@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node -r dotenv/config mynode.js && ng serve",
-    "build": "node -r dotenv/config mynode.js && ng serve",
+    "start": "node -r dotenv/config mynode.js && ng serve --open",
+    "build": "node -r dotenv/config mynode.js && ng serve --open",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

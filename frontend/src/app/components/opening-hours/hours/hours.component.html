@@ -1,0 +1,40 @@
+<section class="opening-hours">
+    <h1>{{ 'opening-hours.headline' | translate }}</h1>
+    <p>{{ 'opening-hours.paragraph_top' | translate }}</p>
+    <p class="highlight-today-open">{{ 'opening-hours.status.open' | translate }}</p>
+    <p class="highlight-today-closed">{{ 'opening-hours.status.closed' | translate }}</p>
+    <p *ngIf="formErrorMessage" class="error">{{ formErrorMessage }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th *ngIf="isManager()"></th>
+                <th>{{ 'opening-hours.table.day' | translate }}</th>
+                <th>{{ 'opening-hours.table.opening' | translate }}</th>
+                <th>{{ 'opening-hours.table.closing' | translate }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let hour of openingHours" 
+                [ngClass]="getRowClass(hour)"
+                [formGroup]="hourForms[hour.day_of_week]"
+            >
+                <td *ngIf="isManager()">
+                    <button *ngIf="!hour.isEditing" (click)="editRow(hour)">{{ 'opening-hours.update' | translate }}</button>
+                    <button *ngIf="hour.isEditing" (click)="saveRow(hour)">{{ 'opening-hours.accept' | translate }}</button>
+                </td>
+
+                <td>{{ 'opening-hours.days.' + hour.day_of_week | translate }}</td>
+
+                <td *ngIf="!hour.isEditing">{{ formatTime(hour.opening_time) }}</td>
+                <td *ngIf="hour.isEditing">
+                    <input type="time" formControlName="opening_time" />
+                </td>
+
+                <td *ngIf="!hour.isEditing">{{ formatTime(hour.closing_time) }}</td>
+                <td *ngIf="hour.isEditing">
+                    <input type="time" formControlName="closing_time" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>

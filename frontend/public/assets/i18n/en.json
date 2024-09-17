@@ -6,7 +6,9 @@
             "menu": "Menu",
             "promotions": "Promotions",
             "contact": "Contact",
-            "order": "Order"
+            "order": "Order",
+            "employee": "Employee Panel",
+            "manager": "Manager Panel"
         },
         "footer": {
             "home": "Home",
@@ -47,5 +49,36 @@
             "button": "Login",
             "paragraph_bottom": "If you don't remember your password, then contact with manager."
         }
+    },
+    "opening-hours": {
+        "headline": "Opening hours",
+        "paragraph_top": "Don't hesitate and come to us for a delicious kebab on the following days and hours!",
+        "status": {
+            "open": "Open",
+            "closed": "Closed"
+        },
+        "table": {
+            "day": "Day",
+            "opening": "Opening hour",
+            "closing": "Closing hour"
+        },
+        "days": {
+            "MONDAY": "Monday",
+            "TUESDAY": "Tuesday",
+            "WEDNESDAY": "Wednesday",
+            "THURSDAY": "Thursday",
+            "FRIDAY": "Friday",
+            "SATURDAY": "Saturday",
+            "SUNDAY": "Sunday"
+        },
+        "update": "Update"
+    },
+    "manager-panel": {
+        "headline": "Manager panel",
+        "button_logout": "Logout"
+    },
+    "employee-panel": {
+        "headline": "Employee panel",
+        "button_logout": "Logout"
     }
 }

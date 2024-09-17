@@ -1,0 +1,106 @@
+.opening-hours {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+p {
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+}
+
+thead {
+    border-bottom: 3px solid red;
+}
+
+table {
+    margin-top: 5rem;
+    margin-bottom: 2rem;
+    font-size: 24px;
+    text-align: center;
+    width: 60%;
+}
+
+th {
+    background-color: black;
+    color: red;
+    padding: 1rem;
+}
+
+td {
+    color: white;
+    background: none;
+}
+
+button {
+    color: white;
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: red;
+    }
+}
+
+input[type="time"] {
+    background-color: inherit;
+    color: white;
+    border: none;
+    outline: none;
+
+    &::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+}
+
+.highlight-today-open {
+    background-color: rgb(13, 102, 25);
+}
+
+
+.highlight-today-closed {
+    background-color: rgb(56, 56, 56);
+}
+
+.error {
+    color: rgb(126, 15, 15);
+}
+
+@media (max-width: 1000px) {
+    table {
+        width: 80%;
+    }
+}
+
+@media (max-width: 800px) {
+    p {
+        width: 60%;
+    }
+
+    table {
+        width: 80%;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 500px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    p {
+        width: 80%;
+    }
+}

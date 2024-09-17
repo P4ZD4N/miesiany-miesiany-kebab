@@ -1,0 +1,8 @@
+<section class="manager-panel-forbidden" *ngIf="!isManager()">
+    <h1>:(</h1>
+</section>
+
+<section class="manager-panel" *ngIf="isManager()">
+    <h1>{{ 'manager-panel.headline' | translate }}</h1>
+    <a class="btn btn-danger" (click)="logout()"> {{ 'manager-panel.button_logout' | translate }}</a>
+</section>

@@ -130,4 +130,20 @@ public class GlobalExceptionHandler {
                         .message(exception.getMessage())
                         .build());
     }
+
+    @ExceptionHandler(InvalidClosingTimeException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidClosingTimeException(
+            InvalidClosingTimeException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with closing hour earlier than opening hour", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
 }

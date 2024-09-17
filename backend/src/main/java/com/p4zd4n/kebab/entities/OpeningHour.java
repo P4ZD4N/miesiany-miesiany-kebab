@@ -18,7 +18,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OpeningHours {
+public class OpeningHour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class OpeningHours {
     private LocalTime closingTime;
 
     @Builder
-    public OpeningHours(DayOfWeek dayOfWeek, LocalTime openingTime, LocalTime closingTime) {
+    public OpeningHour(DayOfWeek dayOfWeek, LocalTime openingTime, LocalTime closingTime) {
         this.dayOfWeek = dayOfWeek;
         this.openingTime = openingTime;
         this.closingTime = closingTime;

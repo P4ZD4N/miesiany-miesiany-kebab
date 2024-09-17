@@ -6,7 +6,9 @@
             "menu": "Menu",
             "promotions": "Promocje",
             "contact": "Kontakt",
-            "order": "Zamów"
+            "order": "Zamów",
+            "employee": "Panel Pracownika",
+            "manager": "Panel Managera"
         },
         "footer": {
             "home": "Strona glowna",
@@ -47,5 +49,37 @@
             "button": "Zaloguj",
             "paragraph_bottom": "Jesli nie pamietasz hasla, skontaktuj sie z managerem."
         }
+    },
+    "opening-hours": {
+        "headline": "Godziny otwarcia",
+        "paragraph_top": "Nie zwlekaj i wpadaj do nas na pyszny kebab w nastepujacych dniach i godzinach!",
+        "status": {
+            "open": "Otwarte",
+            "closed": "Zamkniete"
+        },
+        "table": {
+            "day": "Dzien",
+            "opening": "Godzina otwarcia",
+            "closing": "Godzina zamkniecia"
+        },
+        "days": {
+            "MONDAY": "Poniedzialek",
+            "TUESDAY": "Wtorek",
+            "WEDNESDAY": "Sroda",
+            "THURSDAY": "Czwartek",
+            "FRIDAY": "Piatek",
+            "SATURDAY": "Sobota",
+            "SUNDAY": "Niedziela"
+        },
+        "update": "Aktualizuj",
+        "accept": "Akceptuj"
+    },
+    "manager-panel": {
+        "headline": "Panel managera",
+        "button_logout": "Wyloguj"
+    },
+    "employee-panel": {
+        "headline": "Panel pracownika",
+        "button_logout": "Wyloguj"
     }
 }
