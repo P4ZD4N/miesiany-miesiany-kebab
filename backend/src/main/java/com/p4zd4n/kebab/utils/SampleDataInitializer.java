@@ -1,9 +1,11 @@
 package com.p4zd4n.kebab.utils;
 
+import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.entities.Manager;
 import com.p4zd4n.kebab.entities.OpeningHour;
 import com.p4zd4n.kebab.enums.DayOfWeek;
+import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -19,10 +21,16 @@ public class SampleDataInitializer implements CommandLineRunner {
 
     private final EmployeeRepository employeeRepository;
     private final OpeningHoursRepository openingHoursRepository;
+    private final BeverageRepository beverageRepository;
 
-    public SampleDataInitializer(EmployeeRepository employeeRepository, OpeningHoursRepository openingHoursRepository) {
+    public SampleDataInitializer(
+            EmployeeRepository employeeRepository,
+            OpeningHoursRepository openingHoursRepository,
+            BeverageRepository beverageRepository
+    ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
+        this.beverageRepository = beverageRepository;
     }
 
     @Override
@@ -31,6 +39,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initOpeningHours();
         initSampleEmployees();
         initSampleManagers();
+        initBeverages();
     }
 
     private void initOpeningHours() {
@@ -78,7 +87,52 @@ public class SampleDataInitializer implements CommandLineRunner {
                 LocalDate.now()
         );
 
-
         employeeRepository.save(manager);
+    }
+
+    private void initBeverages() {
+
+        Beverage cocaCola = Beverage.builder()
+                .name("Coca-Cola")
+                .price(BigDecimal.valueOf(6))
+                .capacity(BigDecimal.valueOf(0.33))
+                .build();
+
+        Beverage cocaColaZero = Beverage.builder()
+                .name("Coca-Cola Zero")
+                .price(BigDecimal.valueOf(6))
+                .capacity(BigDecimal.valueOf(0.33))
+                .build();
+
+        Beverage fanta = Beverage.builder()
+                .name("Fanta")
+                .price(BigDecimal.valueOf(6))
+                .capacity(BigDecimal.valueOf(0.33))
+                .build();
+
+        Beverage sprite = Beverage.builder()
+                .name("Sprite")
+                .price(BigDecimal.valueOf(6))
+                .capacity(BigDecimal.valueOf(0.33))
+                .build();
+
+        Beverage ayran = Beverage.builder()
+                .name("Ayran")
+                .price(BigDecimal.valueOf(5))
+                .capacity(BigDecimal.valueOf(0.5))
+                .build();
+
+        Beverage water = Beverage.builder()
+                .name("Water")
+                .price(BigDecimal.valueOf(5))
+                .capacity(BigDecimal.valueOf(0.5))
+                .build();
+
+        beverageRepository.save(cocaCola);
+        beverageRepository.save(cocaColaZero);
+        beverageRepository.save(fanta);
+        beverageRepository.save(sprite);
+        beverageRepository.save(ayran);
+        beverageRepository.save(water);
     }
 }
