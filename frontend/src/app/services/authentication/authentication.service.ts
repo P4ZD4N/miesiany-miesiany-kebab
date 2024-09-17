@@ -13,11 +13,17 @@ interface LoginResponse {
 })
 export class AuthenticationService {
   private apiUrl = 'http://localhost:8080/api/v1/auth';
+  private userRole: Role | null = null; 
 
   constructor(
     private http: HttpClient,
     private langService: LangService
-  ) {}
+  ) {
+    const storedRole = sessionStorage.getItem('userRole');
+    if (storedRole) {
+      this.userRole = storedRole as Role;
+    }
+  }
 
   authenticate(email: string, password: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -26,7 +32,8 @@ export class AuthenticationService {
 
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }, { headers, withCredentials: true }).pipe(
       map(response => {
-        localStorage.setItem('userRole', response.role);
+        this.userRole = response.role;
+        sessionStorage.setItem('userRole', response.role);
       }),
       catchError(this.handleError)
     );
@@ -35,20 +42,19 @@ export class AuthenticationService {
   logout(): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
-        localStorage.removeItem('userRole');
+        this.userRole = null;
+        sessionStorage.removeItem('userRole');
       }),
       catchError(this.handleError)
     );
   }
 
   isManager(): boolean {
-    const storedRole = localStorage.getItem('userRole');
-    return storedRole === Role.MANAGER;
+    return this.userRole === Role.MANAGER;
   }
 
   isEmployee(): boolean {
-    const storedRole = localStorage.getItem('userRole');
-    return storedRole === Role.EMPLOYEE;
+    return this.userRole === Role.EMPLOYEE;
   }
 
   handleError(error: HttpErrorResponse) {
