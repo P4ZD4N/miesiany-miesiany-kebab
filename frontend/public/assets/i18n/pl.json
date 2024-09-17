@@ -81,5 +81,13 @@
     "employee-panel": {
         "headline": "Panel pracownika",
         "button_logout": "Wyloguj"
+    },
+    "menu": {
+        "beverages": {
+            "paragraph_beverages": "Napoje",
+            "beverage": "Napoj",
+            "capacity": "Pojemnosc",
+            "price": "Cena"
+        }
     }
 }

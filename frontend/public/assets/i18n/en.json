@@ -81,5 +81,13 @@
     "employee-panel": {
         "headline": "Employee panel",
         "button_logout": "Logout"
+    },
+    "menu": {
+        "beverages": {
+            "paragraph_beverages": "Beverages",
+            "beverage": "Beverage",
+            "capacity": "Capacity",
+            "price": "Price"
+        }
     }
 }

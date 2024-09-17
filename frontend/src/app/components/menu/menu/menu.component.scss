@@ -1,0 +1,43 @@
+.menu {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+p {
+    margin-top: 5rem;
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 32px;
+}
+
+thead {
+    border-bottom: 3px solid red;
+}
+
+table {
+    margin-bottom: 2rem;
+    font-size: 24px;
+    text-align: center;
+    width: 60%;
+}
+
+th {
+    background-color: black;
+    color: red;
+    padding: 1rem;
+}
+
+td {
+    color: white;
+    background: none;
+    border-bottom: 1px solid white;
+}

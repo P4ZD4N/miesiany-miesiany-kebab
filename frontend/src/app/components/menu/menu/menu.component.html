@@ -1,0 +1,18 @@
+<section class="menu">
+    <h1>Menu</h1>
+    <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
+    <table>
+        <thead>
+            <th>{{ 'menu.beverages.beverage' | translate }}</th>
+            <th>{{ 'menu.beverages.capacity' | translate }}</th>
+            <th>{{ 'menu.beverages.price' | translate }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let beverage of beverages">
+                <td>{{ beverage.name }}</td>
+                <td>{{ formatCapacity(beverage.capacity) }}</td>
+                <td>{{ formatPrice(beverage.price) }}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>

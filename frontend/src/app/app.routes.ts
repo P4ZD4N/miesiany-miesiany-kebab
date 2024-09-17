@@ -8,6 +8,8 @@ import { ManagerPanelLayoutComponent } from './components/manager-panel/manager-
 import { ManagerPanelComponent } from './components/manager-panel/panel/manager-panel.component';
 import { EmployeePanelLayoutComponent } from './components/employee-panel/employee-panel-layout.component';
 import { EmployeePanelComponent } from './components/employee-panel/panel/employee-panel.component';
+import { MenuLayoutComponent } from './components/menu/menu.layout.component';
+import { MenuComponent } from './components/menu/menu/menu.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -22,5 +24,8 @@ export const routes: Routes = [
     ]}, 
     { path: 'employee-panel', component: EmployeePanelLayoutComponent, children: [
         { path: '', component: EmployeePanelComponent }
+    ]}, 
+    { path: 'menu', component: MenuLayoutComponent, children: [
+        { path: '', component: MenuComponent }
     ]}, 
 ];
