@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.entities;
 
+import com.p4zd4n.kebab.enums.Size;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +28,9 @@ public class Meal extends WithTimestamp {
 
     @Column(name = "meal_name", nullable = false)
     private String mealName;
+
+    @Column(name = "size", nullable = false)
+    private Size size;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
