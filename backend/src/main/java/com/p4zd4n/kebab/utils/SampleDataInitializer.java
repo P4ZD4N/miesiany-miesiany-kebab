@@ -1,10 +1,8 @@
 package com.p4zd4n.kebab.utils;
 
-import com.p4zd4n.kebab.entities.Beverage;
-import com.p4zd4n.kebab.entities.Employee;
-import com.p4zd4n.kebab.entities.Manager;
-import com.p4zd4n.kebab.entities.OpeningHour;
+import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.enums.DayOfWeek;
+import com.p4zd4n.kebab.repositories.AddonRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
@@ -22,15 +20,18 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final EmployeeRepository employeeRepository;
     private final OpeningHoursRepository openingHoursRepository;
     private final BeverageRepository beverageRepository;
+    private final AddonRepository addonRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
             OpeningHoursRepository openingHoursRepository,
-            BeverageRepository beverageRepository
+            BeverageRepository beverageRepository,
+            AddonRepository addonRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
         this.beverageRepository = beverageRepository;
+        this.addonRepository = addonRepository;
     }
 
     @Override
@@ -40,6 +41,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initSampleEmployees();
         initSampleManagers();
         initBeverages();
+        initAddons();
     }
 
     private void initOpeningHours() {
@@ -134,5 +136,33 @@ public class SampleDataInitializer implements CommandLineRunner {
         beverageRepository.save(sprite);
         beverageRepository.save(ayran);
         beverageRepository.save(water);
+    }
+
+    private void initAddons() {
+
+        Addon jalapeno = Addon.builder()
+                .name("Jalapeno")
+                .price(BigDecimal.valueOf(1.5))
+                .build();
+
+        Addon herbs = Addon.builder()
+                .name("Herbs")
+                .price(BigDecimal.valueOf(1.5))
+                .build();
+
+        Addon olives = Addon.builder()
+                .name("Olives")
+                .price(BigDecimal.valueOf(3.5))
+                .build();
+
+        Addon feta = Addon.builder()
+                .name("Feta")
+                .price(BigDecimal.valueOf(3.5))
+                .build();
+
+        addonRepository.save(jalapeno);
+        addonRepository.save(herbs);
+        addonRepository.save(olives);
+        addonRepository.save(feta);
     }
 }
