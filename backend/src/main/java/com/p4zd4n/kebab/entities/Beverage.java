@@ -21,18 +21,22 @@ public class Beverage extends WithTimestamp {
     private Long id;
 
     @Column(name = "beverage_name", nullable = false)
-    private String beverageName;
+    private String name;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
+
+    @Column(name = "capacity", nullable = false)
+    private BigDecimal capacity;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
     @Builder
-    public Beverage(String beverageName, BigDecimal price) {
-        this.beverageName = beverageName;
+    public Beverage(String name, BigDecimal price, BigDecimal capacity) {
+        this.name = name;
         this.price = price;
+        this.capacity = capacity;
     }
 }
