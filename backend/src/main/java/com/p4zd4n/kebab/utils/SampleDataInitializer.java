@@ -2,10 +2,9 @@ package com.p4zd4n.kebab.utils;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.enums.DayOfWeek;
-import com.p4zd4n.kebab.repositories.AddonRepository;
-import com.p4zd4n.kebab.repositories.BeverageRepository;
-import com.p4zd4n.kebab.repositories.EmployeeRepository;
-import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
+import com.p4zd4n.kebab.enums.IngredientType;
+import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +12,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
 
 @Component
 public class SampleDataInitializer implements CommandLineRunner {
@@ -21,17 +22,23 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final OpeningHoursRepository openingHoursRepository;
     private final BeverageRepository beverageRepository;
     private final AddonRepository addonRepository;
+    private final MealRepository mealRepository;
+    private final IngredientRepository ingredientRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
             OpeningHoursRepository openingHoursRepository,
             BeverageRepository beverageRepository,
-            AddonRepository addonRepository
+            AddonRepository addonRepository,
+            MealRepository mealRepository,
+            IngredientRepository ingredientRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
         this.beverageRepository = beverageRepository;
         this.addonRepository = addonRepository;
+        this.mealRepository = mealRepository;
+        this.ingredientRepository = ingredientRepository;
     }
 
     @Override
@@ -42,6 +49,8 @@ public class SampleDataInitializer implements CommandLineRunner {
         initSampleManagers();
         initBeverages();
         initAddons();
+        initIngredients();
+        initMeals();
     }
 
     private void initOpeningHours() {
@@ -164,5 +173,157 @@ public class SampleDataInitializer implements CommandLineRunner {
         addonRepository.save(herbs);
         addonRepository.save(olives);
         addonRepository.save(feta);
+    }
+
+    private void initIngredients() {
+
+        Ingredient pita = Ingredient.builder()
+                .name("Pita")
+                .ingredientType(IngredientType.BREAD)
+                .build();
+
+        Ingredient tortilla = Ingredient.builder()
+                .name("Tortilla")
+                .ingredientType(IngredientType.BREAD)
+                .build();
+
+        Ingredient chicken = Ingredient.builder()
+                .name("Chicken")
+                .ingredientType(IngredientType.MEAT)
+                .build();
+
+        Ingredient mutton = Ingredient.builder()
+                .name("Mutton")
+                .ingredientType(IngredientType.MEAT)
+                .build();
+
+        Ingredient meatMix = Ingredient.builder()
+                .name("Meat Mix")
+                .ingredientType(IngredientType.MEAT)
+                .build();
+
+        Ingredient falafel = Ingredient.builder()
+                .name("Falafel")
+                .ingredientType(IngredientType.MEAT)
+                .build();
+
+        Ingredient cabbage = Ingredient.builder()
+                .name("Cabbage")
+                .ingredientType(IngredientType.VEGETABLE)
+                .build();
+
+        Ingredient tomato = Ingredient.builder()
+                .name("Tomato")
+                .ingredientType(IngredientType.VEGETABLE)
+                .build();
+
+        Ingredient cucumber = Ingredient.builder()
+                .name("Cucumber")
+                .ingredientType(IngredientType.VEGETABLE)
+                .build();
+
+        Ingredient onion = Ingredient.builder()
+                .name("Onion")
+                .ingredientType(IngredientType.VEGETABLE)
+                .build();
+
+        Ingredient garlicSauce = Ingredient.builder()
+                .name("Garlic Sauce")
+                .ingredientType(IngredientType.SAUCE)
+                .build();
+
+        Ingredient bbqSauce = Ingredient.builder()
+                .name("BBQ Sauce")
+                .ingredientType(IngredientType.SAUCE)
+                .build();
+
+        Ingredient mildSauce = Ingredient.builder()
+                .name("Mild Sauce")
+                .ingredientType(IngredientType.SAUCE)
+                .build();
+
+        Ingredient hotSauce = Ingredient.builder()
+                .name("Hot Sauce")
+                .ingredientType(IngredientType.SAUCE)
+                .build();
+
+        Ingredient sauceMix = Ingredient.builder()
+                .name("Sauce Mix")
+                .ingredientType(IngredientType.SAUCE)
+                .build();
+
+        Ingredient cheese = Ingredient.builder()
+                .name("Cheese")
+                .ingredientType(IngredientType.OTHER)
+                .build();
+
+        Ingredient fries = Ingredient.builder()
+                .name("Fries")
+                .ingredientType(IngredientType.OTHER)
+                .build();
+
+        List<Ingredient> allIngredients = List.of(
+                pita,
+                tortilla,
+                chicken,
+                mutton,
+                meatMix,
+                cabbage,
+                tomato,
+                cucumber,
+                onion,
+                garlicSauce,
+                bbqSauce,
+                mildSauce,
+                hotSauce,
+                sauceMix,
+                cheese,
+                fries
+        );
+
+        ingredientRepository.saveAll(allIngredients);
+    }
+
+    private void initMeals() {
+
+        List<Ingredient> salad = List.of(
+                ingredientRepository.findByName("Cabbage"),
+                ingredientRepository.findByName("Tomato"),
+                ingredientRepository.findByName("Cucumber"),
+                ingredientRepository.findByName("Onion")
+        );
+
+        EnumMap<Size, BigDecimal> pitaKebabSaladsPrices = new EnumMap<>(Size.class);
+
+        pitaKebabSaladsPrices.put(Size.SMALL, new BigDecimal("20"));
+        pitaKebabSaladsPrices.put(Size.MEDIUM, new BigDecimal("25"));
+        pitaKebabSaladsPrices.put(Size.LARGE, new BigDecimal("30"));
+        pitaKebabSaladsPrices.put(Size.XL, new BigDecimal("39"));
+
+        Meal pitaKebabSalads = Meal.builder()
+                .name("Pita Kebab Salads")
+                .prices(pitaKebabSaladsPrices)
+                .build();
+
+        pitaKebabSalads.addIngredient(ingredientRepository.findByName("Pita"));
+        salad.forEach(pitaKebabSalads::addIngredient);
+
+        EnumMap<Size, BigDecimal> pitaKebabSaladsAndFriesPrices = new EnumMap<>(Size.class);
+
+        pitaKebabSaladsAndFriesPrices.put(Size.SMALL, new BigDecimal("22"));
+        pitaKebabSaladsAndFriesPrices.put(Size.MEDIUM, new BigDecimal("28"));
+        pitaKebabSaladsAndFriesPrices.put(Size.LARGE, new BigDecimal("31"));
+        pitaKebabSaladsAndFriesPrices.put(Size.XL, new BigDecimal("39"));
+
+        Meal pitaKebabSaladsAndFries = Meal.builder()
+                .name("Pita Kebab Salads and Fries")
+                .prices(pitaKebabSaladsAndFriesPrices)
+                .build();
+
+        pitaKebabSaladsAndFries.addIngredient(ingredientRepository.findByName("Pita"));
+        salad.forEach(pitaKebabSaladsAndFries::addIngredient);
+        pitaKebabSaladsAndFries.addIngredient(ingredientRepository.findByName("Fries"));
+
+        mealRepository.saveAll(List.of(pitaKebabSalads, pitaKebabSaladsAndFries));
     }
 }
