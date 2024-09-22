@@ -56,14 +56,9 @@ public class MenuController {
         log.info("Received update beverage request");
 
         Beverage existingBeverage = beverageService.findBeverageByName(request.name());
+        Beverage updatedBeverage = beverageService.updateBeverage(existingBeverage, request);
 
-        existingBeverage.setName(request.name());
-        existingBeverage.setCapacity(request.capacity());
-        existingBeverage.setPrice(request.price());
-
-        Beverage savedBeverage = beverageService.saveBeverage(existingBeverage);
-
-        return ResponseEntity.ok(savedBeverage);
+        return ResponseEntity.ok(updatedBeverage);
     }
 
     @GetMapping("/addons")

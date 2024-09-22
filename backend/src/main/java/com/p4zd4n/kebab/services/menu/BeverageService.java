@@ -3,6 +3,7 @@ package com.p4zd4n.kebab.services.menu;
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.exceptions.BeverageNotFoundException;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
+import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.menu.BeverageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,5 +66,14 @@ public class BeverageService {
         log.info("Successfully saved beverage with name '{}'", beverage.getName());
 
         return savedBeverage;
+    }
+
+    public Beverage updateBeverage(Beverage beverage, UpdatedBeverageRequest request) {
+
+        beverage.setName(request.name());
+        beverage.setCapacity(request.capacity());
+        beverage.setPrice(request.price());
+
+        return saveBeverage(beverage);
     }
 }
