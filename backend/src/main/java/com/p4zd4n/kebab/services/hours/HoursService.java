@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.services.hours;
 
 import com.p4zd4n.kebab.entities.OpeningHour;
 import com.p4zd4n.kebab.enums.DayOfWeek;
+import com.p4zd4n.kebab.exceptions.OpeningHourNotFoundException;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -59,11 +60,12 @@ public class HoursService {
 
         log.info("Started finding opening hours on {}", dayOfWeek);
 
-        Optional<OpeningHour> optionalOpeningHour = openingHourRepository.findByDayOfWeek(dayOfWeek);
+        OpeningHour openingHour = openingHourRepository.findByDayOfWeek(dayOfWeek)
+                .orElseThrow(() -> new OpeningHourNotFoundException(dayOfWeek));
 
         log.info("Successfully found opening hours on {}", dayOfWeek);
 
-        return optionalOpeningHour.orElse(null);
+        return openingHour;
     }
 
     public OpeningHour saveOpeningHour(OpeningHour openingHour) {
