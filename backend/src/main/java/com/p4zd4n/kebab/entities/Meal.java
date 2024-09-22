@@ -31,7 +31,7 @@ public class Meal extends WithTimestamp {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @ElementCollection
