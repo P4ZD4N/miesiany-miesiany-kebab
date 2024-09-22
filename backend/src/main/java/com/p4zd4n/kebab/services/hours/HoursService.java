@@ -4,6 +4,7 @@ import com.p4zd4n.kebab.entities.OpeningHour;
 import com.p4zd4n.kebab.enums.DayOfWeek;
 import com.p4zd4n.kebab.exceptions.OpeningHourNotFoundException;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
+import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -77,5 +78,13 @@ public class HoursService {
         log.info("Successfully saved opening hours on {}", openingHour.getDayOfWeek());
 
         return savedOpeningHour;
+    }
+
+    public OpeningHour updateOpeningHour(OpeningHour openingHour, UpdatedHourRequest request) {
+
+        openingHour.setOpeningTime(request.openingTime());
+        openingHour.setClosingTime(request.closingTime());
+
+        return saveOpeningHour(openingHour);
     }
 }

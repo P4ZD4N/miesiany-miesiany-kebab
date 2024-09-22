@@ -7,8 +7,6 @@ import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
 import com.p4zd4n.kebab.services.hours.HoursService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,12 +41,8 @@ public class HoursController {
         log.info("Received update opening hour request");
 
         OpeningHour existingHour = hoursService.findOpeningHourByDayOfWeek(request.dayOfWeek());
+        OpeningHour updatedHour = hoursService.updateOpeningHour(existingHour, request);
 
-        existingHour.setOpeningTime(request.openingTime());
-        existingHour.setClosingTime(request.closingTime());
-
-        OpeningHour savedHour = hoursService.saveOpeningHour(existingHour);
-
-        return ResponseEntity.ok(savedHour);
+        return ResponseEntity.ok(updatedHour);
     }
 }
