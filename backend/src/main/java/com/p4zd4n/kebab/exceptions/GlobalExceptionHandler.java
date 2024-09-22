@@ -146,4 +146,68 @@ public class GlobalExceptionHandler {
                         .message(exception.getMessage())
                         .build());
     }
+
+    @ExceptionHandler(OpeningHourNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleOpeningHourNotFoundException(
+            OpeningHourNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing closing hour on {}", request.getRequestURI(), exception.getDayOfWeek());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidCapacityException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidCapacityException(
+            InvalidCapacityException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid capacity", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidPriceException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidPriceException(
+            InvalidPriceException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid price", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(BeverageNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleBeverageNotFoundException(
+            BeverageNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing beverage: {}", request.getRequestURI(), exception.getBeverageName());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
 }

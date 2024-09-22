@@ -1,6 +1,9 @@
 package com.p4zd4n.kebab.controllers;
 
-import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
+import com.p4zd4n.kebab.entities.Beverage;
+import com.p4zd4n.kebab.exceptions.InvalidCapacityException;
+import com.p4zd4n.kebab.exceptions.InvalidPriceException;
+import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.menu.AddonResponse;
 import com.p4zd4n.kebab.responses.menu.BeverageResponse;
 import com.p4zd4n.kebab.responses.menu.MealResponse;
@@ -9,12 +12,11 @@ import com.p4zd4n.kebab.services.menu.BeverageService;
 import com.p4zd4n.kebab.services.menu.MealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/menu")
@@ -37,6 +39,31 @@ public class MenuController {
         log.info("Received get beverages request");
 
         return ResponseEntity.ok(beverageService.getBeverages());
+    }
+
+    @PutMapping("/update-beverage")
+    public ResponseEntity<Beverage> updateBeverage(
+            @RequestBody UpdatedBeverageRequest request
+    ) {
+        if (request.capacity().compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidCapacityException(request.capacity());
+        }
+
+        if (request.price().compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidPriceException(request.price());
+        }
+
+        log.info("Received update beverage request");
+
+        Beverage existingBeverage = beverageService.findBeverageByName(request.name());
+
+        existingBeverage.setName(request.name());
+        existingBeverage.setCapacity(request.capacity());
+        existingBeverage.setPrice(request.price());
+
+        Beverage savedBeverage = beverageService.saveBeverage(existingBeverage);
+
+        return ResponseEntity.ok(savedBeverage);
     }
 
     @GetMapping("/addons")

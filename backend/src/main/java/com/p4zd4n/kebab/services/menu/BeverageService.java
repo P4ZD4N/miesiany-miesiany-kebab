@@ -1,15 +1,14 @@
 package com.p4zd4n.kebab.services.menu;
 
 import com.p4zd4n.kebab.entities.Beverage;
-import com.p4zd4n.kebab.entities.OpeningHour;
+import com.p4zd4n.kebab.exceptions.BeverageNotFoundException;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
-import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
 import com.p4zd4n.kebab.responses.menu.BeverageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,7 +45,25 @@ public class BeverageService {
                 .build();
     }
 
-    public void save(Beverage beverage) {
-        beverageRepository.save(beverage);
+    public Beverage findBeverageByName(String name) {
+
+        log.info("Started finding beverage with name '{}'", name);
+
+        Beverage beverage = beverageRepository.findByName(name)
+                .orElseThrow(() -> new BeverageNotFoundException(name));
+
+        log.info("Successfully found beverage with name '{}'", name);
+
+        return beverage;
+    }
+
+    public Beverage saveBeverage(Beverage beverage) {
+        log.info("Started saving beverage with name on '{}'", beverage.getName());
+
+        Beverage savedBeverage = beverageRepository.save(beverage);
+
+        log.info("Successfully saved beverage with name '{}'", beverage.getName());
+
+        return savedBeverage;
     }
 }
