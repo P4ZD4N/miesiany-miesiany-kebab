@@ -103,6 +103,30 @@
             "Sprite": "Sprite",
             "Ayran": "Ayran",
             "Water": "Water"
+        },
+        "meals": {
+            "paragraph_meals": "Meals",
+            "meal": "Meal",
+            "prices": "Prices",
+            "base_ingredients": "Base ingredients",
+            "Pita Kebab Salads": "Pita Kebab Salads",
+            "Pita Kebab Salads and Fries": "Pita Kebab Salads and Fries",
+            "size": "Size",
+            "price": "Price",
+            "sizes": {
+                "SMALL": "Small",
+                "MEDIUM": "Medium",
+                "LARGE": "Large",
+                "XL": "XL"
+            },
+            "ingredients": {
+                "Pita": "Pita",
+                "Cabbage": "Cabbage",
+                "Tomato": "Tomato",
+                "Cucumber": "Cucumber",
+                "Onion": "Onion",
+                "Fries": "Fries"
+            }
         }
     }
 }

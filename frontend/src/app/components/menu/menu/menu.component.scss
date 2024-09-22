@@ -6,6 +6,22 @@
     align-items: center;
 }
 
+td table {
+    width: 100%;
+    margin: 0 auto;
+    display: inline-table; 
+}
+
+td table th {
+    background-color: black;
+    color: red;
+    padding: 0 1rem 0 1rem;
+}
+
+td table tr:last-of-type {
+    border-bottom: none;
+}
+
 h1 {
     color: red;
     text-align: center;
@@ -27,7 +43,7 @@ table {
     margin-bottom: 2rem;
     font-size: 24px;
     text-align: center;
-    width: 60%;
+    width: 70%;
 }
 
 th {
@@ -36,8 +52,59 @@ th {
     padding: 1rem;
 }
 
-td {
+tr {
     color: white;
     background: none;
     border-bottom: 1px solid white;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 24px;
+}
+
+td {
+    padding: 10px;
+}
+
+.meal-name {
+    display: inline-block;
+    max-width: 200px;
+    white-space: wrap;
+}
+
+@media (max-width: 1280px) {
+    table {
+        font-size: 20px;
+        width: 80%;
+    }
+}
+
+@media (max-width: 950px) {
+    p {
+        margin-top: 3rem;
+    }
+
+    table {
+        font-size: 18px;
+    }
+
+    ul {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 1020px) {
+    .table-meals {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .table-meals {
+        scrollbar-color: #ff0000 #f1f1f1; 
+        scrollbar-width: thin; 
+    }
 }

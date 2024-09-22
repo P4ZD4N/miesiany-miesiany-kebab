@@ -103,6 +103,31 @@
             "Sprite": "Sprite",
             "Ayran": "Ayran",
             "Water": "Woda"
+        },
+        "meals": {
+            "paragraph_meals": "Dania",
+            "meal": "Danie",
+            "prices": "Ceny",
+            "base_ingredients": "Bazowe skladniki",
+            "Pita Kebab Salads": "Pita Kebab Surowki",
+            "Pita Kebab Salads and Fries": "Pita Kebab Surowki i Frytki",
+            "size": "Rozmiar",
+            "price": "Cena",
+            "sizes": {
+                "SMALL": "Maly",
+                "MEDIUM": "Sredni",
+                "LARGE": "Duzy",
+                "XL": "XL"
+            },
+            "ingredients": {
+                "Pita": "Pita",
+                "Cabbage": "Kapusta",
+                "Tomato": "Pomidor",
+                "Cucumber": "Ogorek",
+                "Onion": "Cebula",
+                "Fries": "Frytki"
+            }
+            
         }
     }
 }

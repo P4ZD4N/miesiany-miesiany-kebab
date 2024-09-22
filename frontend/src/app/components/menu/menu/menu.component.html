@@ -1,8 +1,48 @@
 <section class="menu">
     <h1>Menu</h1>
 
+    <p>{{ 'menu.meals.paragraph_meals' | translate }}</p>
+    <table class="table-meals">
+        <thead>
+            <th>{{ 'menu.meals.meal' | translate }}</th>
+            <th>{{ 'menu.meals.prices' | translate }}</th>
+            <th>{{ 'menu.meals.base_ingredients' | translate }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let meal of meals">
+                <td><span class="meal-name">{{ 'menu.meals.' + meal.name | translate }}</span></td>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ 'menu.meals.size' | translate }}</th>
+                                <th>{{ 'menu.meals.price' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let price of meal.prices | keyvalue: sortSizes">
+                                <td>{{ 'menu.meals.sizes.' + price.key | translate }}</td>
+                                <td>{{ formatPrice(price.value) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td class="base-ingredients">
+                    <ul *ngFor="let ingredient of meal.ingredients">
+                        <li>
+                            <i *ngIf="ingredient.ingredient_type === 'BREAD'" class="fa-solid fa-bread-slice"></i>
+                            <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
+                            <i *ngIf="ingredient.ingredient_type === 'OTHER'" class="fa-solid fa-plus"></i> 
+                            {{ 'menu.meals.ingredients.' + ingredient.name | translate}}
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
     <p>{{ 'menu.addons.paragraph_addons' | translate }}</p>
-    <table>
+    <table class="table-addons">
         <thead>
             <th>{{ 'menu.addons.addon' | translate }}</th>
             <th>{{ 'menu.addons.price' | translate }}</th>
@@ -16,7 +56,7 @@
     </table>
 
     <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
-    <table>
+    <table class="table-beverages">
         <thead>
             <th>{{ 'menu.beverages.beverage' | translate }}</th>
             <th>{{ 'menu.beverages.capacity' | translate }}</th>

@@ -13,6 +13,9 @@ import { TranslateModule } from '@ngx-translate/core';
 export class MenuComponent implements OnInit {
   beverages: any[] = [];
   addons: any[] = [];
+  meals: any[] = [];
+
+  sizeOrder = ['SMALL', 'MEDIUM', 'LARGE', 'XL'];
 
 
   constructor(private menuService: MenuService) {}
@@ -20,6 +23,7 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
     this.loadBeverages();
     this.loadAddons();
+    this.loadMeals();
   }
 
   loadBeverages(): void {
@@ -44,11 +48,30 @@ export class MenuComponent implements OnInit {
     )
   }
 
+  loadMeals(): void {
+    this.menuService.getMeals().subscribe(
+      (data: any[]) => {
+        this.meals = data;
+      },
+      (error) => {
+        console.log('Error loading meals', error);
+      }
+    )
+  }
+
   formatCapacity(price: number): string {
     return price + ' L';
   }
 
-  formatPrice(price: number): string {
-    return price.toFixed(2) + ' zl';
+  formatPrice(price: number | unknown): string {
+    if (typeof price === 'number') {
+      return price.toFixed(2) + ' zl';
+    } else {
+      return 'Invalid price';
+    }
   }
+
+  sortSizes = (a: any, b: any): number => {
+    return this.sizeOrder.indexOf(a.key) - this.sizeOrder.indexOf(b.key);
+  };
 }
