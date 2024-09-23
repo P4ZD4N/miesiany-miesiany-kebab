@@ -5,13 +5,13 @@ import com.p4zd4n.kebab.exceptions.BeverageNotFoundException;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.menu.BeverageResponse;
-import com.p4zd4n.kebab.responses.menu.RemoveBeverageResponse;
+import com.p4zd4n.kebab.responses.menu.RemovedBeverageResponse;
+import com.p4zd4n.kebab.responses.menu.UpdatedBeverageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,21 +70,28 @@ public class BeverageService {
         return savedBeverage;
     }
 
-    public Beverage updateBeverage(Beverage beverage, UpdatedBeverageRequest request) {
+    public UpdatedBeverageResponse updateBeverage(Beverage beverage, UpdatedBeverageRequest request) {
+
+        UpdatedBeverageResponse response = UpdatedBeverageResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated beverage with name '" + beverage.getName() + "'")
+                .build();
 
         beverage.setName(request.name());
         beverage.setCapacity(request.capacity());
         beverage.setPrice(request.price());
 
-        return saveBeverage(beverage);
+        beverageRepository.save(beverage);
+
+        return response;
     }
 
-    public RemoveBeverageResponse removeBeverage(Beverage beverage) {
+    public RemovedBeverageResponse removeBeverage(Beverage beverage) {
         log.info("Started removing beverage with name '{}'", beverage.getName());
 
         beverageRepository.delete(beverage);
 
-        RemoveBeverageResponse response = RemoveBeverageResponse.builder()
+        RemovedBeverageResponse response = RemovedBeverageResponse.builder()
                         .statusCode(HttpStatus.OK.value())
                         .message("Successfully removed beverage with name '" + beverage.getName() + "'")
                         .build();

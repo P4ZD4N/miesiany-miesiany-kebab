@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 @Builder
-public record RemoveBeverageResponse(
+public record UpdatedBeverageResponse(
         @JsonProperty("status_code") Integer statusCode,
         String message
 ) {}

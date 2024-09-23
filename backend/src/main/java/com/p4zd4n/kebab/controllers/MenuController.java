@@ -5,10 +5,7 @@ import com.p4zd4n.kebab.exceptions.InvalidCapacityException;
 import com.p4zd4n.kebab.exceptions.InvalidPriceException;
 import com.p4zd4n.kebab.requests.menu.RemovedBeverageRequest;
 import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
-import com.p4zd4n.kebab.responses.menu.AddonResponse;
-import com.p4zd4n.kebab.responses.menu.BeverageResponse;
-import com.p4zd4n.kebab.responses.menu.MealResponse;
-import com.p4zd4n.kebab.responses.menu.RemoveBeverageResponse;
+import com.p4zd4n.kebab.responses.menu.*;
 import com.p4zd4n.kebab.services.menu.AddonService;
 import com.p4zd4n.kebab.services.menu.BeverageService;
 import com.p4zd4n.kebab.services.menu.MealService;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/menu")
@@ -44,7 +40,7 @@ public class MenuController {
     }
 
     @PutMapping("/update-beverage")
-    public ResponseEntity<Beverage> updateBeverage(
+    public ResponseEntity<UpdatedBeverageResponse> updateBeverage(
             @RequestBody UpdatedBeverageRequest request
     ) {
         if (request.capacity().compareTo(BigDecimal.ZERO) <= 0) {
@@ -58,21 +54,21 @@ public class MenuController {
         log.info("Received update beverage request");
 
         Beverage existingBeverage = beverageService.findBeverageByName(request.name());
-        Beverage updatedBeverage = beverageService.updateBeverage(existingBeverage, request);
+        UpdatedBeverageResponse response = beverageService.updateBeverage(existingBeverage, request);
 
         log.info("Successfully updated beverage: {}", existingBeverage.getName());
 
-        return ResponseEntity.ok(updatedBeverage);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/remove-beverage")
-    public ResponseEntity<RemoveBeverageResponse> removeBeverage(
+    public ResponseEntity<RemovedBeverageResponse> removeBeverage(
             @RequestBody RemovedBeverageRequest request
     ) {
         log.info("Received remove beverage request");
 
         Beverage existingBeverage = beverageService.findBeverageByName(request.name());
-        RemoveBeverageResponse response = beverageService.removeBeverage(existingBeverage);
+        RemovedBeverageResponse response = beverageService.removeBeverage(existingBeverage);
 
         return ResponseEntity.ok(response);
     }
