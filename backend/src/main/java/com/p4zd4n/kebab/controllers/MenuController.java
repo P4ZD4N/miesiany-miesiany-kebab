@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -62,14 +61,11 @@ public class MenuController {
 
     @PutMapping("/update-beverage")
     public ResponseEntity<UpdatedBeverageResponse> updateBeverage(
-            @RequestBody UpdatedBeverageRequest request
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UpdatedBeverageRequest request
     ) {
-        if (request.capacity().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidCapacityException(request.capacity());
-        }
-
-        if (request.price().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidPriceException(request.price());
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
         }
 
         log.info("Received update beverage request");
@@ -84,8 +80,13 @@ public class MenuController {
 
     @DeleteMapping("/remove-beverage")
     public ResponseEntity<RemovedBeverageResponse> removeBeverage(
-            @RequestBody RemovedBeverageRequest request
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody RemovedBeverageRequest request
     ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
         log.info("Received remove beverage request");
 
         Beverage existingBeverage = beverageService.findBeverageByName(request.name());

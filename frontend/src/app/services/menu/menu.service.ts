@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Size } from '../../enums/size.enum';
+import { LangService } from '../lang/lang.service';
 
 interface BeverageResponse {
   name: string,
@@ -33,15 +34,20 @@ export class MenuService {
 
   private apiUrl = 'http://localhost:8080/api/v1/menu';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private langService: LangService) {}
 
   getBeverages(): Observable<BeverageResponse[]> {
+
     return this.http.get<BeverageResponse[]>(`${this.apiUrl}/beverages`, { withCredentials: true });
   }
 
   updateBeverage(beverage: any): Observable<any> {
 
-    return this.http.put<any>(`${this.apiUrl}/update-beverage`, beverage, { withCredentials: true }).pipe(
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.put<any>(`${this.apiUrl}/update-beverage`, beverage, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(error => {
         console.error('Error updating beverage', error);
@@ -51,9 +57,14 @@ export class MenuService {
   }
 
   removeBeverage(beverage: any): Observable<any> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
     const requestBody = { name: beverage.name };
 
-    return this.http.delete<any>(`${this.apiUrl}/remove-beverage`, { body: requestBody, withCredentials: true }).pipe(
+    return this.http.delete<any>(`${this.apiUrl}/remove-beverage`, { headers, body: requestBody, withCredentials: true }).pipe(
       map(response => response),
       catchError(error => {
         console.error('Error removing beverage', error);
