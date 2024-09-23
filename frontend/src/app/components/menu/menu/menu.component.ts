@@ -121,7 +121,7 @@ export class MenuComponent implements OnInit {
     const newCapacity = formGroup.get('capacity')!.value;
     const newPrice = formGroup.get('price')!.value;
 
-    if (newPrice < 0) {
+    if (newPrice <= 0) {
       if (this.langService.currentLang === 'pl') {
         this.beverageFormErrorMessage = 'Cena musi byc wieksza od 0!';
       } else if (this.langService.currentLang === 'en') {
@@ -130,7 +130,7 @@ export class MenuComponent implements OnInit {
       return;
     }
 
-    if (newCapacity < 0) {
+    if (newCapacity <= 0) {
       if (this.langService.currentLang === 'pl') {
         this.beverageFormErrorMessage = 'Pojemnosc musi byc wieksza od 0!';
       } else if (this.langService.currentLang === 'en') {

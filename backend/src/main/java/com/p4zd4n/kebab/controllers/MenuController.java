@@ -47,11 +47,11 @@ public class MenuController {
     public ResponseEntity<Beverage> updateBeverage(
             @RequestBody UpdatedBeverageRequest request
     ) {
-        if (request.capacity().compareTo(BigDecimal.ZERO) < 0) {
+        if (request.capacity().compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidCapacityException(request.capacity());
         }
 
-        if (request.price().compareTo(BigDecimal.ZERO) < 0) {
+        if (request.price().compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidPriceException(request.price());
         }
 
