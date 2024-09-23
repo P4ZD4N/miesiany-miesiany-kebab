@@ -58,6 +58,8 @@ public class MenuController {
         Beverage existingBeverage = beverageService.findBeverageByName(request.name());
         Beverage updatedBeverage = beverageService.updateBeverage(existingBeverage, request);
 
+        log.info("Successfully updated beverage: {}", existingBeverage.getName());
+
         return ResponseEntity.ok(updatedBeverage);
     }
 

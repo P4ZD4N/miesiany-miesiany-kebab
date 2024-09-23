@@ -43,6 +43,8 @@ public class HoursController {
         OpeningHour existingHour = hoursService.findOpeningHourByDayOfWeek(request.dayOfWeek());
         OpeningHour updatedHour = hoursService.updateOpeningHour(existingHour, request);
 
+        log.info("Successfully updated opening hour on {}", existingHour.getDayOfWeek());
+
         return ResponseEntity.ok(updatedHour);
     }
 }
