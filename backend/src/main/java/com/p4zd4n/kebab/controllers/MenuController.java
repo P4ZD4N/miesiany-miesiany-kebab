@@ -3,10 +3,12 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.exceptions.InvalidCapacityException;
 import com.p4zd4n.kebab.exceptions.InvalidPriceException;
+import com.p4zd4n.kebab.requests.menu.RemovedBeverageRequest;
 import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.menu.AddonResponse;
 import com.p4zd4n.kebab.responses.menu.BeverageResponse;
 import com.p4zd4n.kebab.responses.menu.MealResponse;
+import com.p4zd4n.kebab.responses.menu.RemoveBeverageResponse;
 import com.p4zd4n.kebab.services.menu.AddonService;
 import com.p4zd4n.kebab.services.menu.BeverageService;
 import com.p4zd4n.kebab.services.menu.MealService;
@@ -61,6 +63,20 @@ public class MenuController {
         log.info("Successfully updated beverage: {}", existingBeverage.getName());
 
         return ResponseEntity.ok(updatedBeverage);
+    }
+
+    @DeleteMapping("/remove-beverage")
+    public ResponseEntity<RemoveBeverageResponse> removeBeverage(
+            @RequestBody RemovedBeverageRequest request
+    ) {
+        log.info("Received remove beverage request");
+
+        Beverage existingBeverage = beverageService.findBeverageByName(request.name());
+        RemoveBeverageResponse response = beverageService.removeBeverage(existingBeverage);
+
+        log.info("Successfully removed beverage: {}", request.name());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/addons")

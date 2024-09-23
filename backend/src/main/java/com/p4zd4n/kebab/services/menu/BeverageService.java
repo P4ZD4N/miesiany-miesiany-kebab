@@ -5,7 +5,9 @@ import com.p4zd4n.kebab.exceptions.BeverageNotFoundException;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.menu.BeverageResponse;
+import com.p4zd4n.kebab.responses.menu.RemoveBeverageResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,7 +61,7 @@ public class BeverageService {
     }
 
     public Beverage saveBeverage(Beverage beverage) {
-        log.info("Started saving beverage with name on '{}'", beverage.getName());
+        log.info("Started saving beverage with name '{}'", beverage.getName());
 
         Beverage savedBeverage = beverageRepository.save(beverage);
 
@@ -75,5 +77,20 @@ public class BeverageService {
         beverage.setPrice(request.price());
 
         return saveBeverage(beverage);
+    }
+
+    public RemoveBeverageResponse removeBeverage(Beverage beverage) {
+        log.info("Started removing beverage with name '{}'", beverage.getName());
+
+        beverageRepository.delete(beverage);
+
+        RemoveBeverageResponse response = RemoveBeverageResponse.builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Successfully removed beverage with name '" + beverage.getName() + "'")
+                        .build();
+
+        log.info("Successfully removed beverage with name '{}'", beverage.getName());
+
+        return response;
     }
 }
