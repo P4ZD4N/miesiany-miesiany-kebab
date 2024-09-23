@@ -50,6 +50,18 @@ export class MenuService {
     )
   }
 
+  removeBeverage(beverage: any): Observable<any> {
+    const requestBody = { name: beverage.name };
+
+    return this.http.delete<any>(`${this.apiUrl}/remove-beverage`, { body: requestBody, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(error => {
+        console.error('Error removing beverage', error);
+        return of(null);
+      })
+    )
+  }
+
   getAddons(): Observable<AddonResponse[]> {
     return this.http.get<AddonResponse[]>(`${this.apiUrl}/addons`, { withCredentials: true });
   }

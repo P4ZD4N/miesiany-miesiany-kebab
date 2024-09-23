@@ -153,7 +153,7 @@ export class HoursComponent implements OnInit {
     return '';
   }
 
-  hideErrorMessages() {
+  hideErrorMessages(): void {
     this.formErrorMessage = null;
   }
 }

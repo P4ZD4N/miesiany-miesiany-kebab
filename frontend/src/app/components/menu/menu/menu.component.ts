@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuService } from '../../../services/menu/menu.service';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-menu',
@@ -29,7 +30,8 @@ export class MenuComponent implements OnInit {
     private menuService: MenuService, 
     private authenticationService: AuthenticationService, 
     private formBuilder: FormBuilder,
-    private langService: LangService
+    private langService: LangService,
+    private translate: TranslateService
   ) {
     this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
       this.hideErrorMessages();
@@ -154,7 +156,36 @@ export class MenuComponent implements OnInit {
     );
   }
 
-  hideErrorMessages() {
+  hideErrorMessages(): void {
     this.beverageFormErrorMessage = null;
+  }
+
+  removeBeverage(beverage: any): void {
+
+    const beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
+
+    const confirmationMessage = this.langService.currentLang === 'pl' 
+    ? `Czy na pewno chcesz usunac napoj ${beverageNameTranslated}?` 
+    : `Are you sure you want to remove beverage ${beverageNameTranslated}?`;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: "red",
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.menuService.removeBeverage(beverage).subscribe(() => {
+          this.loadBeverages();
+        });
+      }
+    });
   }
 }

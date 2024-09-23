@@ -71,7 +71,7 @@
                 <td *ngIf="isManager()" class="manager">
                     <button class="button-update" *ngIf="!beverage.isEditing" (click)="editBeverageRow(beverage)">{{ 'menu.update' | translate }}</button>
                     <button class="button-accept" *ngIf="beverage.isEditing" (click)="saveBeverageRow(beverage)">{{ 'menu.accept' | translate }}</button>
-                    <button class="button-remove" *ngIf="!beverage.isEditing">{{ 'menu.remove' | translate }}</button>
+                    <button class="button-remove" *ngIf="!beverage.isEditing" (click)="removeBeverage(beverage)">{{ 'menu.remove' | translate }}</button>
                 </td>
 
                 <td>{{ 'menu.beverages.' + beverage.name | translate }}</td>
