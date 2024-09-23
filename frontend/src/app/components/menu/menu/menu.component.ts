@@ -2,11 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { MenuService } from '../../../services/menu/menu.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { LangService } from '../../../services/lang/lang.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })
@@ -14,11 +18,23 @@ export class MenuComponent implements OnInit {
   beverages: any[] = [];
   addons: any[] = [];
   meals: any[] = [];
+  beverageForms: { [key: string]: FormGroup } = {};
+  beverageFormErrorMessage: string | null = null;
+  languageChangeSubscription: Subscription;
 
   sizeOrder = ['SMALL', 'MEDIUM', 'LARGE', 'XL'];
+  
 
-
-  constructor(private menuService: MenuService) {}
+  constructor(
+    private menuService: MenuService, 
+    private authenticationService: AuthenticationService, 
+    private formBuilder: FormBuilder,
+    private langService: LangService
+  ) {
+    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
+      this.hideErrorMessages();
+    })
+  }
 
   ngOnInit(): void {
     this.loadBeverages();
@@ -30,6 +46,7 @@ export class MenuComponent implements OnInit {
     this.menuService.getBeverages().subscribe(
       (data: any[]) => {
           this.beverages = data;
+          this.initializeBeverageForms(data);
       },
       (error) => {
         console.log('Error loading beverages', error);
@@ -74,4 +91,70 @@ export class MenuComponent implements OnInit {
   sortSizes = (a: any, b: any): number => {
     return this.sizeOrder.indexOf(a.key) - this.sizeOrder.indexOf(b.key);
   };
+
+  isManager(): boolean {
+    return this.authenticationService.isManager();
+  }
+
+  initializeBeverageForms(beverages: any[]): void {
+    beverages.forEach((beverage) => {
+      this.beverageForms[beverage.name] = this.formBuilder.group({
+        capacity: new FormControl(beverage.capacity),
+        price: new FormControl(beverage.price),
+      });
+    });
+  }
+
+  editBeverageRow(beverage: any): void {
+    beverage.isEditing = true;
+    const form = this.beverageForms[beverage.name];
+    form.patchValue({
+      capacity: beverage.capacity,
+      price: beverage.price,
+    });
+  }
+
+  saveBeverageRow(beverage: any): void {
+    const formGroup = this.beverageForms[beverage.name];
+    const newCapacity = formGroup.get('capacity')!.value;
+    const newPrice = formGroup.get('price')!.value;
+
+    if (newPrice < 0) {
+      if (this.langService.currentLang === 'pl') {
+        this.beverageFormErrorMessage = 'Cena musi byc wieksza od 0!';
+      } else if (this.langService.currentLang === 'en') {
+        this.beverageFormErrorMessage = 'Price must be positive!';
+      }
+      return;
+    }
+
+    if (newCapacity < 0) {
+      if (this.langService.currentLang === 'pl') {
+        this.beverageFormErrorMessage = 'Pojemnosc musi byc wieksza od 0!';
+      } else if (this.langService.currentLang === 'en') {
+        this.beverageFormErrorMessage = 'Capacity must be positive!';
+      }
+      return;
+    }
+
+    const updatedBeverage = {
+      name: beverage.name,
+      capacity: newCapacity,
+      price: newPrice
+    };
+
+    this.menuService.updateBeverage(updatedBeverage).subscribe(
+      response => {
+        if (response) {
+          this.beverageFormErrorMessage = null;
+          beverage.isEditing = false;
+          this.loadBeverages(); 
+        }
+      }
+    );
+  }
+
+  hideErrorMessages() {
+    this.beverageFormErrorMessage = null;
+  }
 }

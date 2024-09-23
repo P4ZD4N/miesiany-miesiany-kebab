@@ -39,6 +39,17 @@ export class MenuService {
     return this.http.get<BeverageResponse[]>(`${this.apiUrl}/beverages`, { withCredentials: true });
   }
 
+  updateBeverage(beverage: any): Observable<any> {
+
+    return this.http.put<any>(`${this.apiUrl}/update-beverage`, beverage, { withCredentials: true }).pipe(
+      map(response => response),
+      catchError(error => {
+        console.error('Error updating beverage', error);
+        return of(null);
+      })
+    )
+  }
+
   getAddons(): Observable<AddonResponse[]> {
     return this.http.get<AddonResponse[]>(`${this.apiUrl}/addons`, { withCredentials: true });
   }

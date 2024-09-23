@@ -56,17 +56,35 @@
     </table>
 
     <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
+    <p *ngIf="beverageFormErrorMessage" class="error">{{ beverageFormErrorMessage }}</p>
     <table class="table-beverages">
         <thead>
+            <th *ngIf="isManager()"></th>
             <th>{{ 'menu.beverages.beverage' | translate }}</th>
             <th>{{ 'menu.beverages.capacity' | translate }}</th>
             <th>{{ 'menu.beverages.price' | translate }}</th>
         </thead>
         <tbody>
-            <tr *ngFor="let beverage of beverages">
+            <tr *ngFor="let beverage of beverages"
+                [formGroup]="beverageForms[beverage.name]"
+            >
+                <td *ngIf="isManager()" class="manager">
+                    <button class="button-update" *ngIf="!beverage.isEditing" (click)="editBeverageRow(beverage)">{{ 'menu.update' | translate }}</button>
+                    <button class="button-accept" *ngIf="beverage.isEditing" (click)="saveBeverageRow(beverage)">{{ 'menu.accept' | translate }}</button>
+                    <button class="button-remove" *ngIf="!beverage.isEditing">{{ 'menu.remove' | translate }}</button>
+                </td>
+
                 <td>{{ 'menu.beverages.' + beverage.name | translate }}</td>
-                <td>{{ formatCapacity(beverage.capacity) }}</td>
-                <td>{{ formatPrice(beverage.price) }}</td>
+
+                <td *ngIf="!beverage.isEditing">{{ formatCapacity(beverage.capacity) }}</td>
+                <td *ngIf="beverage.isEditing">
+                    <input type="number" formControlName="capacity" />
+                </td>
+
+                <td *ngIf="!beverage.isEditing">{{ formatPrice(beverage.price) }}</td>
+                <td *ngIf="beverage.isEditing">
+                    <input type="number" formControlName="price" step="0.01" />
+                </td>
             </tr>
         </tbody>
     </table>

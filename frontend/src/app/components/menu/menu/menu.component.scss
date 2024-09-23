@@ -75,6 +75,53 @@ td {
     white-space: wrap;
 }
 
+.button-update, .button-accept, .button-remove {
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.button-update {
+    color: rgb(0, 119, 255);
+
+    &:hover {
+        color: rgb(0, 59, 126);
+    }
+}
+
+.button-accept {
+    color: rgb(0, 255, 85);
+
+    &:hover {
+        color: rgb(0, 102, 34);
+    }
+}
+
+.button-remove {
+    color: rgb(255, 0, 0);
+
+    &:hover {
+        color: #b90909;
+    }
+}
+.manager {
+    max-width: 200px;
+}
+
+.error {
+    margin-top: 0;
+    color: rgb(126, 15, 15);
+}
+
+input {
+    max-width: 100px;
+    color: white;
+    text-align: center;
+    background: inherit;
+    border: 0;
+    border-bottom: 1px solid white;
+}
+
 @media (max-width: 1280px) {
     table {
         font-size: 20px;

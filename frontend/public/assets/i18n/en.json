@@ -127,6 +127,9 @@
                 "Onion": "Onion",
                 "Fries": "Fries"
             }
-        }
+        },
+        "update": "Update",
+        "accept": "Accept",
+        "remove": "Remove"
     }
 }

@@ -127,7 +127,9 @@
                 "Onion": "Cebula",
                 "Fries": "Frytki"
             }
-            
-        }
+        },
+        "update": "Aktualizuj",
+        "accept": "Akceptuj",
+        "remove": "Usun"  
     }
 }
