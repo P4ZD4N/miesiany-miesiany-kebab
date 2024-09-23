@@ -74,8 +74,6 @@ public class MenuController {
         Beverage existingBeverage = beverageService.findBeverageByName(request.name());
         RemoveBeverageResponse response = beverageService.removeBeverage(existingBeverage);
 
-        log.info("Successfully removed beverage: {}", request.name());
-
         return ResponseEntity.ok(response);
     }
 
