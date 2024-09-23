@@ -3,8 +3,10 @@ package com.p4zd4n.kebab.services.menu;
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.exceptions.BeverageNotFoundException;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
+import com.p4zd4n.kebab.requests.menu.NewBeverageRequest;
 import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.menu.BeverageResponse;
+import com.p4zd4n.kebab.responses.menu.NewBeverageResponse;
 import com.p4zd4n.kebab.responses.menu.RemovedBeverageResponse;
 import com.p4zd4n.kebab.responses.menu.UpdatedBeverageResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -60,14 +62,24 @@ public class BeverageService {
         return beverage;
     }
 
-    public Beverage saveBeverage(Beverage beverage) {
-        log.info("Started saving beverage with name '{}'", beverage.getName());
+    public NewBeverageResponse addBeverage(NewBeverageRequest request) {
 
-        Beverage savedBeverage = beverageRepository.save(beverage);
+        log.info("Started adding beverage with name '{}'", request.name());
 
-        log.info("Successfully saved beverage with name '{}'", beverage.getName());
+        Beverage newBeverage = Beverage.builder()
+                .name(request.name())
+                .capacity(request.capacity())
+                .price(request.price())
+                .build();
+        Beverage savedBeverage = beverageRepository.save(newBeverage);
+        NewBeverageResponse response = NewBeverageResponse.builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Successfully added new beverage with name '" + savedBeverage.getName() + "'")
+                        .build();
 
-        return savedBeverage;
+        log.info("Successfully added new beverage with name '{}'", savedBeverage.getName());
+
+        return response;
     }
 
     public UpdatedBeverageResponse updateBeverage(Beverage beverage, UpdatedBeverageRequest request) {

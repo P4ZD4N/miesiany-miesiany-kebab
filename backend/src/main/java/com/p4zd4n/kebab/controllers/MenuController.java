@@ -1,14 +1,17 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.Beverage;
+import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.exceptions.InvalidCapacityException;
 import com.p4zd4n.kebab.exceptions.InvalidPriceException;
+import com.p4zd4n.kebab.requests.menu.NewBeverageRequest;
 import com.p4zd4n.kebab.requests.menu.RemovedBeverageRequest;
 import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.menu.*;
 import com.p4zd4n.kebab.services.menu.AddonService;
 import com.p4zd4n.kebab.services.menu.BeverageService;
 import com.p4zd4n.kebab.services.menu.MealService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +40,24 @@ public class MenuController {
         log.info("Received get beverages request");
 
         return ResponseEntity.ok(beverageService.getBeverages());
+    }
+
+    @PostMapping("/add-beverage")
+    public ResponseEntity<NewBeverageResponse> addBeverage(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody NewBeverageRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received add beverage request");
+
+        NewBeverageResponse response = beverageService.addBeverage(request);
+
+        log.info("Successfully added new beverage: {}", request.name());
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update-beverage")
