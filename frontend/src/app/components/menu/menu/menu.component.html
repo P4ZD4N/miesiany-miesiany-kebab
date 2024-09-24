@@ -57,10 +57,10 @@
 
     <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
     <button class="btn btn-success" *ngIf="isManager() && !isEditing" (click)="showAddTable()">{{ 'menu.beverages.button_add' | translate }}</button>
-    <div *ngIf="errorMessages['name']" class="error">{{ errorMessages['name'] }}</div>
-    <div *ngIf="errorMessages['capacity']" class="error">{{ errorMessages['capacity'] }}</div>
-    <div *ngIf="errorMessages['price']" class="error">{{ errorMessages['price'] }}</div>
-    <div *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</div>
+    <p *ngIf="errorMessages['name']" class="error">{{ errorMessages['name'] }}</p>
+    <p *ngIf="errorMessages['capacity']" class="error">{{ errorMessages['capacity'] }}</p>
+    <p *ngIf="errorMessages['price']" class="error">{{ errorMessages['price'] }}</p>
+    <p *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</p>
     <table class="add-beverage-table" *ngIf="isAdding">
         <tr>
             <td>

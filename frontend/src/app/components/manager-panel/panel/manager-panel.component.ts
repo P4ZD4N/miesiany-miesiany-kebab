@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { Router } from '@angular/router';
+import { LangService } from '../../../services/lang/lang.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-manager-panel',
@@ -14,6 +16,7 @@ import { Router } from '@angular/router';
 export class ManagerPanelComponent {
 
   constructor(
+    private langService: LangService,
     private authenticationService: AuthenticationService,
     private router: Router
   ) {}
@@ -26,6 +29,18 @@ export class ManagerPanelComponent {
     this.authenticationService.logout().subscribe({
       next: () => {
         this.router.navigate(['/']);
+
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' 
+          ? `Wylogowano pomyslnie!` 
+          : `Successfully logged out!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
       }
     });
   }

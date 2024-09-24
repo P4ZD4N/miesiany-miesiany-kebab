@@ -110,7 +110,7 @@ td {
 }
 
 .error {
-    font-size: 20px;
+    font-size: 24px;
     margin-top: 1rem;
     color: rgb(126, 15, 15);
 }
@@ -132,6 +132,10 @@ input {
     table {
         font-size: 20px;
         width: 80%;
+    }
+
+    .error {
+        font-size: 20px;
     }
 }
 

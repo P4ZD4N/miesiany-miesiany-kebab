@@ -8,13 +8,14 @@ import { Subscription } from 'rxjs';
 import { LangService } from '../../../services/lang/lang.service';
 import { AuthenticationRequest } from '../../../requests/requests';
 import { AuthenticationResponse } from '../../../responses/responses';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-authentication',
   standalone: true,
   imports: [CommonModule, TranslateModule, FormsModule],
   templateUrl: './authentication.component.html',
-  styleUrls: ['./authentication.component.scss'] // Fixed typo here: should be styleUrls
+  styleUrls: ['./authentication.component.scss']
 })
 export class AuthenticationComponent {
   email: string = '';
@@ -33,6 +34,20 @@ export class AuthenticationComponent {
 
     this.authService.authenticate(authData).subscribe({
       next: (response) => {
+        this.hideErrorMessages();
+
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' 
+          ? `Zalogowano pomyslnie uzytkownika z emailem ${authData.email}!` 
+          : `Successfully logged in user with ${authData.email} email!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
         this.handleUpdateResponse(response);
         this.router.navigate(['/']);
       },
@@ -42,7 +57,7 @@ export class AuthenticationComponent {
 
   handleUpdateResponse(response: AuthenticationResponse) {
     console.log('Login successful', response);
-    this.errorMessages = {};
+    this.hideErrorMessages();
   }
   
   handleError(error: any) {
