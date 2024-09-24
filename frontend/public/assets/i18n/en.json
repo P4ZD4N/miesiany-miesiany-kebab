@@ -94,6 +94,7 @@
         },
         "beverages": {
             "paragraph_beverages": "Beverages",
+            "button_add": "Add beverage",
             "beverage": "Beverage",
             "capacity": "Capacity",
             "price": "Price",
@@ -129,6 +130,7 @@
             }
         },
         "update": "Update",
+        "cancel": "Cancel",
         "accept": "Accept",
         "remove": "Remove"
     }

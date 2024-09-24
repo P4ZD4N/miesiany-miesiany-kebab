@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Size } from '../../enums/size.enum';
 import { LangService } from '../lang/lang.service';
 
@@ -39,6 +39,18 @@ export class MenuService {
   getBeverages(): Observable<BeverageResponse[]> {
 
     return this.http.get<BeverageResponse[]>(`${this.apiUrl}/beverages`, { withCredentials: true });
+  }
+
+  addBeverage(beverage: any): Observable<any> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.post<any>(`${this.apiUrl}/add-beverage`, beverage, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
   }
 
   updateBeverage(beverage: any): Observable<any> {
@@ -80,4 +92,17 @@ export class MenuService {
   getMeals(): Observable<MealResponse[]> {
     return this.http.get<MealResponse[]>(`${this.apiUrl}/meals`, { withCredentials: true });
   } 
+
+  handleError(error: HttpErrorResponse) {
+
+    let errorMessages: { [key: string]: string } = {};
+
+    if (error.error && typeof error.error === 'object') {
+      errorMessages = error.error;
+    } else {
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
+    }
+
+    return throwError(() => ({ errorMessages }));
+  }
 }

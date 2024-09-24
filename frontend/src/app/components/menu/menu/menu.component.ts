@@ -3,7 +3,7 @@ import { MenuService } from '../../../services/menu/menu.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ReactiveFormsModule],
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule, FormsModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })
@@ -22,6 +22,13 @@ export class MenuComponent implements OnInit {
   beverageForms: { [key: string]: FormGroup } = {};
   beverageFormErrorMessage: string | null = null;
   languageChangeSubscription: Subscription;
+  newBeverage: { name: string; capacity: number; price: number } = {
+    name: '',
+    capacity: 0,
+    price: 0
+  };  
+  errorMessages: { [key: string]: string } = {};
+  isAdding = false;
 
   sizeOrder = ['SMALL', 'MEDIUM', 'LARGE', 'XL'];
   
@@ -156,10 +163,6 @@ export class MenuComponent implements OnInit {
     );
   }
 
-  hideErrorMessages(): void {
-    this.beverageFormErrorMessage = null;
-  }
-
   removeBeverage(beverage: any): void {
 
     const beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
@@ -187,5 +190,57 @@ export class MenuComponent implements OnInit {
         });
       }
     });
+  }
+
+  showAddTable(): void {
+    this.isAdding = true;
+  }
+
+  hideAddTable(): void {
+    this.isAdding = false;
+  }
+ 
+  addBeverage(): void {
+  
+      this.menuService.addBeverage(this.newBeverage).subscribe({
+        next: response => {
+          Swal.fire({
+
+            text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano napoj '${this.newBeverage.name}'!` : `Successfully added beverage '${this.newBeverage.name}'!`,
+            icon: 'success',
+            iconColor: "green",
+            confirmButtonColor: 'green',
+            background: 'black',
+            color: 'white',
+            confirmButtonText: 'Ok',
+          });
+
+          this.beverageFormErrorMessage = null;
+          this.loadBeverages();
+          this.resetNewBeverage(); 
+          this.hideAddTable();
+          this.hideErrorMessages();
+      },
+      error: error => {
+          this.handleError(error); 
+      }
+    });
+  }
+
+
+  resetNewBeverage(): void {
+      this.newBeverage = { name: '', capacity: 0, price: 0 };
+  }
+
+  handleError(error: any) {
+    if (error.errorMessages) {
+      this.errorMessages = error.errorMessages;
+    } else {
+      this.errorMessages = { general: 'An unexpected error occurred' };
+    }
+  }
+
+  hideErrorMessages(): void {
+    this.errorMessages = {};
   }
 }

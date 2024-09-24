@@ -94,6 +94,7 @@
         },
         "beverages": {
             "paragraph_beverages": "Napoje",
+            "button_add": "Dodaj napoj",
             "beverage": "Napoj",
             "capacity": "Pojemnosc",
             "price": "Cena",
@@ -129,6 +130,7 @@
             }
         },
         "update": "Aktualizuj",
+        "cancel": "Anuluj",
         "accept": "Akceptuj",
         "remove": "Usun"  
     }

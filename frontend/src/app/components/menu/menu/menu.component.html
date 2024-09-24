@@ -56,7 +56,27 @@
     </table>
 
     <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
-    <p *ngIf="beverageFormErrorMessage" class="error">{{ beverageFormErrorMessage }}</p>
+    <button class="btn btn-success" *ngIf="isManager()" (click)="showAddTable()">{{ 'menu.beverages.button_add' | translate }}</button>
+    <div *ngIf="errorMessages['name']" class="error">{{ errorMessages['name'] }}</div>
+    <div *ngIf="errorMessages['capacity']" class="error">{{ errorMessages['capacity'] }}</div>
+    <div *ngIf="errorMessages['price']" class="error">{{ errorMessages['price'] }}</div>
+    <table class="add-beverage-table" *ngIf="isAdding">
+        <tr>
+            <td>
+                <button class="button-accept" (click)="addBeverage()">{{ 'menu.accept' | translate }}</button>
+                <button class="button-cancel" (click)="hideAddTable()">{{ 'menu.cancel' | translate }}</button>
+            </td>
+            <td>
+                <input type="text" placeholder="{{ 'menu.beverages.beverage' | translate }}"  [(ngModel)]="newBeverage.name" />
+            </td>
+            <td>
+                <input type="number" placeholder="{{ 'menu.beverages.capacity' | translate }}" [(ngModel)]="newBeverage.capacity" />
+            </td>
+            <td>
+                <input type="number" placeholder="{{ 'menu.beverages.price' | translate }}" [(ngModel)]="newBeverage.price" step="0.01" />
+            </td>
+        </tr>
+    </table>
     <table class="table-beverages">
         <thead>
             <th *ngIf="isManager()"></th>
