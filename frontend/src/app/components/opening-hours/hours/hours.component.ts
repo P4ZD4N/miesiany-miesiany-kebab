@@ -6,6 +6,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
+import { OpeningHoursResponse } from '../../../responses/responses';
 
 @Component({
   selector: 'app-hours',
@@ -16,7 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class HoursComponent implements OnInit {
 
-  openingHours: any[] = [];
+  openingHours: OpeningHoursResponse[] = [];
   hourForms: { [key: string]: FormGroup } = {};
   formErrorMessage: string | null = null;
   languageChangeSubscription: Subscription;
@@ -40,17 +41,22 @@ export class HoursComponent implements OnInit {
     return this.authenticationService.isManager();
   }
 
-  loadOpeningHours(): void {
+   loadOpeningHours(): void {
     this.openingHoursService.getOpeningHours().subscribe(
-      (data: any[]) => {
-          this.openingHours = data;
-          this.initializeForms(data);
+      (data: OpeningHoursResponse[]) => {
+        this.openingHours = data;
+        this.initializeForms(data);
       },
       (error) => {
-        console.log('Error loading opening hours', error);
+        console.error('Error loading opening hours', error);
+        this.formErrorMessage = this.langService.currentLang === 'pl' ? 
+          'Błąd wczytywania godzin otwarcia!' : 
+          'Error loading opening hours!';
       }
-    )
+    );
   }
+
+
 
   formatTime(time: string): string {
     const hours = time.slice(0, 2);
@@ -93,7 +99,7 @@ export class HoursComponent implements OnInit {
     return `${hours}:${minutes}`;
   }
 
-  initializeForms(hours: any[]): void {
+  initializeForms(hours: OpeningHoursResponse[]): void {
     hours.forEach((hour) => {
       this.hourForms[hour.day_of_week] = this.formBuilder.group({
         opening_time: new FormControl(hour.opening_time),
@@ -102,7 +108,7 @@ export class HoursComponent implements OnInit {
     });
   }
 
-  editRow(hour: any): void {
+  editRow(hour: OpeningHoursResponse): void {
     hour.isEditing = true;
 
     const form = this.hourForms[hour.day_of_week];
@@ -112,7 +118,7 @@ export class HoursComponent implements OnInit {
     });
   }
 
-  saveRow(hour: any): void {
+  saveRow(hour: OpeningHoursResponse): void {
     const formGroup = this.hourForms[hour.day_of_week];
     const newOpeningTime = formGroup.get('opening_time')!.value;
     const newClosingTime = formGroup.get('closing_time')!.value;
@@ -143,7 +149,7 @@ export class HoursComponent implements OnInit {
     );
   }
 
-  getRowClass(hour: any): string {
+  getRowClass(hour: OpeningHoursResponse): string {
     const currentDay = this.getCurrentDayOfWeek();
     
     if (currentDay === hour.day_of_week.toUpperCase()) {

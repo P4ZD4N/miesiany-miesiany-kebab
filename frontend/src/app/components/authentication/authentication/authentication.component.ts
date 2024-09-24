@@ -5,15 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { LangService } from '../../../services/lang/lang.service';
+import { AuthenticationRequest } from '../../../requests/requests';
+import { AuthenticationResponse } from '../../../responses/responses';
 
 @Component({
   selector: 'app-authentication',
   standalone: true,
   imports: [CommonModule, TranslateModule, FormsModule],
   templateUrl: './authentication.component.html',
-  styleUrl: './authentication.component.scss'
+  styleUrls: ['./authentication.component.scss'] // Fixed typo here: should be styleUrls
 })
 export class AuthenticationComponent {
   email: string = '';
@@ -24,22 +25,22 @@ export class AuthenticationComponent {
   constructor(private authService: AuthenticationService, private router: Router, private langService: LangService) {
     this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
       this.hideErrorMessages();
-    })
+    });
   }
   
   authenticate() {
+    const authData: AuthenticationRequest = { email: this.email, password: this.password };
 
-    this.authService.authenticate(this.email, this.password)
-      .subscribe({
-        next: (response) => {
-          this.handleUpdateResponse(response);
-          this.router.navigate(['/']);
-        },
-        error: (error) => this.handleError(error)
-      });
+    this.authService.authenticate(authData).subscribe({
+      next: (response) => {
+        this.handleUpdateResponse(response);
+        this.router.navigate(['/']);
+      },
+      error: (error) => this.handleError(error)
+    });
   }
 
-  handleUpdateResponse(response: any) {
+  handleUpdateResponse(response: AuthenticationResponse) {
     console.log('Login successful', response);
     this.errorMessages = {};
   }
@@ -50,7 +51,7 @@ export class AuthenticationComponent {
     if (error.errorMessages) {
       this.errorMessages = error.errorMessages;
     } else {
-      this.errorMessages = { general: 'An unexpected error occurred' };
+      this.errorMessages = { general: this.langService.currentLang === 'pl' ? 'Wystąpił niespodziewany błąd' : 'An unexpected error occurred' };
     }
   }
 

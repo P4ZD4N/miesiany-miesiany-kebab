@@ -6,7 +6,9 @@ import com.p4zd4n.kebab.exceptions.OpeningHourNotFoundException;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
+import com.p4zd4n.kebab.responses.hours.UpdatedHourResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -80,11 +82,18 @@ public class HoursService {
         return savedOpeningHour;
     }
 
-    public OpeningHour updateOpeningHour(OpeningHour openingHour, UpdatedHourRequest request) {
+    public UpdatedHourResponse updateOpeningHour(OpeningHour openingHour, UpdatedHourRequest request) {
+
+        UpdatedHourResponse response = UpdatedHourResponse.builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Successfully updated opening hours on " + request.dayOfWeek())
+                        .build();
 
         openingHour.setOpeningTime(request.openingTime());
         openingHour.setClosingTime(request.closingTime());
 
-        return saveOpeningHour(openingHour);
+        saveOpeningHour(openingHour);
+
+        return response;
     }
 }

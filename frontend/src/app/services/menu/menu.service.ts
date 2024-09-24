@@ -3,30 +3,9 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Size } from '../../enums/size.enum';
 import { LangService } from '../lang/lang.service';
+import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest } from '../../requests/requests';
+import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse } from '../../responses/responses';
 
-interface BeverageResponse {
-  id: number,
-  name: string,
-  capacity: number,
-  price: number;
-}
-
-interface AddonResponse {
-  name: string,
-  price: number;
-}
-
-interface SimpleMealIngredient {
-  id: number;
-  name: string;
-  ingredientType: string;
-}
-
-interface MealResponse {
-  name: string;
-  prices: { [key in Size]: number };
-  ingredients: SimpleMealIngredient[];
-}
 
 @Injectable({
   providedIn: 'root'
@@ -42,30 +21,30 @@ export class MenuService {
     return this.http.get<BeverageResponse[]>(`${this.apiUrl}/beverages`, { withCredentials: true });
   }
 
-  addBeverage(beverage: any): Observable<any> {
+  addBeverage(beverage: NewBeverageRequest): Observable<NewBeverageResponse> {
 
     const headers = new HttpHeaders({
       'Accept-Language': this.langService.currentLang
     });
 
-    return this.http.post<any>(`${this.apiUrl}/add-beverage`, beverage, { headers, withCredentials: true }).pipe(
+    return this.http.post<NewBeverageResponse>(`${this.apiUrl}/add-beverage`, beverage, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )
   }
 
-  updateBeverage(beverage: any): Observable<any> {
+  updateBeverage(beverage: UpdatedBeverageRequest): Observable<UpdatedBeverageResponse> {
     const headers = new HttpHeaders({
       'Accept-Language': this.langService.currentLang
     });
 
-    return this.http.put<any>(`${this.apiUrl}/update-beverage`, beverage, { headers, withCredentials: true }).pipe(
+    return this.http.put<UpdatedBeverageResponse>(`${this.apiUrl}/update-beverage`, beverage, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )
   }
 
-  removeBeverage(beverage: any): Observable<any> {
+  removeBeverage(beverage: RemovedBeverageRequest): Observable<RemovedBeverageResponse> {
 
     const headers = new HttpHeaders({
       'Accept-Language': this.langService.currentLang
@@ -73,12 +52,9 @@ export class MenuService {
 
     const requestBody = { name: beverage.name, capacity: beverage.capacity };
 
-    return this.http.delete<any>(`${this.apiUrl}/remove-beverage`, { headers, body: requestBody, withCredentials: true }).pipe(
+    return this.http.delete<RemovedBeverageResponse>(`${this.apiUrl}/remove-beverage`, { headers, body: requestBody, withCredentials: true }).pipe(
       map(response => response),
-      catchError(error => {
-        console.error('Error removing beverage', error);
-        return of(null);
-      })
+      catchError(this.handleError)
     )
   }
 

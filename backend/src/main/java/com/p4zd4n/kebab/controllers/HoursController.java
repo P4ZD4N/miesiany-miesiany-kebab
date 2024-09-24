@@ -5,6 +5,7 @@ import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.exceptions.InvalidClosingTimeException;
 import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
+import com.p4zd4n.kebab.responses.hours.UpdatedHourResponse;
 import com.p4zd4n.kebab.services.hours.HoursService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class HoursController {
     }
 
     @PutMapping("/update-opening-hour")
-    public ResponseEntity<OpeningHour> updateOpeningHour(
+    public ResponseEntity<UpdatedHourResponse> updateOpeningHour(
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedHourRequest request
     ) {
@@ -44,10 +45,10 @@ public class HoursController {
         log.info("Received update opening hour request");
 
         OpeningHour existingHour = hoursService.findOpeningHourByDayOfWeek(request.dayOfWeek());
-        OpeningHour updatedHour = hoursService.updateOpeningHour(existingHour, request);
+        UpdatedHourResponse response = hoursService.updateOpeningHour(existingHour, request);
 
         log.info("Successfully updated opening hour on {}", existingHour.getDayOfWeek());
 
-        return ResponseEntity.ok(updatedHour);
+        return ResponseEntity.ok(response);
     }
 }
