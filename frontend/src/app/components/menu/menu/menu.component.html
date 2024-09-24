@@ -95,7 +95,10 @@
                     <button class="button-remove" *ngIf="!beverage.isEditing" (click)="removeBeverage(beverage)">{{ 'menu.remove' | translate }}</button>
                 </td>
 
-                <td>{{ 'menu.beverages.' + beverage.name | translate }}</td>
+                <td *ngIf="isBeverageTranslationAvailable(beverage.name); else defaultName">{{ 'menu.beverages.' + beverage.name | translate }}</td>
+                <ng-template #defaultName>
+                    <td>{{ beverage.name }}</td>
+                </ng-template>
 
                 <td *ngIf="!beverage.isEditing">{{ formatCapacity(beverage.capacity) }}</td>
                 <td *ngIf="beverage.isEditing">

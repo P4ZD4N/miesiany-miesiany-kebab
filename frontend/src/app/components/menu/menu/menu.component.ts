@@ -20,17 +20,15 @@ export class MenuComponent implements OnInit {
   addons: any[] = [];
   meals: any[] = [];
   beverageForms: { [key: string]: FormGroup } = {};
-  beverageFormErrorMessage: string | null = null;
+  errorMessages: { [key: string]: string } = {};
   languageChangeSubscription: Subscription;
+  isAdding = false;
+  isEditing = false;
   newBeverage: { name: string; capacity: number; price: number } = {
     name: '',
     capacity: 0,
     price: 0
   };  
-  errorMessages: { [key: string]: string } = {};
-  isAdding = false;
-  isEditing = false;
-
   sizeOrder = ['SMALL', 'MEDIUM', 'LARGE', 'XL'];
   
 
@@ -84,26 +82,6 @@ export class MenuComponent implements OnInit {
         console.log('Error loading meals', error);
       }
     )
-  }
-
-  formatCapacity(price: number): string {
-    return price + ' L';
-  }
-
-  formatPrice(price: number | unknown): string {
-    if (typeof price === 'number') {
-      return price.toFixed(2) + ' zl';
-    } else {
-      return 'Invalid price';
-    }
-  }
-
-  sortSizes = (a: any, b: any): number => {
-    return this.sizeOrder.indexOf(a.key) - this.sizeOrder.indexOf(b.key);
-  };
-
-  isManager(): boolean {
-    return this.authenticationService.isManager();
   }
 
   initializeBeverageForms(beverages: any[]): void {
@@ -239,7 +217,6 @@ export class MenuComponent implements OnInit {
             confirmButtonText: 'Ok',
           });
 
-          this.beverageFormErrorMessage = null;
           this.loadBeverages();
           this.resetNewBeverage(); 
           this.hideAddTable();
@@ -250,7 +227,6 @@ export class MenuComponent implements OnInit {
       }
     });
   }
-
 
   resetNewBeverage(): void {
       this.newBeverage = { name: '', capacity: 0, price: 0 };
@@ -268,4 +244,28 @@ export class MenuComponent implements OnInit {
     this.errorMessages = {};
   }
 
+  formatCapacity(price: number): string {
+    return price + ' L';
+  }
+
+  formatPrice(price: number | unknown): string {
+    if (typeof price === 'number') {
+      return price.toFixed(2) + ' zl';
+    } else {
+      return 'Invalid price';
+    }
+  }
+
+  sortSizes = (a: any, b: any): number => {
+    return this.sizeOrder.indexOf(a.key) - this.sizeOrder.indexOf(b.key);
+  };
+
+  isManager(): boolean {
+    return this.authenticationService.isManager();
+  }
+
+  isBeverageTranslationAvailable(beverageName: string): boolean {
+    const translatedName = this.translate.instant('menu.beverages.' + beverageName);
+    return translatedName !== 'menu.beverages.' + beverageName;
+}
 }
