@@ -5,6 +5,7 @@ import { Size } from '../../enums/size.enum';
 import { LangService } from '../lang/lang.service';
 
 interface BeverageResponse {
+  id: number,
   name: string,
   capacity: number,
   price: number;
@@ -70,7 +71,7 @@ export class MenuService {
       'Accept-Language': this.langService.currentLang
     });
 
-    const requestBody = { name: beverage.name };
+    const requestBody = { name: beverage.name, capacity: beverage.capacity };
 
     return this.http.delete<any>(`${this.apiUrl}/remove-beverage`, { headers, body: requestBody, withCredentials: true }).pipe(
       map(response => response),

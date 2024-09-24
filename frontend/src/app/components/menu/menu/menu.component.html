@@ -60,6 +60,7 @@
     <div *ngIf="errorMessages['name']" class="error">{{ errorMessages['name'] }}</div>
     <div *ngIf="errorMessages['capacity']" class="error">{{ errorMessages['capacity'] }}</div>
     <div *ngIf="errorMessages['price']" class="error">{{ errorMessages['price'] }}</div>
+    <div *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</div>
     <table class="add-beverage-table" *ngIf="isAdding">
         <tr>
             <td>
@@ -70,10 +71,10 @@
                 <input type="text" placeholder="{{ 'menu.beverages.beverage' | translate }}"  [(ngModel)]="newBeverage.name" />
             </td>
             <td>
-                <input type="number" placeholder="{{ 'menu.beverages.capacity' | translate }}" [(ngModel)]="newBeverage.capacity" />
+                <input type="number" placeholder="{{ 'menu.beverages.capacity' | translate }}" [(ngModel)]="newBeverage.capacity" step="0.05" /> L
             </td>
             <td>
-                <input type="number" placeholder="{{ 'menu.beverages.price' | translate }}" [(ngModel)]="newBeverage.price" step="0.01" />
+                <input type="number" placeholder="{{ 'menu.beverages.price' | translate }}" [(ngModel)]="newBeverage.price" /> zl
             </td>
         </tr>
     </table>

@@ -70,7 +70,7 @@ public class MenuController {
 
         log.info("Received update beverage request");
 
-        Beverage existingBeverage = beverageService.findBeverageByName(request.name());
+        Beverage existingBeverage = beverageService.findBeverageByNameAndCapacity(request.name(), request.oldCapacity());
         UpdatedBeverageResponse response = beverageService.updateBeverage(existingBeverage, request);
 
         log.info("Successfully updated beverage: {}", existingBeverage.getName());
@@ -89,7 +89,7 @@ public class MenuController {
 
         log.info("Received remove beverage request");
 
-        Beverage existingBeverage = beverageService.findBeverageByName(request.name());
+        Beverage existingBeverage = beverageService.findBeverageByNameAndCapacity(request.name(), request.capacity());
         RemovedBeverageResponse response = beverageService.removeBeverage(existingBeverage);
 
         return ResponseEntity.ok(response);

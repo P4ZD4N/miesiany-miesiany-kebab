@@ -155,10 +155,10 @@ public class GlobalExceptionHandler {
         log.error("Attempted request to {} with not existing closing hour on {}", request.getRequestURI(), exception.getDayOfWeek());
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.NOT_FOUND)
                 .body(ExceptionResponse
                         .builder()
-                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .statusCode(HttpStatus.NOT_FOUND.value())
                         .message(exception.getMessage())
                         .build());
     }
@@ -203,11 +203,29 @@ public class GlobalExceptionHandler {
         log.error("Attempted request to {} with not existing beverage: {}", request.getRequestURI(), exception.getBeverageName());
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.NOT_FOUND)
                 .body(ExceptionResponse
                         .builder()
-                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .statusCode(HttpStatus.NOT_FOUND.value())
                         .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(BeverageAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleBeverageAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing beverage", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("beverage.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
                         .build());
     }
 }

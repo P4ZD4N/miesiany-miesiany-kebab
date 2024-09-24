@@ -115,7 +115,8 @@ export class MenuComponent implements OnInit {
 
     const updatedBeverage = {
       name: beverage.name,
-      capacity: newCapacity,
+      old_capacity: beverage.capacity,
+      new_capacity: newCapacity,
       price: newPrice
     };
 
@@ -145,7 +146,11 @@ export class MenuComponent implements OnInit {
 
   removeBeverage(beverage: any): void {
 
-    const beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
+    let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
+
+    if (!this.isBeverageTranslationAvailable(beverageNameTranslated)) {
+      beverageNameTranslated = beverage.name;
+    }
 
     const confirmationMessage = this.langService.currentLang === 'pl' 
     ? `Czy na pewno chcesz usunac napoj ${beverageNameTranslated}?` 

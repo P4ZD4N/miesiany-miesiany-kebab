@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.services.menu;
 
 import com.p4zd4n.kebab.entities.Beverage;
+import com.p4zd4n.kebab.exceptions.BeverageAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.BeverageNotFoundException;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.requests.menu.NewBeverageRequest;
@@ -13,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,19 +53,34 @@ public class BeverageService {
                 .build();
     }
 
-    public Beverage findBeverageByName(String name) {
+    public Beverage findBeverageByNameAndCapacity(String name, BigDecimal capacity) {
 
-        log.info("Started finding beverage with name '{}'", name);
+        log.info("Started finding beverage with name '{}' and capacity '{}'", name, capacity);
 
-        Beverage beverage = beverageRepository.findByName(name)
+        Beverage beverage = beverageRepository.findByNameAndCapacity(name, capacity)
                 .orElseThrow(() -> new BeverageNotFoundException(name));
 
-        log.info("Successfully found beverage with name '{}'", name);
+        log.info("Successfully found beverage with name '{}' and capacity '{}'", name, capacity);
 
         return beverage;
     }
 
     public NewBeverageResponse addBeverage(NewBeverageRequest request) {
+
+        Optional<List<Beverage>> beverages = beverageRepository.findByCapacity(request.capacity());
+
+        if (beverages.isPresent() && !beverages.get().isEmpty()) {
+
+            boolean exists = beverages.get().stream()
+                    .anyMatch(beverage ->
+                            beverage.getName().equalsIgnoreCase(request.name()) &&
+                            beverage.getCapacity().compareTo(request.capacity()) == 0
+                    );
+
+            if (exists) {
+                throw new BeverageAlreadyExistsException();
+            }
+        }
 
         log.info("Started adding beverage with name '{}'", request.name());
 
@@ -84,13 +102,29 @@ public class BeverageService {
 
     public UpdatedBeverageResponse updateBeverage(Beverage beverage, UpdatedBeverageRequest request) {
 
+        Optional<List<Beverage>> beverages = beverageRepository.findByCapacity(request.newCapacity());
+
+        if (beverages.isPresent() && !beverages.get().isEmpty()) {
+
+            boolean exists = beverages.get().stream()
+                    .anyMatch(bev ->
+                            bev.getName().equalsIgnoreCase(request.name()) &&
+                            bev.getCapacity().compareTo(request.newCapacity()) == 0 &&
+                            !bev.getId().equals(beverage.getId())
+                    );
+
+            if (exists) {
+                throw new BeverageAlreadyExistsException();
+            }
+        }
+
         UpdatedBeverageResponse response = UpdatedBeverageResponse.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully updated beverage with name '" + beverage.getName() + "'")
                 .build();
 
         beverage.setName(request.name());
-        beverage.setCapacity(request.capacity());
+        beverage.setCapacity(request.newCapacity());
         beverage.setPrice(request.price());
 
         beverageRepository.save(beverage);
