@@ -29,6 +29,7 @@ export class MenuComponent implements OnInit {
   };  
   errorMessages: { [key: string]: string } = {};
   isAdding = false;
+  isEditing = false;
 
   sizeOrder = ['SMALL', 'MEDIUM', 'LARGE', 'XL'];
   
@@ -115,7 +116,12 @@ export class MenuComponent implements OnInit {
   }
 
   editBeverageRow(beverage: any): void {
+    if (this.isEditing) {
+      return; 
+  }
+    this.isEditing = true;
     beverage.isEditing = true;
+    this.isAdding = false;
     const form = this.beverageForms[beverage.name];
     form.patchValue({
       capacity: beverage.capacity,
@@ -128,39 +134,33 @@ export class MenuComponent implements OnInit {
     const newCapacity = formGroup.get('capacity')!.value;
     const newPrice = formGroup.get('price')!.value;
 
-    if (newPrice <= 0) {
-      if (this.langService.currentLang === 'pl') {
-        this.beverageFormErrorMessage = 'Cena musi byc wieksza od 0!';
-      } else if (this.langService.currentLang === 'en') {
-        this.beverageFormErrorMessage = 'Price must be positive!';
-      }
-      return;
-    }
-
-    if (newCapacity <= 0) {
-      if (this.langService.currentLang === 'pl') {
-        this.beverageFormErrorMessage = 'Pojemnosc musi byc wieksza od 0!';
-      } else if (this.langService.currentLang === 'en') {
-        this.beverageFormErrorMessage = 'Capacity must be positive!';
-      }
-      return;
-    }
-
     const updatedBeverage = {
       name: beverage.name,
       capacity: newCapacity,
       price: newPrice
     };
 
-    this.menuService.updateBeverage(updatedBeverage).subscribe(
-      response => {
-        if (response) {
-          this.beverageFormErrorMessage = null;
+    this.menuService.updateBeverage(updatedBeverage).subscribe({
+      next: response => {
+        Swal.fire({
+
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie zaktualizowano napoj '${updatedBeverage.name}'!` : `Successfully updated beverage '${updatedBeverage.name}'!`,
+          icon: 'success',
+          iconColor: "green",
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
           beverage.isEditing = false;
+          this.isEditing = false;
           this.loadBeverages(); 
-        }
+      },
+      error: error => {
+        this.handleError(error); 
       }
-    );
+    });
   }
 
   removeBeverage(beverage: any): void {
@@ -193,11 +193,21 @@ export class MenuComponent implements OnInit {
   }
 
   showAddTable(): void {
+    if (this.isEditing) {
+      return;
+    }
+    this.hideErrorMessages();
     this.isAdding = true;
   }
 
   hideAddTable(): void {
+    this.hideErrorMessages();
     this.isAdding = false;
+  }
+
+  hideEditableRow(beverage: any): void {
+    beverage.isEditing = false;
+    this.isEditing = false;
   }
  
   addBeverage(): void {

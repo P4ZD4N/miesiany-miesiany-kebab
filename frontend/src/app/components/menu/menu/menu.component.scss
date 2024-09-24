@@ -4,6 +4,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: auto;
 }
 
 td table {
@@ -109,7 +110,8 @@ td {
 }
 
 .error {
-    margin-top: 0;
+    font-size: 20px;
+    margin-top: 1rem;
     color: rgb(126, 15, 15);
 }
 

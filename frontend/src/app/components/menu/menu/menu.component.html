@@ -56,7 +56,7 @@
     </table>
 
     <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
-    <button class="btn btn-success" *ngIf="isManager()" (click)="showAddTable()">{{ 'menu.beverages.button_add' | translate }}</button>
+    <button class="btn btn-success" *ngIf="isManager() && !isEditing" (click)="showAddTable()">{{ 'menu.beverages.button_add' | translate }}</button>
     <div *ngIf="errorMessages['name']" class="error">{{ errorMessages['name'] }}</div>
     <div *ngIf="errorMessages['capacity']" class="error">{{ errorMessages['capacity'] }}</div>
     <div *ngIf="errorMessages['price']" class="error">{{ errorMessages['price'] }}</div>
@@ -91,6 +91,7 @@
                 <td *ngIf="isManager()" class="manager">
                     <button class="button-update" *ngIf="!beverage.isEditing" (click)="editBeverageRow(beverage)">{{ 'menu.update' | translate }}</button>
                     <button class="button-accept" *ngIf="beverage.isEditing" (click)="saveBeverageRow(beverage)">{{ 'menu.accept' | translate }}</button>
+                    <button class="button-cancel" *ngIf="beverage.isEditing" (click)="hideEditableRow(beverage)">{{ 'menu.cancel' | translate }}</button>
                     <button class="button-remove" *ngIf="!beverage.isEditing" (click)="removeBeverage(beverage)">{{ 'menu.remove' | translate }}</button>
                 </td>
 

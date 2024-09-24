@@ -54,17 +54,13 @@ export class MenuService {
   }
 
   updateBeverage(beverage: any): Observable<any> {
-
     const headers = new HttpHeaders({
       'Accept-Language': this.langService.currentLang
     });
 
     return this.http.put<any>(`${this.apiUrl}/update-beverage`, beverage, { headers, withCredentials: true }).pipe(
       map(response => response),
-      catchError(error => {
-        console.error('Error updating beverage', error);
-        return of(null);
-      })
+      catchError(this.handleError)
     )
   }
 
