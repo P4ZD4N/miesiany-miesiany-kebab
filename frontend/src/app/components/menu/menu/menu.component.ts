@@ -118,7 +118,8 @@ export class MenuComponent implements OnInit {
   editBeverageRow(beverage: any): void {
     if (this.isEditing) {
       return; 
-  }
+    }
+    this.hideErrorMessages();
     this.isEditing = true;
     beverage.isEditing = true;
     this.isAdding = false;
@@ -155,6 +156,7 @@ export class MenuComponent implements OnInit {
 
           beverage.isEditing = false;
           this.isEditing = false;
+          this.hideErrorMessages();
           this.loadBeverages(); 
       },
       error: error => {
@@ -185,6 +187,17 @@ export class MenuComponent implements OnInit {
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
+        Swal.fire({
+
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto napoj '${beverage.name}'!` : `Successfully removed beverage '${beverage.name}'!`,
+          icon: 'success',
+          iconColor: "green",
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
         this.menuService.removeBeverage(beverage).subscribe(() => {
           this.loadBeverages();
         });
@@ -208,6 +221,7 @@ export class MenuComponent implements OnInit {
   hideEditableRow(beverage: any): void {
     beverage.isEditing = false;
     this.isEditing = false;
+    this.hideErrorMessages();
   }
  
   addBeverage(): void {
@@ -253,4 +267,5 @@ export class MenuComponent implements OnInit {
   hideErrorMessages(): void {
     this.errorMessages = {};
   }
+
 }
