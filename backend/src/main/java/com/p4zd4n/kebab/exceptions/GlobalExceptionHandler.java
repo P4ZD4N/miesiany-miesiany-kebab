@@ -212,6 +212,22 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(AddonNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleAddonNotFoundException(
+            AddonNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing addon: {}", request.getRequestURI(), exception.getAddonName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
     @ExceptionHandler(BeverageAlreadyExistsException.class)
     public ResponseEntity<ItemTypeExceptionResponse> handleBeverageAlreadyExistsException(
             HttpServletRequest request

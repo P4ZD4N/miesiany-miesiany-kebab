@@ -27,6 +27,7 @@ export interface BeverageResponse {
 export interface AddonResponse {
   name: string;
   price: number;
+  isEditing?: boolean;
 }
 
 export interface SimpleMealIngredient {
@@ -59,4 +60,12 @@ export interface NewAddonResponse {
   message: string;
 }
   
-  
+export interface UpdatedAddonResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedAddonResponse {
+  status_code: number;
+  message: string;
+}  

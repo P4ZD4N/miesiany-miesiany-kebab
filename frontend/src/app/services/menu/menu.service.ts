@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Size } from '../../enums/size.enum';
 import { LangService } from '../lang/lang.service';
-import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest } from '../../requests/requests';
-import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse } from '../../responses/responses';
+import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest, UpdatedAddonRequest, RemovedAddonRequest } from '../../requests/requests';
+import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse, UpdatedAddonResponse, RemovedAddonResponse } from '../../responses/responses';
 
 
 @Injectable({
@@ -71,6 +71,28 @@ console.log(beverage);
     });
 
     return this.http.post<NewAddonResponse>(`${this.apiUrl}/add-addon`, addon, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  updateAddon(addon: UpdatedAddonRequest): Observable<UpdatedAddonResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.put<UpdatedAddonResponse>(`${this.apiUrl}/update-addon`, addon, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  removeAddon(addon: RemovedAddonRequest): Observable<RemovedAddonResponse> {
+
+    const requestBody = { name: addon.name };
+
+    return this.http.delete<RemovedAddonResponse>(`${this.apiUrl}/remove-addon`, { body: requestBody, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

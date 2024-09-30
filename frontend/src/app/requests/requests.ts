@@ -33,3 +33,12 @@ export interface NewAddonRequest {
   new_addon_name: string;
   new_addon_price: number;
 }
+
+export interface UpdatedAddonRequest {
+  updated_addon_name: string;
+  updated_addon_price: number;
+}
+
+export interface RemovedAddonRequest {
+  name: string;
+}

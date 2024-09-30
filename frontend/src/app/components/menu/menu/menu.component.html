@@ -47,6 +47,8 @@
     <p *ngIf="errorMessages['newAddonName']" class="error">{{ errorMessages['newAddonName'] }}</p>
     <p *ngIf="errorMessages['newAddonPrice']" class="error">{{ errorMessages['newAddonPrice'] }}</p>
 
+    <p *ngIf="errorMessages['updatedAddonPrice']" class="error">{{ errorMessages['updatedAddonPrice'] }}</p>
+
     <p *ngIf="errorMessages['itemType'] === 'addon'" class="error">{{ errorMessages['message'] }}</p>
 
     <table class="add-addon-table" *ngIf="isAddingAddon">
@@ -66,16 +68,30 @@
     
     <table class="table-addons">
         <thead>
+            <th *ngIf="isManager()"></th>
             <th>{{ 'menu.addons.addon' | translate }}</th>
             <th>{{ 'menu.addons.price' | translate }}</th>
         </thead>
         <tbody>
-            <tr *ngFor="let addon of addons">
+            <tr *ngFor="let addon of addons"
+                [formGroup]="addonForms[addon.name]"
+            >
+                <td *ngIf="isManager()" class="manager">
+                    <button class="button-update" *ngIf="!addon.isEditing" (click)="editAddonRow(addon)">{{ 'menu.update' | translate }}</button>
+                    <button class="button-accept" *ngIf="addon.isEditing" (click)="saveAddonRow(addon)">{{ 'menu.accept' | translate }}</button>
+                    <button class="button-cancel" *ngIf="addon.isEditing" (click)="hideEditableAddonRow(addon)">{{ 'menu.cancel' | translate }}</button>
+                    <button class="button-remove" *ngIf="!addon.isEditing" (click)="removeAddon(addon)">{{ 'menu.remove' | translate }}</button>
+                </td>
+                
                 <td *ngIf="isAddonTranslationAvailable(addon.name); else defaultName">{{ 'menu.addons.' + addon.name | translate }}</td>
                 <ng-template #defaultName>
                     <td>{{ addon.name }}</td>
                 </ng-template>
-                <td>{{ formatPrice(addon.price) }}</td>
+
+                <td *ngIf="!addon.isEditing">{{ formatPrice(addon.price) }}</td>
+                <td *ngIf="addon.isEditing">
+                    <input type="number" formControlName="price" step="0.01" />
+                </td>
             </tr>
         </tbody>
     </table>

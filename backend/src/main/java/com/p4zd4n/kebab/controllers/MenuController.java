@@ -1,13 +1,9 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
-import com.p4zd4n.kebab.exceptions.InvalidCapacityException;
-import com.p4zd4n.kebab.exceptions.InvalidPriceException;
-import com.p4zd4n.kebab.requests.menu.NewAddonRequest;
-import com.p4zd4n.kebab.requests.menu.NewBeverageRequest;
-import com.p4zd4n.kebab.requests.menu.RemovedBeverageRequest;
-import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
+import com.p4zd4n.kebab.requests.menu.*;
 import com.p4zd4n.kebab.responses.menu.*;
 import com.p4zd4n.kebab.services.menu.AddonService;
 import com.p4zd4n.kebab.services.menu.BeverageService;
@@ -106,13 +102,44 @@ public class MenuController {
 
     @PostMapping("/add-addon")
     public ResponseEntity<NewAddonResponse> addAddon(
+            @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewAddonRequest request
     ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
         log.info("Received add addon request");
 
         NewAddonResponse response = addonService.addAddon(request);
 
         log.info("Successfully added new addon: {}", request.newAddonName());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-addon")
+    public ResponseEntity<UpdatedAddonResponse> updateAddon(
+            @Valid @RequestBody UpdatedAddonRequest request
+    ) {
+        log.info("Received update addon request");
+
+        Addon existingAddon = addonService.findAddonByName(request.updatedAddonName());
+        UpdatedAddonResponse response = addonService.updateAddon(existingAddon, request);
+
+        log.info("Successfully updated addon: {}", existingAddon.getName());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-addon")
+    public ResponseEntity<RemovedAddonResponse> removeAddon(
+            @Valid @RequestBody RemovedAddonRequest request
+    ) {
+        log.info("Received remove addon request");
+
+        Addon existingAddon = addonService.findAddonByName(request.name());
+        RemovedAddonResponse response = addonService.removeAddon(existingAddon);
 
         return ResponseEntity.ok(response);
     }

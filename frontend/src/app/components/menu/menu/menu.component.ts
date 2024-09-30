@@ -7,7 +7,7 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule }
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { NewAddonRequest, NewBeverageRequest, RemovedBeverageRequest } from '../../../requests/requests';
+import { NewAddonRequest, NewBeverageRequest, RemovedAddonRequest, RemovedBeverageRequest } from '../../../requests/requests';
 import { BeverageResponse, AddonResponse, MealResponse } from '../../../responses/responses';
 
 @Component({
@@ -22,6 +22,7 @@ export class MenuComponent implements OnInit {
   addons: AddonResponse[] = [];
   meals: MealResponse[] = [];
   beverageForms: { [key: string]: FormGroup } = {};
+  addonForms: { [key: string]: FormGroup } = {};
   errorMessages: { [key: string]: string } = {};
   languageChangeSubscription: Subscription;
   isAddingBeverage = false;
@@ -72,6 +73,7 @@ export class MenuComponent implements OnInit {
     this.menuService.getAddons().subscribe(
       (data: AddonResponse[]) => {
         this.addons = data;
+        this.initializeAddonForms(data);
       },
       (error) => {
         console.log('Error loading addons', error);
@@ -99,6 +101,14 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  initializeAddonForms(addons: AddonResponse[]): void {
+    addons.forEach((addon) => {
+      this.addonForms[addon.name] = this.formBuilder.group({
+        price: new FormControl(addon.price)
+      });
+    });
+  }
+
   editBeverageRow(beverage: BeverageResponse): void {
     if (this.isEditing) {
       return;
@@ -110,6 +120,19 @@ export class MenuComponent implements OnInit {
     form.patchValue({
       capacity: beverage.capacity,
       price: beverage.price,
+    });
+  }
+
+  editAddonRow(addon: AddonResponse): void {
+    if (this.isEditing) {
+      return;
+    }
+    this.hideErrorMessages();
+    this.isEditing = true;
+    addon.isEditing = true;
+    const form = this.beverageForms[addon.name];
+    form.patchValue({
+      price: addon.price,
     });
   }
 
@@ -148,10 +171,42 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  saveAddonRow(addon: AddonResponse): void {
+    const formGroup = this.addonForms[addon.name];
+    const newPrice = formGroup.get('price')!.value;
+
+    const updatedAddon = {
+      updated_addon_name: addon.name,
+      updated_addon_price: newPrice,
+    };
+
+    this.menuService.updateAddon(updatedAddon).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie zaktualizowano dodatek '${updatedAddon.updated_addon_name}'!` : `Successfully updated addon '${updatedAddon.updated_addon_name}'!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        addon.isEditing = false;
+        this.isEditing = false;
+        this.hideErrorMessages();
+        this.loadAddons();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
+  }
+
   removeBeverage(beverage: BeverageResponse): void {
     let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
 
-    if (!this.isBeverageTranslationAvailable(beverageNameTranslated)) {
+    if (!this.isBeverageTranslationAvailable(beverage.name)) {
       beverageNameTranslated = beverage.name;
     }
 
@@ -190,6 +245,48 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  removeAddon(addon: AddonResponse): void {
+    let addonNameTranslated = this.translate.instant('menu.addons.' + addon.name);
+
+    if (!this.isAddonTranslationAvailable(addon.name)) {
+      addonNameTranslated = addon.name;
+    }
+
+    const confirmationMessage =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac dodatek ${addonNameTranslated}?`
+        : `Are you sure you want to remove addon ${addonNameTranslated}?`;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.menuService.removeAddon({ name: addon.name } as RemovedAddonRequest).subscribe(() => {
+          Swal.fire({
+            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto dodatek '${addon.name}'!` : `Successfully removed addon '${addon.name}'!`,
+            icon: 'success',
+            iconColor: 'green',
+            confirmButtonColor: 'green',
+            background: 'black',
+            color: 'white',
+            confirmButtonText: 'Ok',
+          });
+          this.loadAddons();
+        });
+      }
+    });
+  }
+
   showAddBeverageTable(): void {
     if (this.isEditing) {
       return;
@@ -218,6 +315,12 @@ export class MenuComponent implements OnInit {
 
   hideEditableBeverageRow(beverage: BeverageResponse): void {
     beverage.isEditing = false;
+    this.isEditing = false;
+    this.hideErrorMessages();
+  }
+
+  hideEditableAddonRow(addon: AddonResponse): void {
+    addon.isEditing = false;
     this.isEditing = false;
     this.hideErrorMessages();
   }
