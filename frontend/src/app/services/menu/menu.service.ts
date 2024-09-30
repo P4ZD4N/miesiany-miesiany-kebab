@@ -23,6 +23,8 @@ export class MenuService {
 
   addBeverage(beverage: NewBeverageRequest): Observable<NewBeverageResponse> {
 
+console.log(beverage);
+
     const headers = new HttpHeaders({
       'Accept-Language': this.langService.currentLang
     });

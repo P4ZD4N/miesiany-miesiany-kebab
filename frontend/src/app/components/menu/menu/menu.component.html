@@ -43,6 +43,12 @@
 
     <p>{{ 'menu.addons.paragraph_addons' | translate }}</p>
     <button class="btn btn-success" *ngIf="isManager() && !isEditing" (click)="showAddAddonTable()">{{ 'menu.addons.button_add' | translate }}</button>
+    
+    <p *ngIf="errorMessages['newAddonName']" class="error">{{ errorMessages['newAddonName'] }}</p>
+    <p *ngIf="errorMessages['newAddonPrice']" class="error">{{ errorMessages['newAddonPrice'] }}</p>
+
+    <p *ngIf="errorMessages['itemType'] === 'addon'" class="error">{{ errorMessages['message'] }}</p>
+
     <table class="add-addon-table" *ngIf="isAddingAddon">
         <tr>
             <td>
@@ -50,10 +56,10 @@
                 <button class="button-cancel" (click)="hideAddAddonTable()">{{ 'menu.cancel' | translate }}</button>
             </td>
             <td>
-                <input type="text" placeholder="{{ 'menu.addons.addon' | translate }}"  [(ngModel)]="newAddon.name" />
+                <input type="text" placeholder="{{ 'menu.addons.addon' | translate }}"  [(ngModel)]="newAddon.new_addon_name" />
             </td>
             <td>
-                <input type="number" placeholder="{{ 'menu.addons.price' | translate }}" [(ngModel)]="newAddon.price" step="0.5" /> zl
+                <input type="number" placeholder="{{ 'menu.addons.price' | translate }}" [(ngModel)]="newAddon.new_addon_price" step="0.5" /> zl
             </td>
         </tr>
     </table>
@@ -65,7 +71,10 @@
         </thead>
         <tbody>
             <tr *ngFor="let addon of addons">
-                <td>{{ 'menu.addons.' + addon.name | translate }}</td>
+                <td *ngIf="isAddonTranslationAvailable(addon.name); else defaultName">{{ 'menu.addons.' + addon.name | translate }}</td>
+                <ng-template #defaultName>
+                    <td>{{ addon.name }}</td>
+                </ng-template>
                 <td>{{ formatPrice(addon.price) }}</td>
             </tr>
         </tbody>
@@ -73,10 +82,17 @@
 
     <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
     <button class="btn btn-success" *ngIf="isManager() && !isEditing" (click)="showAddBeverageTable()">{{ 'menu.beverages.button_add' | translate }}</button>
-    <p *ngIf="errorMessages['name']" class="error">{{ errorMessages['name'] }}</p>
-    <p *ngIf="errorMessages['capacity']" class="error">{{ errorMessages['capacity'] }}</p>
-    <p *ngIf="errorMessages['price']" class="error">{{ errorMessages['price'] }}</p>
-    <p *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</p>
+    
+    <p *ngIf="errorMessages['newBeverageName']" class="error">{{ errorMessages['newBeverageName'] }}</p>
+    <p *ngIf="errorMessages['newBeverageCapacity']" class="error">{{ errorMessages['newBeverageCapacity'] }}</p>
+    <p *ngIf="errorMessages['newBeveragePrice']" class="error">{{ errorMessages['newBeveragePrice'] }}</p>
+    
+    <p *ngIf="errorMessages['updatedBeverageName']" class="error">{{ errorMessages['updatedBeverageName'] }}</p>
+    <p *ngIf="errorMessages['updatedBeverageOldCapacity']" class="error">{{ errorMessages['updatedBeverageOldCapacity'] }}</p>
+    <p *ngIf="errorMessages['updatedBeverageNewCapacity']" class="error">{{ errorMessages['updatedBeverageNewCapacity'] }}</p>
+    <p *ngIf="errorMessages['updatedBeveragePrice']" class="error">{{ errorMessages['updatedBeveragePrice'] }}</p>
+
+    <p *ngIf="errorMessages['itemType'] === 'beverage'" class="error">{{ errorMessages['message'] }}</p>
     <table class="add-beverage-table" *ngIf="isAddingBeverage">
         <tr>
             <td>
@@ -84,13 +100,13 @@
                 <button class="button-cancel" (click)="hideAddBeverageTable()">{{ 'menu.cancel' | translate }}</button>
             </td>
             <td>
-                <input type="text" placeholder="{{ 'menu.beverages.beverage' | translate }}"  [(ngModel)]="newBeverage.name" />
+                <input type="text" placeholder="{{ 'menu.beverages.beverage' | translate }}"  [(ngModel)]="newBeverage.new_beverage_name" />
             </td>
             <td>
-                <input type="number" placeholder="{{ 'menu.beverages.capacity' | translate }}" [(ngModel)]="newBeverage.capacity" step="0.05" /> L
+                <input type="number" placeholder="{{ 'menu.beverages.capacity' | translate }}" [(ngModel)]="newBeverage.new_beverage_capacity" step="0.05" /> L
             </td>
             <td>
-                <input type="number" placeholder="{{ 'menu.beverages.price' | translate }}" [(ngModel)]="newBeverage.price" /> zl
+                <input type="number" placeholder="{{ 'menu.beverages.price' | translate }}" [(ngModel)]="newBeverage.new_beverage_price" /> zl
             </td>
         </tr>
     </table>

@@ -109,9 +109,9 @@ public class MenuControllerTest {
     public void addBeverage_ShouldReturnOk_WhenValidRequest() throws Exception {
 
         NewBeverageRequest request = NewBeverageRequest.builder()
-                .name("Coca-Cola")
-                .capacity(BigDecimal.valueOf(0.5))
-                .price(BigDecimal.valueOf(5))
+                .newBeverageName("Coca-Cola")
+                .newBeverageCapacity(BigDecimal.valueOf(0.5))
+                .newBeveragePrice(BigDecimal.valueOf(5))
                 .build();
 
         NewBeverageResponse response = NewBeverageResponse.builder()
@@ -134,9 +134,9 @@ public class MenuControllerTest {
     public void addBeverage_ShouldReturnConflict_WhenBeverageAlreadyExists() throws Exception {
 
         NewBeverageRequest request = NewBeverageRequest.builder()
-                .name("Coca-Cola")
-                .capacity(BigDecimal.valueOf(0.5))
-                .price(BigDecimal.valueOf(5))
+                .newBeverageName("Coca-Cola")
+                .newBeverageCapacity(BigDecimal.valueOf(0.5))
+                .newBeveragePrice(BigDecimal.valueOf(5))
                 .build();
 
         when(beverageService.addBeverage(request)).thenThrow(new BeverageAlreadyExistsException());
@@ -166,9 +166,9 @@ public class MenuControllerTest {
     public void addBeverage_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
 
         NewBeverageRequest request = NewBeverageRequest.builder()
-                .name("Coca-Cola")
-                .capacity(BigDecimal.valueOf(0.5))
-                .price(BigDecimal.valueOf(5))
+                .newBeverageName("Coca-Cola")
+                .newBeverageCapacity(BigDecimal.valueOf(0.5))
+                .newBeveragePrice(BigDecimal.valueOf(5))
                 .build();
 
         mockMvc.perform(post("/api/v1/menu/add-beverage")
@@ -199,10 +199,10 @@ public class MenuControllerTest {
                 .build();
 
         UpdatedBeverageRequest request = UpdatedBeverageRequest.builder()
-                .name("Coca-Cola")
-                .oldCapacity(BigDecimal.valueOf(0.5))
-                .newCapacity(BigDecimal.valueOf(0.33))
-                .price(BigDecimal.valueOf(5))
+                .updatedBeverageName("Coca-Cola")
+                .updatedBeverageOldCapacity(BigDecimal.valueOf(0.5))
+                .updatedBeverageNewCapacity(BigDecimal.valueOf(0.33))
+                .updatedBeveragePrice(BigDecimal.valueOf(5))
                 .build();
 
         UpdatedBeverageResponse expectedResponse = UpdatedBeverageResponse.builder()
@@ -210,7 +210,7 @@ public class MenuControllerTest {
                 .message("Successfully updated beverage with name 'Coca-Cola'")
                 .build();
 
-        when(beverageService.findBeverageByNameAndCapacity(request.name(), request.oldCapacity()))
+        when(beverageService.findBeverageByNameAndCapacity(request.updatedBeverageName(), request.updatedBeverageOldCapacity()))
                 .thenReturn(existingBeverage);
         when(beverageService.updateBeverage(any(Beverage.class), any(UpdatedBeverageRequest.class)))
                 .thenReturn(expectedResponse);
@@ -223,7 +223,8 @@ public class MenuControllerTest {
                 .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
                 .andExpect(jsonPath("$.message", is("Successfully updated beverage with name 'Coca-Cola'")));
 
-        verify(beverageService, times(1)).findBeverageByNameAndCapacity(request.name(), request.oldCapacity());
+        verify(beverageService, times(1)).findBeverageByNameAndCapacity(
+                request.updatedBeverageName(), request.updatedBeverageOldCapacity());
         verify(beverageService, times(1)).updateBeverage(existingBeverage, request);
     }
 
@@ -237,13 +238,13 @@ public class MenuControllerTest {
                 .build();
 
         UpdatedBeverageRequest request = UpdatedBeverageRequest.builder()
-                .name("Coca-Cola")
-                .oldCapacity(BigDecimal.valueOf(0.5))
-                .newCapacity(BigDecimal.valueOf(0.33))
-                .price(BigDecimal.valueOf(5))
+                .updatedBeverageName("Coca-Cola")
+                .updatedBeverageOldCapacity(BigDecimal.valueOf(0.5))
+                .updatedBeverageNewCapacity(BigDecimal.valueOf(0.33))
+                .updatedBeveragePrice(BigDecimal.valueOf(5))
                 .build();
 
-        when(beverageService.findBeverageByNameAndCapacity(request.name(), request.oldCapacity()))
+        when(beverageService.findBeverageByNameAndCapacity(request.updatedBeverageName(), request.updatedBeverageOldCapacity()))
                 .thenReturn(existingBeverage);
         when(beverageService.updateBeverage(existingBeverage, request)).thenThrow(new BeverageAlreadyExistsException());
 
@@ -272,10 +273,10 @@ public class MenuControllerTest {
     public void updateBeverage_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
 
         UpdatedBeverageRequest request = UpdatedBeverageRequest.builder()
-                .name("Coca-Cola")
-                .oldCapacity(BigDecimal.valueOf(0.5))
-                .newCapacity(BigDecimal.valueOf(0.33))
-                .price(BigDecimal.valueOf(5))
+                .updatedBeverageName("Coca-Cola")
+                .updatedBeverageOldCapacity(BigDecimal.valueOf(0.5))
+                .updatedBeverageNewCapacity(BigDecimal.valueOf(0.33))
+                .updatedBeveragePrice(BigDecimal.valueOf(5))
                 .build();
 
         mockMvc.perform(put("/api/v1/menu/update-beverage")

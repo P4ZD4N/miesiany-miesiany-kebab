@@ -55,7 +55,7 @@ public class MenuController {
 
         NewBeverageResponse response = beverageService.addBeverage(request);
 
-        log.info("Successfully added new beverage: {}", request.name());
+        log.info("Successfully added new beverage: {}", request.newBeverageName());
 
         return ResponseEntity.ok(response);
     }
@@ -71,7 +71,8 @@ public class MenuController {
 
         log.info("Received update beverage request");
 
-        Beverage existingBeverage = beverageService.findBeverageByNameAndCapacity(request.name(), request.oldCapacity());
+        Beverage existingBeverage = beverageService.findBeverageByNameAndCapacity(
+                request.updatedBeverageName(), request.updatedBeverageOldCapacity());
         UpdatedBeverageResponse response = beverageService.updateBeverage(existingBeverage, request);
 
         log.info("Successfully updated beverage: {}", existingBeverage.getName());
@@ -111,7 +112,7 @@ public class MenuController {
 
         NewAddonResponse response = addonService.addAddon(request);
 
-        log.info("Successfully added new addon: {}", request.name());
+        log.info("Successfully added new addon: {}", request.newAddonName());
 
         return ResponseEntity.ok(response);
     }

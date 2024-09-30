@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.exceptions;
 
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
+import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -212,7 +213,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BeverageAlreadyExistsException.class)
-    public ResponseEntity<ExceptionResponse> handleBeverageAlreadyExistsException(
+    public ResponseEntity<ItemTypeExceptionResponse> handleBeverageAlreadyExistsException(
             HttpServletRequest request
     ) {
         log.error("Attempted request to {} with existing beverage", request.getRequestURI());
@@ -222,8 +223,28 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(ExceptionResponse
+                .body(ItemTypeExceptionResponse
                         .builder()
+                        .itemType("beverage")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(AddonAlreadyExistsException.class)
+    public ResponseEntity<ItemTypeExceptionResponse> handleAddonAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing addon", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("addon.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ItemTypeExceptionResponse
+                        .builder()
+                        .itemType("addon")
                         .statusCode(HttpStatus.CONFLICT.value())
                         .message(message)
                         .build());

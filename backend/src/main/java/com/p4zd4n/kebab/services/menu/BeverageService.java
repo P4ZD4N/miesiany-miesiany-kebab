@@ -67,14 +67,14 @@ public class BeverageService {
 
     public NewBeverageResponse addBeverage(NewBeverageRequest request) {
 
-        Optional<List<Beverage>> beverages = beverageRepository.findByCapacity(request.capacity());
+        Optional<List<Beverage>> beverages = beverageRepository.findByCapacity(request.newBeverageCapacity());
 
         if (beverages.isPresent() && !beverages.get().isEmpty()) {
 
             boolean exists = beverages.get().stream()
                     .anyMatch(beverage ->
-                            beverage.getName().equalsIgnoreCase(request.name()) &&
-                            beverage.getCapacity().compareTo(request.capacity()) == 0
+                            beverage.getName().equalsIgnoreCase(request.newBeverageName()) &&
+                            beverage.getCapacity().compareTo(request.newBeverageCapacity()) == 0
                     );
 
             if (exists) {
@@ -82,12 +82,12 @@ public class BeverageService {
             }
         }
 
-        log.info("Started adding beverage with name '{}'", request.name());
+        log.info("Started adding beverage with name '{}'", request.newBeverageName());
 
         Beverage newBeverage = Beverage.builder()
-                .name(request.name())
-                .capacity(request.capacity())
-                .price(request.price())
+                .name(request.newBeverageName())
+                .capacity(request.newBeverageCapacity())
+                .price(request.newBeveragePrice())
                 .build();
         Beverage savedBeverage = beverageRepository.save(newBeverage);
         NewBeverageResponse response = NewBeverageResponse.builder()
@@ -102,14 +102,14 @@ public class BeverageService {
 
     public UpdatedBeverageResponse updateBeverage(Beverage beverage, UpdatedBeverageRequest request) {
 
-        Optional<List<Beverage>> beverages = beverageRepository.findByCapacity(request.newCapacity());
+        Optional<List<Beverage>> beverages = beverageRepository.findByCapacity(request.updatedBeverageNewCapacity());
 
         if (beverages.isPresent() && !beverages.get().isEmpty()) {
 
             boolean exists = beverages.get().stream()
                     .anyMatch(bev ->
-                            bev.getName().equalsIgnoreCase(request.name()) &&
-                            bev.getCapacity().compareTo(request.newCapacity()) == 0 &&
+                            bev.getName().equalsIgnoreCase(request.updatedBeverageName()) &&
+                            bev.getCapacity().compareTo(request.updatedBeverageNewCapacity()) == 0 &&
                             !bev.getId().equals(beverage.getId())
                     );
 
@@ -123,9 +123,9 @@ public class BeverageService {
                 .message("Successfully updated beverage with name '" + beverage.getName() + "'")
                 .build();
 
-        beverage.setName(request.name());
-        beverage.setCapacity(request.newCapacity());
-        beverage.setPrice(request.price());
+        beverage.setName(request.updatedBeverageName());
+        beverage.setCapacity(request.updatedBeverageNewCapacity());
+        beverage.setPrice(request.updatedBeveragePrice());
 
         beverageRepository.save(beverage);
 

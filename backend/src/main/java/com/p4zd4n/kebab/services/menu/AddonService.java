@@ -49,15 +49,15 @@ public class AddonService {
 
     public NewAddonResponse addAddon(NewAddonRequest request) {
 
-        Optional<Addon> addon = addonRepository.findByName(request.name());
+        Optional<Addon> addon = addonRepository.findByName(request.newAddonName());
 
         if (addon.isPresent()) {
             throw new AddonAlreadyExistsException();
         }
 
         Addon newAddon = Addon.builder()
-                .name(request.name())
-                .price(request.price())
+                .name(request.newAddonName())
+                .price(request.newAddonPrice())
                 .build();
         Addon savedAddon = addonRepository.save(newAddon);
         NewAddonResponse response = NewAddonResponse.builder()

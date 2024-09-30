@@ -28,13 +28,13 @@ export class MenuComponent implements OnInit {
   isAddingAddon = false;
   isEditing = false;
   newBeverage: NewBeverageRequest = {
-    name: '',
-    capacity: 0,
-    price: 0,
+    new_beverage_name: '',
+    new_beverage_capacity: 0,
+    new_beverage_price: 0,
   };
   newAddon: NewAddonRequest = {
-    name: '',
-    price: 0,
+    new_addon_name: '',
+    new_addon_price: 0,
   };
   sizeOrder = ['SMALL', 'MEDIUM', 'LARGE', 'XL'];
 
@@ -119,16 +119,16 @@ export class MenuComponent implements OnInit {
     const newPrice = formGroup.get('price')!.value;
 
     const updatedBeverage = {
-      name: beverage.name,
-      old_capacity: beverage.capacity,
-      new_capacity: newCapacity,
-      price: newPrice,
+      updated_beverage_name: beverage.name,
+      updated_beverage_old_capacity: beverage.capacity,
+      updated_beverage_new_capacity: newCapacity,
+      updated_beverage_price: newPrice,
     };
 
     this.menuService.updateBeverage(updatedBeverage).subscribe({
       next: (response) => {
         Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie zaktualizowano napoj '${updatedBeverage.name}'!` : `Successfully updated beverage '${updatedBeverage.name}'!`,
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie zaktualizowano napoj '${updatedBeverage.updated_beverage_name}'!` : `Successfully updated beverage '${updatedBeverage.updated_beverage_name}'!`,
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
@@ -226,7 +226,7 @@ export class MenuComponent implements OnInit {
     this.menuService.addBeverage(this.newBeverage).subscribe({
       next: (response) => {
         Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano napoj '${this.newBeverage.name}'!` : `Successfully added beverage '${this.newBeverage.name}'!`,
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano napoj '${this.newBeverage.new_beverage_name}'!` : `Successfully added beverage '${this.newBeverage.new_beverage_name}'!`,
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
@@ -250,7 +250,7 @@ export class MenuComponent implements OnInit {
     this.menuService.addAddon(this.newAddon).subscribe({
       next: (response) => {
         Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano dodatek '${this.newAddon.name}'!` : `Successfully added addon '${this.newAddon.name}'!`,
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano dodatek '${this.newAddon.new_addon_name}'!` : `Successfully added addon '${this.newAddon.new_addon_name}'!`,
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
@@ -271,16 +271,17 @@ export class MenuComponent implements OnInit {
   }
 
   resetNewBeverage(): void {
-    this.newBeverage = { name: '', capacity: 0, price: 0 };
+    this.newBeverage = { new_beverage_name: '', new_beverage_capacity: 0, new_beverage_price: 0 };
   }
 
   resetNewAddon(): void {
-    this.newAddon = { name: '', price: 0 };
+    this.newAddon = { new_addon_name: '', new_addon_price: 0 };
   }
 
   handleError(error: any) {
     if (error.errorMessages) {
       this.errorMessages = error.errorMessages;
+      console.log(this.errorMessages);
     } else {
       this.errorMessages = { general: 'An unexpected error occurred' };
     }
@@ -313,5 +314,10 @@ export class MenuComponent implements OnInit {
   isBeverageTranslationAvailable(beverageName: string): boolean {
     const translatedName = this.translate.instant('menu.beverages.' + beverageName);
     return translatedName !== 'menu.beverages.' + beverageName;
+  }
+
+  isAddonTranslationAvailable(addonName: string): boolean {
+    const translatedName = this.translate.instant('menu.addons.' + addonName);
+    return translatedName !== 'menu.addons.' + addonName;
   }
 }

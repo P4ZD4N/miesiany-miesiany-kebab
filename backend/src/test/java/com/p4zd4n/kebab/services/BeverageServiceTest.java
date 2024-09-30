@@ -123,17 +123,17 @@ public class BeverageServiceTest {
     public void addBeverage_ShouldAddBeverage_WhenBeverageDoesNotExist() {
 
         NewBeverageRequest request = NewBeverageRequest.builder()
-                .name("Fanta")
-                .capacity(BigDecimal.valueOf(0.33))
-                .price(BigDecimal.valueOf(4))
+                .newBeverageName("Fanta")
+                .newBeverageCapacity(BigDecimal.valueOf(0.33))
+                .newBeveragePrice(BigDecimal.valueOf(4))
                 .build();
 
-        when(beverageRepository.findByCapacity(request.capacity())).thenReturn(Optional.of(Collections.emptyList()));
+        when(beverageRepository.findByCapacity(request.newBeverageCapacity())).thenReturn(Optional.of(Collections.emptyList()));
 
         Beverage newBeverage = Beverage.builder()
-                .name(request.name())
-                .capacity(request.capacity())
-                .price(request.price())
+                .name(request.newBeverageName())
+                .capacity(request.newBeverageCapacity())
+                .price(request.newBeveragePrice())
                 .build();
 
         when(beverageRepository.save(any(Beverage.class))).thenReturn(newBeverage);
@@ -144,7 +144,7 @@ public class BeverageServiceTest {
         assertEquals(HttpStatus.OK.value(), response.statusCode());
         assertEquals("Successfully added new beverage with name 'Fanta'", response.message());
 
-        verify(beverageRepository, times(1)).findByCapacity(request.capacity());
+        verify(beverageRepository, times(1)).findByCapacity(request.newBeverageCapacity());
         verify(beverageRepository, times(1)).save(any(Beverage.class));
     }
 
@@ -152,9 +152,9 @@ public class BeverageServiceTest {
     public void addBeverage_ShouldThrowBeverageAlreadyExistsException_WhenBeverageExists() {
 
         NewBeverageRequest request = NewBeverageRequest.builder()
-                .name("Fanta")
-                .capacity(BigDecimal.valueOf(0.33))
-                .price(BigDecimal.valueOf(4))
+                .newBeverageName("Fanta")
+                .newBeverageCapacity(BigDecimal.valueOf(0.33))
+                .newBeveragePrice(BigDecimal.valueOf(4))
                 .build();
 
         Beverage existingBeverage = Beverage.builder()
@@ -163,14 +163,14 @@ public class BeverageServiceTest {
                 .price(BigDecimal.valueOf(7))
                 .build();
 
-        when(beverageRepository.findByCapacity(request.capacity()))
+        when(beverageRepository.findByCapacity(request.newBeverageCapacity()))
                 .thenReturn(Optional.of(Collections.singletonList(existingBeverage)));
 
         assertThrows(BeverageAlreadyExistsException.class, () -> {
             beverageService.addBeverage(request);
         });
 
-        verify(beverageRepository, times(1)).findByCapacity(request.capacity());
+        verify(beverageRepository, times(1)).findByCapacity(request.newBeverageCapacity());
     }
 
     @Test
@@ -183,13 +183,13 @@ public class BeverageServiceTest {
                 .build();
 
         UpdatedBeverageRequest request = UpdatedBeverageRequest.builder()
-                .name("Fanta")
-                .oldCapacity(BigDecimal.valueOf(0.33))
-                .newCapacity(BigDecimal.valueOf(0.5))
-                .price(BigDecimal.valueOf(4))
+                .updatedBeverageName("Fanta")
+                .updatedBeverageOldCapacity(BigDecimal.valueOf(0.33))
+                .updatedBeverageNewCapacity(BigDecimal.valueOf(0.5))
+                .updatedBeveragePrice(BigDecimal.valueOf(4))
                 .build();
 
-        when(beverageRepository.findByCapacity(request.newCapacity())).thenReturn(Optional.of(Collections.emptyList()));
+        when(beverageRepository.findByCapacity(request.updatedBeverageNewCapacity())).thenReturn(Optional.of(Collections.emptyList()));
         when(beverageRepository.save(any(Beverage.class))).thenReturn(beverage);
 
         UpdatedBeverageResponse response = beverageService.updateBeverage(beverage, request);
@@ -198,7 +198,7 @@ public class BeverageServiceTest {
         assertEquals(HttpStatus.OK.value(), response.statusCode());
         assertEquals("Successfully updated beverage with name 'Fanta'", response.message());
 
-        verify(beverageRepository, times(1)).findByCapacity(request.newCapacity());
+        verify(beverageRepository, times(1)).findByCapacity(request.updatedBeverageNewCapacity());
         verify(beverageRepository, times(1)).save(beverage);
     }
 
@@ -222,20 +222,20 @@ public class BeverageServiceTest {
         beverageToUpdate.setId(2L);
 
         UpdatedBeverageRequest request = UpdatedBeverageRequest.builder()
-                .name("Fanta")
-                .oldCapacity(BigDecimal.valueOf(0.5))
-                .newCapacity(BigDecimal.valueOf(0.33))
-                .price(BigDecimal.valueOf(4))
+                .updatedBeverageName("Fanta")
+                .updatedBeverageOldCapacity(BigDecimal.valueOf(0.5))
+                .updatedBeverageNewCapacity(BigDecimal.valueOf(0.33))
+                .updatedBeveragePrice(BigDecimal.valueOf(4))
                 .build();
 
-        when(beverageRepository.findByCapacity(request.newCapacity()))
+        when(beverageRepository.findByCapacity(request.updatedBeverageNewCapacity()))
                 .thenReturn(Optional.of(Collections.singletonList(existingBeverage)));
 
         assertThrows(BeverageAlreadyExistsException.class, () -> {
             beverageService.updateBeverage(beverageToUpdate, request);
         });
 
-        verify(beverageRepository, times(1)).findByCapacity(request.newCapacity());
+        verify(beverageRepository, times(1)).findByCapacity(request.updatedBeverageNewCapacity());
     }
 
     @Test
