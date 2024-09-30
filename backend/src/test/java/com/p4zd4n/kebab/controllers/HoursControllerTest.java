@@ -7,6 +7,7 @@ import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
+import com.p4zd4n.kebab.responses.hours.UpdatedHourResponse;
 import com.p4zd4n.kebab.services.hours.HoursService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -94,18 +96,24 @@ public class HoursControllerTest {
                         .build();
 
         when(hoursService.findOpeningHourByDayOfWeek(DayOfWeek.MONDAY)).thenReturn(existingHour);
-        when(hoursService.saveOpeningHour(existingHour)).thenReturn(existingHour);
+        when(hoursService.updateOpeningHour(existingHour, request)).thenReturn(
+                UpdatedHourResponse.builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Successfully updated opening hour on MONDAY")
+                        .build()
+        );
+
 
         mockMvc.perform(put("/api/v1/hours/update-opening-hour")
+                .header("Accept-Language", "pl")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.dayOfWeek", is("MONDAY")))
-                .andExpect(jsonPath("$.openingTime", is("10:00:00")))
-                .andExpect(jsonPath("$.closingTime", is("20:00:00")));
+                .andExpect(jsonPath("$.message", is("Successfully updated opening hour on MONDAY")))
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())));
 
         verify(hoursService, times(1)).findOpeningHourByDayOfWeek(DayOfWeek.MONDAY);
-        verify(hoursService, times(1)).saveOpeningHour(existingHour);
+        verify(hoursService, times(1)).updateOpeningHour(existingHour, request);
     }
 
     @Test
