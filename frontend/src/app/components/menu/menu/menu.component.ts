@@ -7,7 +7,7 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule }
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { NewBeverageRequest, RemovedBeverageRequest } from '../../../requests/requests';
+import { NewAddonRequest, NewBeverageRequest, RemovedBeverageRequest } from '../../../requests/requests';
 import { BeverageResponse, AddonResponse, MealResponse } from '../../../responses/responses';
 
 @Component({
@@ -24,11 +24,16 @@ export class MenuComponent implements OnInit {
   beverageForms: { [key: string]: FormGroup } = {};
   errorMessages: { [key: string]: string } = {};
   languageChangeSubscription: Subscription;
-  isAdding = false;
+  isAddingBeverage = false;
+  isAddingAddon = false;
   isEditing = false;
   newBeverage: NewBeverageRequest = {
     name: '',
     capacity: 0,
+    price: 0,
+  };
+  newAddon: NewAddonRequest = {
+    name: '',
     price: 0,
   };
   sizeOrder = ['SMALL', 'MEDIUM', 'LARGE', 'XL'];
@@ -185,20 +190,33 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  showAddTable(): void {
+  showAddBeverageTable(): void {
     if (this.isEditing) {
       return;
     }
     this.hideErrorMessages();
-    this.isAdding = true;
+    this.isAddingBeverage = true;
   }
 
-  hideAddTable(): void {
+  showAddAddonTable(): void {
+    if (this.isEditing) {
+      return;
+    }
     this.hideErrorMessages();
-    this.isAdding = false;
+    this.isAddingAddon = true;
   }
 
-  hideEditableRow(beverage: BeverageResponse): void {
+  hideAddBeverageTable(): void {
+    this.hideErrorMessages();
+    this.isAddingBeverage = false;
+  }
+
+  hideAddAddonTable(): void {
+    this.hideErrorMessages();
+    this.isAddingAddon = false;
+  }
+
+  hideEditableBeverageRow(beverage: BeverageResponse): void {
     beverage.isEditing = false;
     this.isEditing = false;
     this.hideErrorMessages();
@@ -219,7 +237,31 @@ export class MenuComponent implements OnInit {
 
         this.loadBeverages();
         this.resetNewBeverage();
-        this.hideAddTable();
+        this.hideAddBeverageTable();
+        this.hideErrorMessages();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
+  }
+
+  addAddon(): void {
+    this.menuService.addAddon(this.newAddon).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano dodatek '${this.newAddon.name}'!` : `Successfully added addon '${this.newAddon.name}'!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        this.loadAddons();
+        this.resetNewAddon();
+        this.hideAddAddonTable();
         this.hideErrorMessages();
       },
       error: (error) => {
@@ -230,6 +272,10 @@ export class MenuComponent implements OnInit {
 
   resetNewBeverage(): void {
     this.newBeverage = { name: '', capacity: 0, price: 0 };
+  }
+
+  resetNewAddon(): void {
+    this.newAddon = { name: '', price: 0 };
   }
 
   handleError(error: any) {

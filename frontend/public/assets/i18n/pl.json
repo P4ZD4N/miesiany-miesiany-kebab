@@ -86,6 +86,7 @@
     "menu": {
         "addons": {
             "paragraph_addons": "Dodatki do twojego kebaba",
+            "button_add": "Dodaj dodatek",
             "addon": "Dodatek",
             "price": "Cena",
             "Jalapeno": "Jalapeno",

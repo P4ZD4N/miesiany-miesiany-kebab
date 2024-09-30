@@ -28,3 +28,8 @@ export interface AuthenticationRequest {
   email: string
   password: string
 }
+
+export interface NewAddonRequest {
+  name: string;
+  price: number;
+}

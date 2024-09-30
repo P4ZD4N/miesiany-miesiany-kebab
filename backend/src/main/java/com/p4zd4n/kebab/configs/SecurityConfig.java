@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 "/api/v1/hours/update-opening-hour",
                                 "/api/v1/menu/update-beverage",
                                 "/api/v1/menu/remove-beverage",
-                                "/api/v1/menu/add-beverage").hasRole("MANAGER")
+                                "/api/v1/menu/add-beverage",
+                                "/api/v1/menu/add-addon").hasRole("MANAGER")
                         .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )

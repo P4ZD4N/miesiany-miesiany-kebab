@@ -4,6 +4,7 @@ import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.exceptions.InvalidCapacityException;
 import com.p4zd4n.kebab.exceptions.InvalidPriceException;
+import com.p4zd4n.kebab.requests.menu.NewAddonRequest;
 import com.p4zd4n.kebab.requests.menu.NewBeverageRequest;
 import com.p4zd4n.kebab.requests.menu.RemovedBeverageRequest;
 import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
@@ -100,6 +101,19 @@ public class MenuController {
         log.info("Received get addons request");
 
         return ResponseEntity.ok(addonService.getAddons());
+    }
+
+    @PostMapping("/add-addon")
+    public ResponseEntity<NewAddonResponse> addAddon(
+            @Valid @RequestBody NewAddonRequest request
+    ) {
+        log.info("Received add addon request");
+
+        NewAddonResponse response = addonService.addAddon(request);
+
+        log.info("Successfully added new addon: {}", request.name());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/meals")

@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Size } from '../../enums/size.enum';
 import { LangService } from '../lang/lang.service';
-import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest } from '../../requests/requests';
-import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse } from '../../responses/responses';
+import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest } from '../../requests/requests';
+import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse } from '../../responses/responses';
 
 
 @Injectable({
@@ -60,6 +60,18 @@ export class MenuService {
 
   getAddons(): Observable<AddonResponse[]> {
     return this.http.get<AddonResponse[]>(`${this.apiUrl}/addons`, { withCredentials: true });
+  }
+
+  addAddon(addon: NewAddonRequest): Observable<NewAddonResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.post<NewAddonResponse>(`${this.apiUrl}/add-addon`, addon, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
   }
 
   getMeals(): Observable<MealResponse[]> {

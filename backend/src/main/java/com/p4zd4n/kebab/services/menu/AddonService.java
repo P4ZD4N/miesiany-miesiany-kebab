@@ -1,12 +1,17 @@
 package com.p4zd4n.kebab.services.menu;
 
 import com.p4zd4n.kebab.entities.Addon;
+import com.p4zd4n.kebab.exceptions.AddonAlreadyExistsException;
 import com.p4zd4n.kebab.repositories.AddonRepository;
+import com.p4zd4n.kebab.requests.menu.NewAddonRequest;
 import com.p4zd4n.kebab.responses.menu.AddonResponse;
+import com.p4zd4n.kebab.responses.menu.NewAddonResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +47,26 @@ public class AddonService {
                 .build();
     }
 
-    public void save(Addon addon) {
-        addonRepository.save(addon);
+    public NewAddonResponse addAddon(NewAddonRequest request) {
+
+        Optional<Addon> addon = addonRepository.findByName(request.name());
+
+        if (addon.isPresent()) {
+            throw new AddonAlreadyExistsException();
+        }
+
+        Addon newAddon = Addon.builder()
+                .name(request.name())
+                .price(request.price())
+                .build();
+        Addon savedAddon = addonRepository.save(newAddon);
+        NewAddonResponse response = NewAddonResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully added new addon with name '" + savedAddon.getName() + "'")
+                .build();
+
+        log.info("Successfully added new addon with name '{}'", savedAddon.getName());
+
+        return response;
     }
 }

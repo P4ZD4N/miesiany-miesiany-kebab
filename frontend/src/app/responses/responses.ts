@@ -53,5 +53,10 @@ export interface AuthenticationResponse {
   message: string
   role: Role;
 }
+
+export interface NewAddonResponse {
+  status_code: number;
+  message: string;
+}
   
   
