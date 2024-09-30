@@ -115,14 +115,20 @@ td {
     color: rgb(126, 15, 15);
 }
 
+
 input {
     max-width: 100px;
     color: white;
     text-align: center;
     background: inherit;
-    border: 0;
+    border: none;
     border-bottom: 1px solid white;
+    outline: none;
+    transition: border-bottom 0.3s ease;
 
+    &:focus {
+        border-bottom: 1px solid red;
+    }
     &[type=text] {
         max-width: 200px;
     }
@@ -139,6 +145,7 @@ input {
     }
 }
 
+
 @media (max-width: 950px) {
     p {
         margin-top: 3rem;
@@ -153,9 +160,8 @@ input {
     }
 }
 
-@media (max-width: 1020px) {
-    
-    .table-meals, .add-beverage-table {
+@media (max-width: 622px) {
+    .table-beverages, .table-meals, .add-beverage-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
