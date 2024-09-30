@@ -154,13 +154,14 @@ input {
 }
 
 @media (max-width: 1020px) {
-    .table-meals {
+    
+    .table-meals, .add-beverage-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
     }
 
-    .table-meals {
+    table {
         scrollbar-color: #ff0000 #f1f1f1; 
         scrollbar-width: thin; 
     }

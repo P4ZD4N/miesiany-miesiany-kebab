@@ -72,7 +72,8 @@
             "SUNDAY": "Niedziela"
         },
         "update": "Aktualizuj",
-        "accept": "Akceptuj"
+        "accept": "Akceptuj",
+        "cancel": "Anuluj"
     },
     "manager-panel": {
         "headline": "Panel managera",

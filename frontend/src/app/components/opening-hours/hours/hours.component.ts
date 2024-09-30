@@ -22,6 +22,7 @@ export class HoursComponent implements OnInit {
   hourForms: { [key: string]: FormGroup } = {};
   errorMessages: { [key: string]: string } = {};
   languageChangeSubscription: Subscription;
+  isEditing = false;
 
   constructor(
     private authenticationService: AuthenticationService, 
@@ -106,8 +107,12 @@ export class HoursComponent implements OnInit {
   }
 
   editRow(hour: OpeningHoursResponse): void {
+    if (this.isEditing) {
+      return;
+    }
+    this.hideErrorMessages();
+    this.isEditing = true;
     hour.isEditing = true;
-
     const form = this.hourForms[hour.day_of_week];
     form.patchValue({
       opening_time: hour.opening_time,
@@ -142,10 +147,11 @@ export class HoursComponent implements OnInit {
           color: 'white',
           confirmButtonText: 'Ok',
         });
-
+        
         hour.isEditing = false;
+        this.isEditing = false;
+        this.hideErrorMessages();
         this.loadOpeningHours();
-
       },
       error => {
         this.handleError(error);
@@ -165,6 +171,12 @@ export class HoursComponent implements OnInit {
 
   hideErrorMessages(): void {
     this.errorMessages = {};
+  }
+
+  hideRow(hour: OpeningHoursResponse): void {
+    hour.isEditing = false;
+    this.isEditing = false;
+    this.hideErrorMessages();
   }
 
   handleError(error: any) {

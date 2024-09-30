@@ -72,7 +72,8 @@
             "SUNDAY": "Sunday"
         },
         "update": "Update",
-        "accept": "Accept"
+        "accept": "Accept",
+        "cancel": "Cancel"
     },
     "manager-panel": {
         "headline": "Manager panel",
