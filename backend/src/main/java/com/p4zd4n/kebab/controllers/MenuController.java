@@ -115,8 +115,13 @@ public class MenuController {
 
     @PutMapping("/update-addon")
     public ResponseEntity<UpdatedAddonResponse> updateAddon(
+            @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedAddonRequest request
     ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
         log.info("Received update addon request");
 
         Addon existingAddon = addonService.findAddonByName(request.updatedAddonName());
