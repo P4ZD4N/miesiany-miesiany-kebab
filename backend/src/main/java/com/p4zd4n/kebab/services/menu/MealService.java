@@ -1,20 +1,22 @@
 package com.p4zd4n.kebab.services.menu;
 
+import com.p4zd4n.kebab.entities.Addon;
+import com.p4zd4n.kebab.entities.Ingredient;
 import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.*;
 import com.p4zd4n.kebab.repositories.IngredientRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.menu.NewMealRequest;
+import com.p4zd4n.kebab.requests.menu.UpdatedAddonRequest;
+import com.p4zd4n.kebab.requests.menu.UpdatedMealRequest;
 import com.p4zd4n.kebab.responses.menu.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,6 +105,27 @@ public class MealService {
         log.info("Successfully found meal with name '{}'", name);
 
         return meal;
+    }
+
+    public UpdatedMealResponse updateMeal(Meal meal, UpdatedMealRequest request) {
+
+        UpdatedMealResponse response = UpdatedMealResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated meal with name '" + meal.getName() + "'")
+                .build();
+
+        meal.setName(request.updatedMealName());
+        meal.setPrices(request.updatedPrices());
+        meal.getMealIngredients().clear();
+
+        request.updatedIngredients().forEach(ingredient -> meal.addIngredient(
+                ingredientRepository.findByName(ingredient.name()).orElseThrow(
+                        () -> new IngredientNotFoundException(ingredient.name()))
+        ));
+
+        mealRepository.save(meal);
+
+        return response;
     }
 
     public RemovedMealResponse removeMeal(Meal meal) {

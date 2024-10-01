@@ -177,6 +177,25 @@ public class MenuController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/update-meal")
+    public ResponseEntity<UpdatedMealResponse> updateMeal(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UpdatedMealRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received update meal request");
+
+        Meal existingMeal = mealService.findMealByName(request.updatedMealName());
+        UpdatedMealResponse response = mealService.updateMeal(existingMeal, request);
+
+        log.info("Successfully updated meal: {}", existingMeal.getName());
+
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/remove-meal")
     public ResponseEntity<RemovedMealResponse> removeMeal(
             @Valid @RequestBody RemovedMealRequest request
