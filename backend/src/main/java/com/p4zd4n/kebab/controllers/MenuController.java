@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Beverage;
+import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.menu.*;
 import com.p4zd4n.kebab.responses.menu.*;
@@ -172,6 +173,18 @@ public class MenuController {
         NewMealResponse response = mealService.addMeal(request);
 
         log.info("Successfully added new meal: {}", request.newMealName());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-meal")
+    public ResponseEntity<RemovedMealResponse> removeMeal(
+            @Valid @RequestBody RemovedMealRequest request
+    ) {
+        log.info("Received remove meal request");
+
+        Meal existingMeal = mealService.findMealByName(request.name());
+        RemovedMealResponse response = mealService.removeMeal(existingMeal);
 
         return ResponseEntity.ok(response);
     }

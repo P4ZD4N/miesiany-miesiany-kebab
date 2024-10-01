@@ -1,20 +1,12 @@
 package com.p4zd4n.kebab.services.menu;
 
-import com.p4zd4n.kebab.entities.Addon;
-import com.p4zd4n.kebab.entities.Ingredient;
 import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.enums.Size;
-import com.p4zd4n.kebab.exceptions.AddonAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.IngredientNotFoundException;
-import com.p4zd4n.kebab.exceptions.MealAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.*;
 import com.p4zd4n.kebab.repositories.IngredientRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
-import com.p4zd4n.kebab.requests.menu.NewAddonRequest;
 import com.p4zd4n.kebab.requests.menu.NewMealRequest;
-import com.p4zd4n.kebab.responses.menu.MealResponse;
-import com.p4zd4n.kebab.responses.menu.NewAddonResponse;
-import com.p4zd4n.kebab.responses.menu.NewMealResponse;
-import com.p4zd4n.kebab.responses.menu.SimpleMealIngredient;
+import com.p4zd4n.kebab.responses.menu.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -101,7 +93,30 @@ public class MealService {
         return response;
     }
 
-    public void save(Meal meal) {
-        mealRepository.save(meal);
+    public Meal findMealByName(String name) {
+
+        log.info("Started finding meal with name '{}'", name);
+
+        Meal meal = mealRepository.findByName(name)
+                .orElseThrow(() -> new MealNotFoundException(name));
+
+        log.info("Successfully found meal with name '{}'", name);
+
+        return meal;
+    }
+
+    public RemovedMealResponse removeMeal(Meal meal) {
+        log.info("Started removing meal with name '{}'", meal.getName());
+
+        mealRepository.delete(meal);
+
+        RemovedMealResponse response = RemovedMealResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed meal with name '" + meal.getName() + "'")
+                .build();
+
+        log.info("Successfully removed meal with name '{}'", meal.getName());
+
+        return response;
     }
 }

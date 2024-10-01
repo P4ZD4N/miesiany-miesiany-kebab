@@ -244,6 +244,22 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(MealNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleMealNotFoundException(
+            MealNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing meal: {}", request.getRequestURI(), exception.getMealName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
     @ExceptionHandler(BeverageAlreadyExistsException.class)
     public ResponseEntity<ItemTypeExceptionResponse> handleBeverageAlreadyExistsException(
             HttpServletRequest request
