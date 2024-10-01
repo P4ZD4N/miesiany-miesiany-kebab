@@ -48,13 +48,9 @@ console.log(beverage);
 
   removeBeverage(beverage: RemovedBeverageRequest): Observable<RemovedBeverageResponse> {
 
-    const headers = new HttpHeaders({
-      'Accept-Language': this.langService.currentLang
-    });
-
     const requestBody = { name: beverage.name, capacity: beverage.capacity };
 
-    return this.http.delete<RemovedBeverageResponse>(`${this.apiUrl}/remove-beverage`, { headers, body: requestBody, withCredentials: true }).pipe(
+    return this.http.delete<RemovedBeverageResponse>(`${this.apiUrl}/remove-beverage`, { body: requestBody, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

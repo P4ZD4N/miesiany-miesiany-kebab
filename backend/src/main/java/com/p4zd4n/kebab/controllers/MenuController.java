@@ -78,13 +78,8 @@ public class MenuController {
 
     @DeleteMapping("/remove-beverage")
     public ResponseEntity<RemovedBeverageResponse> removeBeverage(
-            @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody RemovedBeverageRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
-
         log.info("Received remove beverage request");
 
         Beverage existingBeverage = beverageService.findBeverageByNameAndCapacity(request.name(), request.capacity());
