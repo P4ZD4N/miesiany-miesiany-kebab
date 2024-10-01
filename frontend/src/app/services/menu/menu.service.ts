@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Size } from '../../enums/size.enum';
 import { LangService } from '../lang/lang.service';
-import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest, UpdatedAddonRequest, RemovedAddonRequest, NewMealRequest } from '../../requests/requests';
-import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse, UpdatedAddonResponse, RemovedAddonResponse, NewMealResponse, IngredientResponse } from '../../responses/responses';
+import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest, UpdatedAddonRequest, RemovedAddonRequest, NewMealRequest, RemovedMealRequest } from '../../requests/requests';
+import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse, UpdatedAddonResponse, RemovedAddonResponse, NewMealResponse, IngredientResponse, RemovedMealResponse } from '../../responses/responses';
 
 
 @Injectable({
@@ -105,6 +105,16 @@ console.log(beverage);
     });
 
     return this.http.post<NewMealResponse>(`${this.apiUrl}/add-meal`, meal, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  removeMeal(meal: RemovedMealRequest): Observable<RemovedMealResponse> {
+
+    const requestBody = { name: meal.name };
+
+    return this.http.delete<RemovedMealResponse>(`${this.apiUrl}/remove-meal`, { body: requestBody, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

@@ -79,3 +79,8 @@ export interface IngredientResponse {
   name: string;
   ingredient_type: string;
 }
+
+export interface RemovedMealResponse {
+  status_code: number;
+  message: string;
+}

@@ -50,3 +50,7 @@ export interface NewMealRequest {
   new_meal_prices: { [key in Size]?: number };
   new_meal_ingredients: SimpleMealIngredient[];
 }
+
+export interface RemovedMealRequest {
+  name: string;
+}

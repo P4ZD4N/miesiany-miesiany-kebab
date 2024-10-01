@@ -7,8 +7,8 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule }
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { NewAddonRequest, NewBeverageRequest, NewMealRequest, RemovedAddonRequest, RemovedBeverageRequest } from '../../../requests/requests';
-import { BeverageResponse, AddonResponse, MealResponse, IngredientResponse } from '../../../responses/responses';
+import { NewAddonRequest, NewBeverageRequest, NewMealRequest, RemovedAddonRequest, RemovedBeverageRequest, RemovedMealRequest } from '../../../requests/requests';
+import { BeverageResponse, AddonResponse, MealResponse, IngredientResponse, RemovedMealResponse } from '../../../responses/responses';
 import { Size } from '../../../enums/size.enum';
 
 @Component({
@@ -305,6 +305,48 @@ export class MenuComponent implements OnInit {
             confirmButtonText: 'Ok',
           });
           this.loadAddons();
+        });
+      }
+    });
+  }
+
+  removeMeal(meal: MealResponse): void {
+    let mealNameTranslated = this.translate.instant('menu.meals.' + meal.name);
+
+    if (!this.isMealTranslationAvailable(meal.name)) {
+      mealNameTranslated = meal.name;
+    }
+
+    const confirmationMessage =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac danie ${mealNameTranslated}?`
+        : `Are you sure you want to remove meal ${mealNameTranslated}?`;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.menuService.removeMeal({ name: meal.name } as RemovedMealRequest).subscribe(() => {
+          Swal.fire({
+            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto danie '${meal.name}'!` : `Successfully removed meal '${meal.name}'!`,
+            icon: 'success',
+            iconColor: 'green',
+            confirmButtonColor: 'green',
+            background: 'black',
+            color: 'white',
+            confirmButtonText: 'Ok',
+          });
+          this.loadMeals();
         });
       }
     });

@@ -91,12 +91,20 @@
     
     <table class="table-meals">
         <thead>
+            <th *ngIf="isManager()"></th>
             <th>{{ 'menu.meals.meal' | translate }}</th>
             <th>{{ 'menu.meals.prices' | translate }}</th>
             <th>{{ 'menu.meals.base_ingredients' | translate }}</th>
         </thead>
         <tbody>
             <tr *ngFor="let meal of meals">
+
+                <td *ngIf="isManager()" class="manager">
+                    <!-- <button class="button-update" *ngIf="!meal.isEditing" (click)="editMealRow(meal)">{{ 'menu.update' | translate }}</button>
+                    <button class="button-accept" *ngIf="meal.isEditing" (click)="saveMealRow(meal)">{{ 'menu.accept' | translate }}</button>
+                    <button class="button-cancel" *ngIf="meal.isEditing" (click)="hideEditableMealRow(meal)">{{ 'menu.cancel' | translate }}</button> -->
+                    <button class="button-remove" *ngIf="!meal.isEditing" (click)="removeMeal(meal)">{{ 'menu.remove' | translate }}</button>
+                </td>
 
                 <td *ngIf="isMealTranslationAvailable(meal.name); else defaultName"><span class="meal-name">{{ 'menu.meals.' + meal.name | translate }}</span></td>
                 <ng-template #defaultName>
