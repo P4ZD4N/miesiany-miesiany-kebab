@@ -1,18 +1,14 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Beverage;
+import com.p4zd4n.kebab.exceptions.AddonAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.BeverageAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.BeverageNotFoundException;
 import com.p4zd4n.kebab.exceptions.GlobalExceptionHandler;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
-import com.p4zd4n.kebab.requests.menu.NewBeverageRequest;
-import com.p4zd4n.kebab.requests.menu.RemovedBeverageRequest;
-import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
-import com.p4zd4n.kebab.responses.menu.BeverageResponse;
-import com.p4zd4n.kebab.responses.menu.NewBeverageResponse;
-import com.p4zd4n.kebab.responses.menu.RemovedBeverageResponse;
-import com.p4zd4n.kebab.responses.menu.UpdatedBeverageResponse;
+import com.p4zd4n.kebab.requests.menu.*;
+import com.p4zd4n.kebab.responses.menu.*;
 import com.p4zd4n.kebab.services.menu.AddonService;
 import com.p4zd4n.kebab.services.menu.BeverageService;
 import com.p4zd4n.kebab.services.menu.MealService;
@@ -156,6 +152,7 @@ public class MenuControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.itemType", is("beverage")))
                 .andExpect(jsonPath("$.status_code", is(409)))
                 .andExpect(jsonPath("$.message", is("Beverage with the same name and capacity already exists!")));
 
@@ -321,7 +318,6 @@ public class MenuControllerTest {
         when(beverageService.removeBeverage(any(Beverage.class))).thenReturn(response);
 
         mockMvc.perform(delete("/api/v1/menu/remove-beverage")
-                .header("Accept-Language", "en")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -333,28 +329,201 @@ public class MenuControllerTest {
     }
 
     @Test
-    public void removeBeverage_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+    public void getAddons_ShouldReturnAddons_WhenCalled() throws Exception {
 
-        RemovedBeverageRequest request = RemovedBeverageRequest.builder()
-                .name("Coca-Cola")
-                .capacity(BigDecimal.valueOf(0.5))
+        List<AddonResponse> addonList = Arrays.asList(
+                AddonResponse.builder()
+                        .name("Jalapeno")
+                        .price(BigDecimal.valueOf(3))
+                        .build(),
+                AddonResponse.builder()
+                        .name("Herbs")
+                        .price(BigDecimal.valueOf(2))
+                        .build()
+        );
+
+        when(addonService.getAddons()).thenReturn(addonList);
+
+        mockMvc.perform(get("/api/v1/menu/addons"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("Jalapeno")))
+                .andExpect(jsonPath("$[1].price", is(2)));
+
+        verify(addonService, times(1)).getAddons();
+    }
+
+    @Test
+    public void addAddon_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        NewAddonRequest request = NewAddonRequest.builder()
+                .newAddonName("Jalapeno")
+                .newAddonPrice(BigDecimal.valueOf(3))
                 .build();
 
-        mockMvc.perform(delete("/api/v1/menu/remove-beverage")
+        NewAddonResponse response = NewAddonResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully added new addon with name 'Jalapeno'")
+                .build();
+
+        when(addonService.addAddon(request)).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/menu/add-addon")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully added new addon with name 'Jalapeno'")));
+    }
+
+    @Test
+    public void addAddon_ShouldReturnConflict_WhenAddonAlreadyExists() throws Exception {
+
+        NewAddonRequest request = NewAddonRequest.builder()
+                .newAddonName("Jalapeno")
+                .newAddonPrice(BigDecimal.valueOf(3))
+                .build();
+
+        when(addonService.addAddon(request)).thenThrow(new AddonAlreadyExistsException(request.newAddonName()));
+
+        MessageSource messageSource = mock(MessageSource.class);
+        when(messageSource.getMessage("addon.alreadyExists", null, Locale.forLanguageTag("en")))
+                .thenReturn("Addon with the same name already exists!");
+
+        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new MenuController(beverageService, addonService, mealService))
+                .setControllerAdvice(exceptionHandler)
+                .build();
+
+        mockMvc.perform(post("/api/v1/menu/add-addon")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.itemType", is("addon")))
+                .andExpect(jsonPath("$.status_code", is(409)))
+                .andExpect(jsonPath("$.message", is("Addon with the same name already exists!")));
+
+        verify(addonService, times(1)).addAddon(request);
+    }
+
+    @Test
+    public void addAddon_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        NewAddonRequest request = NewAddonRequest.builder()
+                .newAddonName("Jalapeno")
+                .newAddonPrice(BigDecimal.valueOf(3))
+                .build();
+
+        mockMvc.perform(post("/api/v1/menu/add-addon")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void removeBeverage_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+    public void addAddon_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
 
         String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
 
         for (String header : invalidHeaders) {
-            mockMvc.perform(delete("/api/v1/menu/remove-beverage")
+            mockMvc.perform(post("/api/v1/menu/add-addon")
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    @Test
+    public void updateAddon_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        Addon existingAddon = Addon.builder()
+                .name("Jalapeno")
+                .price(BigDecimal.valueOf(3))
+                .build();
+
+        UpdatedAddonRequest request = UpdatedAddonRequest.builder()
+                .updatedAddonName("Jalapeno")
+                .updatedAddonPrice(BigDecimal.valueOf(4))
+                .build();
+
+        UpdatedAddonResponse expectedResponse = UpdatedAddonResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated addon with name 'Jalapeno'")
+                .build();
+
+        when(addonService.findAddonByName(request.updatedAddonName()))
+                .thenReturn(existingAddon);
+        when(addonService.updateAddon(any(Addon.class), any(UpdatedAddonRequest.class)))
+                .thenReturn(expectedResponse);
+
+        mockMvc.perform(put("/api/v1/menu/update-addon")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully updated addon with name 'Jalapeno'")));
+
+        verify(addonService, times(1)).findAddonByName(request.updatedAddonName());
+        verify(addonService, times(1)).updateAddon(existingAddon, request);
+    }
+
+    @Test
+    public void updateAddon_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        UpdatedAddonRequest request = UpdatedAddonRequest.builder()
+                .updatedAddonName("Jalapeno")
+                .updatedAddonPrice(BigDecimal.valueOf(5))
+                .build();
+
+        mockMvc.perform(put("/api/v1/menu/update-addon")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateAddon_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(put("/api/v1/menu/update-addon")
+                            .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void removeAddon_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        Addon existingAddon = Addon.builder()
+                .name("Jalapeno")
+                .price(BigDecimal.valueOf(3))
+                .build();
+
+        RemovedAddonRequest request = RemovedAddonRequest.builder()
+                .name("Jalapeno")
+                .build();
+
+        RemovedAddonResponse response = RemovedAddonResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed addon with name 'Jalapeno'")
+                .build();
+
+        when(addonService.findAddonByName(request.name())).thenReturn(existingAddon);
+        when(addonService.removeAddon(any(Addon.class))).thenReturn(response);
+
+        mockMvc.perform(delete("/api/v1/menu/remove-addon")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully removed addon with name 'Jalapeno'")));
+
+        verify(addonService, times(1)).findAddonByName(request.name());
+        verify(addonService, times(1)).removeAddon(existingAddon);
     }
 }
