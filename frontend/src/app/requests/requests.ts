@@ -1,4 +1,6 @@
 import { DayOfWeek } from "../enums/day-of-week.enum";
+import { Size } from "../enums/size.enum";
+import { SimpleMealIngredient } from "../responses/responses";
 
 export interface NewBeverageRequest {
   new_beverage_name: string;
@@ -41,4 +43,10 @@ export interface UpdatedAddonRequest {
 
 export interface RemovedAddonRequest {
   name: string;
+}
+
+export interface NewMealRequest {
+  new_meal_name: string;
+  new_meal_prices: { [key in Size]?: number };
+  new_meal_ingredients: SimpleMealIngredient[];
 }

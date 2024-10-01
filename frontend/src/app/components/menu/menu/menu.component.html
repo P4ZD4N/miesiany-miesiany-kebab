@@ -2,6 +2,93 @@
     <h1>Menu</h1>
 
     <p>{{ 'menu.meals.paragraph_meals' | translate }}</p>
+    <button class="btn btn-success" *ngIf="isManager() && !isEditing" (click)="showAddMealTable()">{{ 'menu.meals.button_add' | translate }}</button>
+    
+    <p *ngIf="errorMessages['newMealName']" class="error">{{ errorMessages['newMealName'] }}</p>
+    <p *ngIf="errorMessages['prices']" class="error">{{ errorMessages['prices'] }}</p>
+    <p *ngIf="errorMessages['ingredients']" class="error">{{ errorMessages['ingredients'] }}</p>
+    <p *ngIf="errorMessages['itemType'] === 'meal'" class="error">{{ errorMessages['message'] }}</p>
+
+    <table class="add-meal-table" *ngIf="isAddingMeal">
+        <tr>
+            <td>
+                <button class="button-accept" (click)="addMeal()">{{ 'menu.accept' | translate }}</button>
+                <button class="button-cancel" (click)="hideAddMealTable()">{{ 'menu.cancel' | translate }}</button>
+            </td>
+            <td>
+                <input type="text" placeholder="{{ 'menu.meals.meal' | translate }}"  [(ngModel)]="newMeal.new_meal_name" />
+            </td>
+            <td>
+                <div *ngFor="let size of sizeOrder">
+                    <label>
+                      <input type="checkbox" [(ngModel)]="newMeal.new_meal_prices[size]" />
+                      {{ 'menu.meals.sizes.' + size | translate }}
+                    </label>
+                    <label *ngIf="newMeal.new_meal_prices[size]">
+                        <input
+                            type="number"
+                            [(ngModel)]="newMeal.new_meal_prices[size]"
+                            placeholder="{{ 'menu.meals.price' | translate }}"
+                            min="0"
+                        />zl
+                    </label>
+                  </div>
+            </td>
+            <td>
+                <div *ngFor="let ingredient of ingredients">
+                    <label *ngIf="ingredient.ingredient_type === 'BREAD'">
+                        <i class="fa-solid fa-bread-slice"></i>
+                        <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
+                            {{ 'menu.meals.ingredients.' + ingredient.name | translate }}
+                        </ng-container>
+                        <ng-template #defaultName>
+                            {{ ingredient.name }}
+                        </ng-template>
+                        <input type="checkbox" 
+                            [checked]="selectedBread === ingredient.name" 
+                            [disabled]="selectedBread !== null && selectedBread !== ingredient.name" 
+                            (change)="onIngredientCheckboxChange(ingredient)" 
+                        />
+                    </label>
+                </div>
+            </td>
+            <td>
+                <div *ngFor="let ingredient of ingredients">
+                    <label *ngIf="ingredient.ingredient_type === 'VEGETABLE'">
+                        <i class="fa-solid fa-carrot"></i>
+                        <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
+                            {{ 'menu.meals.ingredients.' + ingredient.name | translate }}
+                        </ng-container>
+                        <ng-template #defaultName>
+                            {{ ingredient.name }}
+                        </ng-template>
+                        <input type="checkbox" 
+                            [checked]="selectedVegetables.has(ingredient.name)" 
+                            (change)="onIngredientCheckboxChange(ingredient)" 
+                        />
+                    </label>
+                </div>
+            </td>
+            <td>
+                <div *ngFor="let ingredient of ingredients">
+                    <label *ngIf="ingredient.ingredient_type === 'OTHER'">
+                        <i class="fa-solid fa-plus"></i> 
+                        <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
+                            {{ 'menu.meals.ingredients.' + ingredient.name | translate }}
+                        </ng-container>
+                        <ng-template #defaultName>
+                            {{ ingredient.name }}
+                        </ng-template>
+                        <input type="checkbox" 
+                            [checked]="selectedOthers.has(ingredient.name)" 
+                            (change)="onIngredientCheckboxChange(ingredient)" 
+                        />
+                    </label>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
     <table class="table-meals">
         <thead>
             <th>{{ 'menu.meals.meal' | translate }}</th>
@@ -10,7 +97,12 @@
         </thead>
         <tbody>
             <tr *ngFor="let meal of meals">
-                <td><span class="meal-name">{{ 'menu.meals.' + meal.name | translate }}</span></td>
+
+                <td *ngIf="isMealTranslationAvailable(meal.name); else defaultName"><span class="meal-name">{{ 'menu.meals.' + meal.name | translate }}</span></td>
+                <ng-template #defaultName>
+                    <td><span class="meal-name">{{ meal.name }}</span></td>
+                </ng-template>
+
                 <td>
                     <table>
                         <thead>
@@ -27,16 +119,26 @@
                         </tbody>
                     </table>
                 </td>
-                <td class="base-ingredients">
+                <td>
                     <ul *ngFor="let ingredient of meal.ingredients">
-                        <li>
+                        <li *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
                             <i *ngIf="ingredient.ingredient_type === 'BREAD'" class="fa-solid fa-bread-slice"></i>
                             <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
                             <i *ngIf="ingredient.ingredient_type === 'OTHER'" class="fa-solid fa-plus"></i> 
                             {{ 'menu.meals.ingredients.' + ingredient.name | translate}}
                         </li>
+
+                        <ng-template #defaultName>
+                            <li>
+                                <i *ngIf="ingredient.ingredient_type === 'BREAD'" class="fa-solid fa-bread-slice"></i>
+                                <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
+                                <i *ngIf="ingredient.ingredient_type === 'OTHER'" class="fa-solid fa-plus"></i> 
+                                {{ ingredient.name }}
+                            </li>
+                        </ng-template>
                     </ul>
                 </td>
+                
             </tr>
         </tbody>
     </table>

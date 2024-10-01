@@ -31,7 +31,7 @@ export interface AddonResponse {
 }
 
 export interface SimpleMealIngredient {
-  id: number;
+  id?: number;
   name: string;
   ingredient_type: string;
 }
@@ -69,3 +69,13 @@ export interface RemovedAddonResponse {
   status_code: number;
   message: string;
 }  
+
+export interface NewMealResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface IngredientResponse {
+  name: string;
+  ingredient_type: string;
+}

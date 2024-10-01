@@ -132,6 +132,9 @@ input {
     &[type=text] {
         max-width: 200px;
     }
+    &[type=checkbox] {
+        accent-color: red;
+    }
 }
 
 @media (max-width: 1280px) {

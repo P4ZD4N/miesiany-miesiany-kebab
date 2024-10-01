@@ -7,8 +7,9 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule }
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { NewAddonRequest, NewBeverageRequest, RemovedAddonRequest, RemovedBeverageRequest } from '../../../requests/requests';
-import { BeverageResponse, AddonResponse, MealResponse } from '../../../responses/responses';
+import { NewAddonRequest, NewBeverageRequest, NewMealRequest, RemovedAddonRequest, RemovedBeverageRequest } from '../../../requests/requests';
+import { BeverageResponse, AddonResponse, MealResponse, IngredientResponse } from '../../../responses/responses';
+import { Size } from '../../../enums/size.enum';
 
 @Component({
   selector: 'app-menu',
@@ -21,12 +22,14 @@ export class MenuComponent implements OnInit {
   beverages: BeverageResponse[] = [];
   addons: AddonResponse[] = [];
   meals: MealResponse[] = [];
+  ingredients: IngredientResponse[] = [];
   beverageForms: { [key: string]: FormGroup } = {};
   addonForms: { [key: string]: FormGroup } = {};
   errorMessages: { [key: string]: string } = {};
   languageChangeSubscription: Subscription;
   isAddingBeverage = false;
   isAddingAddon = false;
+  isAddingMeal = false;
   isEditing = false;
   newBeverage: NewBeverageRequest = {
     new_beverage_name: '',
@@ -37,7 +40,15 @@ export class MenuComponent implements OnInit {
     new_addon_name: '',
     new_addon_price: 0,
   };
-  sizeOrder = ['SMALL', 'MEDIUM', 'LARGE', 'XL'];
+  newMeal: NewMealRequest = {
+    new_meal_name: '',
+    new_meal_prices: {},
+    new_meal_ingredients: []
+  };
+  sizeOrder: Size[] = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.XL];
+  selectedBread: string | null = null; 
+  selectedVegetables: Set<string> = new Set();
+  selectedOthers: Set<string> = new Set();
 
   constructor(
     private menuService: MenuService,
@@ -55,6 +66,7 @@ export class MenuComponent implements OnInit {
     this.loadBeverages();
     this.loadAddons();
     this.loadMeals();
+    this.loadIngredients();
   }
 
   loadBeverages(): void {
@@ -88,6 +100,17 @@ export class MenuComponent implements OnInit {
       },
       (error) => {
         console.log('Error loading meals', error);
+      }
+    );
+  }
+
+  loadIngredients(): void {
+    this.menuService.getIngredients().subscribe(
+      (data: IngredientResponse[]) => {
+        this.ingredients = data;
+      },
+      (error) => {
+        console.log('Error loading ingredients', error);
       }
     );
   }
@@ -303,6 +326,14 @@ export class MenuComponent implements OnInit {
     this.isAddingAddon = true;
   }
 
+  showAddMealTable(): void {
+    if (this.isEditing) {
+      return;
+    }
+    this.hideErrorMessages();
+    this.isAddingMeal = true;
+  }
+
   hideAddBeverageTable(): void {
     this.hideErrorMessages();
     this.isAddingBeverage = false;
@@ -311,6 +342,11 @@ export class MenuComponent implements OnInit {
   hideAddAddonTable(): void {
     this.hideErrorMessages();
     this.isAddingAddon = false;
+  }
+
+  hideAddMealTable(): void {
+    this.hideErrorMessages();
+    this.isAddingMeal = false;
   }
 
   hideEditableBeverageRow(beverage: BeverageResponse): void {
@@ -373,12 +409,55 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  addMeal(): void {
+    const filteredPrices = Object.entries(this.newMeal.new_meal_prices)
+            .filter(([size, price]) => typeof price === 'number' && price > 0)
+            .reduce((acc, [size, price]) => {
+                acc[size] = price;
+                return acc;
+            }, {} as { [key: string]: number }); 
+
+    this.newMeal.new_meal_prices = filteredPrices;
+
+    this.menuService.addMeal(this.newMeal).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano danie '${this.newMeal.new_meal_name}'!` : `Successfully added meal '${this.newMeal.new_meal_name}'!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        this.loadMeals();
+        this.resetNewMeal();
+        this.hideAddMealTable();
+        this.hideErrorMessages();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
+  }
+
   resetNewBeverage(): void {
     this.newBeverage = { new_beverage_name: '', new_beverage_capacity: 0, new_beverage_price: 0 };
   }
 
   resetNewAddon(): void {
     this.newAddon = { new_addon_name: '', new_addon_price: 0 };
+  }
+  resetNewMeal(): void {
+    this.newMeal = {
+      new_meal_name: '',
+      new_meal_prices: {},
+      new_meal_ingredients: []
+    };
+    this.selectedBread = null;
+    this.selectedVegetables.clear();
+    this.selectedOthers.clear();
   }
 
   handleError(error: any) {
@@ -422,5 +501,62 @@ export class MenuComponent implements OnInit {
   isAddonTranslationAvailable(addonName: string): boolean {
     const translatedName = this.translate.instant('menu.addons.' + addonName);
     return translatedName !== 'menu.addons.' + addonName;
+  }
+
+  isIngredientTranslationAvailable(ingredientName: string): boolean {
+    const translatedName = this.translate.instant('menu.meals.ingredients.' + ingredientName);
+    return translatedName !== 'menu.meals.ingredients.' + ingredientName;
+  }
+
+  isMealTranslationAvailable(mealName: string): boolean {
+    const translatedName = this.translate.instant('menu.meals.' + mealName);
+    return translatedName !== 'menu.meals.' + mealName;
+  }
+
+  onIngredientCheckboxChange(ingredient: any) {
+    if (ingredient.ingredient_type === 'BREAD') {
+      if (this.selectedBread === ingredient.name) {
+        this.selectedBread = null; 
+        this.removeIngredient(ingredient); 
+      } else {
+        this.selectedBread = ingredient.name; 
+        this.addIngredient(ingredient);
+      }
+    } else if (ingredient.ingredient_type === 'VEGETABLE') {
+      if (this.selectedVegetables.has(ingredient.name)) {
+        this.selectedVegetables.delete(ingredient.name); 
+        this.removeIngredient(ingredient); 
+      } else {
+        this.selectedVegetables.add(ingredient.name); 
+        this.addIngredient(ingredient);
+      }
+    } else if (ingredient.ingredient_type === 'OTHER') {
+      if (this.selectedOthers.has(ingredient.name)) {
+        this.selectedOthers.delete(ingredient.name); 
+        this.removeIngredient(ingredient);
+      } else {
+        this.selectedOthers.add(ingredient.name);
+        this.addIngredient(ingredient);
+      }
+    }
+  }
+
+  addIngredient(ingredient: any) {
+    const exists = this.newMeal.new_meal_ingredients.find(
+      (i) => i.name === ingredient.name && i.ingredient_type === ingredient.ingredient_type
+    );
+
+    if (!exists) {
+      this.newMeal.new_meal_ingredients.push({
+        name: ingredient.name,
+        ingredient_type: ingredient.ingredient_type
+      });
+    }
+  }
+
+  removeIngredient(ingredient: any) {
+    this.newMeal.new_meal_ingredients = this.newMeal.new_meal_ingredients.filter(
+      (i) => !(i.name === ingredient.name && i.ingredient_type === ingredient.ingredient_type)
+    );
   }
 }

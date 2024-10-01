@@ -109,6 +109,7 @@
         },
         "meals": {
             "paragraph_meals": "Meals",
+            "button_add": "Add meal",
             "meal": "Meal",
             "prices": "Prices",
             "base_ingredients": "Base ingredients",

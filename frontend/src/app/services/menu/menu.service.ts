@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Size } from '../../enums/size.enum';
 import { LangService } from '../lang/lang.service';
-import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest, UpdatedAddonRequest, RemovedAddonRequest } from '../../requests/requests';
-import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse, UpdatedAddonResponse, RemovedAddonResponse } from '../../responses/responses';
+import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest, UpdatedAddonRequest, RemovedAddonRequest, NewMealRequest } from '../../requests/requests';
+import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse, UpdatedAddonResponse, RemovedAddonResponse, NewMealResponse, IngredientResponse } from '../../responses/responses';
 
 
 @Injectable({
@@ -97,6 +97,22 @@ console.log(beverage);
   getMeals(): Observable<MealResponse[]> {
     return this.http.get<MealResponse[]>(`${this.apiUrl}/meals`, { withCredentials: true });
   } 
+
+  addMeal(meal: NewMealRequest): Observable<NewMealResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.post<NewMealResponse>(`${this.apiUrl}/add-meal`, meal, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  getIngredients(): Observable<IngredientResponse[]> {
+    return this.http.get<IngredientResponse[]>(`${this.apiUrl}/ingredients`, { withCredentials: true });
+  }
 
   handleError(error: HttpErrorResponse) {
 

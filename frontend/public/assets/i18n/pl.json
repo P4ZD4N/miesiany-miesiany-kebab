@@ -109,6 +109,7 @@
         },
         "meals": {
             "paragraph_meals": "Dania",
+            "button_add": "Dodaj danie",
             "meal": "Danie",
             "prices": "Ceny",
             "base_ingredients": "Bazowe skladniki",
