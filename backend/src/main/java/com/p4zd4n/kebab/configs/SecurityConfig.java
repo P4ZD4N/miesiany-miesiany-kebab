@@ -43,7 +43,9 @@ public class SecurityConfig {
                                 "/api/v1/menu/add-beverage",
                                 "/api/v1/menu/add-addon",
                                 "/api/v1/menu/update-addon",
-                                "api/v1/menu/remove-addon").hasRole("MANAGER")
+                                "/api/v1/menu/remove-addon",
+                                "/api/v1/menu/add-meal",
+                                "/api/v1/menu/ingredients").hasRole("MANAGER")
                         .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )

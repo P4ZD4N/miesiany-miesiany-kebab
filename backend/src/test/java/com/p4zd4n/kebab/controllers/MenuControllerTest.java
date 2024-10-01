@@ -11,6 +11,7 @@ import com.p4zd4n.kebab.requests.menu.*;
 import com.p4zd4n.kebab.responses.menu.*;
 import com.p4zd4n.kebab.services.menu.AddonService;
 import com.p4zd4n.kebab.services.menu.BeverageService;
+import com.p4zd4n.kebab.services.menu.IngredientService;
 import com.p4zd4n.kebab.services.menu.MealService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,9 @@ public class MenuControllerTest {
 
     @MockBean
     private MealService mealService;
+
+    @MockBean
+    private IngredientService ingredientService;
 
     @MockBean
     private BeverageRepository beverageRepository;
@@ -143,7 +147,7 @@ public class MenuControllerTest {
 
         GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new MenuController(beverageService, addonService, mealService))
+                .standaloneSetup(new MenuController(beverageService, addonService, mealService, ingredientService))
                 .setControllerAdvice(exceptionHandler)
                 .build();
 
@@ -251,7 +255,7 @@ public class MenuControllerTest {
 
         GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new MenuController(beverageService, addonService, mealService))
+                .standaloneSetup(new MenuController(beverageService, addonService, mealService, ingredientService))
                 .setControllerAdvice(exceptionHandler)
                 .build();
 
@@ -393,7 +397,7 @@ public class MenuControllerTest {
 
         GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new MenuController(beverageService, addonService, mealService))
+                .standaloneSetup(new MenuController(beverageService, addonService, mealService, ingredientService))
                 .setControllerAdvice(exceptionHandler)
                 .build();
 

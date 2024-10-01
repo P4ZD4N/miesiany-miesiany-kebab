@@ -228,6 +228,22 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(IngredientNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleIngredientNotFoundException(
+            IngredientNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing ingredient: {}", request.getRequestURI(), exception.getIngredientName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
     @ExceptionHandler(BeverageAlreadyExistsException.class)
     public ResponseEntity<ItemTypeExceptionResponse> handleBeverageAlreadyExistsException(
             HttpServletRequest request
@@ -261,6 +277,25 @@ public class GlobalExceptionHandler {
                 .body(ItemTypeExceptionResponse
                         .builder()
                         .itemType("addon")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(MealAlreadyExistsException.class)
+    public ResponseEntity<ItemTypeExceptionResponse> handleMealAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing meal", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("meal.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ItemTypeExceptionResponse
+                        .builder()
+                        .itemType("meal")
                         .statusCode(HttpStatus.CONFLICT.value())
                         .message(message)
                         .build());

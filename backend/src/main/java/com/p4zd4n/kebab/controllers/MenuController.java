@@ -7,6 +7,7 @@ import com.p4zd4n.kebab.requests.menu.*;
 import com.p4zd4n.kebab.responses.menu.*;
 import com.p4zd4n.kebab.services.menu.AddonService;
 import com.p4zd4n.kebab.services.menu.BeverageService;
+import com.p4zd4n.kebab.services.menu.IngredientService;
 import com.p4zd4n.kebab.services.menu.MealService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +25,17 @@ public class MenuController {
     private final BeverageService beverageService;
     private final AddonService addonService;
     private final MealService mealService;
+    private final IngredientService ingredientService;
 
-    public MenuController(BeverageService beverageService, AddonService addonService, MealService mealService) {
+    public MenuController(BeverageService beverageService,
+                          AddonService addonService,
+                          MealService mealService,
+                          IngredientService ingredientService
+    ) {
         this.beverageService = beverageService;
         this.addonService = addonService;
         this.mealService = mealService;
+        this.ingredientService = ingredientService;
     }
 
     @GetMapping("/beverages")
@@ -149,5 +156,30 @@ public class MenuController {
         log.info("Received get meals request");
 
         return ResponseEntity.ok(mealService.getMeals());
+    }
+
+    @PostMapping("/add-meal")
+    public ResponseEntity<NewMealResponse> addMeal(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody NewMealRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received add meal request");
+
+        NewMealResponse response = mealService.addMeal(request);
+
+        log.info("Successfully added new meal: {}", request.newMealName());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/ingredients")
+    public ResponseEntity<List<IngredientResponse>> getIngredients() {
+        log.info("Received get ingredients request");
+
+        return ResponseEntity.ok(ingredientService.getIngredients());
     }
 }

@@ -4,6 +4,7 @@ import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.enums.DayOfWeek;
 import com.p4zd4n.kebab.enums.IngredientType;
 import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.exceptions.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -268,6 +269,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 chicken,
                 mutton,
                 meatMix,
+                falafel,
                 cabbage,
                 tomato,
                 cucumber,
@@ -287,10 +289,10 @@ public class SampleDataInitializer implements CommandLineRunner {
     private void initMeals() {
 
         List<Ingredient> salad = List.of(
-                ingredientRepository.findByName("Cabbage"),
-                ingredientRepository.findByName("Tomato"),
-                ingredientRepository.findByName("Cucumber"),
-                ingredientRepository.findByName("Onion")
+                ingredientRepository.findByName("Cabbage").orElseThrow(() -> new IngredientNotFoundException("Cabbage")),
+                ingredientRepository.findByName("Tomato").orElseThrow(() -> new IngredientNotFoundException("Tomato")),
+                ingredientRepository.findByName("Cucumber").orElseThrow(() -> new IngredientNotFoundException("Cucumber")),
+                ingredientRepository.findByName("Onion").orElseThrow(() -> new IngredientNotFoundException("Onion"))
         );
 
         EnumMap<Size, BigDecimal> pitaKebabSaladsPrices = new EnumMap<>(Size.class);
@@ -305,7 +307,8 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .prices(pitaKebabSaladsPrices)
                 .build();
 
-        pitaKebabSalads.addIngredient(ingredientRepository.findByName("Pita"));
+        pitaKebabSalads.addIngredient(ingredientRepository.findByName("Pita").orElseThrow(
+                () -> new IngredientNotFoundException("Pita")));
         salad.forEach(pitaKebabSalads::addIngredient);
 
         EnumMap<Size, BigDecimal> pitaKebabSaladsAndFriesPrices = new EnumMap<>(Size.class);
@@ -320,9 +323,11 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .prices(pitaKebabSaladsAndFriesPrices)
                 .build();
 
-        pitaKebabSaladsAndFries.addIngredient(ingredientRepository.findByName("Pita"));
+        pitaKebabSaladsAndFries.addIngredient(ingredientRepository.findByName("Pita").orElseThrow(
+                () -> new IngredientNotFoundException("Pita")));
         salad.forEach(pitaKebabSaladsAndFries::addIngredient);
-        pitaKebabSaladsAndFries.addIngredient(ingredientRepository.findByName("Fries"));
+        pitaKebabSaladsAndFries.addIngredient(ingredientRepository.findByName("Fries").orElseThrow(
+                () -> new IngredientNotFoundException("Fries")));
 
         mealRepository.saveAll(List.of(pitaKebabSalads, pitaKebabSaladsAndFries));
     }
