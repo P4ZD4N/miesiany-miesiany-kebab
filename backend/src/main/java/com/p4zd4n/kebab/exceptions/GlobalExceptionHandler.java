@@ -300,4 +300,20 @@ public class GlobalExceptionHandler {
                         .message(message)
                         .build());
     }
+
+    @ExceptionHandler(ExcessBreadException.class)
+    public ResponseEntity<ExceptionResponse> handleExcessBreadException(
+            ExcessBreadException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with excess bread", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
 }
