@@ -160,8 +160,8 @@ input {
     }
 }
 
-@media (max-width: 622px) {
-    .table-beverages, .table-meals, .add-beverage-table {
+@media (max-width: 522px) {
+    .table-meals {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
@@ -170,5 +170,21 @@ input {
     table {
         scrollbar-color: #ff0000 #f1f1f1; 
         scrollbar-width: thin; 
+    }
+}
+
+@media (max-width: 422px) {
+    .table-beverages, .add-beverage-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 350px) {
+    .table-addons {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 }
