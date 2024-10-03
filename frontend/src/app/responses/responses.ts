@@ -40,6 +40,7 @@ export interface MealResponse {
   name: string;
   prices: { [key in Size]: number };
   ingredients: SimpleMealIngredient[];
+  isEditing?: boolean;
 }
 
 export interface OpeningHoursResponse {
@@ -81,6 +82,11 @@ export interface IngredientResponse {
 }
 
 export interface RemovedMealResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedMealResponse {
   status_code: number;
   message: string;
 }

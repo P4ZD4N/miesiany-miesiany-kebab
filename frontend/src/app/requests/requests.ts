@@ -51,6 +51,12 @@ export interface NewMealRequest {
   new_meal_ingredients: SimpleMealIngredient[];
 }
 
+export interface UpdatedMealRequest {
+  updated_meal_name: string;
+  updated_meal_prices: { [key in Size]?: number };
+  updated_meal_ingredients: SimpleMealIngredient[];
+}
+
 export interface RemovedMealRequest {
   name: string;
 }

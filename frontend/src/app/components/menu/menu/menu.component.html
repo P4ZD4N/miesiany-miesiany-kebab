@@ -100,9 +100,9 @@
             <tr *ngFor="let meal of meals">
 
                 <td *ngIf="isManager()" class="manager">
-                    <!-- <button class="button-update" *ngIf="!meal.isEditing" (click)="editMealRow(meal)">{{ 'menu.update' | translate }}</button>
+                    <button class="button-update" *ngIf="!meal.isEditing" (click)="editMealRow(meal)">{{ 'menu.update' | translate }}</button>
                     <button class="button-accept" *ngIf="meal.isEditing" (click)="saveMealRow(meal)">{{ 'menu.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="meal.isEditing" (click)="hideEditableMealRow(meal)">{{ 'menu.cancel' | translate }}</button> -->
+                    <button class="button-cancel" *ngIf="meal.isEditing" (click)="hideEditableMealRow(meal)">{{ 'menu.cancel' | translate }}</button>
                     <button class="button-remove" *ngIf="!meal.isEditing" (click)="removeMeal(meal)">{{ 'menu.remove' | translate }}</button>
                 </td>
 
@@ -113,21 +113,50 @@
 
                 <td>
                     <table>
-                        <thead>
+                        <thead *ngIf="!meal.isEditing">
                             <tr>
                                 <th>{{ 'menu.meals.size' | translate }}</th>
                                 <th>{{ 'menu.meals.price' | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let price of meal.prices | keyvalue: sortSizes">
-                                <td>{{ 'menu.meals.sizes.' + price.key | translate }}</td>
-                                <td>{{ formatPrice(price.value) }}</td>
-                            </tr>
+                            <ng-container *ngIf="!meal.isEditing">
+                                <tr *ngFor="let price of meal.prices | keyvalue: sortSizes">
+                                    <td>{{ 'menu.meals.sizes.' + price.key | translate }}</td>
+                                    <td>{{ formatPrice(price.value) }}</td>
+                                </tr>
+                            </ng-container>
+                            <ng-container *ngIf="meal.isEditing">
+                                <tr [formGroup]="mealForms[meal.name]">
+                                    <td colspan="2">
+                                    <div *ngFor="let size of sizeOrder">
+                                        <label>
+                                          <input 
+                                            type="checkbox" 
+                                            [checked]="mealForms[meal.name].get('prices.' + size)?.value  != null"
+                                            (change)="onSizeCheckboxChange(meal, size, $event)"
+                                            #checkBox
+                                          />
+                                          {{ 'menu.meals.sizes.' + size | translate }}
+                                        </label>
+                                        <label *ngIf="checkBox.checked">
+                                            <div formGroupName="prices">
+                                            <input
+                                                type="number"
+                                                formControlName="{{ size }}"
+                                                placeholder="{{ 'menu.meals.price' | translate }}"
+                                                min="0"
+                                            />zl
+                                        </div>
+                                        </label>
+                                      </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </td>
-                <td>
+                <td *ngIf="!meal.isEditing">
                     <ul *ngFor="let ingredient of meal.ingredients">
                         <li *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
                             <i *ngIf="ingredient.ingredient_type === 'BREAD'" class="fa-solid fa-bread-slice"></i>
@@ -146,7 +175,38 @@
                         </ng-template>
                     </ul>
                 </td>
-                
+
+                <td *ngIf="meal.isEditing">
+                    <ul *ngFor="let ingredient of ingredients">
+                        <div *ngIf="ingredient.ingredient_type === 'VEGETABLE' || ingredient.ingredient_type === 'OTHER'">
+                            <li *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
+                                <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
+                                <i *ngIf="ingredient.ingredient_type === 'OTHER'" class="fa-solid fa-plus"></i> 
+                                {{ 'menu.meals.ingredients.' + ingredient.name | translate}}
+                                <label>
+                                        <input 
+                                        (change)="onUpdateIngredientCheckboxChange(meal, ingredient, $event)"
+                                        type="checkbox" 
+                                        [checked]="mealContainsIngredient(meal, ingredient)"
+                                        />
+                                </label>
+                            </li>
+
+                            <ng-template #defaultName>
+                                <li>
+                                    <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
+                                    <i *ngIf="ingredient.ingredient_type === 'OTHER'" class="fa-solid fa-plus"></i> 
+                                    {{ ingredient.name }}
+                                        <input 
+                                        (change)="onUpdateIngredientCheckboxChange(meal, ingredient, $event)"
+                                        type="checkbox" 
+                                        [checked]="mealContainsIngredient(meal, ingredient)"
+                                        />
+                                </li>
+                            </ng-template>
+                        </div>
+                    </ul>
+                </td>
             </tr>
         </tbody>
     </table>

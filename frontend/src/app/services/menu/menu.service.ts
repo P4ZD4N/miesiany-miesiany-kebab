@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Size } from '../../enums/size.enum';
 import { LangService } from '../lang/lang.service';
-import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest, UpdatedAddonRequest, RemovedAddonRequest, NewMealRequest, RemovedMealRequest } from '../../requests/requests';
-import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse, UpdatedAddonResponse, RemovedAddonResponse, NewMealResponse, IngredientResponse, RemovedMealResponse } from '../../responses/responses';
+import { NewBeverageRequest, UpdatedBeverageRequest, RemovedBeverageRequest, NewAddonRequest, UpdatedAddonRequest, RemovedAddonRequest, NewMealRequest, RemovedMealRequest, UpdatedMealRequest } from '../../requests/requests';
+import { NewBeverageResponse, UpdatedBeverageResponse, RemovedBeverageResponse, BeverageResponse, AddonResponse, MealResponse, NewAddonResponse, UpdatedAddonResponse, RemovedAddonResponse, NewMealResponse, IngredientResponse, RemovedMealResponse, UpdatedMealResponse } from '../../responses/responses';
 
 
 @Injectable({
@@ -105,6 +105,18 @@ console.log(beverage);
     });
 
     return this.http.post<NewMealResponse>(`${this.apiUrl}/add-meal`, meal, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  updateMeal(meal: UpdatedMealRequest): Observable<UpdatedMealResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.put<UpdatedMealResponse>(`${this.apiUrl}/update-meal`, meal, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )
