@@ -130,8 +130,23 @@
                 "Cucumber": "Cucumber",
                 "Onion": "Onion",
                 "Fries": "Fries",
-                "Cheese": "Cheese"
+                "Cheese": "Cheese",
+                "Chicken": "Chicken",
+                "Mutton": "Mutton",
+                "Meat Mix": "Meat Mix",
+                "Falafel": "Falafel",
+                "Garlic Sauce": "Garlic Sauce",
+                "BBQ Sauce": "BBQ Sauce",
+                "Mild Sauce": "Mild Sauce",
+                "Hot Sauce": "Hot Sauce",
+                "Sauce Mix": "Sauce Mix"
             }
+        },
+        "meats": {
+            "paragraph_meats": "Meats to choose"
+        },
+        "sauces": {
+            "paragraph_sauces": "Sauces to choose"
         },
         "update": "Update",
         "cancel": "Cancel",

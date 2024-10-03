@@ -130,8 +130,23 @@
                 "Cucumber": "Ogorek",
                 "Onion": "Cebula",
                 "Fries": "Frytki",
-                "Cheese": "Ser"
+                "Cheese": "Ser",
+                "Chicken": "Kurczak",
+                "Mutton": "Baranina",
+                "Meat Mix": "Mieszane",
+                "Falafel": "Falafel",
+                "Garlic Sauce": "Sos czosnkowy",
+                "BBQ Sauce": "Sos BBQ",
+                "Mild Sauce": "Sos lagodny",
+                "Hot Sauce": "Sos ostry",
+                "Sauce Mix": "Sos mieszany"
             }
+        },
+        "meats": {
+            "paragraph_meats": "Miesa do wyboru"
+        },
+        "sauces": {
+            "paragraph_sauces": "Sosy do wyboru"
         },
         "update": "Aktualizuj",
         "cancel": "Anuluj",

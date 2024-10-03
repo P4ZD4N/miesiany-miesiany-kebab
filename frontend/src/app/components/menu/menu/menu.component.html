@@ -211,6 +211,16 @@
         </tbody>
     </table>
 
+    <h3>{{ 'menu.meats.paragraph_meats' | translate }}</h3>
+    <span>
+        {{ getMeats() }}
+    </span>
+
+    <h3>{{ 'menu.sauces.paragraph_sauces' | translate }}</h3>
+    <span>
+        {{ getSauces() }}
+    </span>
+    
     <p>{{ 'menu.addons.paragraph_addons' | translate }}</p>
     <button class="btn btn-success" *ngIf="isManager() && !isEditing" (click)="showAddAddonTable()">{{ 'menu.addons.button_add' | translate }}</button>
     

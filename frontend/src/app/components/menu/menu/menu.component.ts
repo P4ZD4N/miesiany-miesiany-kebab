@@ -754,4 +754,35 @@ export class MenuComponent implements OnInit {
   mealContainsIngredient(meal: MealResponse, ingredient: IngredientResponse): boolean {
     return meal.ingredients.some(mealIngredient => mealIngredient.name === ingredient.name);
   }
+
+  getSauces(): string {
+  
+    return this.ingredients
+        .filter(ingredient => ingredient.ingredient_type === 'SAUCE')
+        .map(ingredient => {
+          let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
+
+          if (!this.isIngredientTranslationAvailable(ingredient.name)) {
+            ingredientNameTranslated = ingredient.name;
+          }
+
+          return ingredientNameTranslated;
+        })
+        .join(', ');
+  }
+
+  getMeats(): string {
+      return this.ingredients
+          .filter(ingredient => ingredient.ingredient_type === 'MEAT')
+          .map(ingredient => {
+            let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
+
+            if (!this.isIngredientTranslationAvailable(ingredient.name)) {
+              ingredientNameTranslated = ingredient.name;
+            }
+
+            return ingredientNameTranslated;
+          })
+          .join(', ');
+  }
 }

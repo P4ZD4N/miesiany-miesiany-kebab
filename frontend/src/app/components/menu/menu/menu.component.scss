@@ -70,6 +70,22 @@ td {
     padding: 10px;
 }
 
+h3 {
+    text-align: center;
+    color: red;
+}
+
+span {
+    color: white;
+    text-align: center;
+    width: 70%;
+    font-size: 18px;
+}
+
+span:first-of-type{
+    margin-bottom: 2rem;
+}
+
 .meal-name {
     display: inline-block;
     max-width: 200px;
