@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Beverage;
+import com.p4zd4n.kebab.entities.Ingredient;
 import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.menu.*;
@@ -213,5 +214,35 @@ public class MenuController {
         log.info("Received get ingredients request");
 
         return ResponseEntity.ok(ingredientService.getIngredients());
+    }
+
+    @PostMapping("/add-ingredient")
+    public ResponseEntity<NewIngredientResponse> addIngredient(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody NewIngredientRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received add ingredient request");
+
+        NewIngredientResponse response = ingredientService.addIngredient(request);
+
+        log.info("Successfully added new ingredient: {}", request.newIngredientName());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-ingredient")
+    public ResponseEntity<RemovedIngredientResponse> removeIngredient(
+            @Valid @RequestBody RemovedIngredientRequest request
+    ) {
+        log.info("Received remove ingredient request");
+
+        Ingredient existingIngredient = ingredientService.findIngredientByName(request.name());
+        RemovedIngredientResponse response = ingredientService.removeIngredient(existingIngredient);
+
+        return ResponseEntity.ok(response);
     }
 }

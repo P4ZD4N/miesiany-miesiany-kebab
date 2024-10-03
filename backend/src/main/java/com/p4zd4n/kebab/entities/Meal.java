@@ -64,6 +64,16 @@ public class Meal extends WithTimestamp {
         this.mealIngredients.add(mealIngredient);
     }
 
+    public void removeIngredient(Ingredient ingredient) {
+
+        MealIngredient mealIngredientToRemove = this.mealIngredients.stream()
+                .filter(mealIngredient -> mealIngredient.getIngredient().equals(ingredient))
+                .findFirst()
+                .orElse(null);
+
+        this.mealIngredients.remove(mealIngredientToRemove);
+    }
+
     private boolean hasBread() {
 
         return mealIngredients.stream()
