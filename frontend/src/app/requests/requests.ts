@@ -60,3 +60,12 @@ export interface UpdatedMealRequest {
 export interface RemovedMealRequest {
   name: string;
 }
+
+export interface RemovedIngredientRequest {
+  name: string;
+}
+
+export interface NewIngredientRequest {
+  new_ingredient_name: string;
+  new_ingredient_type: number;
+}

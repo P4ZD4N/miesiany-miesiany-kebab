@@ -7,7 +7,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFo
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { NewAddonRequest, NewBeverageRequest, NewMealRequest, RemovedAddonRequest, RemovedBeverageRequest, RemovedMealRequest } from '../../../requests/requests';
+import { NewAddonRequest, NewBeverageRequest, NewMealRequest, RemovedAddonRequest, RemovedBeverageRequest, RemovedIngredientRequest, RemovedMealRequest } from '../../../requests/requests';
 import { BeverageResponse, AddonResponse, MealResponse, IngredientResponse, RemovedMealResponse } from '../../../responses/responses';
 import { Size } from '../../../enums/size.enum';
 
@@ -464,6 +464,49 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  removeIngredient(ingredient: IngredientResponse): void {
+    let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
+
+    if (!this.isIngredientTranslationAvailable(ingredient.name)) {
+      ingredientNameTranslated = ingredient.name;
+    }
+
+    const confirmationMessage =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac skladnik ${ingredientNameTranslated}?`
+        : `Are you sure you want to remove ingredient ${ingredientNameTranslated}?`;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.menuService.removeIngredient({ name: ingredient.name } as RemovedIngredientRequest).subscribe(() => {
+          Swal.fire({
+            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto skladnik '${ingredientNameTranslated}'!` : `Successfully removed ingredient '${ingredientNameTranslated}'!`,
+            icon: 'success',
+            iconColor: 'green',
+            confirmButtonColor: 'green',
+            background: 'black',
+            color: 'white',
+            confirmButtonText: 'Ok',
+          });
+          this.loadIngredients();
+          this.loadMeals();
+        });
+      }
+    });
+  }
+
   addBeverage(): void {
     this.menuService.addBeverage(this.newBeverage).subscribe({
       next: (response) => {
@@ -677,26 +720,26 @@ export class MenuComponent implements OnInit {
     if (ingredient.ingredient_type === 'BREAD') {
       if (this.selectedBread === ingredient.name) {
         this.selectedBread = null; 
-        this.removeIngredient(ingredient); 
+        this.removeIngredientFromNewMeal(ingredient); 
       } else {
         this.selectedBread = ingredient.name; 
-        this.addIngredient(ingredient);
+        this.addIngredientToNewMeal(ingredient);
       }
     } else if (ingredient.ingredient_type === 'VEGETABLE') {
       if (this.selectedVegetables.has(ingredient.name)) {
         this.selectedVegetables.delete(ingredient.name); 
-        this.removeIngredient(ingredient); 
+        this.removeIngredientFromNewMeal(ingredient); 
       } else {
         this.selectedVegetables.add(ingredient.name); 
-        this.addIngredient(ingredient);
+        this.addIngredientToNewMeal(ingredient);
       }
     } else if (ingredient.ingredient_type === 'OTHER') {
       if (this.selectedOthers.has(ingredient.name)) {
         this.selectedOthers.delete(ingredient.name); 
-        this.removeIngredient(ingredient);
+        this.removeIngredientFromNewMeal(ingredient);
       } else {
         this.selectedOthers.add(ingredient.name);
-        this.addIngredient(ingredient);
+        this.addIngredientToNewMeal(ingredient);
       }
     }
   }
@@ -732,7 +775,7 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  addIngredient(ingredient: any): void {
+  addIngredientToNewMeal(ingredient: any): void {
     const exists = this.newMeal.new_meal_ingredients.find(
       (i) => i.name === ingredient.name && i.ingredient_type === ingredient.ingredient_type
     );
@@ -745,7 +788,7 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  removeIngredient(ingredient: any): void {
+  removeIngredientFromNewMeal(ingredient: any): void {
     this.newMeal.new_meal_ingredients = this.newMeal.new_meal_ingredients.filter(
       (i) => !(i.name === ingredient.name && i.ingredient_type === ingredient.ingredient_type)
     );

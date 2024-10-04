@@ -142,6 +142,15 @@
                 "Sauce Mix": "Sauce Mix"
             }
         },
+        "ingredients": {
+            "headline": "Ingredients",
+            "button_add": "Add ingredient",
+            "breads": "Breads",
+            "meats": "Meats",
+            "vegetables": "Vegetables",
+            "sauces": "Sosy",
+            "other": "Other"
+        },
         "meats": {
             "paragraph_meats": "Meats to choose"
         },

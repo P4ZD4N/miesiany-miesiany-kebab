@@ -142,6 +142,15 @@
                 "Sauce Mix": "Sos mieszany"
             }
         },
+        "ingredients": {
+            "headline": "Skladniki",
+            "button_add": "Dodaj skladnik",
+            "breads": "Ciasta",
+            "meats": "Miesa",
+            "vegetables": "Warzywa",
+            "sauces": "Sosy",
+            "other": "Inne"
+        },
         "meats": {
             "paragraph_meats": "Miesa do wyboru"
         },

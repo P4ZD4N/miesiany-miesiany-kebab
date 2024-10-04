@@ -90,3 +90,13 @@ export interface UpdatedMealResponse {
   status_code: number;
   message: string;
 }
+
+export interface RemovedIngredientResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface NewIngredientResponse {
+  status_code: number;
+  message: string;
+}
