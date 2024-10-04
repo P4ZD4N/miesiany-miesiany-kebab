@@ -1,4 +1,5 @@
 import { DayOfWeek } from "../enums/day-of-week.enum";
+import { IngredientType } from "../enums/ingredient-type.enum";
 import { Size } from "../enums/size.enum";
 import { SimpleMealIngredient } from "../responses/responses";
 
@@ -67,5 +68,5 @@ export interface RemovedIngredientRequest {
 
 export interface NewIngredientRequest {
   new_ingredient_name: string;
-  new_ingredient_type: number;
+  new_ingredient_type: IngredientType | null;
 }

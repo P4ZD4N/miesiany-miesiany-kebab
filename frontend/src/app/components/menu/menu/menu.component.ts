@@ -7,9 +7,10 @@ import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFo
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { NewAddonRequest, NewBeverageRequest, NewMealRequest, RemovedAddonRequest, RemovedBeverageRequest, RemovedIngredientRequest, RemovedMealRequest } from '../../../requests/requests';
+import { NewAddonRequest, NewBeverageRequest, NewIngredientRequest, NewMealRequest, RemovedAddonRequest, RemovedBeverageRequest, RemovedIngredientRequest, RemovedMealRequest } from '../../../requests/requests';
 import { BeverageResponse, AddonResponse, MealResponse, IngredientResponse, RemovedMealResponse } from '../../../responses/responses';
 import { Size } from '../../../enums/size.enum';
+import { IngredientType } from '../../../enums/ingredient-type.enum';
 
 @Component({
   selector: 'app-menu',
@@ -31,6 +32,7 @@ export class MenuComponent implements OnInit {
   isAddingBeverage = false;
   isAddingAddon = false;
   isAddingMeal = false;
+  isAddingIngredient = false;
   isEditing = false;
   newBeverage: NewBeverageRequest = {
     new_beverage_name: '',
@@ -46,6 +48,11 @@ export class MenuComponent implements OnInit {
     new_meal_prices: {},
     new_meal_ingredients: []
   };
+  newIngredient: NewIngredientRequest = {
+    new_ingredient_name: '',
+    new_ingredient_type: null
+  }
+  ingredientTypes: IngredientType[] = [IngredientType.BREAD, IngredientType.MEAT, IngredientType.VEGETABLE, IngredientType.SAUCE, IngredientType.OTHER];
   sizeOrder: Size[] = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.XL];
   selectedBread: string | null = null; 
   selectedVegetables: Set<string> = new Set();
@@ -601,6 +608,32 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  addIngredient(): void {
+
+    console.log(this.newIngredient.new_ingredient_type);
+    this.menuService.addIngredient(this.newIngredient).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano skladnik '${this.newIngredient.new_ingredient_name}'!` : `Successfully added ingredient '${this.newIngredient.new_ingredient_name}'!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        this.loadIngredients();
+        this.resetNewIngredient();
+        this.hideAddIngredientTable();
+        this.hideErrorMessages();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
+  }
+
   showAddBeverageTable(): void {
     if (this.isEditing) {
       return;
@@ -625,6 +658,14 @@ export class MenuComponent implements OnInit {
     this.isAddingMeal = true;
   }
 
+  showAddIngredientTable(): void {
+    if (this.isEditing) {
+      return;
+    }
+    this.hideErrorMessages();
+    this.isAddingIngredient = true;
+  }
+
   hideAddBeverageTable(): void {
     this.hideErrorMessages();
     this.isAddingBeverage = false;
@@ -638,6 +679,11 @@ export class MenuComponent implements OnInit {
   hideAddMealTable(): void {
     this.hideErrorMessages();
     this.isAddingMeal = false;
+  }
+
+  hideAddIngredientTable(): void {
+    this.hideErrorMessages();
+    this.isAddingIngredient = false;
   }
 
   hideEditableBeverageRow(beverage: BeverageResponse): void {
@@ -665,6 +711,7 @@ export class MenuComponent implements OnInit {
   resetNewAddon(): void {
     this.newAddon = { new_addon_name: '', new_addon_price: 0 };
   }
+
   resetNewMeal(): void {
     this.newMeal = {
       new_meal_name: '',
@@ -674,6 +721,10 @@ export class MenuComponent implements OnInit {
     this.selectedBread = null;
     this.selectedVegetables.clear();
     this.selectedOthers.clear();
+  }
+
+  resetNewIngredient(): void {
+    this.newIngredient = { new_ingredient_name: '', new_ingredient_type: null };
   }
 
   handleError(error: any) {

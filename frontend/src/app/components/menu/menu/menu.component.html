@@ -2,7 +2,31 @@
     <h1>Menu</h1>
 
     <p *ngIf="isManager()">{{ 'menu.ingredients.headline' | translate }}</p>
-    <button class="btn btn-success" *ngIf="isManager() && !isEditing" >{{ 'menu.ingredients.button_add' | translate }}</button>
+    <button class="btn btn-success" *ngIf="isManager() && !isEditing" (click)="showAddIngredientTable()">{{ 'menu.ingredients.button_add' | translate }}</button>
+
+    <p *ngIf="errorMessages['newIngredientName']" class="error">{{ errorMessages['newIngredientName'] }}</p>
+    <p *ngIf="errorMessages['newIngredientType']" class="error">{{ errorMessages['newIngredientType'] }}</p>
+    <p *ngIf="errorMessages['itemType'] === 'ingredient'" class="error">{{ errorMessages['message'] }}</p>
+
+    <table class="add-ingredient-table" *ngIf="isAddingIngredient">
+        <tr>
+            <td>
+                <button class="button-accept" (click)="addIngredient()">{{ 'menu.accept' | translate }}</button>
+                <button class="button-cancel" (click)="hideAddIngredientTable()">{{ 'menu.cancel' | translate }}</button>
+            </td>
+            <td>
+                <input type="text" placeholder="{{ 'menu.ingredients.ingredient' | translate }}"  [(ngModel)]="newIngredient.new_ingredient_name" />
+            </td>
+            <td>
+                <select [(ngModel)]="newIngredient.new_ingredient_type">
+                    <option value="" disabled selected>{{ 'menu.ingredients.ingredient_type' | translate }}</option>
+                    <option *ngFor="let type of ingredientTypes" [value]="type">
+                        {{ 'menu.ingredients.' + type | translate }}
+                    </option>
+                </select>
+            </td>
+        </tr>
+    </table>
 
     <table class="table-ingredients" *ngIf="isManager()">
         <thead>

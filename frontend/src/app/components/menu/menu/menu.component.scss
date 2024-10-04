@@ -153,6 +153,26 @@ input {
     }
 }
 
+select {
+    text-align: center;
+    color: white;
+    border: none;
+    border-bottom: 1px solid white;
+    outline: none;
+    background: inherit;
+    transition: border-bottom 0.3s ease;
+    cursor: pointer;
+
+    &:focus {
+        border-bottom: 1px solid red;
+    }
+}
+
+option {
+    text-align: center;
+    background: black;
+}
+
 @media (max-width: 1280px) {
     table {
         font-size: 20px;

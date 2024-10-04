@@ -149,7 +149,14 @@
             "meats": "Miesa",
             "vegetables": "Warzywa",
             "sauces": "Sosy",
-            "other": "Inne"
+            "other": "Inne",
+            "ingredient": "Ingredient",
+            "ingredient_type": "Ingredient type",
+            "BREAD": "Bread",
+            "MEAT": "Meat",
+            "VEGETABLE": "Vegetable",
+            "SAUCE": "Sauce",
+            "OTHER": "Other"
         },
         "meats": {
             "paragraph_meats": "Miesa do wyboru"

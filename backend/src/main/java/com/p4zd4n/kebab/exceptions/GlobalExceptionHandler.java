@@ -317,6 +317,25 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(IngredientAlreadyExistsException.class)
+    public ResponseEntity<ItemTypeExceptionResponse> handleIngredientAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing ingredient", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("ingredient.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ItemTypeExceptionResponse
+                        .builder()
+                        .itemType("ingredient")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
     @ExceptionHandler(ExcessBreadException.class)
     public ResponseEntity<ExceptionResponse> handleExcessBreadException(
             ExcessBreadException exception,
