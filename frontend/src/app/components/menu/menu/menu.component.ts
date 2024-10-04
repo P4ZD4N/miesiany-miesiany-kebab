@@ -471,10 +471,23 @@ export class MenuComponent implements OnInit {
       ingredientNameTranslated = ingredient.name;
     }
 
+    let mealsWithThisIngredient = this.meals
+        .filter(meal => meal.ingredients.some(i => i.name === ingredient.name))
+        .map(meal => {
+            let mealNameTranslated = this.translate.instant('menu.meals.' + meal.name);
+    
+            if (!this.isMealTranslationAvailable(meal.name)) {
+                mealNameTranslated = meal.name;
+            }
+    
+            return mealNameTranslated;
+        })
+        .join(', ');
+
     const confirmationMessage =
       this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac skladnik ${ingredientNameTranslated}?`
-        : `Are you sure you want to remove ingredient ${ingredientNameTranslated}?`;
+        ? `Czy na pewno chcesz usunac skladnik ${ingredientNameTranslated}? Nastepujace dania zawieraja ten skladnik: ${mealsWithThisIngredient}`
+        : `Are you sure you want to remove ingredient ${ingredientNameTranslated}? Following meals contains this ingredient: ${mealsWithThisIngredient}`;
 
     Swal.fire({
       title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
