@@ -892,4 +892,11 @@ export class MenuComponent implements OnInit {
           })
           .join(', ');
   }
+
+  sortIngredients(ingredients: IngredientResponse[]): IngredientResponse[] {
+    return ingredients.sort((a, b) => {
+      const order = ['BREAD', 'VEGETABLE', 'OTHER'];
+      return order.indexOf(a.ingredient_type) - order.indexOf(b.ingredient_type);
+  });
+  }
 }

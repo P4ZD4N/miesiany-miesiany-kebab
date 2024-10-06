@@ -273,7 +273,7 @@
                     </table>
                 </td>
                 <td *ngIf="!meal.isEditing">
-                    <ul *ngFor="let ingredient of meal.ingredients">
+                    <ul *ngFor="let ingredient of sortIngredients(meal.ingredients)">
                         <li *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
                             <i *ngIf="ingredient.ingredient_type === 'BREAD'" class="fa-solid fa-bread-slice"></i>
                             <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
