@@ -3,10 +3,14 @@ package com.p4zd4n.kebab.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Beverage;
-import com.p4zd4n.kebab.exceptions.AddonAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.BeverageAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.GlobalExceptionHandler;
+import com.p4zd4n.kebab.entities.Ingredient;
+import com.p4zd4n.kebab.entities.Meal;
+import com.p4zd4n.kebab.enums.IngredientType;
+import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.exceptions.*;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
+import com.p4zd4n.kebab.repositories.IngredientRepository;
+import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.menu.*;
 import com.p4zd4n.kebab.responses.menu.*;
 import com.p4zd4n.kebab.services.menu.AddonService;
@@ -28,12 +32,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -63,6 +67,12 @@ public class MenuControllerTest {
 
     @MockBean
     private BeverageRepository beverageRepository;
+
+    @MockBean
+    private IngredientRepository ingredientRepository;
+
+    @MockBean
+    private MealRepository mealRepository;
 
     @InjectMocks
     private MenuController menuController;
@@ -115,9 +125,9 @@ public class MenuControllerTest {
                 .build();
 
         NewBeverageResponse response = NewBeverageResponse.builder()
-                        .statusCode(HttpStatus.OK.value())
-                        .message("Successfully added new beverage with name 'Coca-Cola'")
-                        .build();
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully added new beverage with name 'Coca-Cola'")
+                .build();
 
         when(beverageService.addBeverage(request)).thenReturn(response);
 
@@ -293,7 +303,7 @@ public class MenuControllerTest {
 
         for (String header : invalidHeaders) {
             mockMvc.perform(put("/api/v1/menu/update-beverage")
-                    .header("Accept-Language", header))
+                            .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
     }
@@ -313,9 +323,9 @@ public class MenuControllerTest {
                 .build();
 
         RemovedBeverageResponse response = RemovedBeverageResponse.builder()
-                        .statusCode(HttpStatus.OK.value())
-                        .message("Successfully removed beverage with name 'Coca-Cola'")
-                        .build();
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed beverage with name 'Coca-Cola'")
+                .build();
 
         when(beverageService.findBeverageByNameAndCapacity(request.name(), request.capacity()))
                 .thenReturn(existingBeverage);
@@ -483,8 +493,8 @@ public class MenuControllerTest {
                 .build();
 
         mockMvc.perform(put("/api/v1/menu/update-addon")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -529,5 +539,472 @@ public class MenuControllerTest {
 
         verify(addonService, times(1)).findAddonByName(request.name());
         verify(addonService, times(1)).removeAddon(existingAddon);
+    }
+
+    @Test
+    public void getMeals_ShouldReturnMeals_WhenCalled() throws Exception {
+
+        EnumMap<Size, BigDecimal> kebabPrices = new EnumMap<>(Size.class);
+        kebabPrices.put(Size.SMALL, BigDecimal.valueOf(20));
+        kebabPrices.put(Size.XL, BigDecimal.valueOf(39));
+
+        List<SimpleMealIngredient> ingredientResponses = List.of(
+                SimpleMealIngredient.builder()
+                        .name("Mutton")
+                        .ingredientType(IngredientType.MEAT)
+                        .build()
+        );
+
+        List<MealResponse> mealList = Collections.singletonList(
+                MealResponse.builder()
+                        .name("Kebab")
+                        .prices(kebabPrices)
+                        .ingredients(ingredientResponses)
+                        .build()
+        );
+
+        when(mealService.getMeals()).thenReturn(mealList);
+
+        mockMvc.perform(get("/api/v1/menu/meals"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].name", is("Kebab")))
+                .andExpect(jsonPath("$[0].prices", aMapWithSize(2)))
+                .andExpect(jsonPath("$[0].prices.SMALL", is(20)))
+                .andExpect(jsonPath("$[0].prices.XL", is(39)));
+
+        verify(mealService, times(1)).getMeals();
+    }
+
+    @Test
+    public void addMeal_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        EnumMap<Size, BigDecimal> kebabPrices = new EnumMap<>(Size.class);
+        kebabPrices.put(Size.XL, BigDecimal.valueOf(39));
+
+        List<SimpleMealIngredient> ingredientResponses = List.of(
+                SimpleMealIngredient.builder()
+                        .name("Mutton")
+                        .ingredientType(IngredientType.MEAT)
+                        .build()
+        );
+
+        NewMealRequest request = NewMealRequest.builder()
+                .newMealName("Kebab")
+                .ingredients(ingredientResponses)
+                .prices(kebabPrices)
+                .build();
+
+        NewMealResponse response = NewMealResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully added new meal with name 'Kebab'")
+                .build();
+
+        when(mealService.addMeal(request)).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/menu/add-meal")
+                        .header("Accept-Language", "en")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully added new meal with name 'Kebab'")));
+    }
+
+    @Test
+    public void addMeal_ShouldReturnConflict_WhenMealAlreadyExists() throws Exception {
+
+        EnumMap<Size, BigDecimal> kebabPrices = new EnumMap<>(Size.class);
+        kebabPrices.put(Size.XL, BigDecimal.valueOf(39));
+
+        List<SimpleMealIngredient> ingredientResponses = List.of(
+                SimpleMealIngredient.builder()
+                        .name("Mutton")
+                        .ingredientType(IngredientType.MEAT)
+                        .build()
+        );
+
+        NewMealRequest request = NewMealRequest.builder()
+                .newMealName("Kebab")
+                .ingredients(ingredientResponses)
+                .prices(kebabPrices)
+                .build();
+
+        when(mealService.addMeal(request)).thenThrow(new MealAlreadyExistsException(request.newMealName()));
+
+        MessageSource messageSource = mock(MessageSource.class);
+        when(messageSource.getMessage("meal.alreadyExists", null, Locale.forLanguageTag("en")))
+                .thenReturn("Meal with the same name already exists!");
+
+        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new MenuController(beverageService, addonService, mealService, ingredientService))
+                .setControllerAdvice(exceptionHandler)
+                .build();
+
+        mockMvc.perform(post("/api/v1/menu/add-meal")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.itemType", is("meal")))
+                .andExpect(jsonPath("$.status_code", is(409)))
+                .andExpect(jsonPath("$.message", is("Meal with the same name already exists!")));
+
+        verify(mealService, times(1)).addMeal(request);
+    }
+
+    @Test
+    public void addMeal_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        EnumMap<Size, BigDecimal> kebabPrices = new EnumMap<>(Size.class);
+        kebabPrices.put(Size.XL, BigDecimal.valueOf(39));
+
+        List<SimpleMealIngredient> ingredientResponses = List.of(
+                SimpleMealIngredient.builder()
+                        .name("Mutton")
+                        .ingredientType(IngredientType.MEAT)
+                        .build()
+        );
+
+        NewMealRequest request = NewMealRequest.builder()
+                .newMealName("Kebab")
+                .ingredients(ingredientResponses)
+                .prices(kebabPrices)
+                .build();
+
+        mockMvc.perform(post("/api/v1/menu/add-meal")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addMeal_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(post("/api/v1/menu/add-meal")
+                    .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void updateMeal_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        EnumMap<Size, BigDecimal> kebabPrices = new EnumMap<>(Size.class);
+        kebabPrices.put(Size.XL, BigDecimal.valueOf(39));
+
+        List<SimpleMealIngredient> updatedIngredients = List.of(
+                SimpleMealIngredient.builder()
+                        .name("Chicken")
+                        .ingredientType(IngredientType.MEAT)
+                        .build()
+        );
+
+        Meal existingMeal = Meal.builder()
+                .name("Kebab")
+                .prices(kebabPrices)
+                .build();
+
+        existingMeal.addIngredient(Ingredient.builder()
+                .name("Mutton")
+                .ingredientType(IngredientType.MEAT)
+                .build()
+        );
+
+        UpdatedMealRequest request = UpdatedMealRequest.builder()
+                .updatedMealName("Kebab")
+                .updatedPrices(kebabPrices)
+                .updatedIngredients(updatedIngredients)
+                .build();
+
+        UpdatedMealResponse expectedResponse = UpdatedMealResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated meal with name 'Kebab'")
+                .build();
+
+        when(mealService.findMealByName(request.updatedMealName())).thenReturn(existingMeal);
+        when(mealService.updateMeal(any(Meal.class), any(UpdatedMealRequest.class)))
+                .thenReturn(expectedResponse);
+
+        mockMvc.perform(put("/api/v1/menu/update-meal")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully updated meal with name 'Kebab'")));
+
+        verify(mealService, times(1)).findMealByName(request.updatedMealName());
+        verify(mealService, times(1)).updateMeal(existingMeal, request);
+    }
+
+    @Test
+    public void updateMeal_ShouldReturnNotFound_WhenIngredientNotExist() throws Exception {
+
+        EnumMap<Size, BigDecimal> kebabPrices = new EnumMap<>(Size.class);
+        kebabPrices.put(Size.XL, BigDecimal.valueOf(39));
+
+        List<SimpleMealIngredient> updatedIngredients = List.of(
+                SimpleMealIngredient.builder()
+                        .name("Chicken")
+                        .ingredientType(IngredientType.MEAT)
+                        .build()
+        );
+
+        Meal existingMeal = Meal.builder()
+                .name("Kebab")
+                .prices(kebabPrices)
+                .build();
+
+        existingMeal.addIngredient(Ingredient.builder()
+                .name("Mutton")
+                .ingredientType(IngredientType.MEAT)
+                .build()
+        );
+
+        UpdatedMealRequest request = UpdatedMealRequest.builder()
+                .updatedMealName("Kebab")
+                .updatedPrices(kebabPrices)
+                .updatedIngredients(updatedIngredients)
+                .build();
+
+        when(mealService.findMealByName("Kebab")).thenReturn(existingMeal);
+        when(mealService.updateMeal(existingMeal, request)).thenThrow(new IngredientNotFoundException("Chicken"));
+
+        mockMvc.perform(put("/api/v1/menu/update-meal")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+
+        verify(mealService, times(1)).updateMeal(existingMeal, request);
+    }
+
+    @Test
+    public void updateMeal_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        EnumMap<Size, BigDecimal> kebabPrices = new EnumMap<>(Size.class);
+        kebabPrices.put(Size.XL, BigDecimal.valueOf(39));
+
+        List<SimpleMealIngredient> updatedIngredients = List.of(
+                SimpleMealIngredient.builder()
+                        .name("Chicken")
+                        .ingredientType(IngredientType.MEAT)
+                        .build()
+        );
+
+        Meal existingMeal = Meal.builder()
+                .name("Kebab")
+                .prices(kebabPrices)
+                .build();
+
+        existingMeal.addIngredient(Ingredient.builder()
+                .name("Mutton")
+                .ingredientType(IngredientType.MEAT)
+                .build()
+        );
+
+        UpdatedMealRequest request = UpdatedMealRequest.builder()
+                .updatedMealName("Kebab")
+                .updatedPrices(kebabPrices)
+                .updatedIngredients(updatedIngredients)
+                .build();
+
+        mockMvc.perform(put("/api/v1/menu/update-meal")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateMeal_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(put("/api/v1/menu/update-meal")
+                    .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void removeMeal_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        Meal existingMeal = Meal.builder()
+                .name("Kebab")
+                .prices(new EnumMap<>(Size.class))
+                .build();
+
+        existingMeal.addIngredient(Ingredient.builder()
+                .name("Mutton")
+                .ingredientType(IngredientType.MEAT)
+                .build()
+        );
+
+        RemovedMealRequest request = RemovedMealRequest.builder()
+                .name("Kebab")
+                .build();
+
+        RemovedMealResponse response = RemovedMealResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed meal with name 'Kebab'")
+                .build();
+
+        when(mealService.findMealByName(request.name())).thenReturn(existingMeal);
+        when(mealService.removeMeal(any(Meal.class))).thenReturn(response);
+
+        mockMvc.perform(delete("/api/v1/menu/remove-meal")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully removed meal with name 'Kebab'")));
+
+        verify(mealService, times(1)).findMealByName(request.name());
+        verify(mealService, times(1)).removeMeal(existingMeal);
+    }
+
+    @Test
+    public void getIngredients_ShouldReturnIngredients_WhenCalled() throws Exception {
+
+        List<IngredientResponse> ingredientsList = Arrays.asList(
+                IngredientResponse.builder()
+                        .name("Tortilla")
+                        .ingredientType(IngredientType.BREAD)
+                        .build(),
+                IngredientResponse.builder()
+                        .name("Chicken")
+                        .ingredientType(IngredientType.MEAT)
+                        .build()
+        );
+
+        when(ingredientService.getIngredients()).thenReturn(ingredientsList);
+
+        mockMvc.perform(get("/api/v1/menu/ingredients"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].ingredient_type", is("BREAD")))
+                .andExpect(jsonPath("$[1].name", is("Chicken")))
+                .andExpect(jsonPath("$[1].ingredient_type", is("MEAT")));
+
+        verify(ingredientService, times(1)).getIngredients();
+    }
+
+    @Test
+    public void addIngredient_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        NewIngredientRequest request = NewIngredientRequest.builder()
+                .newIngredientName("Cucumber")
+                .newIngredientType(IngredientType.VEGETABLE)
+                .build();
+
+        NewIngredientResponse response = NewIngredientResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully added new ingredient with name 'Cucumber'")
+                .build();
+
+        when(ingredientService.addIngredient(request)).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/menu/add-ingredient")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully added new ingredient with name 'Cucumber'")));
+    }
+
+    @Test
+    public void addIngredient_ShouldReturnConflict_WhenIngredientAlreadyExists() throws Exception {
+
+        NewIngredientRequest request = NewIngredientRequest.builder()
+                .newIngredientName("Cucumber")
+                .newIngredientType(IngredientType.VEGETABLE)
+                .build();
+
+        when(ingredientService.addIngredient(request)).thenThrow(new IngredientAlreadyExistsException(request.newIngredientName()));
+
+        MessageSource messageSource = mock(MessageSource.class);
+        when(messageSource.getMessage("ingredient.alreadyExists", null, Locale.forLanguageTag("en")))
+                .thenReturn("Ingredient with the same name already exists!");
+
+        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new MenuController(beverageService, addonService, mealService, ingredientService))
+                .setControllerAdvice(exceptionHandler)
+                .build();
+
+        mockMvc.perform(post("/api/v1/menu/add-ingredient")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.itemType", is("ingredient")))
+                .andExpect(jsonPath("$.status_code", is(409)))
+                .andExpect(jsonPath("$.message", is("Ingredient with the same name already exists!")));
+
+        verify(ingredientService, times(1)).addIngredient(request);
+    }
+
+    @Test
+    public void addIngredient_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        NewIngredientRequest request = NewIngredientRequest.builder()
+                .newIngredientName("Cucumber")
+                .newIngredientType(IngredientType.VEGETABLE)
+                .build();
+
+        mockMvc.perform(post("/api/v1/menu/add-ingredient")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addIngredient_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(post("/api/v1/menu/add-ingredient")
+                    .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void removeIngredient_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        Ingredient existingIngredient = Ingredient.builder()
+                .name("Jalapeno")
+                .ingredientType(IngredientType.VEGETABLE)
+                .build();
+
+        RemovedIngredientRequest request = RemovedIngredientRequest.builder()
+                .name("Jalapeno")
+                .build();
+
+        RemovedIngredientResponse response = RemovedIngredientResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed ingredient with name 'Jalapeno'")
+                .build();
+
+        when(ingredientService.findIngredientByName(request.name())).thenReturn(existingIngredient);
+        when(ingredientService.removeIngredient(any(Ingredient.class))).thenReturn(response);
+
+        mockMvc.perform(delete("/api/v1/menu/remove-ingredient")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully removed ingredient with name 'Jalapeno'")));
+
+        verify(ingredientService, times(1)).findIngredientByName(request.name());
+        verify(ingredientService, times(1)).removeIngredient(existingIngredient);
     }
 }
