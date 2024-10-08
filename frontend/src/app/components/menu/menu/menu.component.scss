@@ -87,6 +87,7 @@ span:first-of-type{
 }
 
 .meal-name {
+    font-size: 22px;
     display: inline-block;
     max-width: 200px;
     white-space: wrap;
@@ -186,6 +187,9 @@ option {
 
 
 @media (max-width: 950px) {
+    .meal-name {
+        font-size: 18px;
+    }
     p {
         margin-top: 3rem;
     }
@@ -199,8 +203,16 @@ option {
     }
 }
 
+@media (max-width: 734px) {
+    .add-meal-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
 @media (max-width: 522px) {
-    .table-meals {
+    .table-meals, .table-ingredients, .add-ingredient-table, .add-beverage-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
@@ -217,7 +229,7 @@ option {
 }
 
 @media (max-width: 422px) {
-    .table-beverages, .add-beverage-table {
+    .table-beverages, .add-addon-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
