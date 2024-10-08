@@ -2,7 +2,7 @@ package com.p4zd4n.kebab.entities;
 
 import com.p4zd4n.kebab.enums.IngredientType;
 import com.p4zd4n.kebab.enums.Size;
-import com.p4zd4n.kebab.exceptions.ExcessBreadException;
+import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,18 +1,15 @@
 package com.p4zd4n.kebab.services;
 
 import com.p4zd4n.kebab.entities.Beverage;
-import com.p4zd4n.kebab.entities.OpeningHour;
-import com.p4zd4n.kebab.enums.DayOfWeek;
-import com.p4zd4n.kebab.exceptions.BeverageAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.BeverageNotFoundException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.BeverageAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.notfound.BeverageNotFoundException;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
-import com.p4zd4n.kebab.requests.menu.NewBeverageRequest;
-import com.p4zd4n.kebab.requests.menu.UpdatedBeverageRequest;
-import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
-import com.p4zd4n.kebab.responses.menu.BeverageResponse;
-import com.p4zd4n.kebab.responses.menu.NewBeverageResponse;
-import com.p4zd4n.kebab.responses.menu.RemovedBeverageResponse;
-import com.p4zd4n.kebab.responses.menu.UpdatedBeverageResponse;
+import com.p4zd4n.kebab.requests.menu.beverages.NewBeverageRequest;
+import com.p4zd4n.kebab.requests.menu.beverages.UpdatedBeverageRequest;
+import com.p4zd4n.kebab.responses.menu.beverages.BeverageResponse;
+import com.p4zd4n.kebab.responses.menu.beverages.NewBeverageResponse;
+import com.p4zd4n.kebab.responses.menu.beverages.RemovedBeverageResponse;
+import com.p4zd4n.kebab.responses.menu.beverages.UpdatedBeverageResponse;
 import com.p4zd4n.kebab.services.menu.BeverageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +19,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

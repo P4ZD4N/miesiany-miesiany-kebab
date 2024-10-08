@@ -1,6 +1,6 @@
 package com.p4zd4n.kebab.controllers;
 
-import com.p4zd4n.kebab.exceptions.InvalidAcceptLanguageHeaderValue;
+import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
 import com.p4zd4n.kebab.responses.auth.LogoutResponse;

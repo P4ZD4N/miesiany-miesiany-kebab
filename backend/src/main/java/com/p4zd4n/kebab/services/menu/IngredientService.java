@@ -1,17 +1,15 @@
 package com.p4zd4n.kebab.services.menu;
 
-import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Ingredient;
 import com.p4zd4n.kebab.entities.Meal;
-import com.p4zd4n.kebab.exceptions.IngredientAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.IngredientNotFoundException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.IngredientAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.IngredientRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
-import com.p4zd4n.kebab.requests.menu.NewIngredientRequest;
-import com.p4zd4n.kebab.requests.menu.RemovedIngredientRequest;
-import com.p4zd4n.kebab.responses.menu.IngredientResponse;
-import com.p4zd4n.kebab.responses.menu.NewIngredientResponse;
-import com.p4zd4n.kebab.responses.menu.RemovedIngredientResponse;
+import com.p4zd4n.kebab.requests.menu.ingredients.NewIngredientRequest;
+import com.p4zd4n.kebab.responses.menu.ingredients.IngredientResponse;
+import com.p4zd4n.kebab.responses.menu.ingredients.NewIngredientResponse;
+import com.p4zd4n.kebab.responses.menu.ingredients.RemovedIngredientResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

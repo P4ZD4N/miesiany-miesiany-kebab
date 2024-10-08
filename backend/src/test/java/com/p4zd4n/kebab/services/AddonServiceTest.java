@@ -1,12 +1,15 @@
 package com.p4zd4n.kebab.services;
 
 import com.p4zd4n.kebab.entities.Addon;
-import com.p4zd4n.kebab.exceptions.AddonAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.AddonNotFoundException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.AddonAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.notfound.AddonNotFoundException;
 import com.p4zd4n.kebab.repositories.AddonRepository;
-import com.p4zd4n.kebab.requests.menu.NewAddonRequest;
-import com.p4zd4n.kebab.requests.menu.UpdatedAddonRequest;
-import com.p4zd4n.kebab.responses.menu.*;
+import com.p4zd4n.kebab.requests.menu.addons.NewAddonRequest;
+import com.p4zd4n.kebab.requests.menu.addons.UpdatedAddonRequest;
+import com.p4zd4n.kebab.responses.menu.addons.AddonResponse;
+import com.p4zd4n.kebab.responses.menu.addons.NewAddonResponse;
+import com.p4zd4n.kebab.responses.menu.addons.RemovedAddonResponse;
+import com.p4zd4n.kebab.responses.menu.addons.UpdatedAddonResponse;
 import com.p4zd4n.kebab.services.menu.AddonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

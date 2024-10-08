@@ -2,12 +2,14 @@ package com.p4zd4n.kebab.services;
 
 import com.p4zd4n.kebab.entities.Ingredient;
 import com.p4zd4n.kebab.enums.IngredientType;
-import com.p4zd4n.kebab.exceptions.IngredientAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.IngredientNotFoundException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.IngredientAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.IngredientRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
-import com.p4zd4n.kebab.requests.menu.NewIngredientRequest;
-import com.p4zd4n.kebab.responses.menu.*;
+import com.p4zd4n.kebab.requests.menu.ingredients.NewIngredientRequest;
+import com.p4zd4n.kebab.responses.menu.ingredients.IngredientResponse;
+import com.p4zd4n.kebab.responses.menu.ingredients.NewIngredientResponse;
+import com.p4zd4n.kebab.responses.menu.ingredients.RemovedIngredientResponse;
 import com.p4zd4n.kebab.services.menu.IngredientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

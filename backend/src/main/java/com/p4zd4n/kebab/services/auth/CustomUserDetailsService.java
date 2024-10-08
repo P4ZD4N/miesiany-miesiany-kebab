@@ -2,7 +2,7 @@ package com.p4zd4n.kebab.services.auth;
 
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.entities.Manager;
-import com.p4zd4n.kebab.exceptions.EmployeeNotFoundException;
+import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

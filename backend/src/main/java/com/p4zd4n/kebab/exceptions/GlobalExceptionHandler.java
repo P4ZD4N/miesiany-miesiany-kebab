@@ -1,5 +1,12 @@
 package com.p4zd4n.kebab.exceptions;
 
+import com.p4zd4n.kebab.exceptions.alreadyexists.AddonAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.BeverageAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.IngredientAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.MealAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.invalid.*;
+import com.p4zd4n.kebab.exceptions.notfound.*;
+import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;

@@ -2,7 +2,7 @@ package com.p4zd4n.kebab.services.hours;
 
 import com.p4zd4n.kebab.entities.OpeningHour;
 import com.p4zd4n.kebab.enums.DayOfWeek;
-import com.p4zd4n.kebab.exceptions.OpeningHourNotFoundException;
+import com.p4zd4n.kebab.exceptions.notfound.OpeningHourNotFoundException;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

@@ -4,7 +4,7 @@ import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.enums.DayOfWeek;
 import com.p4zd4n.kebab.enums.IngredientType;
 import com.p4zd4n.kebab.enums.Size;
-import com.p4zd4n.kebab.exceptions.IngredientNotFoundException;
+import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
