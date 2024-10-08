@@ -239,20 +239,20 @@ Add new meal. It is not possible to add meal with the same name of existing. For
 {
   "new_meal_name":  "Kebab",
   "new_meal_prices":  {
-	  "SMALL":  20,
-	  "MEDIUM":  22,
-	  "LARGE":  25.5,
-	  "XL":  30
+    "SMALL":  20,
+    "MEDIUM":  22,
+    "LARGE":  25.5,
+    "XL":  30
   },
   "new_meal_ingredients": [
-	  {
-		  "name":  "Tortilla",
-		  "ingredient_type":  "BREAD"
-	  },
-	  {
-		  "name":  "Tomato",
-		  "ingredient_type":  "VEGETABLE"
-	  }
+    {
+      "name":  "Tortilla",
+      "ingredient_type":  "BREAD"
+    },
+    {
+      "name":  "Tomato",
+      "ingredient_type":  "VEGETABLE"
+    }
   ]
 }
 ```
@@ -273,14 +273,14 @@ Updates existing meal. You can specify prices and ingredients as you want, but i
 {
   "updated_meal_name":  "Kebab",
   "updated_meal_prices":  {
-	  "SMALL":  20,
-	  "XL":  35
+    "SMALL":  20,
+    "XL":  35
   },
   "updated_meal_ingredients": [
-	  {
-		  "name":  "Pita",
-		  "ingredient_type":  "BREAD"
-	  }
+    {
+      "name":  "Pita",
+      "ingredient_type":  "BREAD"
+    }
   ]
 }
 ```
