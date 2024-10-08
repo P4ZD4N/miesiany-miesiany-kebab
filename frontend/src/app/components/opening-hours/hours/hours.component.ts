@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OpeningHoursService } from '../../../services/opening-hours/opening-hours.service';
 import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
+import { OpeningHoursResponse } from '../../../responses/responses';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-hours',
@@ -16,16 +18,18 @@ import { Subscription } from 'rxjs';
 })
 export class HoursComponent implements OnInit {
 
-  openingHours: any[] = [];
+  openingHours: OpeningHoursResponse[] = [];
   hourForms: { [key: string]: FormGroup } = {};
-  formErrorMessage: string | null = null;
+  errorMessages: { [key: string]: string } = {};
   languageChangeSubscription: Subscription;
+  isEditing = false;
 
   constructor(
     private authenticationService: AuthenticationService, 
     private openingHoursService: OpeningHoursService,
     private formBuilder: FormBuilder,
-    private langService: LangService
+    private langService: LangService,
+    private translate: TranslateService
   ) {
     this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
       this.hideErrorMessages();
@@ -40,16 +44,16 @@ export class HoursComponent implements OnInit {
     return this.authenticationService.isManager();
   }
 
-  loadOpeningHours(): void {
+   loadOpeningHours(): void {
     this.openingHoursService.getOpeningHours().subscribe(
-      (data: any[]) => {
-          this.openingHours = data;
-          this.initializeForms(data);
+      (data: OpeningHoursResponse[]) => {
+        this.openingHours = data;
+        this.initializeForms(data);
       },
-      (error) => {
-        console.log('Error loading opening hours', error);
-      }
-    )
+      error => {
+        this.handleError(error);
+      },
+    );
   }
 
   formatTime(time: string): string {
@@ -93,7 +97,7 @@ export class HoursComponent implements OnInit {
     return `${hours}:${minutes}`;
   }
 
-  initializeForms(hours: any[]): void {
+  initializeForms(hours: OpeningHoursResponse[]): void {
     hours.forEach((hour) => {
       this.hourForms[hour.day_of_week] = this.formBuilder.group({
         opening_time: new FormControl(hour.opening_time),
@@ -102,9 +106,13 @@ export class HoursComponent implements OnInit {
     });
   }
 
-  editRow(hour: any): void {
+  editRow(hour: OpeningHoursResponse): void {
+    if (this.isEditing) {
+      return;
+    }
+    this.hideErrorMessages();
+    this.isEditing = true;
     hour.isEditing = true;
-
     const form = this.hourForms[hour.day_of_week];
     form.patchValue({
       opening_time: hour.opening_time,
@@ -112,19 +120,10 @@ export class HoursComponent implements OnInit {
     });
   }
 
-  saveRow(hour: any): void {
+  saveRow(hour: OpeningHoursResponse): void {
     const formGroup = this.hourForms[hour.day_of_week];
     const newOpeningTime = formGroup.get('opening_time')!.value;
     const newClosingTime = formGroup.get('closing_time')!.value;
-
-    if (newClosingTime < newOpeningTime) {
-      if (this.langService.currentLang === 'pl') {
-        this.formErrorMessage = 'Godzina zamkniecia nie moze byc wczesniejsza niz godzina otwarcia!';
-      } else if (this.langService.currentLang === 'en') {
-        this.formErrorMessage = 'Closing hour cannot be earlier than opening hour!';
-      }
-      return;
-    }
 
     const updatedHour = {
       day_of_week: hour.day_of_week,
@@ -134,16 +133,33 @@ export class HoursComponent implements OnInit {
 
     this.openingHoursService.updateOpeningHour(updatedHour).subscribe(
       response => {
-        if (response) {
-          this.formErrorMessage = null;
-          hour.isEditing = false;
-          this.loadOpeningHours();
-        }
-      }
+        this.hideErrorMessages();
+        const translatedDayOfWeek = this.translate.instant('opening-hours.days.' + updatedHour.day_of_week).toLowerCase();
+
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' 
+          ? `Pomyslnie zapisano godziny otwarcia w ${translatedDayOfWeek}!` 
+          : `Successfully saved opening hours on ${translatedDayOfWeek}!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+        
+        hour.isEditing = false;
+        this.isEditing = false;
+        this.hideErrorMessages();
+        this.loadOpeningHours();
+      },
+      error => {
+        this.handleError(error);
+      },
     );
   }
 
-  getRowClass(hour: any): string {
+  getRowClass(hour: OpeningHoursResponse): string {
     const currentDay = this.getCurrentDayOfWeek();
     
     if (currentDay === hour.day_of_week.toUpperCase()) {
@@ -153,7 +169,21 @@ export class HoursComponent implements OnInit {
     return '';
   }
 
-  hideErrorMessages() {
-    this.formErrorMessage = null;
+  hideErrorMessages(): void {
+    this.errorMessages = {};
+  }
+
+  hideRow(hour: OpeningHoursResponse): void {
+    hour.isEditing = false;
+    this.isEditing = false;
+    this.hideErrorMessages();
+  }
+
+  handleError(error: any) {
+    if (error.errorMessages) {
+      this.errorMessages = error.errorMessages;
+    } else {
+      this.errorMessages = { general: 'An unexpected error occurred' };
+    }
   }
 }

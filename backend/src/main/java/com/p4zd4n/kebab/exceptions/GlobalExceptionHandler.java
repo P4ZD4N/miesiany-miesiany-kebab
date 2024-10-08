@@ -1,6 +1,14 @@
 package com.p4zd4n.kebab.exceptions;
 
+import com.p4zd4n.kebab.exceptions.alreadyexists.AddonAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.BeverageAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.IngredientAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.MealAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.invalid.*;
+import com.p4zd4n.kebab.exceptions.notfound.*;
+import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
+import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -143,6 +151,210 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(OpeningHourNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleOpeningHourNotFoundException(
+            OpeningHourNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing closing hour on {}", request.getRequestURI(), exception.getDayOfWeek());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidCapacityException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidCapacityException(
+            InvalidCapacityException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid capacity", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidPriceException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidPriceException(
+            InvalidPriceException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid price", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(BeverageNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleBeverageNotFoundException(
+            BeverageNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing beverage: {}", request.getRequestURI(), exception.getBeverageName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(AddonNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleAddonNotFoundException(
+            AddonNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing addon: {}", request.getRequestURI(), exception.getAddonName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(IngredientNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleIngredientNotFoundException(
+            IngredientNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing ingredient: {}", request.getRequestURI(), exception.getIngredientName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(MealNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleMealNotFoundException(
+            MealNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing meal: {}", request.getRequestURI(), exception.getMealName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(BeverageAlreadyExistsException.class)
+    public ResponseEntity<ItemTypeExceptionResponse> handleBeverageAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing beverage", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("beverage.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ItemTypeExceptionResponse
+                        .builder()
+                        .itemType("beverage")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(AddonAlreadyExistsException.class)
+    public ResponseEntity<ItemTypeExceptionResponse> handleAddonAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing addon", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("addon.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ItemTypeExceptionResponse
+                        .builder()
+                        .itemType("addon")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(MealAlreadyExistsException.class)
+    public ResponseEntity<ItemTypeExceptionResponse> handleMealAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing meal", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("meal.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ItemTypeExceptionResponse
+                        .builder()
+                        .itemType("meal")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(IngredientAlreadyExistsException.class)
+    public ResponseEntity<ItemTypeExceptionResponse> handleIngredientAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing ingredient", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("ingredient.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ItemTypeExceptionResponse
+                        .builder()
+                        .itemType("ingredient")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(ExcessBreadException.class)
+    public ResponseEntity<ExceptionResponse> handleExcessBreadException(
+            ExcessBreadException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with excess bread", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
                         .message(exception.getMessage())
                         .build());
     }

@@ -3,10 +3,8 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { LangService } from '../lang/lang.service';
 import { Role } from '../../enums/role.enum';
-
-interface LoginResponse {
-  role: Role;
-}
+import { AuthenticationRequest } from '../../requests/requests';
+import { AuthenticationResponse } from '../../responses/responses';
 
 @Injectable({
   providedIn: 'root'
@@ -25,15 +23,16 @@ export class AuthenticationService {
     }
   }
 
-  authenticate(email: string, password: string): Observable<any> {
+  authenticate(request: AuthenticationRequest): Observable<AuthenticationResponse> {
     const headers = new HttpHeaders({
       'Accept-Language': this.langService.currentLang
     });
 
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }, { headers, withCredentials: true }).pipe(
+    return this.http.post<AuthenticationResponse>(`${this.apiUrl}/login`, request, { headers, withCredentials: true }).pipe(
       map(response => {
         this.userRole = response.role;
         sessionStorage.setItem('userRole', response.role);
+        return response;
       }),
       catchError(this.handleError)
     );

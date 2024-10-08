@@ -1,4 +1,4 @@
-package com.p4zd4n.kebab.exceptions;
+package com.p4zd4n.kebab.exceptions.invalid;
 
 import lombok.Getter;
 

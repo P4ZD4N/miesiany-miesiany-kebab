@@ -2,9 +2,9 @@ package com.p4zd4n.kebab.services;
 
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.enums.Role;
-import com.p4zd4n.kebab.exceptions.EmployeeNotActiveException;
-import com.p4zd4n.kebab.exceptions.EmployeeNotFoundException;
-import com.p4zd4n.kebab.exceptions.InvalidCredentialsException;
+import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotActiveException;
+import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
+import com.p4zd4n.kebab.exceptions.invalid.InvalidCredentialsException;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
@@ -14,8 +14,6 @@ import com.p4zd4n.kebab.utils.PasswordEncoder;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class AuthenticationServiceTest {
 
     private AuthenticationManager authenticationManager;

@@ -1,0 +1,245 @@
+.menu {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+
+td table {
+    width: 100%;
+    margin: 0 auto;
+    display: inline-table; 
+}
+
+td table th {
+    background-color: black;
+    color: red;
+    padding: 0 1rem 0 1rem;
+}
+
+td table tr:last-of-type {
+    border-bottom: none;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+p {
+    margin-top: 5rem;
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 32px;
+}
+
+thead {
+    border-bottom: 3px solid red;
+}
+
+table {
+    margin-bottom: 2rem;
+    font-size: 24px;
+    text-align: center;
+    width: 70%;
+}
+
+th {
+    background-color: black;
+    color: red;
+    padding: 1rem;
+}
+
+tr {
+    color: white;
+    background: none;
+    border-bottom: 1px solid white;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 24px;
+}
+
+td {
+    padding: 10px;
+}
+
+h3 {
+    text-align: center;
+    color: red;
+}
+
+span {
+    color: white;
+    text-align: center;
+    width: 70%;
+    font-size: 18px;
+}
+
+span:first-of-type{
+    margin-bottom: 2rem;
+}
+
+.meal-name {
+    font-size: 22px;
+    display: inline-block;
+    max-width: 200px;
+    white-space: wrap;
+}
+
+.button-update,.button-cancel, .button-accept, .button-remove {
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.button-update {
+    color: rgb(0, 119, 255);
+
+    &:hover {
+        color: rgb(0, 59, 126);
+    }
+}
+
+.button-accept {
+    color: rgb(0, 255, 85);
+
+    &:hover {
+        color: rgb(0, 102, 34);
+    }
+}
+
+.button-remove, .button-cancel {
+    color: rgb(255, 0, 0);
+
+    &:hover {
+        color: #b90909;
+    }
+}
+.manager {
+    max-width: 200px;
+}
+
+.error {
+    font-size: 24px;
+    margin-top: 1rem;
+    color: rgb(126, 15, 15);
+}
+
+
+input {
+    max-width: 100px;
+    color: white;
+    text-align: center;
+    background: inherit;
+    border: none;
+    border-bottom: 1px solid white;
+    outline: none;
+    transition: border-bottom 0.3s ease;
+
+    &:focus {
+        border-bottom: 1px solid red;
+    }
+    &[type=text] {
+        max-width: 200px;
+    }
+    &[type=checkbox] {
+        accent-color: red;
+    }
+}
+
+select {
+    text-align: center;
+    color: white;
+    border: none;
+    border-bottom: 1px solid white;
+    outline: none;
+    background: inherit;
+    transition: border-bottom 0.3s ease;
+    cursor: pointer;
+
+    &:focus {
+        border-bottom: 1px solid red;
+    }
+}
+
+option {
+    text-align: center;
+    background: black;
+}
+
+@media (max-width: 1280px) {
+    table {
+        font-size: 20px;
+        width: 80%;
+    }
+
+    .error {
+        font-size: 20px;
+    }
+}
+
+
+@media (max-width: 950px) {
+    .meal-name {
+        font-size: 18px;
+    }
+    p {
+        margin-top: 3rem;
+    }
+
+    table {
+        font-size: 18px;
+    }
+
+    ul {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 734px) {
+    .add-meal-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 522px) {
+    .table-meals, .table-ingredients, .add-ingredient-table, .add-beverage-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .meal-name {
+        padding: 1rem;
+    }
+
+    table {
+        scrollbar-color: #ff0000 #f1f1f1; 
+        scrollbar-width: thin; 
+    }
+}
+
+@media (max-width: 422px) {
+    .table-beverages, .add-addon-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 350px) {
+    .table-addons {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

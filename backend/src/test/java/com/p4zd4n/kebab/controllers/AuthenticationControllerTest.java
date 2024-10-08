@@ -71,12 +71,6 @@ public class AuthenticationControllerTest {
 
         when(authenticationService.authenticate(authenticationRequest, session)).thenReturn(authenticationResponse);
 
-        String requestJson = objectMapper.writeValueAsString(authenticationRequest);
-        String responseJson = objectMapper.writeValueAsString(authenticationResponse);
-
-        System.out.println("Request JSON: " + requestJson);
-        System.out.println("Response JSON: " + responseJson);
-
         for (String header : headers) {
             mockMvc.perform(post("/api/v1/auth/login")
                     .header("Accept-Language", header)

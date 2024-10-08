@@ -73,7 +73,39 @@ input[type="time"] {
 }
 
 .error {
+    font-size: 24px;
+    margin-top: 1rem;
     color: rgb(126, 15, 15);
+}
+
+.button-update,.button-cancel, .button-accept {
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.button-update {
+    color: rgb(0, 195, 255);
+
+    &:hover {
+        color: rgb(0, 59, 126);
+    }
+}
+
+.button-accept {
+    color: rgb(0, 255, 85);
+
+    &:hover {
+        color: rgb(0, 102, 34);
+    }
+}
+
+.button-cancel {
+    color: rgb(255, 0, 0);
+
+    &:hover {
+        color: #b90909;
+    }
 }
 
 @media (max-width: 1000px) {
@@ -98,6 +130,11 @@ input[type="time"] {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
+    }
+
+    table {
+        scrollbar-color: #ff0000 #f1f1f1; 
+        scrollbar-width: thin; 
     }
 
     p {

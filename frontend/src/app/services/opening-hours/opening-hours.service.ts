@@ -1,6 +1,16 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
+import { LangService } from '../lang/lang.service';
+import { DayOfWeek } from '../../enums/day-of-week.enum';
+import { UpdatedHourRequest } from '../../requests/requests';
+import { OpeningHoursResponse } from '../../responses/responses';
+
+
+export interface UpdatedHourResponse {
+  status_code: number;
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -8,21 +18,35 @@ import { catchError, map, Observable, of } from 'rxjs';
 export class OpeningHoursService {
   private apiUrl = 'http://localhost:8080/api/v1/hours';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private langService: LangService) {}
 
-  getOpeningHours(): Observable<any> {
+  getOpeningHours(): Observable<OpeningHoursResponse[]> {
 
-    return this.http.get(`${this.apiUrl}/opening-hours`, { withCredentials: true });
+    return this.http.get<OpeningHoursResponse[]>(`${this.apiUrl}/opening-hours`, { withCredentials: true });
   }
 
-  updateOpeningHour(hour: any): Observable<any> {
+  updateOpeningHour(hour: UpdatedHourRequest): Observable<UpdatedHourResponse> {
 
-    return this.http.put<any>(`${this.apiUrl}/update-opening-hour`, hour, { withCredentials: true }).pipe(
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.put<UpdatedHourResponse>(`${this.apiUrl}/update-opening-hour`, hour, { headers, withCredentials: true }).pipe(
       map(response => response),
-      catchError(error => {
-        console.error('Error updating opening hour', error);
-        return of(null);
-      })
+      catchError(this.handleError)
     )
+  }
+
+  handleError(error: HttpErrorResponse) {
+
+    let errorMessages: { [key: string]: string } = {};
+
+    if (error.error && typeof error.error === 'object') {
+      errorMessages = error.error;
+    } else {
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
+    }
+
+    return throwError(() => ({ errorMessages }));
   }
 }

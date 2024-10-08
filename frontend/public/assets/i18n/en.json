@@ -28,7 +28,7 @@
             "headline": "About Us",
             "paragraph_top": "Welcome to Miesiany Miesiany Kebab! We are a place where tradition meets modernity, and our passion for Eastern cuisine translates into unforgettable taste experiences.",
             "paragraph_center": "We prepare our dishes using the highest quality ingredients, carefully selected and always fresh. Our goal is not only to satisfy your hunger but also to make every visit a unique experience. We serve authentic kebabs that will delight you with their richness of flavors and aromas.",
-             "paragraph_bottom": "We invite you to try our specialties and discover why we are often referred as the favorite kebab in the area!"
+            "paragraph_bottom": "We invite you to try our specialties and discover why we are often referred as the favorite kebab in the area! We can't wait to welcome you!"
         },
         "awards_section": {
             "headline": "Awards",
@@ -72,7 +72,8 @@
             "SUNDAY": "Sunday"
         },
         "update": "Update",
-        "accept": "Accept"
+        "accept": "Accept",
+        "cancel": "Cancel"
     },
     "manager-panel": {
         "headline": "Manager panel",
@@ -81,5 +82,91 @@
     "employee-panel": {
         "headline": "Employee panel",
         "button_logout": "Logout"
+    },
+    "menu": {
+        "addons": {
+            "paragraph_addons": "Addons to your meal",
+            "button_add": "Add addon",
+            "addon": "Addon",
+            "price": "Price",
+            "Jalapeno": "Jalapeno",
+            "Herbs": "Herbs",
+            "Olives": "Olives",
+            "Feta": "Feta"
+        },
+        "beverages": {
+            "paragraph_beverages": "Beverages",
+            "button_add": "Add beverage",
+            "beverage": "Beverage",
+            "capacity": "Capacity",
+            "price": "Price",
+            "Coca-Cola": "Coca-Cola",
+            "Coca-Cola Zero": "Coca-Cola Zero",
+            "Fanta": "Fanta",
+            "Sprite": "Sprite",
+            "Ayran": "Ayran",
+            "Water": "Water"
+        },
+        "meals": {
+            "paragraph_meals": "Meals",
+            "button_add": "Add meal",
+            "meal": "Meal",
+            "prices": "Prices",
+            "base_ingredients": "Base ingredients",
+            "Pita Kebab Salads": "Pita Kebab Salads",
+            "Pita Kebab Salads and Fries": "Pita Kebab Salads and Fries",
+            "size": "Size",
+            "price": "Price",
+            "sizes": {
+                "SMALL": "Small",
+                "MEDIUM": "Medium",
+                "LARGE": "Large",
+                "XL": "XL"
+            },
+            "ingredients": {
+                "Pita": "Pita",
+                "Cabbage": "Cabbage",
+                "Tomato": "Tomato",
+                "Cucumber": "Cucumber",
+                "Onion": "Onion",
+                "Fries": "Fries",
+                "Cheese": "Cheese",
+                "Chicken": "Chicken",
+                "Mutton": "Mutton",
+                "Meat Mix": "Meat Mix",
+                "Falafel": "Falafel",
+                "Garlic Sauce": "Garlic Sauce",
+                "BBQ Sauce": "BBQ Sauce",
+                "Mild Sauce": "Mild Sauce",
+                "Hot Sauce": "Hot Sauce",
+                "Sauce Mix": "Sauce Mix"
+            }
+        },
+        "ingredients": {
+            "headline": "Ingredients",
+            "button_add": "Add ingredient",
+            "breads": "Breads",
+            "meats": "Meats",
+            "vegetables": "Vegetables",
+            "sauces": "Sosy",
+            "other": "Other",
+            "ingredient": "Skladnik",
+            "ingredient_type": "Typ skladnika",
+            "BREAD": "Ciasto",
+            "MEAT": "Mieso",
+            "VEGETABLE": "Warzywo",
+            "SAUCE": "Sos",
+            "OTHER": "Inny"
+        },
+        "meats": {
+            "paragraph_meats": "Meats to choose"
+        },
+        "sauces": {
+            "paragraph_sauces": "Sauces to choose"
+        },
+        "update": "Update",
+        "cancel": "Cancel",
+        "accept": "Accept",
+        "remove": "Remove"
     }
 }

@@ -24,9 +24,6 @@ public class Order extends WithTimestamp {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "order_date_time", nullable = false)
-    private LocalDateTime orderDateTime;
-
     @Column(name = "order_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
@@ -57,11 +54,16 @@ public class Order extends WithTimestamp {
     private boolean isActive;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems;
+    private List<Meal> meals;
+
+    @OneToMany(mappedBy = "order")
+    private List<Beverage> beverages;
+
+    @OneToMany(mappedBy = "order")
+    private List<Addon> addons;
 
     @Builder
-    public Order(LocalDateTime orderDateTime,
-                 OrderType orderType,
+    public Order(OrderType orderType,
                  OrderStatus orderStatus,
                  String customerPhone,
                  String street,
@@ -70,7 +72,6 @@ public class Order extends WithTimestamp {
                  String city,
                  BigDecimal totalAmount,
                  boolean isActive) {
-        this.orderDateTime = orderDateTime;
         this.orderType = orderType;
         this.orderStatus = orderStatus;
         this.customerPhone = customerPhone;

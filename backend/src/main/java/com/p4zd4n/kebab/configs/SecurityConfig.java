@@ -36,7 +36,19 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/login").permitAll()
-                        .requestMatchers("/api/v1/hours/update-opening-hour").hasRole("MANAGER")
+                        .requestMatchers(
+                                "/api/v1/hours/update-opening-hour",
+                                "/api/v1/menu/update-beverage",
+                                "/api/v1/menu/remove-beverage",
+                                "/api/v1/menu/add-beverage",
+                                "/api/v1/menu/add-addon",
+                                "/api/v1/menu/update-addon",
+                                "/api/v1/menu/remove-addon",
+                                "/api/v1/menu/add-meal",
+                                "/api/v1/menu/update-meal",
+                                "/api/v1/menu/remove-meal",
+                                "/api/v1/menu/add-ingredient",
+                                "/api/v1/menu/remove-ingredient").hasRole("MANAGER")
                         .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )

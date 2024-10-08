@@ -72,7 +72,8 @@
             "SUNDAY": "Niedziela"
         },
         "update": "Aktualizuj",
-        "accept": "Akceptuj"
+        "accept": "Akceptuj",
+        "cancel": "Anuluj"
     },
     "manager-panel": {
         "headline": "Panel managera",
@@ -81,5 +82,91 @@
     "employee-panel": {
         "headline": "Panel pracownika",
         "button_logout": "Wyloguj"
+    },
+    "menu": {
+        "addons": {
+            "paragraph_addons": "Dodatki do twojego dania",
+            "button_add": "Dodaj dodatek",
+            "addon": "Dodatek",
+            "price": "Cena",
+            "Jalapeno": "Jalapeno",
+            "Herbs": "Ziola",
+            "Olives": "Oliwki",
+            "Feta": "Feta"
+        },
+        "beverages": {
+            "paragraph_beverages": "Napoje",
+            "button_add": "Dodaj napoj",
+            "beverage": "Napoj",
+            "capacity": "Pojemnosc",
+            "price": "Cena",
+            "Coca-Cola": "Coca-Cola",
+            "Coca-Cola Zero": "Coca-Cola Zero",
+            "Fanta": "Fanta",
+            "Sprite": "Sprite",
+            "Ayran": "Ayran",
+            "Water": "Woda"
+        },
+        "meals": {
+            "paragraph_meals": "Dania",
+            "button_add": "Dodaj danie",
+            "meal": "Danie",
+            "prices": "Ceny",
+            "base_ingredients": "Bazowe skladniki",
+            "Pita Kebab Salads": "Pita Kebab Surowki",
+            "Pita Kebab Salads and Fries": "Pita Kebab Surowki i Frytki",
+            "size": "Rozmiar",
+            "price": "Cena",
+            "sizes": {
+                "SMALL": "Maly",
+                "MEDIUM": "Sredni",
+                "LARGE": "Duzy",
+                "XL": "XL"
+            },
+            "ingredients": {
+                "Pita": "Pita",
+                "Cabbage": "Kapusta",
+                "Tomato": "Pomidor",
+                "Cucumber": "Ogorek",
+                "Onion": "Cebula",
+                "Fries": "Frytki",
+                "Cheese": "Ser",
+                "Chicken": "Kurczak",
+                "Mutton": "Baranina",
+                "Meat Mix": "Mieszane",
+                "Falafel": "Falafel",
+                "Garlic Sauce": "Sos czosnkowy",
+                "BBQ Sauce": "Sos BBQ",
+                "Mild Sauce": "Sos lagodny",
+                "Hot Sauce": "Sos ostry",
+                "Sauce Mix": "Sos mieszany"
+            }
+        },
+        "ingredients": {
+            "headline": "Skladniki",
+            "button_add": "Dodaj skladnik",
+            "breads": "Ciasta",
+            "meats": "Miesa",
+            "vegetables": "Warzywa",
+            "sauces": "Sosy",
+            "other": "Inne",
+            "ingredient": "Ingredient",
+            "ingredient_type": "Ingredient type",
+            "BREAD": "Bread",
+            "MEAT": "Meat",
+            "VEGETABLE": "Vegetable",
+            "SAUCE": "Sauce",
+            "OTHER": "Other"
+        },
+        "meats": {
+            "paragraph_meats": "Miesa do wyboru"
+        },
+        "sauces": {
+            "paragraph_sauces": "Sosy do wyboru"
+        },
+        "update": "Aktualizuj",
+        "cancel": "Anuluj",
+        "accept": "Akceptuj",
+        "remove": "Usun"  
     }
 }

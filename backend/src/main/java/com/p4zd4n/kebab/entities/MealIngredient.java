@@ -1,12 +1,16 @@
 package com.p4zd4n.kebab.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "order_ingredients")
+@Table(name = "meals_ingredients")
+@Getter
+@Setter
 @NoArgsConstructor
-public class OrderIngredient extends WithTimestamp {
+public class MealIngredient extends WithTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +18,8 @@ public class OrderIngredient extends WithTimestamp {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "order_item_id")
-    private OrderItem orderItem;
+    @JoinColumn(name = "meal_id")
+    private Meal meal;
 
     @ManyToOne
     @JoinColumn(name = "ingredient_id")

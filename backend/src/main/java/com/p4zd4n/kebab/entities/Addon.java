@@ -7,36 +7,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
-@Table(name = "order_items")
+@Table(name = "addons")
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderItem extends WithTimestamp {
+public class Addon extends WithTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    @Column(name = "item_name", nullable = false)
-    private String itemName;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "orderItem")
-    private List<OrderIngredient> orderIngredients;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @Builder
-    public OrderItem(String itemName, BigDecimal price) {
-        this.itemName = itemName;
+    public Addon(String name, BigDecimal price) {
+        this.name = name;
         this.price = price;
     }
 }

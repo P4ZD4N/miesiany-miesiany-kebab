@@ -3,13 +3,16 @@ package com.p4zd4n.kebab.services;
 import com.p4zd4n.kebab.entities.OpeningHour;
 import com.p4zd4n.kebab.enums.DayOfWeek;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
+import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
+import com.p4zd4n.kebab.responses.hours.UpdatedHourResponse;
 import com.p4zd4n.kebab.services.hours.HoursService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -90,5 +93,27 @@ public class HoursServiceTest {
         assertEquals(LocalTime.of(18, 0), result.getClosingTime());
 
         verify(openingHoursRepository, times(1)).save(openingHour);
+    }
+
+    @Test
+    public void updateOpeningHour_ShouldUpdateOpeningHour_WhenCalled() {
+
+        OpeningHour openingHour = new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0));
+        UpdatedHourRequest request = new UpdatedHourRequest(
+                DayOfWeek.MONDAY,
+                LocalTime.of(10, 0),
+                LocalTime.of(20, 0)
+        );
+
+        when(openingHoursRepository.save(any(OpeningHour.class))).thenReturn(openingHour);
+
+        UpdatedHourResponse response = hoursService.updateOpeningHour(openingHour, request);
+
+        verify(openingHoursRepository, times(1)).save(openingHour);
+
+        assertEquals(LocalTime.of(10, 0), openingHour.getOpeningTime());
+        assertEquals(LocalTime.of(20, 0), openingHour.getClosingTime());
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully updated opening hours on MONDAY", response.message());
     }
 }
