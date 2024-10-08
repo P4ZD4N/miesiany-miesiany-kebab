@@ -43,6 +43,10 @@ img {
         margin-top: -200px;
         margin-bottom: -200px;
         width: 80%; 
+        
+        &:hover {
+            width: 82%;
+        }
     }
 }
 
