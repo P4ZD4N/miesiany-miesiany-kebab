@@ -1,20 +1,14 @@
 package com.p4zd4n.kebab.services;
 
-import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Ingredient;
 import com.p4zd4n.kebab.entities.Meal;
-import com.p4zd4n.kebab.entities.OpeningHour;
-import com.p4zd4n.kebab.enums.DayOfWeek;
 import com.p4zd4n.kebab.enums.IngredientType;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.*;
 import com.p4zd4n.kebab.repositories.IngredientRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
-import com.p4zd4n.kebab.requests.menu.NewAddonRequest;
 import com.p4zd4n.kebab.requests.menu.NewMealRequest;
-import com.p4zd4n.kebab.requests.menu.UpdatedAddonRequest;
 import com.p4zd4n.kebab.requests.menu.UpdatedMealRequest;
-import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
 import com.p4zd4n.kebab.responses.menu.*;
 import com.p4zd4n.kebab.services.menu.MealService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,8 +19,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +69,7 @@ public class MealServiceTest {
         assertEquals(1, result.getFirst().prices().size());
 
         assertEquals("Kebab2", result.getLast().name());
-        assertEquals(BigDecimal.valueOf(39), result.getFirst().prices().get(Size.XL));
+        assertEquals(BigDecimal.valueOf(39), result.getLast().prices().get(Size.XL));
 
         verify(mealRepository, times(1)).findAll();
     }
@@ -272,7 +264,7 @@ public class MealServiceTest {
                 .name("Kebab")
                 .prices(new EnumMap<>(Size.class))
                 .build();
-        
+
         doNothing().when(mealRepository).delete(meal);
 
         RemovedMealResponse response = mealService.removeMeal(meal);
