@@ -20,20 +20,25 @@ import { IngredientType } from '../../../enums/ingredient-type.enum';
   styleUrls: ['./menu.component.scss'], 
 })
 export class MenuComponent implements OnInit {
+
   beverages: BeverageResponse[] = [];
   addons: AddonResponse[] = [];
   meals: MealResponse[] = [];
   ingredients: IngredientResponse[] = [];
+
   beverageForms: { [key: string]: FormGroup } = {};
   addonForms: { [key: string]: FormGroup } = {};
   mealForms: { [key: string]: FormGroup } = {};
   errorMessages: { [key: string]: string } = {};
+
   languageChangeSubscription: Subscription;
+
   isAddingBeverage = false;
   isAddingAddon = false;
   isAddingMeal = false;
   isAddingIngredient = false;
   isEditing = false;
+
   newBeverage: NewBeverageRequest = {
     new_beverage_name: '',
     new_beverage_capacity: 0,
@@ -52,8 +57,10 @@ export class MenuComponent implements OnInit {
     new_ingredient_name: '',
     new_ingredient_type: null
   }
+
   ingredientTypes: IngredientType[] = [IngredientType.BREAD, IngredientType.MEAT, IngredientType.VEGETABLE, IngredientType.SAUCE, IngredientType.OTHER];
   sizeOrder: Size[] = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.XL];
+  
   selectedBread: string | null = null; 
   selectedVegetables: Set<string> = new Set();
   selectedOthers: Set<string> = new Set();
@@ -166,11 +173,15 @@ export class MenuComponent implements OnInit {
     if (this.isEditing) {
       return;
     }
+
     this.hideErrorMessages();
     this.isEditing = true;
     beverage.isEditing = true;
+
     const form = this.beverageForms[beverage.name];
+
     form.patchValue({
+
       capacity: beverage.capacity,
       price: beverage.price,
     });
@@ -180,10 +191,13 @@ export class MenuComponent implements OnInit {
     if (this.isEditing) {
       return;
     }
+
     this.hideErrorMessages();
     this.isEditing = true;
     addon.isEditing = true;
+
     const form = this.beverageForms[addon.name];
+
     form.patchValue({
       price: addon.price,
     });
@@ -193,10 +207,13 @@ export class MenuComponent implements OnInit {
     if (this.isEditing) {
       return;
     }
+
     this.hideErrorMessages();
     this.isEditing = true;
     meal.isEditing = true;
+
     const form = this.mealForms[meal.name];
+
     form.patchValue({
       prices: this.formBuilder.group({
         small: new FormControl(meal.prices.SMALL),  
@@ -211,7 +228,6 @@ export class MenuComponent implements OnInit {
   }
 
   saveBeverageRow(beverage: BeverageResponse): void {
-
     let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
 
     if (!this.isBeverageTranslationAvailable(beverage.name)) {
@@ -253,7 +269,6 @@ export class MenuComponent implements OnInit {
   }
 
   saveAddonRow(addon: AddonResponse): void {
-
     let addonNameTranslated = this.translate.instant('menu.addons.' + addon.name);
 
     if (!this.isAddonTranslationAvailable(addon.name)) {
@@ -262,7 +277,6 @@ export class MenuComponent implements OnInit {
 
     const formGroup = this.addonForms[addon.name];
     const newPrice = formGroup.get('price')!.value;
-
     const updatedAddon = {
       updated_addon_name: addon.name,
       updated_addon_price: newPrice,
@@ -292,7 +306,6 @@ export class MenuComponent implements OnInit {
   }
 
   saveMealRow(meal: MealResponse): void {
-
     let mealNameTranslated = this.translate.instant('menu.meals.' + meal.name);
 
     if (!this.isMealTranslationAvailable(meal.name)) {
@@ -609,8 +622,6 @@ export class MenuComponent implements OnInit {
   }
 
   addIngredient(): void {
-
-    console.log(this.newIngredient.new_ingredient_type);
     this.menuService.addIngredient(this.newIngredient).subscribe({
       next: (response) => {
         Swal.fire({
@@ -638,6 +649,7 @@ export class MenuComponent implements OnInit {
     if (this.isEditing) {
       return;
     }
+
     this.hideErrorMessages();
     this.isAddingBeverage = true;
   }
@@ -646,6 +658,7 @@ export class MenuComponent implements OnInit {
     if (this.isEditing) {
       return;
     }
+
     this.hideErrorMessages();
     this.isAddingAddon = true;
   }
@@ -654,6 +667,7 @@ export class MenuComponent implements OnInit {
     if (this.isEditing) {
       return;
     }
+
     this.hideErrorMessages();
     this.isAddingMeal = true;
   }
@@ -662,6 +676,7 @@ export class MenuComponent implements OnInit {
     if (this.isEditing) {
       return;
     }
+
     this.hideErrorMessages();
     this.isAddingIngredient = true;
   }
@@ -705,11 +720,18 @@ export class MenuComponent implements OnInit {
   }
 
   resetNewBeverage(): void {
-    this.newBeverage = { new_beverage_name: '', new_beverage_capacity: 0, new_beverage_price: 0 };
+    this.newBeverage = { 
+      new_beverage_name: '', 
+      new_beverage_capacity: 0, 
+      new_beverage_price: 0 
+    };
   }
 
   resetNewAddon(): void {
-    this.newAddon = { new_addon_name: '', new_addon_price: 0 };
+    this.newAddon = { 
+      new_addon_name: '', 
+      new_addon_price: 0 
+    };
   }
 
   resetNewMeal(): void {
@@ -724,7 +746,10 @@ export class MenuComponent implements OnInit {
   }
 
   resetNewIngredient(): void {
-    this.newIngredient = { new_ingredient_name: '', new_ingredient_type: null };
+    this.newIngredient = { 
+      new_ingredient_name: '', 
+      new_ingredient_type: null
+    };
   }
 
   handleError(error: any) {
@@ -751,10 +776,6 @@ export class MenuComponent implements OnInit {
       return 'Invalid price';
     }
   }
-
-  sortSizes = (a: any, b: any): number => {
-    return this.sizeOrder.indexOf(a.key) - this.sizeOrder.indexOf(b.key);
-  };
 
   isManager(): boolean {
     return this.authenticationService.isManager();
@@ -892,6 +913,10 @@ export class MenuComponent implements OnInit {
           })
           .join(', ');
   }
+
+  sortSizes = (a: any, b: any): number => {
+    return this.sizeOrder.indexOf(a.key) - this.sizeOrder.indexOf(b.key);
+  };
 
   sortIngredientsByType(ingredients: IngredientResponse[]): IngredientResponse[] {
     return ingredients.sort((a, b) => {
