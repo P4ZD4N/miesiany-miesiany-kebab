@@ -893,10 +893,82 @@ export class MenuComponent implements OnInit {
           .join(', ');
   }
 
-  sortIngredients(ingredients: IngredientResponse[]): IngredientResponse[] {
+  sortIngredientsByType(ingredients: IngredientResponse[]): IngredientResponse[] {
     return ingredients.sort((a, b) => {
       const order = ['BREAD', 'VEGETABLE', 'OTHER'];
       return order.indexOf(a.ingredient_type) - order.indexOf(b.ingredient_type);
-  });
+    });
+  }
+
+  sortIngredientsByName(ingredients: IngredientResponse[]): IngredientResponse[] {
+    return ingredients.sort((a, b) => {
+
+      let firstIngredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + a.name);
+      let secondIngredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + b.name);
+
+      if (!this.isIngredientTranslationAvailable(a.name)) {
+        firstIngredientNameTranslated = a.name;
+      }
+  
+      if (!this.isIngredientTranslationAvailable(b.name)) {
+        secondIngredientNameTranslated = b.name; 
+      }
+  
+      return firstIngredientNameTranslated.localeCompare(secondIngredientNameTranslated);
+    });
+  }
+
+  sortMealsByName(meals: MealResponse[]): MealResponse[] {
+    return meals.sort((a, b) => {
+      
+      let firstMealNameTranslated = this.translate.instant('menu.meals.' + a.name);
+      let secondMealNameTranslated = this.translate.instant('menu.meals.' + b.name);
+
+      if (!this.isMealTranslationAvailable(a.name)) {
+        firstMealNameTranslated = a.name;
+      }
+  
+      if (!this.isMealTranslationAvailable(b.name)) {
+        secondMealNameTranslated = b.name; 
+      }
+  
+      return firstMealNameTranslated.localeCompare(secondMealNameTranslated);
+    });
+  }
+
+  sortAddonsByName(addons: AddonResponse[]): AddonResponse[] {
+    return addons.sort((a, b) => {
+      
+      let firstAddonNameTranslated = this.translate.instant('menu.addons.' + a.name);
+      let secondAddonNameTranslated = this.translate.instant('menu.addons.' + b.name);
+
+      if (!this.isAddonTranslationAvailable(a.name)) {
+        firstAddonNameTranslated = a.name;
+      }
+  
+      if (!this.isAddonTranslationAvailable(b.name)) {
+        secondAddonNameTranslated = b.name; 
+      }
+  
+      return firstAddonNameTranslated.localeCompare(secondAddonNameTranslated);
+    });
+  }
+
+  sortBeveragesByName(beverages: BeverageResponse[]): BeverageResponse[] {
+    return beverages.sort((a, b) => {
+      
+      let firstBeverageNameTranslated = this.translate.instant('menu.beverages.' + a.name);
+      let secondBeverageNameTranslated = this.translate.instant('menu.beverages.' + b.name);
+
+      if (!this.isBeverageTranslationAvailable(a.name)) {
+        firstBeverageNameTranslated = a.name;
+      }
+  
+      if (!this.isBeverageTranslationAvailable(b.name)) {
+        secondBeverageNameTranslated = b.name; 
+      }
+  
+      return firstBeverageNameTranslated.localeCompare(secondBeverageNameTranslated);
+    });
   }
 }

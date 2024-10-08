@@ -39,7 +39,7 @@
         <tbody>
             <tr>
                 <td>
-                    <div *ngFor="let ingredient of ingredients">
+                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
                         <label *ngIf="ingredient.ingredient_type === 'BREAD'">
                             <i class="fa-solid fa-bread-slice"></i>
                             <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
@@ -55,7 +55,7 @@
 
                 
                 <td>
-                    <div *ngFor="let ingredient of ingredients">
+                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
                         <label *ngIf="ingredient.ingredient_type === 'MEAT'">
                             <i class="fa-solid fa-drumstick-bite"></i>
                             <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
@@ -70,7 +70,7 @@
                 </td>
 
                 <td>
-                    <div *ngFor="let ingredient of ingredients">
+                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
                         <label *ngIf="ingredient.ingredient_type === 'VEGETABLE'">
                             <i class="fa-solid fa-carrot"></i>
                             <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
@@ -85,7 +85,7 @@
                 </td>
 
                 <td>
-                    <div *ngFor="let ingredient of ingredients">
+                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
                         <label *ngIf="ingredient.ingredient_type === 'SAUCE'">
                             <i class="fas fa-wine-bottle"></i>
                             <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
@@ -100,7 +100,7 @@
                 </td>
 
                 <td>
-                    <div *ngFor="let ingredient of ingredients">
+                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
                         <label *ngIf="ingredient.ingredient_type === 'OTHER'">
                             <i class="fa-solid fa-plus"></i> 
                             <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
@@ -151,7 +151,7 @@
                   </div>
             </td>
             <td>
-                <div *ngFor="let ingredient of ingredients">
+                <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
                     <label *ngIf="ingredient.ingredient_type === 'BREAD'">
                         <i class="fa-solid fa-bread-slice"></i>
                         <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
@@ -169,7 +169,7 @@
                 </div>
             </td>
             <td>
-                <div *ngFor="let ingredient of ingredients">
+                <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
                     <label *ngIf="ingredient.ingredient_type === 'VEGETABLE'">
                         <i class="fa-solid fa-carrot"></i>
                         <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
@@ -186,7 +186,7 @@
                 </div>
             </td>
             <td>
-                <div *ngFor="let ingredient of ingredients">
+                <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
                     <label *ngIf="ingredient.ingredient_type === 'OTHER'">
                         <i class="fa-solid fa-plus"></i> 
                         <ng-container *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
@@ -213,7 +213,7 @@
             <th>{{ 'menu.meals.base_ingredients' | translate }}</th>
         </thead>
         <tbody>
-            <tr *ngFor="let meal of meals">
+            <tr *ngFor="let meal of sortMealsByName(meals)">
 
                 <td *ngIf="isManager()" class="manager">
                     <button class="button-update" *ngIf="!meal.isEditing" (click)="editMealRow(meal)">{{ 'menu.update' | translate }}</button>
@@ -273,7 +273,7 @@
                     </table>
                 </td>
                 <td *ngIf="!meal.isEditing">
-                    <ul *ngFor="let ingredient of sortIngredients(meal.ingredients)">
+                    <ul *ngFor="let ingredient of sortIngredientsByType(meal.ingredients)">
                         <li *ngIf="isIngredientTranslationAvailable(ingredient.name); else defaultName">
                             <i *ngIf="ingredient.ingredient_type === 'BREAD'" class="fa-solid fa-bread-slice"></i>
                             <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
@@ -369,7 +369,7 @@
             <th>{{ 'menu.addons.price' | translate }}</th>
         </thead>
         <tbody>
-            <tr *ngFor="let addon of addons"
+            <tr *ngFor="let addon of sortAddonsByName(addons)"
                 [formGroup]="addonForms[addon.name]"
             >
                 <td *ngIf="isManager()" class="manager">
@@ -430,7 +430,7 @@
             <th>{{ 'menu.beverages.price' | translate }}</th>
         </thead>
         <tbody>
-            <tr *ngFor="let beverage of beverages"
+            <tr *ngFor="let beverage of sortBeveragesByName(beverages)"
                 [formGroup]="beverageForms[beverage.name]"
             >
                 <td *ngIf="isManager()" class="manager">
