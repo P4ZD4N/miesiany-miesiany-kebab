@@ -153,10 +153,10 @@
             "ingredient": "Skladnik",
             "ingredient_type": "Typ skladnika",
             "BREAD": "Ciasto",
-            "MEAT": "Mieso",
-            "VEGETABLE": "Warzywo",
-            "SAUCE": "Sos",
-            "OTHER": "Inny"
+            "MEAT": "Meat",
+            "VEGETABLE": "Vegetable",
+            "SAUCE": "Sauce",
+            "OTHER": "Other"
         },
         "meats": {
             "paragraph_meats": "Meats to choose"

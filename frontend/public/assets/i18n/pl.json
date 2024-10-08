@@ -152,11 +152,11 @@
             "other": "Inne",
             "ingredient": "Ingredient",
             "ingredient_type": "Ingredient type",
-            "BREAD": "Bread",
-            "MEAT": "Meat",
-            "VEGETABLE": "Vegetable",
-            "SAUCE": "Sauce",
-            "OTHER": "Other"
+            "BREAD": "Ciasto",
+            "MEAT": "Mieso",
+            "VEGETABLE": "Warzywo",
+            "SAUCE": "Sos",
+            "OTHER": "Inny"
         },
         "meats": {
             "paragraph_meats": "Miesa do wyboru"
