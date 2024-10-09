@@ -168,5 +168,19 @@
         "cancel": "Cancel",
         "accept": "Accept",
         "remove": "Remove"
+    },
+    "contact": {
+        "headline": "Contact",
+        "paragraph_top": "Contact us!",
+        "left": {
+            "contact_data": "Contact data"
+        },
+        "right": {
+            "our_location": "Our location",
+            "button": "Get directions"
+        },
+        "update": "Update",
+        "accept": "Accept",
+        "cancel": "Cancel"
     }
 }

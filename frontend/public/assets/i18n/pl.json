@@ -168,5 +168,19 @@
         "cancel": "Anuluj",
         "accept": "Akceptuj",
         "remove": "Usun"  
+    },
+    "contact": {
+        "headline": "Kontakt",
+        "paragraph_top": "Skontaktuj sie z nami!",
+        "left": {
+            "contact_data": "Dane kontaktowe"
+        },
+        "right": {
+            "our_location": "Nasza lokalizacja",
+            "button": "Wyznacz trase"
+        },
+        "update": "Aktualizuj",
+        "accept": "Akceptuj",
+        "cancel": "Anuluj"
     }
 }

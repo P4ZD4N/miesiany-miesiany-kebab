@@ -1,0 +1,41 @@
+<section class="contact">
+    <h1>{{ 'contact.headline' | translate }}</h1>
+    <p>{{ 'contact.paragraph_top' | translate }}</p>
+
+    <div class="cont">
+        <section class="left">
+            <h2>{{ 'contact.left.contact_data' | translate }}</h2>
+            <div class="phone">
+                <i class="fa-solid fa-phone"></i> 
+                <span>{{ formatPhone(getTelephone()[0].value) }}</span>
+            </div>
+            <div class="email">
+                <i class="fa-solid fa-envelope"></i> 
+                <span>{{ getEmail()[0].value }}</span>
+            </div>
+            
+            <h2>Social media</h2>
+            <section class="icons">
+                <div class="icon-item">
+                    <i class="fa-brands fa-facebook-f fa-2xl"></i>
+                    <span>miesianymiesianykebab</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fa-brands fa-instagram fa-2xl"></i>
+                    <span>miesianymiesianykebab</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fa-brands fa-tiktok fa-2xl"></i>
+                    <span>miesianymiesianykebab</span>
+                </div>
+            </section>
+        </section>
+        <section class="right">
+            <h2>{{ 'contact.right.our_location' | translate }}</h2>
+            <a class="btn btn-danger" href="https://www.google.com/maps/dir/?api=1&destination=50.73271996898827,18.978145609677117" target="_blank">
+                {{ 'contact.right.button' | translate }}
+            </a>
+            <div id="map"></div>
+        </section>
+    </div>
+</section>
