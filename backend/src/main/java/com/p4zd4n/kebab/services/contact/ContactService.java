@@ -68,7 +68,10 @@ public class ContactService {
                 .message("Successfully updated contact of type '" + contact.getContactType() + "'")
                 .build();
 
-        if (contact.getContactType().equals(ContactType.TELEPHONE) && request.newValue().length() != 9) {
+        if (contact.getContactType().equals(ContactType.TELEPHONE) &&
+            (request.newValue().length() != 9 ||
+            !request.newValue().matches("\\d{9}")
+        )) {
             throw new InvalidPhoneException(request.newValue());
         }
 
