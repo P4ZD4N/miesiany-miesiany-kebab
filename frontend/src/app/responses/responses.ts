@@ -106,3 +106,8 @@ export interface ContactResponse {
   contact_type: ContactType;
   value: string;
 }
+
+export interface UpdatedContactResponse {
+  status_code: number;
+  message: string;
+}

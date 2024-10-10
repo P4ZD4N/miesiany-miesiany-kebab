@@ -179,6 +179,10 @@
             "our_location": "Nasza lokalizacja",
             "button": "Wyznacz trase"
         },
+        "types": {
+            "TELEPHONE": "Telefon",
+            "EMAIL": "Email"
+        },
         "update": "Aktualizuj",
         "accept": "Akceptuj",
         "cancel": "Anuluj"

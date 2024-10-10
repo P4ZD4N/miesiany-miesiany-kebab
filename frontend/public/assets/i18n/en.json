@@ -179,6 +179,10 @@
             "our_location": "Our location",
             "button": "Get directions"
         },
+        "types": {
+            "TELEPHONE": "Telephone",
+            "EMAIL": "Email"
+        },
         "update": "Update",
         "accept": "Accept",
         "cancel": "Cancel"

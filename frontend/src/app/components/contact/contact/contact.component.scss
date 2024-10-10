@@ -34,6 +34,8 @@ p {
     text-align: left;
     color: white;
     font-size: 24px;
+    display: flex;
+    align-items: center;
 }
 
 .email {
@@ -55,6 +57,15 @@ p {
 
 i {
     margin-right: 10px;
+}
+
+button {
+    margin-left: 10px;
+}
+
+span {
+    max-width: 500px;
+    word-break: break-all;
 }
 
 .icon-item span {
@@ -88,6 +99,61 @@ i {
     border-radius: 10px;
 }
 
+.button-update,.button-cancel, .button-accept {
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.button-update {
+    color: rgb(0, 119, 255);
+
+    &:hover {
+        color: rgb(0, 59, 126);
+    }
+}
+
+.button-accept {
+    color: rgb(0, 255, 85);
+
+    &:hover {
+        color: rgb(0, 102, 34);
+    }
+}
+
+.button-cancel {
+    color: rgb(255, 0, 0);
+
+    &:hover {
+        color: #b90909;
+    }
+}
+
+.error {
+    width: 80%;
+    margin: 0 auto;
+    font-size: 24px;
+    margin-top: 1rem;
+    color: rgb(126, 15, 15);
+}
+
+input {
+    max-width: 200px;
+    color: white;
+    text-align: center;
+    background: inherit;
+    border: none;
+    border-bottom: 1px solid white;
+    outline: none;
+    transition: border-bottom 0.3s ease;
+
+    &:focus {
+        border-bottom: 1px solid red;
+    }
+
+}
+
+
 @media (max-width: 885px) {
     .cont {
         flex-direction: column;
@@ -96,6 +162,7 @@ i {
 
     .phone, .email {
         text-align: center;
+        justify-content: center;
     }
 
     h2:first-of-type {
@@ -116,7 +183,21 @@ i {
     }
 }
 
+@media (max-width: 524px) {
+    input {
+        max-width: 150px;
+    }
+}
+
 @media (max-width: 465px) {
+    input {
+        max-width: 120px;
+    }
+
+    .error {
+        font-size: 16px;
+    }
+
     .phone, .email {
         font-size: 16px;
     }
