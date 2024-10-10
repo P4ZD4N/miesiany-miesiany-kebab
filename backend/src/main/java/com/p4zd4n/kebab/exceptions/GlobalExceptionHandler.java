@@ -162,12 +162,15 @@ public class GlobalExceptionHandler {
     ) {
         log.error("Attempted request to {} with invalid phone", request.getRequestURI());
 
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("phone.invalidFormat", null, locale);
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.BAD_REQUEST.value())
-                        .message(exception.getMessage())
+                        .message(message)
                         .build());
     }
 
@@ -178,12 +181,15 @@ public class GlobalExceptionHandler {
     ) {
         log.error("Attempted request to {} with invalid email", request.getRequestURI());
 
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("email.invalidFormat", null, locale);
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.BAD_REQUEST.value())
-                        .message(exception.getMessage())
+                        .message(message)
                         .build());
     }
 
