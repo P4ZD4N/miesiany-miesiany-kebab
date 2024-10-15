@@ -1,5 +1,3 @@
-
-
 # 💻 Miesiany Miesiany Kebab
 
 ## 👀 About
@@ -33,11 +31,13 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 - Eye-catching, well-tailored and well-thought user interface.
 - Responsive Web Design to improve accessibility of page at all types of devices,
 - Multilingual pages (Polish or English),
-- Multilingual validation for all forms. Validation messages are sent by backend in appropriate langueage specified in request header,
+- Multilingual validation for all forms. Validation messages are sent by backend in appropriate language specified in request header,
 - Integration with TomTom Map API to add map with pointer, which aims to help potential customers easily locate restaurant.
 - Bash script, which starts PostgreSQL database, backend and frontend with one command.
+- Possibility to display home page. This is the "first contact section", which means, that clients see it firstly, after navigating to /. For this reason, this section had to be best thought out from a marketing perspective. I placed there many informations, that can encourage potential customer to place the order. Home page is divided to four subsections: hero section, about us, awards and location. Subsections contain, among others, many marketing slogans, certificates, guarantees, acknowledgments and a map with a pointer.
 - Possibility to display highlighted with proper color opening hours of restaurant on each day. Manager can easily update these hours.
 - Possibility to display menu of the restaurant. In menu section clients can see three tables: meals, addons to your meal and beverages, which contains each item details like name, price, capacity or ingredients. This entire section is manageable by the manager. Employee with this role can add, update and remove each type of item. Items in each table are sorted by name.
+- Possibility to display contact details. In contact section clients can see contact data (including phone number and email address), nicknames at social media and map with location pointer. Contact data is editable by manager.
 
 
 ## 🔗 API
@@ -338,6 +338,38 @@ Removes existing ingredient.
   "name":  "Cucumber",
 }
 ```
+
+### ContactController
+ 
+#### GET /api/v1/contact/contacts
+
+**Description:**  
+Retrieves all contacts, that are currently stored in the database.
+
+#### PUT /api/v1/contact/update-contact
+
+**Description:**  
+Updates existing contact. You can update contacts of type EMAIL or TELEPHONE. 
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "contact_type":  "TELEPHONE",
+  "new_value":  "123456789"
+}
+```
+
+## 📋 Requirements
+- Java 21 (or higher)
+- Docker
+- ng
+- npm
 
 ## 🌍 Environment Variables
 
