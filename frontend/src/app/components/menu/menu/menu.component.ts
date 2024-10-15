@@ -37,6 +37,7 @@ export class MenuComponent implements OnInit {
   isAddingAddon = false;
   isAddingMeal = false;
   isAddingIngredient = false;
+  isAdding = false;
   isEditing = false;
 
   newBeverage: NewBeverageRequest = {
@@ -652,6 +653,7 @@ export class MenuComponent implements OnInit {
 
     this.hideErrorMessages();
     this.isAddingBeverage = true;
+    this.isAdding = true;
   }
 
   showAddAddonTable(): void {
@@ -661,6 +663,7 @@ export class MenuComponent implements OnInit {
 
     this.hideErrorMessages();
     this.isAddingAddon = true;
+    this.isAdding = true;
   }
 
   showAddMealTable(): void {
@@ -670,6 +673,7 @@ export class MenuComponent implements OnInit {
 
     this.hideErrorMessages();
     this.isAddingMeal = true;
+    this.isAdding = true;
   }
 
   showAddIngredientTable(): void {
@@ -679,26 +683,31 @@ export class MenuComponent implements OnInit {
 
     this.hideErrorMessages();
     this.isAddingIngredient = true;
+    this.isAdding = true;
   }
 
   hideAddBeverageTable(): void {
     this.hideErrorMessages();
     this.isAddingBeverage = false;
+    this.isAdding = false;
   }
 
   hideAddAddonTable(): void {
     this.hideErrorMessages();
     this.isAddingAddon = false;
+    this.isAdding = false;
   }
 
   hideAddMealTable(): void {
     this.hideErrorMessages();
     this.isAddingMeal = false;
+    this.isAdding = false;
   }
 
   hideAddIngredientTable(): void {
     this.hideErrorMessages();
     this.isAddingIngredient = false;
+    this.isAdding = false;
   }
 
   hideEditableBeverageRow(beverage: BeverageResponse): void {
