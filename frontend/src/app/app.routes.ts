@@ -10,6 +10,8 @@ import { EmployeePanelLayoutComponent } from './components/employee-panel/employ
 import { EmployeePanelComponent } from './components/employee-panel/panel/employee-panel.component';
 import { MenuLayoutComponent } from './components/menu/menu.layout.component';
 import { MenuComponent } from './components/menu/menu/menu.component';
+import { ContactLayoutComponent } from './components/contact/contact-layout-component';
+import { ContactComponent } from './components/contact/contact/contact.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -27,5 +29,8 @@ export const routes: Routes = [
     ]}, 
     { path: 'menu', component: MenuLayoutComponent, children: [
         { path: '', component: MenuComponent }
+    ]},
+    { path: 'contact', component: ContactLayoutComponent, children: [
+        { path: '', component: ContactComponent }
     ]}, 
 ];

@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.utils;
 
 import com.p4zd4n.kebab.entities.*;
+import com.p4zd4n.kebab.enums.ContactType;
 import com.p4zd4n.kebab.enums.DayOfWeek;
 import com.p4zd4n.kebab.enums.IngredientType;
 import com.p4zd4n.kebab.enums.Size;
@@ -25,6 +26,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final AddonRepository addonRepository;
     private final MealRepository mealRepository;
     private final IngredientRepository ingredientRepository;
+    private final ContactRepository contactRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -32,7 +34,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             BeverageRepository beverageRepository,
             AddonRepository addonRepository,
             MealRepository mealRepository,
-            IngredientRepository ingredientRepository
+            IngredientRepository ingredientRepository,
+            ContactRepository contactRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -40,6 +43,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.addonRepository = addonRepository;
         this.mealRepository = mealRepository;
         this.ingredientRepository = ingredientRepository;
+        this.contactRepository = contactRepository;
     }
 
     @Override
@@ -52,6 +56,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initAddons();
         initIngredients();
         initMeals();
+        initContacts();
     }
 
     private void initOpeningHours() {
@@ -330,5 +335,20 @@ public class SampleDataInitializer implements CommandLineRunner {
                 () -> new IngredientNotFoundException("Fries")));
 
         mealRepository.saveAll(List.of(pitaKebabSalads, pitaKebabSaladsAndFries));
+    }
+
+    private void initContacts() {
+
+        Contact telephone = Contact.builder()
+                .contactType(ContactType.TELEPHONE)
+                .value("123456789")
+                .build();
+
+        Contact email = Contact.builder()
+                .contactType(ContactType.EMAIL)
+                .value("kontakt@miesianymiesiany.pl")
+                .build();
+
+        contactRepository.saveAll(List.of(telephone, email));
     }
 }

@@ -155,6 +155,44 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(InvalidPhoneException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidPhoneException(
+            InvalidPhoneException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid phone", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("phone.invalidFormat", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidEmailException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidEmailException(
+            InvalidEmailException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid email", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("email.invalidFormat", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
     @ExceptionHandler(OpeningHourNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleOpeningHourNotFoundException(
             OpeningHourNotFoundException exception,
@@ -257,6 +295,22 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         log.error("Attempted request to {} with not existing meal: {}", request.getRequestURI(), exception.getMealName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(ContactNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleContactNotFoundException(
+            ContactNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing contact: {}", request.getRequestURI(), exception.getContactType());
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)

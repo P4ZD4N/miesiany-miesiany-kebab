@@ -1,3 +1,4 @@
+import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
 import { IngredientType } from "../enums/ingredient-type.enum";
 import { Size } from "../enums/size.enum";
@@ -69,4 +70,9 @@ export interface RemovedIngredientRequest {
 export interface NewIngredientRequest {
   new_ingredient_name: string;
   new_ingredient_type: IngredientType | null;
+}
+
+export interface UpdatedContactRequest {
+  contact_type: ContactType;
+  new_value: string;
 }

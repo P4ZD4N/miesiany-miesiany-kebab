@@ -150,8 +150,8 @@
             "vegetables": "Warzywa",
             "sauces": "Sosy",
             "other": "Inne",
-            "ingredient": "Ingredient",
-            "ingredient_type": "Ingredient type",
+            "ingredient": "Skladnik",
+            "ingredient_type": "Typ skladnika",
             "BREAD": "Ciasto",
             "MEAT": "Mieso",
             "VEGETABLE": "Warzywo",
@@ -168,5 +168,23 @@
         "cancel": "Anuluj",
         "accept": "Akceptuj",
         "remove": "Usun"  
+    },
+    "contact": {
+        "headline": "Kontakt",
+        "paragraph_top": "Skontaktuj sie z nami!",
+        "left": {
+            "contact_data": "Dane kontaktowe"
+        },
+        "right": {
+            "our_location": "Nasza lokalizacja",
+            "button": "Wyznacz trase"
+        },
+        "types": {
+            "TELEPHONE": "Telefon",
+            "EMAIL": "Email"
+        },
+        "update": "Aktualizuj",
+        "accept": "Akceptuj",
+        "cancel": "Anuluj"
     }
 }

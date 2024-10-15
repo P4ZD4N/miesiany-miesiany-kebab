@@ -1,3 +1,4 @@
+import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
 import { Role } from "../enums/role.enum";
 import { Size } from "../enums/size.enum";
@@ -97,6 +98,16 @@ export interface RemovedIngredientResponse {
 }
 
 export interface NewIngredientResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface ContactResponse {
+  contact_type: ContactType;
+  value: string;
+}
+
+export interface UpdatedContactResponse {
   status_code: number;
   message: string;
 }
