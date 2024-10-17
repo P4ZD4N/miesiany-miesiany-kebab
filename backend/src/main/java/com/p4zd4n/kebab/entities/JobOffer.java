@@ -31,10 +31,10 @@ public class JobOffer {
     @Column(name = "monthly_salary", nullable = false)
     private BigDecimal monthlySalary;
 
-    @OneToMany(mappedBy = "job_offer")
+    @OneToMany(mappedBy = "jobOffer")
     private List<JobRequirement> jobRequirements = new ArrayList<>();
 
-    @OneToMany(mappedBy = "job_offer")
+    @OneToMany(mappedBy = "jobOffer")
     private List<JobApplication> jobApplications = new ArrayList<>();
 
     @Builder
