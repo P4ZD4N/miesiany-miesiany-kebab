@@ -1,6 +1,8 @@
 package com.p4zd4n.kebab.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.p4zd4n.kebab.enums.JobRequirementType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -13,6 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class JobRequirement {
 
     @Id
