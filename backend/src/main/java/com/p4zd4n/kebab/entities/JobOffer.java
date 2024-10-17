@@ -31,10 +31,10 @@ public class JobOffer {
     @Column(name = "monthly_salary", nullable = false)
     private BigDecimal monthlySalary;
 
-    @OneToMany(mappedBy = "jobOffer")
+    @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobRequirement> jobRequirements = new ArrayList<>();
 
-    @OneToMany(mappedBy = "jobOffer")
+    @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobApplication> jobApplications = new ArrayList<>();
 
     @Builder
@@ -53,6 +53,7 @@ public class JobOffer {
     }
 
     public void addRequirement(JobRequirement requirement) {
+        requirement.setJobOffer(this);
         jobRequirements.add(requirement);
     }
 

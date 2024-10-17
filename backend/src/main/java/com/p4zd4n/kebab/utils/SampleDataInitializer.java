@@ -1,10 +1,7 @@
 package com.p4zd4n.kebab.utils;
 
 import com.p4zd4n.kebab.entities.*;
-import com.p4zd4n.kebab.enums.ContactType;
-import com.p4zd4n.kebab.enums.DayOfWeek;
-import com.p4zd4n.kebab.enums.IngredientType;
-import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.enums.*;
 import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import org.springframework.boot.CommandLineRunner;
@@ -27,6 +24,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final MealRepository mealRepository;
     private final IngredientRepository ingredientRepository;
     private final ContactRepository contactRepository;
+    private final JobOfferRepository jobOfferRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -35,7 +33,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             AddonRepository addonRepository,
             MealRepository mealRepository,
             IngredientRepository ingredientRepository,
-            ContactRepository contactRepository
+            ContactRepository contactRepository,
+            JobOfferRepository jobOfferRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -44,6 +43,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.mealRepository = mealRepository;
         this.ingredientRepository = ingredientRepository;
         this.contactRepository = contactRepository;
+        this.jobOfferRepository = jobOfferRepository;
     }
 
     @Override
@@ -57,6 +57,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initIngredients();
         initMeals();
         initContacts();
+        initJobOffers();
     }
 
     private void initOpeningHours() {
@@ -350,5 +351,35 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         contactRepository.saveAll(List.of(telephone, email));
+    }
+
+    private void initJobOffers() {
+
+        JobOffer jobOffer1 = JobOffer.builder()
+                .positionName("Cook")
+                .description("We are searching a good cook with experience")
+                .monthlySalary(BigDecimal.valueOf(5000))
+                .build();
+
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("+3 years of experience")
+                        .build()
+        );
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("Familiar with many recipes")
+                        .build()
+        );
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.NICE_TO_HAVE)
+                        .description("Smile")
+                        .build()
+        );
+
+        jobOfferRepository.save(jobOffer1);
     }
 }

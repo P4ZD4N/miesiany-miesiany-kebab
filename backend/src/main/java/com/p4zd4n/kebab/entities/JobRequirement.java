@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.p4zd4n.kebab.enums.JobRequirementType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -28,6 +29,7 @@ public class JobRequirement {
 
     @ManyToOne
     @JoinColumn(name = "job_offer_id")
+    @JsonIgnore
     private JobOffer jobOffer;
 
     @Builder
