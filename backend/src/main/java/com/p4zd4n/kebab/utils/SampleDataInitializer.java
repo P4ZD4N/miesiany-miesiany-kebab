@@ -358,14 +358,14 @@ public class SampleDataInitializer implements CommandLineRunner {
         JobOffer jobOffer1 = JobOffer.builder()
                 .positionName("Cook")
                 .description("We are searching a good cook with experience")
-                .monthlySalary(BigDecimal.valueOf(5000))
+                .monthlySalary(BigDecimal.valueOf(4500))
                 .build();
 
         jobOffer1.addRequirement(
                 JobRequirement.builder()
-                        .requirementType(JobRequirementType.MANDATORY)
-                        .description("+3 years of experience")
-                        .build()
+                .requirementType(JobRequirementType.MANDATORY)
+                .description("+3 years of experience")
+                .build()
         );
         jobOffer1.addRequirement(
                 JobRequirement.builder()
@@ -375,11 +375,31 @@ public class SampleDataInitializer implements CommandLineRunner {
         );
         jobOffer1.addRequirement(
                 JobRequirement.builder()
-                        .requirementType(JobRequirementType.NICE_TO_HAVE)
-                        .description("Smile")
+                .requirementType(JobRequirementType.NICE_TO_HAVE)
+                .description("Smile")
+                .build()
+        );
+
+        JobOffer jobOffer2 = JobOffer.builder()
+                .positionName("Cashier")
+                .description("We are searching a cashier with student status")
+                .monthlySalary(BigDecimal.valueOf(4300))
+                .build();
+
+        jobOffer2.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("Student status")
                         .build()
+        );
+        jobOffer2.addRequirement(
+                JobRequirement.builder()
+                .requirementType(JobRequirementType.NICE_TO_HAVE)
+                .description("Smile")
+                .build()
         );
 
         jobOfferRepository.save(jobOffer1);
+        jobOfferRepository.save(jobOffer2);
     }
 }
