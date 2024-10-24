@@ -1,0 +1,112 @@
+.jobs {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+.job-details-header {
+    font-size: 20px;
+    color: red;
+}
+
+p {
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+}
+
+.job-details-detail {
+    font-size: 15px;
+    color: white;
+}
+
+.mat-accordion {
+    margin-top: 1rem;
+    width: 50%;
+    background-color: transparent;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header-title {
+    color: white;
+    align-items: center;
+}
+  
+.mat-expansion-panel .mat-expansion-panel-header-description {
+    font-weight: lighter;
+    color: white;
+}
+  
+.mat-expansion-panel {
+    background-color: rgb(20, 20, 20);
+}
+
+.mat-expansion-panel-header {
+    position: relative;
+    color: white;
+    background-color: black;
+    border-bottom: 3px solid red;
+    transition: 0.6s ease background-color;
+}
+
+  
+mat-expansion-panel-header.mat-expanded,
+mat-expansion-panel-header.mat-expanded:focus {
+    background-color: black;
+}
+  
+.mat-expansion-panel:not(.mat-expanded)
+.mat-expansion-panel-header:hover:not([aria-disabled="true"]) {
+    background-color: rgb(20, 20, 20);
+}
+
+.mat-expansion-panel.mat-expanded
+.mat-expansion-panel-header:hover:not([aria-disabled="true"]) {
+    background-color: rgb(20, 20, 20);
+}
+  
+.mat-expansion-panel:not(.mat-expanded) {
+    border-radius: 8px !important;
+    margin: 16px 0;
+}
+  
+.mat-expansion-panel.mat-expanded .mat-expansion-panel-header {
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.mat-expanded .mat-expansion-panel-header-title .material-icons{
+    transform: rotate(180deg);
+  }
+  
+  .mat-expansion-panel-header-title .open,
+.mat-expanded .mat-expansion-panel-header-title .close{
+  display: inline-block;
+}
+.mat-expanded .mat-expansion-panel-header-title .open,
+.mat-expansion-panel-header-title .close{
+  display: none;
+}
+
+.job-details-section {
+    padding: 1rem 0;
+}
+
+.custom-icon {
+    font-size: 24px; 
+}
+
+li:first-of-type {
+    margin-top: 1rem;
+}
+
+li {
+    line-height: 1;
+}
+

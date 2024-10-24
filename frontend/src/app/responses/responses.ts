@@ -1,5 +1,6 @@
 import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
+import { RequirementType } from "../enums/requirement-type.enum";
 import { Role } from "../enums/role.enum";
 import { Size } from "../enums/size.enum";
 
@@ -110,4 +111,16 @@ export interface ContactResponse {
 export interface UpdatedContactResponse {
   status_code: number;
   message: string;
+}
+
+export interface JobRequirement {
+  requirement_type: RequirementType;
+  description: string;
+}
+
+export interface JobOfferGeneralResponse {
+  position_name: string;
+  description: string;
+  monthly_salary: number;
+  job_requirements: JobRequirement[];
 }
