@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.entities;
 
+import com.p4zd4n.kebab.enums.EmploymentType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;
@@ -19,10 +20,10 @@ public class Manager extends Employee {
         String password,
         LocalDate dateOfBirth,
         String phoneNumber,
-        BigDecimal monthlySalary,
+        BigDecimal hourlyWage,
         boolean isActive,
         LocalDate hiredAt
     ) {
-        super(firstName, lastName, email, password, dateOfBirth, phoneNumber, monthlySalary, isActive, hiredAt);
+        super(firstName, lastName, email, password, dateOfBirth, phoneNumber, EmploymentType.PERMANENT, hourlyWage, isActive, hiredAt);
     }
 }

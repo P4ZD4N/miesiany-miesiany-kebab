@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.entities;
 
+import com.p4zd4n.kebab.enums.EmploymentType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,11 +29,14 @@ public class JobOffer {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "monthly_salary", nullable = false)
-    private BigDecimal monthlySalary;
+    @Column(name = "hourly_wage", nullable = false)
+    private BigDecimal hourlyWage;
 
     @Column(name = "is_active")
     private boolean isActive;
+
+    @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JobEmploymentType> jobEmploymentTypes = new ArrayList<>();
 
     @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobRequirement> jobRequirements = new ArrayList<>();
@@ -41,18 +45,18 @@ public class JobOffer {
     private List<JobApplication> jobApplications = new ArrayList<>();
 
     @Builder
-    public JobOffer(String positionName, String description, BigDecimal monthlySalary) {
+    public JobOffer(String positionName, String description, BigDecimal hourlyWage) {
         this.positionName = positionName;
         this.description = description;
-        this.monthlySalary = monthlySalary;
+        this.hourlyWage = hourlyWage;
         this.isActive = true;
     }
 
     @Builder
-    public JobOffer(String positionName, String description, BigDecimal monthlySalary, List<JobRequirement> jobRequirements) {
+    public JobOffer(String positionName, String description, BigDecimal hourlyWage, List<JobRequirement> jobRequirements) {
         this.positionName = positionName;
         this.description = description;
-        this.monthlySalary = monthlySalary;
+        this.hourlyWage = hourlyWage;
         this.jobRequirements = jobRequirements;
         this.isActive = true;
     }
@@ -64,5 +68,21 @@ public class JobOffer {
 
     public void removeRequirement(JobRequirement requirement) {
         jobRequirements.remove(requirement);
+    }
+
+    public void addEmploymentType(EmploymentType employmentType) {
+        JobEmploymentType jobEmploymentType = new JobEmploymentType(employmentType);
+        jobEmploymentType.setEmploymentType(employmentType);
+        jobEmploymentType.setJobOffer(this);
+        jobEmploymentTypes.add(jobEmploymentType);
+    }
+
+    public void removeRequirement(EmploymentType employmentType) {
+        JobEmploymentType jobEmploymentType = jobEmploymentTypes.stream()
+                .filter(et -> et.getEmploymentType().equals(employmentType))
+                .findFirst()
+                .orElse(null);
+
+        jobEmploymentTypes.remove(jobEmploymentType);
     }
 }

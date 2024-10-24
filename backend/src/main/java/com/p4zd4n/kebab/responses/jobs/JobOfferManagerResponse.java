@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.responses.jobs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.p4zd4n.kebab.entities.JobApplication;
+import com.p4zd4n.kebab.entities.JobEmploymentType;
 import com.p4zd4n.kebab.entities.JobRequirement;
 import lombok.Builder;
 
@@ -12,8 +13,9 @@ import java.util.List;
 public record JobOfferManagerResponse(
         @JsonProperty("position_name") String positionName,
         String description,
-        @JsonProperty("monthly_salary") BigDecimal monthlySalary,
+        @JsonProperty("hourly_wage") BigDecimal hourlyWage,
         @JsonProperty("is_active") boolean isActive,
+        @JsonProperty("job_employment_types") List<JobEmploymentType> jobEmploymentTypes,
         @JsonProperty("job_requirements") List<JobRequirement> jobRequirements,
         @JsonProperty("job_applications") List<JobApplication> jobApplications
 ) {}

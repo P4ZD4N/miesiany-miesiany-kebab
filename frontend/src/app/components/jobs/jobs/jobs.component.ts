@@ -12,7 +12,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 @Component({
   selector: 'app-jobs',
   standalone: true,
-  imports: [CommonModule, TranslateModule,ReactiveFormsModule, MatExpansionModule],
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatExpansionModule],
   templateUrl: './jobs.component.html',
   styleUrl: './jobs.component.scss'
 })
@@ -49,5 +49,13 @@ export class JobsComponent implements OnInit {
 
   getNiceToHaveRequirements(jobOffer: JobOfferGeneralResponse): JobRequirement[] {
     return jobOffer.job_requirements.filter(requirement => requirement.requirement_type === RequirementType.NICE_TO_HAVE);
+  }
+
+  formatHourlyWage(hourlyWage: number | unknown): string {
+    if (typeof hourlyWage === 'number') {
+      return hourlyWage.toFixed(2);
+    } else {
+      return 'Invalid hourly wage';
+    }
   }
 }

@@ -193,6 +193,10 @@
         "description": "Description",
         "requirements": "Requirements",
         "nice_to_have": "Nice to have",
-        "monthly_salary": "Monthly salary"
+        "employment_types": "Employment types",
+        "hourly_wage": "Hourly wage",
+        "PERMANENT": "Permanent",
+        "MANDATE_CONTRACT": "Mandate contract",
+        "brutto": "gross"
     }
 }

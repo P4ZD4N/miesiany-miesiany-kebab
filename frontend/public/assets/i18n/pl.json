@@ -193,6 +193,10 @@
         "description": "Opis stanowiska",
         "requirements": "Wymagania",
         "nice_to_have": "Nice to have",
-        "monthly_salary": "Miesieczne zarobki"
+        "employment_types": "Mozliwosc zatrudnienia na umowach",
+        "hourly_wage": "Stawka godzinowa",
+        "PERMANENT": "Umowa o prace",
+        "MANDATE_CONTRACT": "Umowa zlecenie",
+        "brutto": "brutto"
     }
 }

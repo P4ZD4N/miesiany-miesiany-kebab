@@ -83,7 +83,8 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .password(PasswordEncoder.encodePassword("employee123"))
                 .dateOfBirth(LocalDate.of(1990, 1, 1))
                 .phoneNumber("123456789")
-                .monthlySalary(BigDecimal.valueOf(3000))
+                .employmentType(EmploymentType.PERMANENT)
+                .hourlyWage(BigDecimal.valueOf(30))
                 .isActive(true)
                 .hiredAt(LocalDate.now())
                 .build();
@@ -100,7 +101,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 PasswordEncoder.encodePassword("manager123"),
                 LocalDate.of(2003, 8, 1),
                 "123456798",
-                BigDecimal.valueOf(5000),
+                BigDecimal.valueOf(40),
                 true,
                 LocalDate.now()
         );
@@ -357,33 +358,48 @@ public class SampleDataInitializer implements CommandLineRunner {
 
         JobOffer jobOffer1 = JobOffer.builder()
                 .positionName("Cook")
-                .description("We are searching a good cook with experience")
-                .monthlySalary(BigDecimal.valueOf(4500))
+                .description("We are searching a cook with a lot of passion and with some experience in preparing kebabs!")
+                .hourlyWage(BigDecimal.valueOf(25))
                 .build();
 
         jobOffer1.addRequirement(
                 JobRequirement.builder()
                 .requirementType(JobRequirementType.MANDATORY)
-                .description("+3 years of experience")
+                .description("1+ year of experience working on the similar position in other Kebab restaurant")
                 .build()
         );
         jobOffer1.addRequirement(
                 JobRequirement.builder()
                         .requirementType(JobRequirementType.MANDATORY)
-                        .description("Familiar with many recipes")
+                        .description("Health card")
+                        .build()
+        );
+
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("Ability to work in a fast-paced setting and manage pressure during peak hours")
                         .build()
         );
         jobOffer1.addRequirement(
                 JobRequirement.builder()
-                .requirementType(JobRequirementType.NICE_TO_HAVE)
-                .description("Smile")
+                .requirementType(JobRequirementType.MANDATORY)
+                .description("Smile :)")
                 .build()
         );
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.NICE_TO_HAVE)
+                        .description("Willingness to work various shifts")
+                        .build()
+        );
+        jobOffer1.addEmploymentType(EmploymentType.PERMANENT);
+        jobOffer1.addEmploymentType(EmploymentType.MANDATE_CONTRACT);
 
         JobOffer jobOffer2 = JobOffer.builder()
                 .positionName("Cashier")
-                .description("We are searching a cashier with student status")
-                .monthlySalary(BigDecimal.valueOf(4300))
+                .description("We are searching a cashier with student status!")
+                .hourlyWage(BigDecimal.valueOf(27.70))
                 .build();
 
         jobOffer2.addRequirement(
@@ -394,10 +410,17 @@ public class SampleDataInitializer implements CommandLineRunner {
         );
         jobOffer2.addRequirement(
                 JobRequirement.builder()
-                .requirementType(JobRequirementType.NICE_TO_HAVE)
-                .description("Smile")
+                .requirementType(JobRequirementType.MANDATORY)
+                .description("Smile :)")
                 .build()
         );
+        jobOffer2.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("Willingness to work various shifts")
+                        .build()
+        );
+        jobOffer2.addEmploymentType(EmploymentType.MANDATE_CONTRACT);
 
         jobOfferRepository.save(jobOffer1);
         jobOfferRepository.save(jobOffer2);
