@@ -1,6 +1,6 @@
 <section class="jobs">
-    <h1>Praca</h1>
-    <p>Zdolnych ludzi nigdy za malo! Przejrzyj aktualne oferty pracy i dolacz do zespolu!</p>
+    <h1>{{ 'jobs.headline' | translate }}</h1>
+    <p>{{ 'jobs.paragraph_top' | translate }}</p>
 
     <mat-accordion *ngFor="let job of jobsWithGeneralDetails">
         <mat-expansion-panel>
@@ -11,26 +11,26 @@
 
           </mat-expansion-panel-header>
           <section class="job-details-section">
-            <span class="job-details-header">Opis stanowiska</span>
+            <span class="job-details-header">{{ 'jobs.description' | translate }}</span>
             <ul>
               <li class="job-details-detail">{{ job.description }}</li>
             </ul>
 
             <ng-container *ngIf="getMandatoryRequirements(job).length != 0">
-              <span class="job-details-header">Wymagania</span>
+              <span class="job-details-header">{{ 'jobs.requirements' | translate }}</span>
               <ul *ngFor="let requirement of getMandatoryRequirements(job)">
                 <li class="job-details-detail">{{ requirement.description }}</li>
               </ul>
             </ng-container>
 
             <ng-container *ngIf="getNiceToHaveRequirements(job).length != 0">
-              <span  class="job-details-header">Nice to Have</span>
+              <span  class="job-details-header">{{ 'jobs.nice_to_have' | translate }}</span>
               <ul *ngFor="let requirement of getNiceToHaveRequirements(job)">
                 <li class="job-details-detail">{{ requirement.description }}</li>
               </ul>
             </ng-container>
 
-            <span class="job-details-header">Miesieczne zarobki: {{ job.monthly_salary }} zl</span>
+            <span class="job-details-header">{{ 'jobs.monthly_salary' | translate }}: {{ job.monthly_salary }} zl</span>
           </section>
         </mat-expansion-panel>
     </mat-accordion>

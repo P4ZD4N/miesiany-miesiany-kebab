@@ -186,5 +186,13 @@
         "update": "Aktualizuj",
         "accept": "Akceptuj",
         "cancel": "Anuluj"
+    },
+    "jobs": {
+        "headline": "Praca",
+        "paragraph_top": "Zdolnych ludzi nigdy za malo! Przejrzyj aktualne oferty pracy i dolacz do zespolu!",
+        "description": "Opis stanowiska",
+        "requirements": "Wymagania",
+        "nice_to_have": "Nice to have",
+        "monthly_salary": "Miesieczne zarobki"
     }
 }

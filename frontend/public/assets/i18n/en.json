@@ -186,5 +186,13 @@
         "update": "Update",
         "accept": "Accept",
         "cancel": "Cancel"
+    },
+    "jobs": {
+        "headline": "Jobs",
+        "paragraph_top": "You can never have enough capable people! Browse current job offers and join the team!",
+        "description": "Description",
+        "requirements": "Requirements",
+        "nice_to_have": "Nice to have",
+        "monthly_salary": "Monthly salary"
     }
 }
