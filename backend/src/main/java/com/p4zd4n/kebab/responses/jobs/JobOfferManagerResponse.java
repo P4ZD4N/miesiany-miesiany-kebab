@@ -13,6 +13,7 @@ public record JobOfferManagerResponse(
         @JsonProperty("position_name") String positionName,
         String description,
         @JsonProperty("monthly_salary") BigDecimal monthlySalary,
+        @JsonProperty("is_active") boolean isActive,
         @JsonProperty("job_requirements") List<JobRequirement> jobRequirements,
         @JsonProperty("job_applications") List<JobApplication> jobApplications
 ) {}
