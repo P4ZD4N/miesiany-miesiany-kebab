@@ -1,14 +1,15 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
+import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
 import com.p4zd4n.kebab.responses.jobs.JobOfferManagerResponse;
 import com.p4zd4n.kebab.responses.jobs.JobOfferGeneralResponse;
+import com.p4zd4n.kebab.responses.jobs.NewJobOfferResponse;
 import com.p4zd4n.kebab.services.jobs.JobOfferService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,5 +37,23 @@ public class JobsController {
         log.info("Received get job offers for other users request");
 
         return ResponseEntity.ok(jobOfferService.getJobOffersForOtherUsers());
+    }
+
+    @PostMapping("/add-job-offer")
+    public ResponseEntity<NewJobOfferResponse> addJobOffer(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody NewJobOfferRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received add job offer request");
+
+        NewJobOfferResponse response = jobOfferService.addJobOffer(request);
+
+        log.info("Successfully added new job offer: {}", request.positionName());
+
+        return ResponseEntity.ok(response);
     }
 }

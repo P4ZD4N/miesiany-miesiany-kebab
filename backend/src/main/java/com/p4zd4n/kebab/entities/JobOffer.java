@@ -53,10 +53,11 @@ public class JobOffer {
     }
 
     @Builder
-    public JobOffer(String positionName, String description, BigDecimal hourlyWage, List<JobRequirement> jobRequirements) {
+    public JobOffer(String positionName, String description, BigDecimal hourlyWage, List<JobEmploymentType> jobEmploymentTypes, List<JobRequirement> jobRequirements) {
         this.positionName = positionName;
         this.description = description;
         this.hourlyWage = hourlyWage;
+        this.jobEmploymentTypes = jobEmploymentTypes;
         this.jobRequirements = jobRequirements;
         this.isActive = true;
     }
@@ -77,12 +78,15 @@ public class JobOffer {
         jobEmploymentTypes.add(jobEmploymentType);
     }
 
-    public void removeRequirement(EmploymentType employmentType) {
+    public void removeEmploymentType(EmploymentType employmentType) {
         JobEmploymentType jobEmploymentType = jobEmploymentTypes.stream()
                 .filter(et -> et.getEmploymentType().equals(employmentType))
                 .findFirst()
                 .orElse(null);
 
         jobEmploymentTypes.remove(jobEmploymentType);
+    }
+
+    public void addEmploymentType(JobEmploymentType jobEmploymentType) {
     }
 }

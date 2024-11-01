@@ -30,7 +30,7 @@
               </ul>
             </ng-container>
 
-            <ng-container>
+            <ng-container *ngIf="getEmploymentTypes(job).length != 0">
               <span  class="job-details-header">{{ 'jobs.employment_types' | translate }}</span>
               <ul *ngFor="let employmentType of job.job_employment_types">
                 <li class="job-details-detail">{{ 'jobs.' + employmentType.employment_type | translate}}</li>

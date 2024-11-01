@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "/api/v1/menu/add-ingredient",
                                 "/api/v1/menu/remove-ingredient",
                                 "/api/v1/contact/update-contact",
-                                "/api/v1/jobs/job-offers/manager").hasRole("MANAGER")
+                                "/api/v1/jobs/job-offers/manager",
+                                "/api/v1/jobs/add-job-offer").hasRole("MANAGER")
                         .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )

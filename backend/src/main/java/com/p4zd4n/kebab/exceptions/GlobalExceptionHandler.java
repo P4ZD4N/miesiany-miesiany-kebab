@@ -1,9 +1,6 @@
 package com.p4zd4n.kebab.exceptions;
 
-import com.p4zd4n.kebab.exceptions.alreadyexists.AddonAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.alreadyexists.BeverageAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.alreadyexists.IngredientAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.alreadyexists.MealAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.*;
 import com.p4zd4n.kebab.exceptions.invalid.*;
 import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
@@ -392,6 +389,24 @@ public class GlobalExceptionHandler {
                 .body(ItemTypeExceptionResponse
                         .builder()
                         .itemType("ingredient")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(JobOfferAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleJobOfferAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing job offer", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("jobOffer.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
                         .statusCode(HttpStatus.CONFLICT.value())
                         .message(message)
                         .build());

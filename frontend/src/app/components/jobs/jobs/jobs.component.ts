@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { JobOfferGeneralResponse, JobRequirement } from '../../../responses/responses';
+import { JobEmploymentType, JobOfferGeneralResponse, JobRequirement } from '../../../responses/responses';
 import { JobsService } from '../../../services/jobs/jobs.service';
 import { LangService } from '../../../services/lang/lang.service';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -49,6 +49,10 @@ export class JobsComponent implements OnInit {
 
   getNiceToHaveRequirements(jobOffer: JobOfferGeneralResponse): JobRequirement[] {
     return jobOffer.job_requirements.filter(requirement => requirement.requirement_type === RequirementType.NICE_TO_HAVE);
+  }
+
+  getEmploymentTypes(jobOffer: JobOfferGeneralResponse): JobEmploymentType[] {
+    return jobOffer.job_employment_types;
   }
 
   formatHourlyWage(hourlyWage: number | unknown): string {
