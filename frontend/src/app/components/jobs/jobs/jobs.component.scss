@@ -223,6 +223,12 @@ option {
     justify-content: center;
 }
 
+.error {
+    font-size: 24px;
+    margin-top: 1rem;
+    color: rgb(126, 15, 15);
+}
+
 @media (max-width: 1000px) {
     p {
         width: 70%;

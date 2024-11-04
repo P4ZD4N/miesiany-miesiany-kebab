@@ -4,6 +4,10 @@
 
     <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showAddJobOfferTable()">{{ 'jobs.button_add' | translate }}</button>
 
+    <p *ngIf="errorMessages['positionName']" class="error">{{ errorMessages['positionName'] }}</p>
+    <p *ngIf="errorMessages['description']" class="error">{{ errorMessages['description'] }}</p>
+    <p *ngIf="errorMessages['hourlyWage']" class="error">{{ errorMessages['hourlyWage'] }}</p>
+
     <table class="add-job-offer-table" *ngIf="isAdding">
       <tr>
         <td class="buttons">

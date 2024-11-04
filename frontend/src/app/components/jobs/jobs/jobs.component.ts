@@ -96,6 +96,14 @@ export class JobsComponent implements OnInit {
   hideAddJobOfferTable(): void {
     this.hideErrorMessages();
     this.isAdding = false;
+    this.newJobOffer = { position_name: '',
+      description: '',
+      hourly_wage: 0,
+      job_employment_types: [],
+      job_requirements: []
+    }
+    this.newJobOfferRequirement = { requirement_type: null, description: '' };
+    this.newJobOfferEmploymentType = { employment_type: null };
   }
 
   addJobOffer(): void {
