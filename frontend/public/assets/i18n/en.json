@@ -194,9 +194,18 @@
         "requirements": "Requirements",
         "nice_to_have": "Nice to have",
         "employment_types": "Employment types",
+        "employment_type": "Employment type",
         "hourly_wage": "Hourly wage",
         "PERMANENT": "Permanent",
         "MANDATE_CONTRACT": "Mandate contract",
-        "brutto": "gross"
+        "brutto": "gross",
+        "button_add": "Add job offer",
+        "position": "Position",
+        "requirement_type": "Requirement type",
+        "requirement_description": "Requirement description",
+        "MANDATORY": "Mandatory",
+        "NICE_TO_HAVE": "Nice to have",
+        "accept": "Accept",
+        "cancel": "Cancel"
     }
 }

@@ -2,6 +2,67 @@
     <h1>{{ 'jobs.headline' | translate }}</h1>
     <p>{{ 'jobs.paragraph_top' | translate }}</p>
 
+    <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showAddJobOfferTable()">{{ 'jobs.button_add' | translate }}</button>
+
+    <table class="add-job-offer-table" *ngIf="isAdding">
+      <tr>
+        <td>
+            <button class="button-accept" (click)="addJobOffer()">{{ 'jobs.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideAddJobOfferTable()">{{ 'jobs.cancel' | translate }}</button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{ 'jobs.position' | translate }}: <input type="text" placeholder="{{ 'jobs.position' | translate }}"  [(ngModel)]="newJobOffer.position_name" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{ 'jobs.description' | translate }}: <input type="text" placeholder="{{ 'jobs.description' | translate }}"  [(ngModel)]="newJobOffer.description" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{ 'jobs.hourly_wage' | translate }}: <input type="number" step="0.01" min="0" placeholder="{{ 'jobs.hourly_wage' | translate }}"  [(ngModel)]="newJobOffer.hourly_wage" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <ul *ngFor="let requirement of newJobOffer.job_requirements">
+            <li>
+              <button class="button-cancel" (click)="removeRequirementFromNewJobOffer(requirement)">-</button> [{{ 'jobs.' + requirement.requirement_type | translate }}]: {{ requirement.description }}
+            </li>
+          </ul>
+
+          <button class="button-accept" (click)="addRequirementToNewJobOffer()">{{ 'jobs.accept' | translate }}</button>
+          <select [(ngModel)]="newJobOfferRequirement.requirement_type">
+              <option value="" disabled selected>{{ 'jobs.requirement_type' | translate }}</option>
+              <option *ngFor="let type of requirementTypes" [value]="type">
+                  {{ 'jobs.' + type | translate }}
+              </option>
+          </select>
+          <input type="text" placeholder="{{ 'jobs.requirement_description' | translate }}"  [(ngModel)]="newJobOfferRequirement.description" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <ul *ngFor="let employmentType of newJobOffer.job_employment_types">
+            <li>
+              <button class="button-cancel" (click)="removeEmploymentTypeFromNewJobOffer(employmentType)">-</button>{{ 'jobs.' + employmentType.employment_type | translate }}
+            </li>
+          </ul>
+
+          <button *ngIf="getAvailableEmploymentTypes().length > 0" class="button-accept" (click)="addEmploymentTypeToNewJobOffer()">{{ 'jobs.accept' | translate }}</button>
+          <select *ngIf="getAvailableEmploymentTypes().length > 0" [(ngModel)]="newJobOfferEmploymentType.employment_type">
+              <option value="" disabled selected>{{ 'jobs.employment_type' | translate }}</option>
+              <option *ngFor="let type of getAvailableEmploymentTypes()" [value]="type">
+                  {{ 'jobs.' + type | translate }}
+              </option>
+          </select>
+        </td>
+      </tr>
+  </table>
+
     <mat-accordion *ngFor="let job of jobsWithGeneralDetails">
         <mat-expansion-panel>
           <mat-expansion-panel-header class="specific-class">

@@ -115,12 +115,12 @@ export interface UpdatedContactResponse {
 }
 
 export interface JobRequirement {
-  requirement_type: RequirementType;
+  requirement_type: RequirementType | null;
   description: string;
 }
 
 export interface JobEmploymentType {
-  employment_type: EmploymentType;
+  employment_type: EmploymentType  | null;
 }
 
 export interface JobOfferGeneralResponse {

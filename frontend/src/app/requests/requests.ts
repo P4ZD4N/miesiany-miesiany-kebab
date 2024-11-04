@@ -2,7 +2,7 @@ import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
 import { IngredientType } from "../enums/ingredient-type.enum";
 import { Size } from "../enums/size.enum";
-import { SimpleMealIngredient } from "../responses/responses";
+import { JobEmploymentType, JobRequirement, SimpleMealIngredient } from "../responses/responses";
 
 export interface NewBeverageRequest {
   new_beverage_name: string;
@@ -75,4 +75,12 @@ export interface NewIngredientRequest {
 export interface UpdatedContactRequest {
   contact_type: ContactType;
   new_value: string;
+}
+
+export interface NewJobOfferRequest {
+  position_name: string;
+  description: string;
+  hourly_wage: number;
+  job_employment_types: JobEmploymentType[];
+  job_requirements: JobRequirement[];
 }
