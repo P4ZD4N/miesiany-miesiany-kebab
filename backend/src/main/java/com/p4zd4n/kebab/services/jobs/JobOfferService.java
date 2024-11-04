@@ -1,16 +1,15 @@
 package com.p4zd4n.kebab.services.jobs;
 
-import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.JobOffer;
-import com.p4zd4n.kebab.exceptions.alreadyexists.BeverageAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.alreadyexists.JobOfferAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.notfound.JobOfferNotFoundException;
 import com.p4zd4n.kebab.repositories.JobOfferRepository;
 import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
-import com.p4zd4n.kebab.requests.menu.beverages.NewBeverageRequest;
+import com.p4zd4n.kebab.requests.jobs.UpdatedJobOfferRequest;
 import com.p4zd4n.kebab.responses.jobs.JobOfferGeneralResponse;
 import com.p4zd4n.kebab.responses.jobs.JobOfferManagerResponse;
 import com.p4zd4n.kebab.responses.jobs.NewJobOfferResponse;
-import com.p4zd4n.kebab.responses.menu.beverages.NewBeverageResponse;
+import com.p4zd4n.kebab.responses.jobs.UpdatedJobOfferResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -89,10 +88,8 @@ public class JobOfferService {
                 .hourlyWage(request.hourlyWage())
                 .build();
 
-        if (request.jobEmploymentTypes() != null && !request.jobEmploymentTypes().isEmpty()) {
-            request.jobEmploymentTypes().forEach(joffer -> System.out.println(joffer.getEmploymentType()));
+        if (request.jobEmploymentTypes() != null && !request.jobEmploymentTypes().isEmpty())
             request.jobEmploymentTypes().forEach(newJobOffer::addEmploymentType);
-        }
         if (request.jobRequirements() != null && !request.jobRequirements().isEmpty())
             request.jobRequirements().forEach(newJobOffer::addRequirement);
 
@@ -104,6 +101,52 @@ public class JobOfferService {
         jobOfferRepository.save(newJobOffer);
 
         log.info("Successfully added new job offer with position name '{}'", request.positionName());
+
+        return response;
+    }
+
+    public JobOffer findJobOfferByPositionName(String positionName) {
+
+        log.info("Started finding job offer with position name '{}'", positionName);
+
+        JobOffer jobOffer = jobOfferRepository.findByPositionName(positionName)
+                .orElseThrow(() -> new JobOfferNotFoundException(positionName));
+
+        log.info("Successfully found job offer with position name '{}'", positionName);
+
+        return jobOffer;
+    }
+
+    public UpdatedJobOfferResponse updateJobOffer(JobOffer jobOffer, UpdatedJobOfferRequest request) {
+
+        Optional<JobOffer> optionalJobOffer = jobOfferRepository.findByPositionName(request.updatedPositionName());
+
+        if (optionalJobOffer.isPresent()) {
+
+            boolean exists = optionalJobOffer.get().getPositionName().equalsIgnoreCase(request.updatedPositionName());
+
+            if (exists) throw new JobOfferAlreadyExistsException(request.updatedPositionName());
+        }
+
+        UpdatedJobOfferResponse response = UpdatedJobOfferResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated job offer with position name '" + jobOffer.getPositionName() + "'")
+                .build();
+
+        jobOffer.setPositionName(request.updatedPositionName());
+        jobOffer.setDescription(request.updatedDescription());
+        jobOffer.setHourlyWage(request.updatedHourlyWage());
+
+        jobOffer.getJobEmploymentTypes().clear();
+        if (request.updatedEmploymentTypes() != null && !request.updatedEmploymentTypes().isEmpty()) {
+            request.updatedEmploymentTypes().forEach(jobOffer::addEmploymentType);
+        }
+
+        jobOffer.getJobRequirements().clear();
+        if (request.updatedRequirements() != null && !request.updatedRequirements().isEmpty())
+            request.updatedRequirements().forEach(jobOffer::addRequirement);
+
+        jobOfferRepository.save(jobOffer);
 
         return response;
     }

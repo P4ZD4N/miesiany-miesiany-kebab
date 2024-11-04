@@ -1,10 +1,15 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.entities.Beverage;
+import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
+import com.p4zd4n.kebab.requests.jobs.UpdatedJobOfferRequest;
 import com.p4zd4n.kebab.responses.jobs.JobOfferManagerResponse;
 import com.p4zd4n.kebab.responses.jobs.JobOfferGeneralResponse;
 import com.p4zd4n.kebab.responses.jobs.NewJobOfferResponse;
+import com.p4zd4n.kebab.responses.jobs.UpdatedJobOfferResponse;
+import com.p4zd4n.kebab.responses.menu.beverages.UpdatedBeverageResponse;
 import com.p4zd4n.kebab.services.jobs.JobOfferService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +58,25 @@ public class JobsController {
         NewJobOfferResponse response = jobOfferService.addJobOffer(request);
 
         log.info("Successfully added new job offer: {}", request.positionName());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-job-offer")
+    public ResponseEntity<UpdatedJobOfferResponse> updateJobOffer(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UpdatedJobOfferRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received update job offer request");
+
+        JobOffer existingJobOffer = jobOfferService.findJobOfferByPositionName(request.positionName());
+        UpdatedJobOfferResponse response = jobOfferService.updateJobOffer(existingJobOffer, request);
+
+        log.info("Successfully updated job offer: {}", request.updatedPositionName());
 
         return ResponseEntity.ok(response);
     }
