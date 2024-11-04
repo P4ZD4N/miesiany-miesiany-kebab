@@ -10,6 +10,7 @@ import { RequirementType } from '../../../enums/requirement-type.enum';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { NewJobOfferRequest } from '../../../requests/requests';
 import { EmploymentType } from '../../../enums/employment-type.enum';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-jobs',
@@ -88,20 +89,43 @@ export class JobsComponent implements OnInit {
   }
 
   showAddJobOfferTable(): void {
-    if (this.isEditing) {
-      return;
-    }
-
     this.hideErrorMessages();
     this.isAdding = true;
   }
 
   hideAddJobOfferTable(): void {
-
+    this.hideErrorMessages();
+    this.isAdding = false;
   }
 
   addJobOffer(): void {
+    console.log(this.newJobOffer.job_employment_types);
+    this.jobsService.addNewJobOffer(this.newJobOffer).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano oferte pracy na stanowisko '${this.newJobOffer.position_name}'!` : `Successfully added job offer for position '${this.newJobOffer.position_name}'!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
 
+        this.loadJobsWithGeneralDetails();
+        this.newJobOffer = { position_name: '',
+          description: '',
+          hourly_wage: 0,
+          job_employment_types: [],
+          job_requirements: []
+        }
+        this.hideAddJobOfferTable();
+        this.hideErrorMessages();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
   }
 
   addRequirementToNewJobOffer(): void {
@@ -144,5 +168,14 @@ export class JobsComponent implements OnInit {
 
   hideErrorMessages(): void {
     this.errorMessages = {};
+  }
+
+  handleError(error: any) {
+    if (error.errorMessages) {
+      this.errorMessages = error.errorMessages;
+      console.log(this.errorMessages);
+    } else {
+      this.errorMessages = { general: 'An unexpected error occurred' };
+    }
   }
 }

@@ -130,3 +130,8 @@ export interface JobOfferGeneralResponse {
   job_employment_types: JobEmploymentType[];
   job_requirements: JobRequirement[];
 }
+
+export interface NewJobOfferResponse {
+  status_code: number;
+  message: string;
+}

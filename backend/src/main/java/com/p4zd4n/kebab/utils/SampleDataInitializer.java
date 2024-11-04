@@ -393,8 +393,8 @@ public class SampleDataInitializer implements CommandLineRunner {
                         .description("Willingness to work various shifts")
                         .build()
         );
-        jobOffer1.addEmploymentType(EmploymentType.PERMANENT);
-        jobOffer1.addEmploymentType(EmploymentType.MANDATE_CONTRACT);
+        jobOffer1.addEmploymentType(new JobEmploymentType(EmploymentType.PERMANENT));
+        jobOffer1.addEmploymentType(new JobEmploymentType(EmploymentType.MANDATE_CONTRACT));
 
         JobOffer jobOffer2 = JobOffer.builder()
                 .positionName("Cashier")
@@ -420,7 +420,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                         .description("Willingness to work various shifts")
                         .build()
         );
-        jobOffer2.addEmploymentType(EmploymentType.MANDATE_CONTRACT);
+        jobOffer2.addEmploymentType(new JobEmploymentType(EmploymentType.MANDATE_CONTRACT));
 
         jobOfferRepository.save(jobOffer1);
         jobOfferRepository.save(jobOffer2);

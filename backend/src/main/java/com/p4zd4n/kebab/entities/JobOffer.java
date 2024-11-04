@@ -71,22 +71,12 @@ public class JobOffer {
         jobRequirements.remove(requirement);
     }
 
-    public void addEmploymentType(EmploymentType employmentType) {
-        JobEmploymentType jobEmploymentType = new JobEmploymentType(employmentType);
-        jobEmploymentType.setEmploymentType(employmentType);
+    public void addEmploymentType(JobEmploymentType jobEmploymentType) {
         jobEmploymentType.setJobOffer(this);
         jobEmploymentTypes.add(jobEmploymentType);
     }
 
-    public void removeEmploymentType(EmploymentType employmentType) {
-        JobEmploymentType jobEmploymentType = jobEmploymentTypes.stream()
-                .filter(et -> et.getEmploymentType().equals(employmentType))
-                .findFirst()
-                .orElse(null);
-
+    public void removeEmploymentType(JobEmploymentType jobEmploymentType) {
         jobEmploymentTypes.remove(jobEmploymentType);
-    }
-
-    public void addEmploymentType(JobEmploymentType jobEmploymentType) {
     }
 }

@@ -89,8 +89,10 @@ public class JobOfferService {
                 .hourlyWage(request.hourlyWage())
                 .build();
 
-        if (request.jobEmploymentTypes() != null && !request.jobEmploymentTypes().isEmpty())
+        if (request.jobEmploymentTypes() != null && !request.jobEmploymentTypes().isEmpty()) {
+            request.jobEmploymentTypes().forEach(joffer -> System.out.println(joffer.getEmploymentType()));
             request.jobEmploymentTypes().forEach(newJobOffer::addEmploymentType);
+        }
         if (request.jobRequirements() != null && !request.jobRequirements().isEmpty())
             request.jobRequirements().forEach(newJobOffer::addRequirement);
 

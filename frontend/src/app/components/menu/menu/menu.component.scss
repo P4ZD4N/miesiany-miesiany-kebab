@@ -45,6 +45,8 @@ table {
     font-size: 24px;
     text-align: center;
     width: 70%;
+    scrollbar-color: #ff0000 #f1f1f1; 
+    scrollbar-width: thin; 
 }
 
 th {
@@ -220,11 +222,6 @@ option {
 
     .meal-name {
         padding: 1rem;
-    }
-
-    table {
-        scrollbar-color: #ff0000 #f1f1f1; 
-        scrollbar-width: thin; 
     }
 }
 

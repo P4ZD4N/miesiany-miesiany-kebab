@@ -206,6 +206,7 @@
         "MANDATORY": "Mandatory",
         "NICE_TO_HAVE": "Nice to have",
         "accept": "Accept",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "add": "Add"
     }
 }
