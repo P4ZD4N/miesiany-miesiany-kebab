@@ -123,7 +123,8 @@ public class JobOfferService {
 
         if (optionalJobOffer.isPresent()) {
 
-            boolean exists = optionalJobOffer.get().getPositionName().equalsIgnoreCase(request.updatedPositionName());
+            boolean exists = optionalJobOffer.get().getPositionName().equalsIgnoreCase(request.updatedPositionName()) &&
+                    !optionalJobOffer.get().getId().equals(jobOffer.getId());
 
             if (exists) throw new JobOfferAlreadyExistsException(request.updatedPositionName());
         }
