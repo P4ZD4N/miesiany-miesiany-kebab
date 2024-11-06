@@ -135,3 +135,8 @@ export interface NewJobOfferResponse {
   status_code: number;
   message: string;
 }
+
+export interface UpdatedJobOfferResponse {
+  status_code: number;
+  message: string;
+}

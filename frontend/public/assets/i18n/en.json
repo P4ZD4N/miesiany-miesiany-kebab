@@ -207,6 +207,9 @@
         "NICE_TO_HAVE": "Nice to have",
         "accept": "Accept",
         "cancel": "Cancel",
-        "add": "Add"
+        "update": "Update",
+        "remove": "Remove",
+        "add": "Add",
+        "position_name": "Position name"
     }
 }

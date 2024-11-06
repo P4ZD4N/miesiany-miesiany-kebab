@@ -1,16 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { JobEmploymentType, JobOfferGeneralResponse, JobRequirement } from '../../../responses/responses';
 import { JobsService } from '../../../services/jobs/jobs.service';
 import { LangService } from '../../../services/lang/lang.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { RequirementType } from '../../../enums/requirement-type.enum';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
-import { NewJobOfferRequest } from '../../../requests/requests';
+import { NewJobOfferRequest, UpdatedJobOfferRequest } from '../../../requests/requests';
 import { EmploymentType } from '../../../enums/employment-type.enum';
 import Swal from 'sweetalert2';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-jobs',
@@ -21,6 +22,8 @@ import Swal from 'sweetalert2';
 })
 export class JobsComponent implements OnInit {
 
+  languageChangeSubscription: Subscription;
+
   errorMessages: { [key: string]: string } = {};
   jobsWithGeneralDetails: JobOfferGeneralResponse[] = [];
   requirementTypes = Object.keys(RequirementType);
@@ -28,6 +31,10 @@ export class JobsComponent implements OnInit {
 
   isAdding = false;
   isEditing = false;
+
+  currentlyUpdatedJobOfferPositionName: string = '';
+  originalJobOffer: JobOfferGeneralResponse | null = null;
+  currentlyUpdatedJobOffer: JobOfferGeneralResponse | null = null;
 
   newJobOffer: NewJobOfferRequest = {
     position_name: '',
@@ -37,16 +44,25 @@ export class JobsComponent implements OnInit {
     job_requirements: []
   }
 
-  newJobOfferRequirement: JobRequirement = {
+  jobOfferRequirement: JobRequirement = {
     requirement_type: null,
     description: ''
   }
 
-  newJobOfferEmploymentType: JobEmploymentType = {
+  jobOfferEmploymentType: JobEmploymentType = {
     employment_type: null
   }
 
-  constructor(private jobsService: JobsService, private langService: LangService, private authenticationService: AuthenticationService) {}
+  constructor(
+    private jobsService: JobsService, 
+    private langService: LangService, 
+    private authenticationService: AuthenticationService,
+    private translate: TranslateService
+  ) {
+    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
+      this.hideErrorMessages();
+    });
+  }
 
   ngOnInit(): void {
     this.loadJobsWithGeneralDetails();
@@ -102,12 +118,11 @@ export class JobsComponent implements OnInit {
       job_employment_types: [],
       job_requirements: []
     }
-    this.newJobOfferRequirement = { requirement_type: null, description: '' };
-    this.newJobOfferEmploymentType = { employment_type: null };
+    this.jobOfferRequirement = { requirement_type: null, description: '' };
+    this.jobOfferEmploymentType = { employment_type: null };
   }
 
   addJobOffer(): void {
-    console.log(this.newJobOffer.job_employment_types);
     this.jobsService.addNewJobOffer(this.newJobOffer).subscribe({
       next: (response) => {
         Swal.fire({
@@ -136,54 +151,129 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  addRequirementToNewJobOffer(): void {
-    if (this.newJobOfferRequirement.requirement_type !== null && this.newJobOfferRequirement.description !== '') {
-     this.newJobOffer.job_requirements.push(this.newJobOfferRequirement);
+  updateJob(): void {
+    console.log(this.currentlyUpdatedJobOffer?.position_name);
+    console.log(this.currentlyUpdatedJobOfferPositionName);
+
+    console.log(this.currentlyUpdatedJobOffer?.job_requirements);
+
+    let positionTranslated = this.translate.instant('jobs.offers.' + this.currentlyUpdatedJobOfferPositionName);
+
+    if (!this.isPositionTranslationAvailable(this.currentlyUpdatedJobOfferPositionName)) positionTranslated = this.currentlyUpdatedJobOfferPositionName
+    
+    const updatedJobOffer: UpdatedJobOfferRequest = {
+      position_name: this.currentlyUpdatedJobOfferPositionName,
+      updated_position_name: this.currentlyUpdatedJobOffer?.position_name,
+      updated_description: this.currentlyUpdatedJobOffer?.description,
+      updated_hourly_wage: this.currentlyUpdatedJobOffer?.hourly_wage,
+      updated_employment_types: this.currentlyUpdatedJobOffer?.job_employment_types,
+      updated_requirements: this.currentlyUpdatedJobOffer?.job_requirements,
     }
-    this.newJobOfferRequirement = { requirement_type: null, description: '' };
+
+    this.jobsService.updateJobOffer(updatedJobOffer).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie zaktualizowano oferte pracy na pozycji '${positionTranslated}'!` : `Successfully updated job offer on '${positionTranslated}' position!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        this.isEditing = false;
+        this.hideErrorMessages();
+        this.loadJobsWithGeneralDetails();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
   }
 
-  addEmploymentTypeToNewJobOffer(): void {
-    if (this.newJobOfferEmploymentType.employment_type !== null) {
-      this.newJobOffer.job_employment_types.push(this.newJobOfferEmploymentType);
+  addRequirementToJobOffer(jobOffer: { job_requirements: JobRequirement[] }): void {
+    if (this.jobOfferRequirement.requirement_type === null) {
+      this.langService.currentLang === 'pl' ? this.errorMessages = { requirementType: 'Typ wymagania nie moze byc pusty!' } : this.errorMessages = { requirementType: 'Requirement type cannot be empty!' };
+      return;
+    } 
+    
+    if (this.jobOfferRequirement.description.trim() === '') {
+      this.langService.currentLang === 'pl' ? this.errorMessages = { requirementDescription: 'Opis wymagania nie moze byc pusty!' } : this.errorMessages = { requirementDescription: 'Requirement description cannot be empty!' };
+      return;
     }
-    this.newJobOfferEmploymentType = { employment_type: null };
+
+    jobOffer.job_requirements.push(this.jobOfferRequirement);
+    this.jobOfferRequirement = { requirement_type: null, description: '' };
+    this.hideErrorMessages();
   }
 
-  removeRequirementFromNewJobOffer(requirement: JobRequirement): void {
-    this.newJobOffer.job_requirements = this.newJobOffer.job_requirements.filter(
-      (req) => req.requirement_type !== requirement.requirement_type || req.description !== requirement.description
+  addEmploymentTypeToJobOffer(jobOffer: { job_employment_types: JobEmploymentType[] }): void {
+    if (this.jobOfferEmploymentType.employment_type === null) {
+      this.langService.currentLang === 'pl' ? this.errorMessages = { employmentType: "Typ zatrudnienia nie moze byc pusty!" } : this.errorMessages = { employmentType: "Employment type cannot be empty!" }
+      return;
+    }
+    jobOffer.job_employment_types.push(this.jobOfferEmploymentType);
+    this.jobOfferEmploymentType = { employment_type: null };
+    this.hideErrorMessages();
+  }
+
+  removeRequirementFromJobOffer(jobOffer: { job_requirements: JobRequirement[] }, requirement: JobRequirement): void {
+    const index = jobOffer.job_requirements.findIndex(
+      (req) => req.requirement_type === requirement.requirement_type && req.description === requirement.description
     );
+  
+    if (index !== -1) jobOffer.job_requirements.splice(index, 1);
   }
 
-  removeEmploymentTypeFromNewJobOffer(employmentType: JobEmploymentType): void {
-    this.newJobOffer.job_employment_types = this.newJobOffer.job_employment_types.filter(
-      (empType) => empType.employment_type !== employmentType.employment_type
+  removeEmploymentTypeFromJobOffer(jobOffer: { job_employment_types: JobEmploymentType[] }, employmentType: JobEmploymentType): void {
+    const index = jobOffer.job_employment_types.findIndex(
+      (empType) => empType.employment_type === employmentType.employment_type
     );
+
+    if (index !== -1) jobOffer.job_employment_types.splice(index, 1);
   }
 
-  checkIfEmploymentTypeAlreadyExistInNewJobOffer(employmentType: EmploymentType): boolean {
-    return this.newJobOffer.job_employment_types.some(
+  checkIfEmploymentTypeAlreadyExistInJobOffer(jobOffer: { job_employment_types: JobEmploymentType[] }, employmentType: EmploymentType): boolean {
+    return jobOffer.job_employment_types.some(
       (empType) => empType.employment_type === employmentType
     );
   }
 
-  getAvailableEmploymentTypes(): EmploymentType[] {
+  getAvailableEmploymentTypes(jobOffer: { job_employment_types: JobEmploymentType[] }): EmploymentType[] {
     return this.employmentTypes.filter(
-      (type) => !this.checkIfEmploymentTypeAlreadyExistInNewJobOffer(type as EmploymentType)
+      (type) => !this.checkIfEmploymentTypeAlreadyExistInJobOffer(jobOffer, type as EmploymentType)
     );
+  }
+
+  startUpdating(jobOffer: JobOfferGeneralResponse): void {
+    this.isEditing = true;
+    this.currentlyUpdatedJobOfferPositionName = jobOffer.position_name;
+    this.currentlyUpdatedJobOffer = { ...jobOffer };
+    this.originalJobOffer = { ...jobOffer };
+  }
+
+  stopUpdating(): void {
+    this.isEditing = false;
+    this.currentlyUpdatedJobOfferPositionName = '';
+    this.currentlyUpdatedJobOffer = null;
+    this.hideErrorMessages();
+    this.loadJobsWithGeneralDetails();
   }
 
   hideErrorMessages(): void {
     this.errorMessages = {};
   }
 
+  isPositionTranslationAvailable(position: string): boolean {
+    const translatedName = this.translate.instant('jobs.offers.' + position);
+    return translatedName !== 'jobs.offers.' + position;
+  }
+
   handleError(error: any) {
     if (error.errorMessages) {
       this.errorMessages = error.errorMessages;
       console.log(this.errorMessages);
-    } else {
-      this.errorMessages = { general: 'An unexpected error occurred' };
-    }
+    } else this.errorMessages = { general: 'An unexpected error occurred' };
   }
 }

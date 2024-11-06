@@ -84,3 +84,12 @@ export interface NewJobOfferRequest {
   job_employment_types: JobEmploymentType[];
   job_requirements: JobRequirement[];
 }
+
+export interface UpdatedJobOfferRequest {
+  position_name: string;
+  updated_position_name?: string;
+  updated_description?: string;
+  updated_hourly_wage?: number;
+  updated_employment_types?: JobEmploymentType[];
+  updated_requirements?: JobRequirement[];
+}

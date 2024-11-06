@@ -4,9 +4,13 @@
 
     <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showAddJobOfferTable()">{{ 'jobs.button_add' | translate }}</button>
 
-    <p *ngIf="errorMessages['positionName']" class="error">{{ errorMessages['positionName'] }}</p>
-    <p *ngIf="errorMessages['description']" class="error">{{ errorMessages['description'] }}</p>
-    <p *ngIf="errorMessages['hourlyWage']" class="error">{{ errorMessages['hourlyWage'] }}</p>
+    <p *ngIf="errorMessages['message'] && !isEditing" class="error">{{ errorMessages['message'] }}</p>
+    <p *ngIf="errorMessages['positionName'] && !isEditing" class="error">{{ errorMessages['positionName'] }}</p>
+    <p *ngIf="errorMessages['description'] && !isEditing" class="error">{{ errorMessages['description'] }}</p>
+    <p *ngIf="errorMessages['hourlyWage'] && !isEditing" class="error">{{ errorMessages['hourlyWage'] }}</p>
+    <p *ngIf="errorMessages['requirementType'] && !isEditing" class="error">{{ errorMessages['requirementType'] }}</p>
+    <p *ngIf="errorMessages['requirementDescription'] && !isEditing" class="error">{{ errorMessages['requirementDescription'] }}</p>
+    <p *ngIf="errorMessages['employmentType'] && !isEditing" class="error">{{ errorMessages['employmentType'] }}</p>
 
     <table class="add-job-offer-table" *ngIf="isAdding">
       <tr>
@@ -17,49 +21,49 @@
       </tr>
       <tr>
         <td>
-          {{ 'jobs.position' | translate }}:<input type="text" placeholder="{{ 'jobs.position' | translate }}"  [(ngModel)]="newJobOffer.position_name" />
+          {{ 'jobs.position' | translate }}:<input type="text" maxlength="25" placeholder="{{ 'jobs.position' | translate }}"  [(ngModel)]="newJobOffer.position_name" />
         </td>
       </tr>
       <tr>
         <td>
-          {{ 'jobs.description' | translate }}:<textarea type="text" placeholder="{{ 'jobs.description' | translate }}"  [(ngModel)]="newJobOffer.description" ></textarea>
+          {{ 'jobs.description' | translate }}:<textarea type="text" maxlength="150" placeholder="{{ 'jobs.description' | translate }}"  [(ngModel)]="newJobOffer.description" ></textarea>
         </td>
       </tr>
       <tr>
         <td>
-          {{ 'jobs.hourly_wage' | translate }}:<input type="number" step="0.01" min="0" placeholder="{{ 'jobs.hourly_wage' | translate }}"  [(ngModel)]="newJobOffer.hourly_wage" /> zl {{ 'jobs.brutto' | translate}}
+          {{ 'jobs.hourly_wage' | translate }}:<input type="number" step="0.01" min="1" placeholder="{{ 'jobs.hourly_wage' | translate }}"  [(ngModel)]="newJobOffer.hourly_wage" /> zl {{ 'jobs.brutto' | translate}}
         </td>
       </tr>
       <tr>
         <td>
           <ul *ngFor="let requirement of newJobOffer.job_requirements" class="ul-without-decoration">
             <li>
-              <button class="button-cancel" (click)="removeRequirementFromNewJobOffer(requirement)">-</button> [{{ 'jobs.' + requirement.requirement_type | translate }}]: {{ requirement.description }}
+              <button class="button-cancel" (click)="removeRequirementFromJobOffer(newJobOffer, requirement)">-</button> [{{ 'jobs.' + requirement.requirement_type | translate }}]: {{ requirement.description }}
             </li>
           </ul>
 
-          <button class="button-accept" (click)="addRequirementToNewJobOffer()">{{ 'jobs.add' | translate }}</button>
-          <select [(ngModel)]="newJobOfferRequirement.requirement_type">
+          <button class="button-accept" (click)="addRequirementToJobOffer(newJobOffer)">{{ 'jobs.add' | translate }}</button>
+          <select [(ngModel)]="jobOfferRequirement.requirement_type">
               <option value="" disabled selected>{{ 'jobs.requirement_type' | translate }}</option>
               <option *ngFor="let type of requirementTypes" [value]="type">
                   {{ 'jobs.' + type | translate }}
               </option>
           </select>
-          <input type="text" placeholder="{{ 'jobs.requirement_description' | translate }}"  [(ngModel)]="newJobOfferRequirement.description" />
+          <input type="text" maxlength="100" placeholder="{{ 'jobs.requirement_description' | translate }}"  [(ngModel)]="jobOfferRequirement.description" />
         </td>
       </tr>
       <tr>
         <td>
           <ul *ngFor="let employmentType of newJobOffer.job_employment_types" class="ul-without-decoration">
             <li>
-              <button class="button-cancel" (click)="removeEmploymentTypeFromNewJobOffer(employmentType)">-</button>{{ 'jobs.' + employmentType.employment_type | translate }}
+              <button class="button-cancel" (click)="removeEmploymentTypeFromJobOffer(newJobOffer, employmentType)">-</button>{{ 'jobs.' + employmentType.employment_type | translate }}
             </li>
           </ul>
 
-          <button *ngIf="getAvailableEmploymentTypes().length > 0" class="button-accept" (click)="addEmploymentTypeToNewJobOffer()">{{ 'jobs.add' | translate }}</button>
-          <select *ngIf="getAvailableEmploymentTypes().length > 0" [(ngModel)]="newJobOfferEmploymentType.employment_type">
+          <button *ngIf="getAvailableEmploymentTypes(newJobOffer).length > 0" class="button-accept" (click)="addEmploymentTypeToJobOffer(newJobOffer)">{{ 'jobs.add' | translate }}</button>
+          <select *ngIf="getAvailableEmploymentTypes(newJobOffer).length > 0" [(ngModel)]="jobOfferEmploymentType.employment_type">
               <option value="" disabled selected>{{ 'jobs.employment_type' | translate }}</option>
-              <option *ngFor="let type of getAvailableEmploymentTypes()" [value]="type">
+              <option *ngFor="let type of getAvailableEmploymentTypes(newJobOffer)" [value]="type">
                   {{ 'jobs.' + type | translate }}
               </option>
           </select>
@@ -76,33 +80,127 @@
 
           </mat-expansion-panel-header>
           <section class="job-details-section">
-            <span class="job-details-header">{{ 'jobs.description' | translate }}</span>
-            <ul>
-              <li class="job-details-detail">{{ job.description }}</li>
-            </ul>
+            <div>
+              <button class="button-accept" *ngIf="isEditing" (click)="updateJob()">{{ 'jobs.accept' | translate }}</button>
+              <button class="button-update" *ngIf="!isAdding && !isEditing" (click)="startUpdating(job)">{{ 'jobs.update' | translate}}</button>
+              <button class="button-remove" *ngIf="!isAdding && !isEditing">{{ 'jobs.remove' | translate }}</button>
+              <button class="button-cancel" *ngIf="isEditing" (click)="stopUpdating()">{{ 'jobs.cancel' | translate }}</button>
+            </div>
+
+            <p *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</p>
+            <p *ngIf="errorMessages['updatedPositionName']" class="error">{{ errorMessages['updatedPositionName'] }}</p>
+
+            <ng-container *ngIf="isEditing && currentlyUpdatedJobOffer">
+              <span class="job-details-header">{{ 'jobs.position_name' | translate }}</span>
+              <input *ngIf="isEditing" type="text" maxlength="25" [(ngModel)]="currentlyUpdatedJobOffer.position_name" />
+            </ng-container>
+
+            <p *ngIf="errorMessages['updatedDescription']" class="error">{{ errorMessages['updatedDescription'] }}</p>
+            <br *ngIf="isEditing"><br *ngIf="isEditing">
+
+            <ng-container>
+              <span class="job-details-header">{{ 'jobs.description' | translate }}</span>
+              <ul *ngIf="!isEditing">
+                <li class="job-details-detail">{{ job.description }}</li>
+              </ul>
+              <textarea *ngIf="isEditing && currentlyUpdatedJobOffer" type="text" maxlength="150" [(ngModel)]="currentlyUpdatedJobOffer.description"></textarea>
+            </ng-container>
+
+            <br *ngIf="isEditing"><br *ngIf="isEditing">
 
             <ng-container *ngIf="getMandatoryRequirements(job).length != 0">
               <span class="job-details-header">{{ 'jobs.requirements' | translate }}</span>
-              <ul *ngFor="let requirement of getMandatoryRequirements(job)">
-                <li class="job-details-detail">{{ requirement.description }}</li>
-              </ul>
+              
+              <ng-container *ngIf="!isEditing">
+                <ul *ngFor="let requirement of getMandatoryRequirements(job)">
+                  <li class="job-details-detail">{{ requirement.description }}</li>
+                </ul>
+              </ng-container>   
+
+              <ng-container *ngIf="isEditing">
+                <ul *ngFor="let requirement of getMandatoryRequirements(job)" class="ul-without-decoration">
+                  <li class="job-details-detail">
+                    <button class="button-cancel" (click)="removeRequirementFromJobOffer(job, requirement)">-</button> {{ requirement.description }}
+                  </li>
+                </ul>
+              </ng-container>
             </ng-container>
 
             <ng-container *ngIf="getNiceToHaveRequirements(job).length != 0">
               <span  class="job-details-header">{{ 'jobs.nice_to_have' | translate }}</span>
-              <ul *ngFor="let requirement of getNiceToHaveRequirements(job)">
-                <li class="job-details-detail">{{ requirement.description }}</li>
-              </ul>
+
+              <ng-container *ngIf="!isEditing">
+                <ul *ngFor="let requirement of getNiceToHaveRequirements(job)">
+                  <li class="job-details-detail">{{ requirement.description }}</li>
+                </ul>
+              </ng-container>
+
+              <ng-container *ngIf="isEditing">
+                <ul *ngFor="let requirement of getNiceToHaveRequirements(job)" class="ul-without-decoration">
+                  <li class="job-details-detail">
+                    <button class="button-cancel" (click)="removeRequirementFromJobOffer(job, requirement)">-</button> {{ requirement.description }}
+                  </li>
+                </ul>
+              </ng-container>
             </ng-container>
+
+            <p *ngIf="errorMessages['requirementType']" class="error">{{ errorMessages['requirementType'] }}</p>
+            <p *ngIf="errorMessages['requirementDescription']" class="error">{{ errorMessages['requirementDescription'] }}</p>
+
+            <ng-container *ngIf="isEditing">
+              <button class="button-accept" (click)="addRequirementToJobOffer(job)">{{ 'jobs.add' | translate }}</button>
+              <select [(ngModel)]="jobOfferRequirement.requirement_type">
+                  <option value="" disabled selected>{{ 'jobs.requirement_type' | translate }}</option>
+                  <option *ngFor="let type of requirementTypes" [value]="type">
+                      {{ 'jobs.' + type | translate }}
+                  </option>
+              </select>
+              <input type="text" placeholder="{{ 'jobs.requirement_description' | translate }}" maxlength="100" [(ngModel)]="jobOfferRequirement.description" />
+            </ng-container>
+
+            <br *ngIf="isEditing"><br *ngIf="isEditing">
 
             <ng-container *ngIf="getEmploymentTypes(job).length != 0">
-              <span  class="job-details-header">{{ 'jobs.employment_types' | translate }}</span>
-              <ul *ngFor="let employmentType of job.job_employment_types">
-                <li class="job-details-detail">{{ 'jobs.' + employmentType.employment_type | translate}}</li>
-              </ul>
+              <span class="job-details-header">{{ 'jobs.employment_types' | translate }}</span>
+
+              <ng-container *ngIf="!isEditing">
+                <ul *ngFor="let employmentType of job.job_employment_types">
+                  <li class="job-details-detail">{{ 'jobs.' + employmentType.employment_type | translate}}</li>
+                </ul>
+              </ng-container>
+
+              <ng-container *ngIf="isEditing">
+                <ul *ngFor="let employmentType of job.job_employment_types" class="ul-without-decoration">
+                  <li class="job-details-detail">
+                    <button class="button-cancel" (click)="removeEmploymentTypeFromJobOffer(job, employmentType)">-</button> {{ 'jobs.' + employmentType.employment_type | translate}}
+                  </li>
+                </ul>
+              </ng-container>
             </ng-container>
 
-            <span class="job-details-header">{{ 'jobs.hourly_wage' | translate }}: {{ formatHourlyWage(job.hourly_wage) }} zl {{ 'jobs.brutto' | translate}}</span>
+            <p *ngIf="errorMessages['employmentType']" class="error">{{ errorMessages['employmentType'] }}</p>
+
+            <ng-container *ngIf="isEditing">
+              <button *ngIf="getAvailableEmploymentTypes(job).length > 0" class="button-accept" (click)="addEmploymentTypeToJobOffer(job)">{{ 'jobs.add' | translate }}</button>
+              <select *ngIf="getAvailableEmploymentTypes(job).length > 0" [(ngModel)]="jobOfferEmploymentType.employment_type">
+                  <option value="" disabled selected>{{ 'jobs.employment_type' | translate }}</option>
+                  <option *ngFor="let type of getAvailableEmploymentTypes(job)" [value]="type">
+                      {{ 'jobs.' + type | translate }}
+                  </option>
+              </select>
+            </ng-container>
+
+            <br *ngIf="getAvailableEmploymentTypes(job).length > 0 && isEditing"><br *ngIf="getAvailableEmploymentTypes(job).length > 0 && isEditing">
+
+            <ng-container *ngIf="!isEditing">
+              <span class="job-details-header">{{ 'jobs.hourly_wage' | translate }}: {{ formatHourlyWage(job.hourly_wage) }} zl {{ 'jobs.brutto' | translate}}</span>
+            </ng-container>
+
+            <p *ngIf="errorMessages['updatedHourlyWage']" class="error">{{ errorMessages['updatedHourlyWage'] }}</p>
+
+            <ng-container *ngIf="isEditing && currentlyUpdatedJobOffer">
+              <span class="job-details-header">{{ 'jobs.hourly_wage' | translate }}:<input type="number" min="1" [(ngModel)]="currentlyUpdatedJobOffer.hourly_wage" /> zl {{ 'jobs.brutto' | translate}}</span>
+            </ng-container>
           </section>
         </mat-expansion-panel>
     </mat-accordion>

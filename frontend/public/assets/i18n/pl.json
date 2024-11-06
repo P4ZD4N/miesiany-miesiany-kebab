@@ -207,6 +207,9 @@
         "NICE_TO_HAVE": "Nice to have",
         "accept": "Akceptuj",
         "cancel": "Anuluj",
-        "add": "Dodaj"
+        "update": "Aktualizuj",
+        "remove": "Usun",
+        "add": "Dodaj",
+        "position_name": "Pozycja"
     }
 }
