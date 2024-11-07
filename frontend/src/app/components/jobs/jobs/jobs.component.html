@@ -73,7 +73,7 @@
 
     <mat-accordion *ngFor="let job of jobsWithGeneralDetails">
         <mat-expansion-panel>
-          <mat-expansion-panel-header class="specific-class">
+          <mat-expansion-panel-header *ngIf="!isEditing" class="specific-class">
             <mat-panel-title>
               {{ job.position_name }}
             </mat-panel-title>
