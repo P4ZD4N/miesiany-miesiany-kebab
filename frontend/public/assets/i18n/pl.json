@@ -210,6 +210,7 @@
         "update": "Aktualizuj",
         "remove": "Usun",
         "add": "Dodaj",
-        "position_name": "Pozycja"
+        "position_name": "Pozycja",
+        "is_active": "Czy oferta jest aktywna"
     }
 }

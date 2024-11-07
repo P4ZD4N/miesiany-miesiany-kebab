@@ -71,21 +71,27 @@
       </tr>
   </table>
 
-    <mat-accordion *ngFor="let job of jobsWithGeneralDetails">
-        <mat-expansion-panel>
+    <mat-accordion *ngFor="let job of sortJobOffersByPosition(jobsWithGeneralDetails)">
+        <mat-expansion-panel *ngIf="job.is_active || isManager()">
           <mat-expansion-panel-header *ngIf="!isEditing" class="specific-class">
             <mat-panel-title>
-              {{ job.position_name }}
+              <span *ngIf="isManager()" [ngClass]="job.is_active ? 'green-circle' : 'gray-circle'"></span>{{ job.position_name }}
             </mat-panel-title>
 
           </mat-expansion-panel-header>
           <section class="job-details-section">
-            <div>
+            <div *ngIf="isManager()">
               <button class="button-accept" *ngIf="isEditing" (click)="updateJob()">{{ 'jobs.accept' | translate }}</button>
               <button class="button-update" *ngIf="!isAdding && !isEditing" (click)="startUpdating(job)">{{ 'jobs.update' | translate}}</button>
               <button class="button-remove" *ngIf="!isAdding && !isEditing">{{ 'jobs.remove' | translate }}</button>
               <button class="button-cancel" *ngIf="isEditing" (click)="stopUpdating()">{{ 'jobs.cancel' | translate }}</button>
             </div>
+
+            <ng-container *ngIf="isEditing && currentlyUpdatedJobOffer">
+              <span class="job-details-header">{{ 'jobs.is_active' | translate }}:<input type="checkbox" [(ngModel)]="currentlyUpdatedJobOffer.is_active" /></span>
+            </ng-container>
+
+            <br *ngIf="isEditing"><br *ngIf="isEditing">
 
             <p *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</p>
             <p *ngIf="errorMessages['updatedPositionName']" class="error">{{ errorMessages['updatedPositionName'] }}</p>

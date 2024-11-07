@@ -168,6 +168,7 @@ export class JobsComponent implements OnInit {
       updated_hourly_wage: this.currentlyUpdatedJobOffer?.hourly_wage,
       updated_employment_types: this.currentlyUpdatedJobOffer?.job_employment_types,
       updated_requirements: this.currentlyUpdatedJobOffer?.job_requirements,
+      is_active: this.currentlyUpdatedJobOffer?.is_active
     }
 
     this.jobsService.updateJobOffer(updatedJobOffer).subscribe({
@@ -275,5 +276,23 @@ export class JobsComponent implements OnInit {
       this.errorMessages = error.errorMessages;
       console.log(this.errorMessages);
     } else this.errorMessages = { general: 'An unexpected error occurred' };
+  }
+
+  sortJobOffersByPosition(jobOffers: JobOfferGeneralResponse[]): JobOfferGeneralResponse[] {
+    return jobOffers.sort((a, b) => {
+      
+      let firstPositionNameTranslated = this.translate.instant('jobs.offers.' + a.position_name);
+      let secondPositionNameTranslated = this.translate.instant('jobs.offers.' + b.position_name);
+
+      if (!this.isPositionTranslationAvailable(a.position_name)) {
+        firstPositionNameTranslated = a.position_name;
+      }
+  
+      if (!this.isPositionTranslationAvailable(b.position_name)) {
+        secondPositionNameTranslated = b.position_name; 
+      }
+  
+      return firstPositionNameTranslated.localeCompare(secondPositionNameTranslated);
+    });
   }
 }

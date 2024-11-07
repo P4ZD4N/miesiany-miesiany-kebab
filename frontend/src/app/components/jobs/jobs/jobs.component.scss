@@ -177,7 +177,27 @@ input, textarea {
     &[type=text] {
         max-width: 800px;
     }
+
+    &[type=checkbox] {
+        accent-color: red;
+    }
 }
+
+.green-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgb(13, 102, 25);
+    margin-right: 10px;
+  }
+  
+  .gray-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgb(56, 56, 56);
+    margin-right: 10px;
+  }
 
 div {
     margin-bottom: 1em;

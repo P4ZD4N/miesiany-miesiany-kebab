@@ -210,6 +210,7 @@
         "update": "Update",
         "remove": "Remove",
         "add": "Add",
-        "position_name": "Position name"
+        "position_name": "Position name",
+        "is_active": "Is offer active"
     }
 }

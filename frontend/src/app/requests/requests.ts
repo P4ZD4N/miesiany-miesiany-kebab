@@ -92,4 +92,5 @@ export interface UpdatedJobOfferRequest {
   updated_hourly_wage?: number;
   updated_employment_types?: JobEmploymentType[];
   updated_requirements?: JobRequirement[];
+  is_active?: boolean;
 }

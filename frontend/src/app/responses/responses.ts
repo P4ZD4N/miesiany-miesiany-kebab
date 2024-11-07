@@ -127,6 +127,7 @@ export interface JobOfferGeneralResponse {
   position_name: string;
   description: string;
   hourly_wage: number;
+  is_active: boolean;
   job_employment_types: JobEmploymentType[];
   job_requirements: JobRequirement[];
 }
