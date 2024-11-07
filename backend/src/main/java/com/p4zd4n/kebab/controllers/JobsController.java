@@ -1,15 +1,12 @@
 package com.p4zd4n.kebab.controllers;
 
-import com.p4zd4n.kebab.entities.Beverage;
+
 import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
+import com.p4zd4n.kebab.requests.jobs.RemovedJobOfferRequest;
 import com.p4zd4n.kebab.requests.jobs.UpdatedJobOfferRequest;
-import com.p4zd4n.kebab.responses.jobs.JobOfferManagerResponse;
-import com.p4zd4n.kebab.responses.jobs.JobOfferGeneralResponse;
-import com.p4zd4n.kebab.responses.jobs.NewJobOfferResponse;
-import com.p4zd4n.kebab.responses.jobs.UpdatedJobOfferResponse;
-import com.p4zd4n.kebab.responses.menu.beverages.UpdatedBeverageResponse;
+import com.p4zd4n.kebab.responses.jobs.*;
 import com.p4zd4n.kebab.services.jobs.JobOfferService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +74,18 @@ public class JobsController {
         UpdatedJobOfferResponse response = jobOfferService.updateJobOffer(existingJobOffer, request);
 
         log.info("Successfully updated job offer: {}", request.updatedPositionName());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-job-offer")
+    public ResponseEntity<RemovedJobOfferResponse> removeAddon(
+            @Valid @RequestBody RemovedJobOfferRequest request
+    ) {
+        log.info("Received remove job offer request");
+
+        JobOffer existingJobOffer = jobOfferService.findJobOfferByPositionName(request.positionName());
+        RemovedJobOfferResponse response = jobOfferService.removeJobOffer(existingJobOffer);
 
         return ResponseEntity.ok(response);
     }

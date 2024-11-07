@@ -6,10 +6,7 @@ import com.p4zd4n.kebab.exceptions.notfound.JobOfferNotFoundException;
 import com.p4zd4n.kebab.repositories.JobOfferRepository;
 import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
 import com.p4zd4n.kebab.requests.jobs.UpdatedJobOfferRequest;
-import com.p4zd4n.kebab.responses.jobs.JobOfferGeneralResponse;
-import com.p4zd4n.kebab.responses.jobs.JobOfferManagerResponse;
-import com.p4zd4n.kebab.responses.jobs.NewJobOfferResponse;
-import com.p4zd4n.kebab.responses.jobs.UpdatedJobOfferResponse;
+import com.p4zd4n.kebab.responses.jobs.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -152,6 +149,21 @@ public class JobOfferService {
         if (request.isActive() != null) jobOffer.setActive(request.isActive());
 
         jobOfferRepository.save(jobOffer);
+
+        return response;
+    }
+
+    public RemovedJobOfferResponse removeJobOffer(JobOffer jobOffer) {
+        log.info("Started removing job offer with position name '{}'", jobOffer.getPositionName());
+
+        jobOfferRepository.delete(jobOffer);
+
+        RemovedJobOfferResponse response = RemovedJobOfferResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed job offer with position name '" + jobOffer.getPositionName() + "'")
+                .build();
+
+        log.info("Successfully removed beverage with position name '{}'", jobOffer.getPositionName());
 
         return response;
     }

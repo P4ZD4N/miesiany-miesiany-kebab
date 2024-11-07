@@ -83,7 +83,7 @@
             <div *ngIf="isManager()">
               <button class="button-accept" *ngIf="isEditing" (click)="updateJob()">{{ 'jobs.accept' | translate }}</button>
               <button class="button-update" *ngIf="!isAdding && !isEditing" (click)="startUpdating(job)">{{ 'jobs.update' | translate}}</button>
-              <button class="button-remove" *ngIf="!isAdding && !isEditing">{{ 'jobs.remove' | translate }}</button>
+              <button class="button-remove" *ngIf="!isAdding && !isEditing" (click)="removeJobOffer(job)">{{ 'jobs.remove' | translate }}</button>
               <button class="button-cancel" *ngIf="isEditing" (click)="stopUpdating()">{{ 'jobs.cancel' | translate }}</button>
             </div>
 

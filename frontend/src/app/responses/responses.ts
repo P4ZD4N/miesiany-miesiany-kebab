@@ -141,3 +141,8 @@ export interface UpdatedJobOfferResponse {
   status_code: number;
   message: string;
 }
+
+export interface RemovedJobOfferResponse {
+  status_code: number;
+  message: string;
+}

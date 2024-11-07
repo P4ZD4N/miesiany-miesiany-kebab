@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { JobOfferGeneralResponse, NewJobOfferResponse, UpdatedJobOfferResponse } from '../../responses/responses';
-import { NewJobOfferRequest, UpdatedJobOfferRequest } from '../../requests/requests';
+import { JobOfferGeneralResponse, NewJobOfferResponse, RemovedJobOfferResponse, UpdatedJobOfferResponse } from '../../responses/responses';
+import { NewJobOfferRequest, RemovedJobOfferRequest, UpdatedJobOfferRequest } from '../../requests/requests';
 import { LangService } from '../lang/lang.service';
 
 @Injectable({
@@ -41,6 +41,16 @@ export class JobsService {
       map(response => response),
       catchError(this.handleError)
     );
+  }
+
+  removeJobOffer(jobOffer: RemovedJobOfferRequest): Observable<RemovedJobOfferResponse> {
+
+    const requestBody = { position_name: jobOffer.position_name };
+
+    return this.http.delete<RemovedJobOfferResponse>(`${this.apiUrl}/remove-job-offer`, { body: requestBody, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
   }
 
   handleError(error: HttpErrorResponse) {

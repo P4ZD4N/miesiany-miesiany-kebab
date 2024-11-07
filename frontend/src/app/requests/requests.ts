@@ -94,3 +94,7 @@ export interface UpdatedJobOfferRequest {
   updated_requirements?: JobRequirement[];
   is_active?: boolean;
 }
+
+export interface RemovedJobOfferRequest {
+  position_name: string;
+}

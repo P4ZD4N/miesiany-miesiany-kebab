@@ -8,7 +8,7 @@ import { LangService } from '../../../services/lang/lang.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { RequirementType } from '../../../enums/requirement-type.enum';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
-import { NewJobOfferRequest, UpdatedJobOfferRequest } from '../../../requests/requests';
+import { NewJobOfferRequest, RemovedJobOfferRequest, UpdatedJobOfferRequest } from '../../../requests/requests';
 import { EmploymentType } from '../../../enums/employment-type.enum';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
@@ -190,6 +190,48 @@ export class JobsComponent implements OnInit {
       error: (error) => {
         this.handleError(error);
       },
+    });
+  }
+
+  removeJobOffer(jobOffer: JobOfferGeneralResponse): void {
+    let positionNameTranslated = this.translate.instant('jobs.oofers.' + jobOffer.position_name);
+
+    if (!this.isPositionTranslationAvailable(jobOffer.position_name)) {
+      positionNameTranslated = jobOffer.position_name;
+    }
+
+    const confirmationMessage =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac oferte pracy na stanowisku '${positionNameTranslated}'?`
+        : `Are you sure you want to remove job offer on '${positionNameTranslated}' position?`;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.jobsService.removeJobOffer({ position_name: jobOffer.position_name } as RemovedJobOfferRequest).subscribe(() => {
+          Swal.fire({
+            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto oferte pracy na stanowisku '${positionNameTranslated}'!` : `Successfully removed job offer on '${positionNameTranslated}' position!`,
+            icon: 'success',
+            iconColor: 'green',
+            confirmButtonColor: 'green',
+            background: 'black',
+            color: 'white',
+            confirmButtonText: 'Ok',
+          });
+          this.loadJobsWithGeneralDetails();
+        });
+      }
     });
   }
 
