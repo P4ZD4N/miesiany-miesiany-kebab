@@ -32,5 +32,7 @@ public record UpdatedJobOfferRequest(
 
         @JsonProperty("updated_employment_types") List<JobEmploymentType> updatedEmploymentTypes,
 
-        @JsonProperty("updated_requirements") List<JobRequirement> updatedRequirements
+        @JsonProperty("updated_requirements") List<JobRequirement> updatedRequirements,
+
+        @JsonProperty("is_active") Boolean isActive
 ) {}

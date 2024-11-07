@@ -39,6 +39,7 @@ public class JobOfferService {
                         .positionName(jobOffer.getPositionName())
                         .description(jobOffer.getDescription())
                         .hourlyWage(jobOffer.getHourlyWage())
+                        .isActive(jobOffer.isActive())
                         .jobEmploymentTypes(jobOffer.getJobEmploymentTypes())
                         .jobRequirements(jobOffer.getJobRequirements())
                         .build()
@@ -62,6 +63,7 @@ public class JobOfferService {
                         .positionName(jobOffer.getPositionName())
                         .description(jobOffer.getDescription())
                         .hourlyWage(jobOffer.getHourlyWage())
+                        .isActive(jobOffer.isActive())
                         .jobEmploymentTypes(jobOffer.getJobEmploymentTypes())
                         .jobRequirements(jobOffer.getJobRequirements())
                         .jobApplications(jobOffer.getJobApplications())
@@ -146,6 +148,8 @@ public class JobOfferService {
         jobOffer.getJobRequirements().clear();
         if (request.updatedRequirements() != null && !request.updatedRequirements().isEmpty())
             request.updatedRequirements().forEach(jobOffer::addRequirement);
+
+        if (request.isActive() != null) jobOffer.setActive(request.isActive());
 
         jobOfferRepository.save(jobOffer);
 

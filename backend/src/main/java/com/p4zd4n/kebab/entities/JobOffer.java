@@ -33,7 +33,7 @@ public class JobOffer {
     private BigDecimal hourlyWage;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean isActive = true;
 
     @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobEmploymentType> jobEmploymentTypes = new ArrayList<>();
@@ -49,7 +49,6 @@ public class JobOffer {
         this.positionName = positionName;
         this.description = description;
         this.hourlyWage = hourlyWage;
-        this.isActive = true;
     }
 
     @Builder
@@ -59,7 +58,6 @@ public class JobOffer {
         this.hourlyWage = hourlyWage;
         this.jobEmploymentTypes = jobEmploymentTypes;
         this.jobRequirements = jobRequirements;
-        this.isActive = true;
     }
 
     public void addRequirement(JobRequirement requirement) {
