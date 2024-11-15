@@ -1,18 +1,21 @@
 package com.p4zd4n.kebab.controllers;
 
-
 import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
+import com.p4zd4n.kebab.requests.jobs.JobOfferApplicationRequest;
 import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
 import com.p4zd4n.kebab.requests.jobs.RemovedJobOfferRequest;
 import com.p4zd4n.kebab.requests.jobs.UpdatedJobOfferRequest;
 import com.p4zd4n.kebab.responses.jobs.*;
+import com.p4zd4n.kebab.services.jobs.JobApplicationService;
 import com.p4zd4n.kebab.services.jobs.JobOfferService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,9 +25,11 @@ import java.util.List;
 public class JobsController {
 
     private final JobOfferService jobOfferService;
+    private final JobApplicationService jobApplicationService;
 
-    public JobsController(JobOfferService jobOfferService) {
+    public JobsController(JobOfferService jobOfferService, JobApplicationService jobApplicationService) {
         this.jobOfferService = jobOfferService;
+        this.jobApplicationService = jobApplicationService;
     }
 
     @GetMapping("/job-offers/manager")
@@ -88,5 +93,45 @@ public class JobsController {
         RemovedJobOfferResponse response = jobOfferService.removeJobOffer(existingJobOffer);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/add-job-offer-application")
+    public ResponseEntity<JobOfferApplicationResponse> addJobApplication(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody JobOfferApplicationRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received add job offer application request");
+
+        JobOfferApplicationResponse response = jobApplicationService.addJobOfferApplication(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/add-cv")
+    public ResponseEntity<NewCvResponse> addCv(
+            @RequestParam("applicationId") Long applicationId,
+            @RequestParam("cv") MultipartFile cv
+    ) throws IOException {
+        log.info("Received add cv request");
+
+        NewCvResponse response = jobApplicationService.addCv(cv, applicationId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/download-cv/{id}")
+    public ResponseEntity<byte[]> downloadCv(@PathVariable Long id) {
+
+        log.info("Received download cv request");
+
+        ResponseEntity<byte[]> response = jobApplicationService.getCv(id);
+
+        log.info("Successfully downloaded cv with id: {}", id);
+
+        return response;
     }
 }

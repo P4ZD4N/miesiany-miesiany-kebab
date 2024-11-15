@@ -1,6 +1,5 @@
 package com.p4zd4n.kebab.entities;
 
-import com.p4zd4n.kebab.enums.EmploymentType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class JobOffer {
+public class JobOffer extends WithTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

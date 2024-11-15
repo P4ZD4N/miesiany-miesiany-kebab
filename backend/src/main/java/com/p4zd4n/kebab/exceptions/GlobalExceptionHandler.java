@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.exceptions;
 
 import com.p4zd4n.kebab.exceptions.alreadyexists.*;
 import com.p4zd4n.kebab.exceptions.invalid.*;
+import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
@@ -324,6 +325,38 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         log.error("Attempted request to {} with not existing job offer: {}", request.getRequestURI(), exception.getPositionName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(CvNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleCvNotFoundException(
+            CvNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing cv", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(JobApplicationNotFound.class)
+    public ResponseEntity<ExceptionResponse> handleJobApplicationNotFound(
+            JobApplicationNotFound exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing job application", request.getRequestURI());
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)

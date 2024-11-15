@@ -211,6 +211,7 @@
         "remove": "Remove",
         "add": "Add",
         "position_name": "Position name",
-        "is_active": "Is offer active"
+        "is_active": "Is offer active",
+        "apply": "Apply"
     }
 }

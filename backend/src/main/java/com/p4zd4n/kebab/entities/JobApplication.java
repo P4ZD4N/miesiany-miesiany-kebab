@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class JobApplication {
+public class JobApplication extends WithTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +36,11 @@ public class JobApplication {
     @Column(name = "additional_message")
     private String additionalMessage;
 
-    @Lob
-    private byte[] cv;
+    @Column(name = "is_student")
+    private boolean isStudent;
+
+    @OneToOne(mappedBy = "jobApplication")
+    private Cv cv;
 
     @ManyToOne
     @JoinColumn(name = "job_offer_id")
@@ -49,12 +52,14 @@ public class JobApplication {
             String applicantLastName,
             String applicantEmail,
             String applicantTelephone,
-            byte[] cv
+            String additionalMessage,
+            boolean isStudent
     ) {
         this.applicantFirstName = applicantFirstName;
         this.applicantLastName = applicantLastName;
         this.applicantEmail = applicantEmail;
         this.applicantTelephone = applicantTelephone;
-        this.cv = cv;
+        this.additionalMessage = additionalMessage;
+        this.isStudent = isStudent;
     }
 }

@@ -421,8 +421,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                         .build()
         );
         jobOffer2.addEmploymentType(new JobEmploymentType(EmploymentType.MANDATE_CONTRACT));
-        System.out.println("Job Offer 1 isActive: " + jobOffer1.isActive());
-        System.out.println("Job Offer 2 isActive: " + jobOffer2.isActive());
+
         jobOfferRepository.save(jobOffer1);
         jobOfferRepository.save(jobOffer2);
     }

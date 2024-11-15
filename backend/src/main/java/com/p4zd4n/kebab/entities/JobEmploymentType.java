@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class JobEmploymentType {
+public class JobEmploymentType extends WithTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

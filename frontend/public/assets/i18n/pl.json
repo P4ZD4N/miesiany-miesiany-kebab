@@ -211,6 +211,7 @@
         "remove": "Usun",
         "add": "Dodaj",
         "position_name": "Pozycja",
-        "is_active": "Czy oferta jest aktywna"
+        "is_active": "Czy oferta jest aktywna",
+        "apply": "Aplikuj"
     }
 }

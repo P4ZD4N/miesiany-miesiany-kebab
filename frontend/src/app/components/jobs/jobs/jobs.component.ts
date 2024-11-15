@@ -8,7 +8,7 @@ import { LangService } from '../../../services/lang/lang.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { RequirementType } from '../../../enums/requirement-type.enum';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
-import { NewJobOfferRequest, RemovedJobOfferRequest, UpdatedJobOfferRequest } from '../../../requests/requests';
+import { JobOfferApplicationRequest, NewJobOfferRequest, RemovedJobOfferRequest, UpdatedJobOfferRequest } from '../../../requests/requests';
 import { EmploymentType } from '../../../enums/employment-type.enum';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
@@ -72,6 +72,9 @@ export class JobsComponent implements OnInit {
     return this.authenticationService.isManager();
   }
 
+  isEmployee(): boolean {
+    return this.authenticationService.isEmployee();
+  }
 
   loadJobsWithGeneralDetails(): void {
     this.jobsService.getJobOffersForOtherUsers().subscribe(
@@ -152,11 +155,6 @@ export class JobsComponent implements OnInit {
   }
 
   updateJob(): void {
-    console.log(this.currentlyUpdatedJobOffer?.position_name);
-    console.log(this.currentlyUpdatedJobOfferPositionName);
-
-    console.log(this.currentlyUpdatedJobOffer?.job_requirements);
-
     let positionTranslated = this.translate.instant('jobs.offers.' + this.currentlyUpdatedJobOfferPositionName);
 
     if (!this.isPositionTranslationAvailable(this.currentlyUpdatedJobOfferPositionName)) positionTranslated = this.currentlyUpdatedJobOfferPositionName
@@ -335,6 +333,154 @@ export class JobsComponent implements OnInit {
       }
   
       return firstPositionNameTranslated.localeCompare(secondPositionNameTranslated);
+    });
+  }
+
+  startApplying(jobOffer: JobOfferGeneralResponse): void {
+
+    let positionNameTranslated = this.translate.instant('jobs.oofers.' + jobOffer.position_name);
+
+    if (!this.isPositionTranslationAvailable(jobOffer.position_name)) {
+      positionNameTranslated = jobOffer.position_name;
+    }
+
+    const title = this.langService.currentLang === 'pl' ? 'Aplikuj na stanowisko ' + positionNameTranslated : 'Apply for ' + jobOffer.position_name + ' position';
+    const confirmButtonText = this.langService.currentLang === 'pl' ? 'Aplikuj' : 'Apply';
+    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const areYouStudent = this.langService.currentLang === 'pl' ? "Czy jestes studentem?" : "Are you a student?";
+    const attachCv = this.langService.currentLang === 'pl' ? "Zalacz CV!" : "Attach CV!";
+    const chooseFile = this.langService.currentLang === 'pl' ? "Wybierz plik" : "Choose file";
+    const noFileChosen = this.langService.currentLang === 'pl' ? "Brak pliku" : "No file chosen";
+  
+    const firstNamePlaceholder = this.langService.currentLang === 'pl' ? 'Imie' : 'First Name';
+    const lastNamePlaceholder = this.langService.currentLang === 'pl' ? 'Nazwisko' : 'Last Name';
+    const emailPlaceholder = this.langService.currentLang === 'pl' ? 'Email' : 'Email';
+    const telephonePlaceholder = this.langService.currentLang === 'pl' ? 'Telefon (9 cyfr)' : 'Phone (9 digits)';
+    const additionalMessagePlaceholder = this.langService.currentLang === 'pl' ? 'Wiadomosc dodatkowa' : 'Additional Message';
+  
+    Swal.fire({
+      title: `<span style="color: red;">${title}</span>`,
+      background: '#141414',
+      color: 'white',
+      html: `
+        <div>
+          <input type="text" id="firstName" maxlength=25 class="swal2-input" placeholder="${firstNamePlaceholder}">
+        </div>
+        <div>
+          <input type="text" id="lastName" maxlength=25 class="swal2-input" placeholder="${lastNamePlaceholder}">
+        </div>
+        <div>
+          <input type="email" id="email" maxlength=25 class="swal2-input" placeholder="${emailPlaceholder}">
+        </div>
+        <div>
+          <input type="text" id="telephone" maxlength=9 class="swal2-input" placeholder="${telephonePlaceholder}">
+        </div>
+        <div>
+          <textarea id="additionalMessage" maxlength=200 class="swal2-textarea" placeholder="${additionalMessagePlaceholder}"></textarea>
+        </div>
+        <div style="margin-top: 10px; display: flex; justify-content: center;">
+          <input type="checkbox" id="isStudent" style="margin-right: 5px; accent-color: red;">
+          <label for="isStudent">${areYouStudent}</label>
+        </div>
+        <div style="margin-top: 10px; display: flex; justify-content: center; flex-direction: column;">
+          <label for="cv" class="swal2-label">${attachCv}</label>
+          <input type="file" id="cv" class="swal2-input" accept=".pdf, .doc, .docx" style="display: none;" />
+          <button 
+            type="button" 
+            style="margin-top: 10px; background-color: red; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;" 
+            onclick="document.getElementById('cv').click();"
+          >
+            ${chooseFile}
+          </button>
+          <div id="file-name" style="margin-top: 10px; color: white;">${noFileChosen}</div>
+        </div>
+      `,
+      confirmButtonText: confirmButtonText,
+      confirmButtonColor: '#198754',
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+      showCancelButton: true,
+      focusConfirm: false,
+      preConfirm: () => {
+        const firstName = (document.getElementById('firstName') as HTMLInputElement).value;
+        const lastName = (document.getElementById('lastName') as HTMLInputElement).value;
+        const email = (document.getElementById('email') as HTMLInputElement).value;
+        const telephone = (document.getElementById('telephone') as HTMLInputElement).value;
+        const additionalMessage = (document.getElementById('additionalMessage') as HTMLTextAreaElement).value;
+        const isStudent = (document.getElementById('isStudent') as HTMLInputElement).checked;
+        const cvFile = (document.getElementById('cv') as HTMLInputElement).files?.[0];
+
+        if (!firstName || !lastName || !email || !telephone) {
+          Swal.showValidationMessage(
+            this.langService.currentLang === 'pl' ? 'Wszystkie pola z wyjatkiem dodatkowej wiadomosci sa wymagane' : 'All fields except additional message are required'
+          );
+          return null;
+        }
+
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) {
+          Swal.showValidationMessage(
+            this.langService.currentLang === 'pl' ? 'Niepoprawny email!' : 'Invalid email!'
+          );
+          return null;
+        }
+
+        const phoneRegex = /^[0-9]{9}$/;
+        if (!phoneRegex.test(telephone)) {
+          Swal.showValidationMessage(
+            this.langService.currentLang === 'pl' ? 'Niepoprawny numer telefonu!' : 'Invalid phone number!'
+          );
+          return null;
+        }
+
+        if (cvFile == null) {
+          Swal.showValidationMessage(
+            this.langService.currentLang === 'pl' ? 'Brak zalaczonego CV!' : 'No CV attached!'
+          );
+          return null;
+        }
+    
+        return { positionName: jobOffer.position_name, firstName, lastName, email, telephone, additionalMessage, isStudent, cvFile };
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const jobApplication: JobOfferApplicationRequest = {
+          position_name: result.value.positionName,
+          applicant_first_name: result.value.firstName,
+          applicant_last_name: result.value.lastName, 
+          applicant_email: result.value.email,
+          applicant_telephone: result.value.telephone,
+          additional_message: result.value.additionalMessage,
+          is_student: result.value.isStudent
+        }
+
+        this.jobsService.addJobApplication(jobApplication).subscribe({
+          next: (response) => {
+            this.jobsService.addCv(response.application_id, result.value.cvFile).subscribe({});
+
+            Swal.fire({
+              text: this.langService.currentLang === 'pl' ? `Pomyslnie zaaplikowano na pozycje '${positionNameTranslated}'!` : `Successfully applied for a '${positionNameTranslated}' position!`,
+              icon: 'success',
+              iconColor: 'green',
+              confirmButtonColor: 'green',
+              background: 'black',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
+
+            this.hideErrorMessages();
+            this.loadJobsWithGeneralDetails();
+          },
+          error: (error) => {
+            this.handleError(error);
+          },
+        });
+      }
+    });
+
+    document.querySelector('#cv')?.addEventListener('change', function (event: any) {
+      const fileName = event.target.files[0] ? event.target.files[0].name : '...';
+      document.querySelector('#file-name')!.textContent = fileName;
     });
   }
 }

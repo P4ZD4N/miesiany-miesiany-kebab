@@ -207,6 +207,12 @@
             <ng-container *ngIf="isEditing && currentlyUpdatedJobOffer">
               <span class="job-details-header">{{ 'jobs.hourly_wage' | translate }}:<input type="number" min="1" [(ngModel)]="currentlyUpdatedJobOffer.hourly_wage" /> zl {{ 'jobs.brutto' | translate}}</span>
             </ng-container>
+
+            <br *ngIf="!isManager() && !isEmployee()"><br *ngIf="!isManager() || !isEmployee()">
+
+            <div>
+              <button class="btn btn-success" *ngIf="!isManager() && !isEmployee()" (click)="startApplying(job)">{{ 'jobs.apply' | translate }}</button>
+            </div>
           </section>
         </mat-expansion-panel>
     </mat-accordion>

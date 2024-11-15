@@ -146,3 +146,14 @@ export interface RemovedJobOfferResponse {
   status_code: number;
   message: string;
 }
+
+export interface JobOfferApplicationResponse {
+  application_id: number;
+  status_code: number;
+  message: string;
+}
+
+export interface NewCvResponse {
+  status_code: number;
+  message: string;
+}

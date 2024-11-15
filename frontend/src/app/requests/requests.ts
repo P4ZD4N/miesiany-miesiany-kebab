@@ -98,3 +98,13 @@ export interface UpdatedJobOfferRequest {
 export interface RemovedJobOfferRequest {
   position_name: string;
 }
+
+export interface JobOfferApplicationRequest {
+  position_name: string;
+  applicant_first_name: string;
+  applicant_last_name: string; 
+  applicant_email: string; 
+  applicant_telephone: string;
+  additional_message?: string;
+  is_student: boolean;
+}
