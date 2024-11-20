@@ -56,16 +56,30 @@ public class JobOfferService {
         List<JobOffer> jobOffers = jobOfferRepository.findAll();
 
         List<JobOfferManagerResponse> response = jobOffers.stream()
-                .map(jobOffer -> JobOfferManagerResponse.builder()
-                        .positionName(jobOffer.getPositionName())
-                        .description(jobOffer.getDescription())
-                        .hourlyWage(jobOffer.getHourlyWage())
-                        .isActive(jobOffer.isActive())
-                        .jobEmploymentTypes(jobOffer.getJobEmploymentTypes())
-                        .jobRequirements(jobOffer.getJobRequirements())
-                        .jobApplications(jobOffer.getJobApplications())
-                        .build()
-                )
+                .map(jobOffer -> {
+                    List<JobApplicationResponse> jobApplicationResponses = jobOffer.getJobApplications().stream()
+                            .map(jobApplication -> JobApplicationResponse.builder()
+                                    .id(jobApplication.getId())
+                                    .applicantFirstName(jobApplication.getApplicantFirstName())
+                                    .applicantLastName(jobApplication.getApplicantLastName())
+                                    .applicantEmail(jobApplication.getApplicantEmail())
+                                    .applicantTelephone(jobApplication.getApplicantTelephone())
+                                    .additionalMessage(jobApplication.getAdditionalMessage())
+                                    .isStudent(jobApplication.isStudent())
+                                    .idCv(jobApplication.getCv().getId())
+                                    .build())
+                            .toList();
+
+                    return JobOfferManagerResponse.builder()
+                            .positionName(jobOffer.getPositionName())
+                            .description(jobOffer.getDescription())
+                            .hourlyWage(jobOffer.getHourlyWage())
+                            .isActive(jobOffer.isActive())
+                            .jobEmploymentTypes(jobOffer.getJobEmploymentTypes())
+                            .jobRequirements(jobOffer.getJobRequirements())
+                            .jobApplications(jobApplicationResponses)
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         log.info("Successfully retrieved job offers for manager");

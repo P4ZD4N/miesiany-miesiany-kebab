@@ -17,5 +17,5 @@ public record JobOfferManagerResponse(
         @JsonProperty("is_active") boolean isActive,
         @JsonProperty("job_employment_types") List<JobEmploymentType> jobEmploymentTypes,
         @JsonProperty("job_requirements") List<JobRequirement> jobRequirements,
-        @JsonProperty("job_applications") List<JobApplication> jobApplications
+        @JsonProperty("job_applications") List<JobApplicationResponse> jobApplications
 ) {}
