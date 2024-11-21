@@ -319,3 +319,14 @@ div {
     }
 }
 
+@media (max-width: 600px) {
+    .job-applications {
+        table {
+            width: 90%;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap; 
+        }
+    }
+}
+
