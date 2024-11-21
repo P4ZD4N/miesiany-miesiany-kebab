@@ -555,4 +555,16 @@ export class JobsComponent implements OnInit {
       }
     });
   }
+
+  getCv(cvId: number): void {
+    this.jobsService.getCv(cvId).subscribe({
+      next: (response: Blob) => {
+        const url = window.URL.createObjectURL(response);
+        window.open(url);
+      },
+      error: (error) => {
+        console.error('Error previewing CV:', error);
+      },
+    });
+  }
 }

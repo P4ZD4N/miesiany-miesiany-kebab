@@ -96,6 +96,14 @@ export class JobsService {
     )
   }
 
+  getCv(cvId: number): Observable<Blob> {
+
+    return this.http.get(`${this.apiUrl}/download-cv/${cvId}`, {responseType: 'blob',withCredentials: true,}).pipe(
+      map(response => response), 
+      catchError(this.handleError) 
+    );
+  }
+
   handleError(error: HttpErrorResponse) {
 
     let errorMessages: { [key: string]: string } = {};

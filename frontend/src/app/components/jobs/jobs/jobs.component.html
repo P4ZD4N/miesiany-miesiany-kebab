@@ -247,7 +247,7 @@
         <td>{{ application.is_student ? 'Yes' : 'No'}} </td>
         <td>{{ application.additional_message }}</td>
         <td>
-          <button class="button-cancel"><i class="fa-solid fa-download"></i></button>
+          <button class="button-cancel" (click)="getCv(application.id_cv)"><i class="fa-solid fa-download"></i></button>
         </td>
       </tr>
     </tbody>
