@@ -108,3 +108,8 @@ export interface JobOfferApplicationRequest {
   additional_message?: string;
   is_student: boolean;
 }
+
+export interface RemovedApplicationRequest {
+  position_name: string;
+  application_id: number;
+}

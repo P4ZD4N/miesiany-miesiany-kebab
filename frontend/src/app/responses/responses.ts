@@ -178,3 +178,8 @@ export interface NewCvResponse {
   status_code: number;
   message: string;
 }
+
+export interface RemovedApplicationResponse {
+  status_code: number;
+  message: string;
+}

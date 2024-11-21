@@ -31,7 +31,7 @@ export class JobsComponent implements OnInit {
 
   isAdding = false;
   isEditing = false;
-  showingApplicantsTable: boolean = false;
+  showingApplicationsTable: boolean = false;
 
   currentlyUpdatedJobOfferPositionName: string = '';
   originalJobOffer: JobOfferGeneralResponse | null = null;
@@ -207,7 +207,7 @@ export class JobsComponent implements OnInit {
   }
 
   removeJobOffer(jobOffer: JobOfferGeneralResponse): void {
-    let positionNameTranslated = this.translate.instant('jobs.oofers.' + jobOffer.position_name);
+    let positionNameTranslated = this.translate.instant('jobs.offers.' + jobOffer.position_name);
 
     if (!this.isPositionTranslationAvailable(jobOffer.position_name)) {
       positionNameTranslated = jobOffer.position_name;
@@ -353,7 +353,7 @@ export class JobsComponent implements OnInit {
 
   startApplying(jobOffer: JobOfferGeneralResponse): void {
 
-    let positionNameTranslated = this.translate.instant('jobs.oofers.' + jobOffer.position_name);
+    let positionNameTranslated = this.translate.instant('jobs.offers.' + jobOffer.position_name);
 
     if (!this.isPositionTranslationAvailable(jobOffer.position_name)) {
       positionNameTranslated = jobOffer.position_name;
@@ -499,18 +499,60 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  showApplicants(jobOffer: JobOfferGeneralResponse | JobOfferManagerResponse): void {
-    if ('job_applications' in jobOffer) {
-      const managerOffer = jobOffer as JobOfferManagerResponse;
-      this.selectedJobOffer = managerOffer;
-      this.showingApplicantsTable = true;
-    } else {
-      Swal.fire({
-        title: 'No Applicants',
-        text: 'This job offer has no applicants or you are not allowed to view applicants.',
-        icon: 'info',
-        confirmButtonText: 'Close',
-      });
-    }
+  showApplications(jobOffer: JobOfferGeneralResponse | JobOfferManagerResponse): void {
+    const managerOffer = jobOffer as JobOfferManagerResponse;
+    this.selectedJobOffer = managerOffer;
+    this.showingApplicationsTable = true;
+  }
+
+  removeJobApplication(positionName: string | undefined, applicationId: number): void {
+    let positionTranslated = this.translate.instant('jobs.offers.' + positionName);
+
+    if (!this.isPositionTranslationAvailable(positionName || '')) positionTranslated = positionName;
+    
+    const confirmationMessage =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac aplikacje?`
+        : `Are you sure you want to remove job application?`;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const jobOffer = this.selectedJobOffer;
+        if (jobOffer) {
+          jobOffer.job_applications = jobOffer.job_applications.filter(applicantion => applicantion.id !== applicationId);
+        }
+        this.jobsService.removeApplication(positionName || '', applicationId).subscribe({
+          next: (response) => {
+            Swal.fire({
+              text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto aplikacje na oferte pracy na pozycji '${positionTranslated}'!` : `Successfully removed job application to job offer on '${positionTranslated}' position!`,
+              icon: 'success',
+              iconColor: 'green',
+              confirmButtonColor: 'green',
+              background: 'black',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
+
+            this.hideErrorMessages();
+            this.loadJobsWithManagerDetails();
+          },
+          error: (error) => {
+            this.handleError(error);
+          },
+        });
+      }
+    });
   }
 }

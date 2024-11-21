@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 "/api/v1/jobs/add-job-offer",
                                 "/api/v1/jobs/update-job-offer",
                                 "/api/v1/jobs/remove-job-offer",
-                                "/api/v1/jobs/remove-application").hasRole("MANAGER")
+                                "/api/v1/jobs/remove-job-application").hasRole("MANAGER")
                         .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )

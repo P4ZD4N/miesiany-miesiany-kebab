@@ -113,7 +113,7 @@ public class JobApplicationService {
                 .body(cv.getData());
     }
 
-    public RemovedApplicationResponse removeApplication(Long applicationId, JobOffer jobOffer) {
+    public RemovedApplicationResponse removeJobApplication(Long applicationId, JobOffer jobOffer) {
         log.info(
                 "Started removing job application with id '{}' from job offer with position name {}",
                 applicationId,

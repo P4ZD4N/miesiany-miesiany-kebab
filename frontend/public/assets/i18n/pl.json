@@ -214,12 +214,13 @@
         "is_active": "Czy oferta jest aktywna",
         "apply": "Aplikuj",
         "candidates": "Kandydaci",
-        "job_applicants": {
+        "job_applications": {
             "headline": "Kandydaci na pozycje",
             "first_name": "Imie",
             "last_name": "Nazwisko",
             "telephone": "Telefon",
             "additional_message": "Dodatkowa wiadomosc",
+            "no_candidates": "Brak kandydatow!",
             "button": "Wroc do listy ofert pracy"
         }
     }

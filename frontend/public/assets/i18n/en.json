@@ -214,12 +214,13 @@
         "is_active": "Is offer active",
         "apply": "Apply",
         "candidates": "Candidates",
-        "job_applicants": {
+        "job_applications": {
             "headline": "Candidates to position",
             "first_name": "First name",
             "last_name": "Last name",
             "phone": "Phone",
             "additional_message": "Additional message",
+            "no_candidates": "No candidates!",
             "button": "Back to the list of jobs"
         }
     }

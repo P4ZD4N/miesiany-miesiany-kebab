@@ -1,4 +1,4 @@
-<section *ngIf="!showingApplicantsTable" class="jobs">
+<section *ngIf="!showingApplicationsTable" class="jobs">
     <h1>{{ 'jobs.headline' | translate }}</h1>
     <p>{{ 'jobs.paragraph_top' | translate }}</p>
 
@@ -213,39 +213,39 @@
 
             <div>
               <button class="btn btn-success" *ngIf="!isManager() && !isEmployee()" (click)="startApplying(job)">{{ 'jobs.apply' | translate }}</button>
-              <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showApplicants(job)">{{ 'jobs.candidates' | translate }}</button>
+              <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showApplications(job)">{{ 'jobs.candidates' | translate }}</button>
             </div>
           </section>
         </mat-expansion-panel>
     </mat-accordion>
 </section>
 
-<section *ngIf="showingApplicantsTable" class="job-applicants"> 
-  <h1>{{ 'jobs.job_applicants.headline' | translate }}: <span style="color: white;">{{ selectedJobOffer?.position_name }}</span></h1>
-  <table>
+<section *ngIf="showingApplicationsTable" class="job-applications"> 
+  <h1>{{ 'jobs.job_applications.headline' | translate }}: <span style="color: white;">{{ selectedJobOffer?.position_name }}</span></h1>
+  <table *ngIf="selectedJobOffer && selectedJobOffer.job_applications && selectedJobOffer.job_applications.length > 0">
     <thead>
       <tr>
         <th></th>
-        <th>{{ 'jobs.job_applicants.first_name' | translate }}</th>
-        <th>{{ 'jobs.job_applicants.last_name' | translate }}</th>
+        <th>{{ 'jobs.job_applications.first_name' | translate }}</th>
+        <th>{{ 'jobs.job_applications.last_name' | translate }}</th>
         <th>Email</th>
-        <th>{{ 'jobs.job_applicants.telephone' | translate }}</th>
+        <th>{{ 'jobs.job_applications.telephone' | translate }}</th>
         <th>Student</th>
-        <th>{{ 'jobs.job_applicants.additional_message' | translate }}</th>
+        <th>{{ 'jobs.job_applications.additional_message' | translate }}</th>
         <th>CV</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let applicant of selectedJobOffer?.job_applications">
+      <tr *ngFor="let application of selectedJobOffer?.job_applications">
         <td>
-          <button class="button-remove">X</button>
+          <button class="button-remove" (click)="removeJobApplication(selectedJobOffer?.position_name, application.id)">X</button>
         </td>
-        <td>{{ applicant.applicant_first_name }}</td>
-        <td>{{ applicant.applicant_last_name }}</td>
-        <td>{{ applicant.applicant_email }}</td>
-        <td>{{ applicant.applicant_telephone }}</td>
-        <td>{{ applicant.is_student ? 'Yes' : 'No'}} </td>
-        <td>{{ applicant.additional_message }}</td>
+        <td>{{ application.applicant_first_name }}</td>
+        <td>{{ application.applicant_last_name }}</td>
+        <td>{{ application.applicant_email }}</td>
+        <td>{{ application.applicant_telephone }}</td>
+        <td>{{ application.is_student ? 'Yes' : 'No'}} </td>
+        <td>{{ application.additional_message }}</td>
         <td>
           <button class="button-cancel"><i class="fa-solid fa-download"></i></button>
         </td>
@@ -253,5 +253,9 @@
     </tbody>
   </table>
 
-  <button class="btn btn-success" (click)="showingApplicantsTable = false">{{ 'jobs.job_applicants.button' | translate }}</button>
+  <p *ngIf="selectedJobOffer && selectedJobOffer.job_applications && selectedJobOffer.job_applications.length === 0">
+    {{ 'jobs.job_applications.no_candidates' | translate }}
+  </p>
+
+  <button class="btn btn-success" (click)="showingApplicationsTable = false">{{ 'jobs.job_applications.button' | translate }}</button>
 </section>

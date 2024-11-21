@@ -132,14 +132,14 @@ public class JobsController {
         return response;
     }
 
-    @DeleteMapping("/remove-application")
+    @DeleteMapping("/remove-job-application")
     public ResponseEntity<RemovedApplicationResponse> removeApplication(
             @Valid @RequestBody RemovedApplicationRequest request
     ) {
-        log.info("Received remove applicant request");
+        log.info("Received remove job application request");
 
         JobOffer existingJobOffer = jobOfferService.findJobOfferByPositionName(request.positionName());
-        RemovedApplicationResponse response = jobApplicationService.removeApplication(request.applicationId(), existingJobOffer);
+        RemovedApplicationResponse response = jobApplicationService.removeJobApplication(request.applicationId(), existingJobOffer);
 
         return ResponseEntity.ok(response);
     }
