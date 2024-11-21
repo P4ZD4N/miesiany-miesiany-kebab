@@ -244,7 +244,14 @@
         <td>{{ application.applicant_last_name }}</td>
         <td>{{ application.applicant_email }}</td>
         <td>{{ application.applicant_telephone }}</td>
-        <td>{{ application.is_student ? 'Yes' : 'No'}} </td>
+        <td>
+          <ng-container *ngIf="application.is_student; else noStudent">
+            <i class="fa-solid fa-check"></i>
+          </ng-container>
+          <ng-template #noStudent>
+            <i class="fa-solid fa-x"></i>
+          </ng-template>
+        </td>
         <td>{{ application.additional_message }}</td>
         <td>
           <button class="button-cancel" (click)="getCv(application.id_cv)"><i class="fa-solid fa-download"></i></button>

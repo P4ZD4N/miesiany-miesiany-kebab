@@ -378,33 +378,64 @@ export class JobsComponent implements OnInit {
       background: '#141414',
       color: 'white',
       html: `
+        <style>
+          input[type="text"], input[type="email"], textarea {
+            color: white;
+            text-align: center;
+            background-color: inherit;
+            width: 100%; 
+            max-width: 400px; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 5px;
+            transition: border 0.3s ease;
+            outline: none;
+          }
+
+          input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+              border: 1px solid red; 
+          }
+
+          input[type="checkbox"] {
+            margin-right: 5px; 
+            accent-color: red;
+          }
+
+          button {
+            margin-top: 10px; 
+            background-color: red; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer;
+          }
+        </style>
+        
         <div>
-          <input type="text" id="firstName" maxlength=25 class="swal2-input" placeholder="${firstNamePlaceholder}">
+          <input type="text" id="firstName" maxlength=25  placeholder="${firstNamePlaceholder}">
         </div>
         <div>
-          <input type="text" id="lastName" maxlength=25 class="swal2-input" placeholder="${lastNamePlaceholder}">
+          <input type="text" id="lastName" maxlength=25  placeholder="${lastNamePlaceholder}">
         </div>
         <div>
-          <input type="email" id="email" maxlength=30 class="swal2-input" placeholder="${emailPlaceholder}">
+          <input type="email" id="email" maxlength=30  placeholder="${emailPlaceholder}">
         </div>
         <div>
-          <input type="text" id="telephone" maxlength=9 class="swal2-input" placeholder="${telephonePlaceholder}">
+          <input type="text" id="telephone" maxlength=9 placeholder="${telephonePlaceholder}">
         </div>
         <div>
-          <textarea id="additionalMessage" maxlength=200 class="swal2-textarea" placeholder="${additionalMessagePlaceholder}"></textarea>
+          <textarea id="additionalMessage" maxlength=200 placeholder="${additionalMessagePlaceholder}"></textarea>
         </div>
-        <div style="margin-top: 10px; display: flex; justify-content: center;">
-          <input type="checkbox" id="isStudent" style="margin-right: 5px; accent-color: red;">
+        <div style="margin-top: 10px;">
+          <input type="checkbox" id="isStudent">
           <label for="isStudent">${areYouStudent}</label>
         </div>
         <div style="margin-top: 10px; display: flex; justify-content: center; flex-direction: column;">
           <label for="cv" class="swal2-label">${attachCv}</label>
           <input type="file" id="cv" class="swal2-input" accept=".pdf, .doc, .docx" style="display: none;" />
-          <button 
-            type="button" 
-            style="margin-top: 10px; background-color: red; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;" 
-            onclick="document.getElementById('cv').click();"
-          >
+          <button type="button" onclick="document.getElementById('cv').click();">
             ${chooseFile}
           </button>
           <div id="file-name" style="margin-top: 10px; color: white;">${noFileChosen}</div>
