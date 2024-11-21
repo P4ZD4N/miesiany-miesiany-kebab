@@ -2,10 +2,7 @@ package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
-import com.p4zd4n.kebab.requests.jobs.JobOfferApplicationRequest;
-import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
-import com.p4zd4n.kebab.requests.jobs.RemovedJobOfferRequest;
-import com.p4zd4n.kebab.requests.jobs.UpdatedJobOfferRequest;
+import com.p4zd4n.kebab.requests.jobs.*;
 import com.p4zd4n.kebab.responses.jobs.*;
 import com.p4zd4n.kebab.services.jobs.JobApplicationService;
 import com.p4zd4n.kebab.services.jobs.JobOfferService;
@@ -133,5 +130,17 @@ public class JobsController {
         log.info("Successfully downloaded cv with id: {}", id);
 
         return response;
+    }
+
+    @DeleteMapping("/remove-application")
+    public ResponseEntity<RemovedApplicationResponse> removeApplication(
+            @Valid @RequestBody RemovedApplicationRequest request
+    ) {
+        log.info("Received remove applicant request");
+
+        JobOffer existingJobOffer = jobOfferService.findJobOfferByPositionName(request.positionName());
+        RemovedApplicationResponse response = jobApplicationService.removeApplication(request.applicationId(), existingJobOffer);
+
+        return ResponseEntity.ok(response);
     }
 }

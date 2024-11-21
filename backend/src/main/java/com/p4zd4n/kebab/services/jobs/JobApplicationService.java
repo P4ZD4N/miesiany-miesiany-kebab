@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.services.jobs;
 
 import com.p4zd4n.kebab.entities.Cv;
 import com.p4zd4n.kebab.entities.JobApplication;
+import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.notfound.CvNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.JobApplicationNotFound;
 import com.p4zd4n.kebab.exceptions.notfound.JobOfferNotFoundException;
@@ -11,6 +12,8 @@ import com.p4zd4n.kebab.repositories.JobOfferRepository;
 import com.p4zd4n.kebab.requests.jobs.JobOfferApplicationRequest;
 import com.p4zd4n.kebab.responses.jobs.NewCvResponse;
 import com.p4zd4n.kebab.responses.jobs.JobOfferApplicationResponse;
+import com.p4zd4n.kebab.responses.jobs.RemovedApplicationResponse;
+import com.p4zd4n.kebab.responses.jobs.RemovedJobOfferResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -108,5 +111,38 @@ public class JobApplicationService {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + cv.getFileName() + "\"")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(cv.getData());
+    }
+
+    public RemovedApplicationResponse removeApplication(Long applicationId, JobOffer jobOffer) {
+        log.info(
+                "Started removing job application with id '{}' from job offer with position name {}",
+                applicationId,
+                jobOffer.getPositionName()
+        );
+
+        JobApplication jobApplication = jobApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new JobApplicationNotFound(applicationId));
+        jobOffer.getJobApplications().remove(jobApplication);
+
+        jobApplicationRepository.delete(jobApplication);
+        jobOfferRepository.save(jobOffer);
+
+        RemovedApplicationResponse response = RemovedApplicationResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(
+                        "Successfully removed job application with id '" +
+                        applicationId +
+                        "' from job offer with position name '" +
+                        jobOffer.getPositionName() + "'"
+                )
+                .build();
+
+        log.info(
+                "Successfully removed job application with id '{}' from job offer with position name {}",
+                applicationId,
+                jobOffer.getPositionName()
+        );
+
+        return response;
     }
 }
