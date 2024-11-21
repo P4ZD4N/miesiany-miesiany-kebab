@@ -212,6 +212,15 @@
         "add": "Dodaj",
         "position_name": "Pozycja",
         "is_active": "Czy oferta jest aktywna",
-        "apply": "Aplikuj"
+        "apply": "Aplikuj",
+        "candidates": "Kandydaci",
+        "job_applicants": {
+            "headline": "Kandydaci na pozycje",
+            "first_name": "Imie",
+            "last_name": "Nazwisko",
+            "telephone": "Telefon",
+            "additional_message": "Dodatkowa wiadomosc",
+            "button": "Wroc do listy ofert pracy"
+        }
     }
 }

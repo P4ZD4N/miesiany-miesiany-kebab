@@ -1,4 +1,4 @@
-<section class="jobs">
+<section *ngIf="!showingApplicantsTable" class="jobs">
     <h1>{{ 'jobs.headline' | translate }}</h1>
     <p>{{ 'jobs.paragraph_top' | translate }}</p>
 
@@ -71,7 +71,7 @@
       </tr>
   </table>
 
-    <mat-accordion *ngFor="let job of sortJobOffersByPosition(jobsWithGeneralDetails)">
+    <mat-accordion *ngFor="let job of sortJobOffersByPosition(jobs)">
         <mat-expansion-panel *ngIf="job.is_active || isManager()">
           <mat-expansion-panel-header *ngIf="!isEditing" class="specific-class">
             <mat-panel-title>
@@ -209,11 +209,49 @@
             </ng-container>
 
             <br *ngIf="!isManager() && !isEmployee()"><br *ngIf="!isManager() || !isEmployee()">
+            <br *ngIf="isManager() && !isEditing && !isAdding"><br *ngIf="isManager() && !isEditing && !isAdding">
 
             <div>
               <button class="btn btn-success" *ngIf="!isManager() && !isEmployee()" (click)="startApplying(job)">{{ 'jobs.apply' | translate }}</button>
+              <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showApplicants(job)">{{ 'jobs.candidates' | translate }}</button>
             </div>
           </section>
         </mat-expansion-panel>
     </mat-accordion>
+</section>
+
+<section *ngIf="showingApplicantsTable" class="job-applicants"> 
+  <h1>{{ 'jobs.job_applicants.headline' | translate }}: <span style="color: white;">{{ selectedJobOffer?.position_name }}</span></h1>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>{{ 'jobs.job_applicants.first_name' | translate }}</th>
+        <th>{{ 'jobs.job_applicants.last_name' | translate }}</th>
+        <th>Email</th>
+        <th>{{ 'jobs.job_applicants.telephone' | translate }}</th>
+        <th>Student</th>
+        <th>{{ 'jobs.job_applicants.additional_message' | translate }}</th>
+        <th>CV</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let applicant of selectedJobOffer?.job_applications">
+        <td>
+          <button class="button-remove">X</button>
+        </td>
+        <td>{{ applicant.applicant_first_name }}</td>
+        <td>{{ applicant.applicant_last_name }}</td>
+        <td>{{ applicant.applicant_email }}</td>
+        <td>{{ applicant.applicant_telephone }}</td>
+        <td>{{ applicant.is_student ? 'Yes' : 'No'}} </td>
+        <td>{{ applicant.additional_message }}</td>
+        <td>
+          <button class="button-cancel"><i class="fa-solid fa-download"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="btn btn-success" (click)="showingApplicantsTable = false">{{ 'jobs.job_applicants.button' | translate }}</button>
 </section>

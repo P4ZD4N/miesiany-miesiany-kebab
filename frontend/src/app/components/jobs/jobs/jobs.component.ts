@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { JobEmploymentType, JobOfferGeneralResponse, JobRequirement } from '../../../responses/responses';
+import { JobEmploymentType, JobOfferGeneralResponse, JobOfferManagerResponse, JobRequirement } from '../../../responses/responses';
 import { JobsService } from '../../../services/jobs/jobs.service';
 import { LangService } from '../../../services/lang/lang.service';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -25,16 +25,18 @@ export class JobsComponent implements OnInit {
   languageChangeSubscription: Subscription;
 
   errorMessages: { [key: string]: string } = {};
-  jobsWithGeneralDetails: JobOfferGeneralResponse[] = [];
+  jobs: (JobOfferManagerResponse | JobOfferGeneralResponse)[] = [];
   requirementTypes = Object.keys(RequirementType);
   employmentTypes = Object.keys(EmploymentType) as EmploymentType[];
 
   isAdding = false;
   isEditing = false;
+  showingApplicantsTable: boolean = false;
 
   currentlyUpdatedJobOfferPositionName: string = '';
   originalJobOffer: JobOfferGeneralResponse | null = null;
   currentlyUpdatedJobOffer: JobOfferGeneralResponse | null = null;
+  selectedJobOffer: JobOfferManagerResponse | null = null;
 
   newJobOffer: NewJobOfferRequest = {
     position_name: '',
@@ -65,7 +67,9 @@ export class JobsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadJobsWithGeneralDetails();
+    if (this.isManager()) {this.loadJobsWithManagerDetails();
+    }else {this.loadJobsWithGeneralDetails();
+    }
   }
 
   isManager(): boolean {
@@ -79,10 +83,21 @@ export class JobsComponent implements OnInit {
   loadJobsWithGeneralDetails(): void {
     this.jobsService.getJobOffersForOtherUsers().subscribe(
       (data: JobOfferGeneralResponse[]) => {
-        this.jobsWithGeneralDetails = data;
+        this.jobs = data;
       },
       (error) => {
         console.log('Error loading jobs for other users');
+      }
+    )
+  }
+
+  loadJobsWithManagerDetails(): void {
+    this.jobsService.getJobOffersForManager().subscribe(
+      (data: JobOfferManagerResponse[]) => {
+        this.jobs = data;
+      },
+      (error) => {
+        console.log('Error loading jobs for manager');
       }
     )
   }
@@ -138,7 +153,7 @@ export class JobsComponent implements OnInit {
           confirmButtonText: 'Ok',
         });
 
-        this.loadJobsWithGeneralDetails();
+        this.loadJobsWithManagerDetails();
         this.newJobOffer = { position_name: '',
           description: '',
           hourly_wage: 0,
@@ -183,7 +198,7 @@ export class JobsComponent implements OnInit {
 
         this.isEditing = false;
         this.hideErrorMessages();
-        this.loadJobsWithGeneralDetails();
+        this.loadJobsWithManagerDetails();
       },
       error: (error) => {
         this.handleError(error);
@@ -227,7 +242,7 @@ export class JobsComponent implements OnInit {
             color: 'white',
             confirmButtonText: 'Ok',
           });
-          this.loadJobsWithGeneralDetails();
+          this.loadJobsWithManagerDetails();
         });
       }
     });
@@ -299,7 +314,7 @@ export class JobsComponent implements OnInit {
     this.currentlyUpdatedJobOfferPositionName = '';
     this.currentlyUpdatedJobOffer = null;
     this.hideErrorMessages();
-    this.loadJobsWithGeneralDetails();
+    this.loadJobsWithManagerDetails();
   }
 
   hideErrorMessages(): void {
@@ -370,7 +385,7 @@ export class JobsComponent implements OnInit {
           <input type="text" id="lastName" maxlength=25 class="swal2-input" placeholder="${lastNamePlaceholder}">
         </div>
         <div>
-          <input type="email" id="email" maxlength=25 class="swal2-input" placeholder="${emailPlaceholder}">
+          <input type="email" id="email" maxlength=30 class="swal2-input" placeholder="${emailPlaceholder}">
         </div>
         <div>
           <input type="text" id="telephone" maxlength=9 class="swal2-input" placeholder="${telephonePlaceholder}">
@@ -482,5 +497,20 @@ export class JobsComponent implements OnInit {
       const fileName = event.target.files[0] ? event.target.files[0].name : '...';
       document.querySelector('#file-name')!.textContent = fileName;
     });
+  }
+
+  showApplicants(jobOffer: JobOfferGeneralResponse | JobOfferManagerResponse): void {
+    if ('job_applications' in jobOffer) {
+      const managerOffer = jobOffer as JobOfferManagerResponse;
+      this.selectedJobOffer = managerOffer;
+      this.showingApplicantsTable = true;
+    } else {
+      Swal.fire({
+        title: 'No Applicants',
+        text: 'This job offer has no applicants or you are not allowed to view applicants.',
+        icon: 'info',
+        confirmButtonText: 'Close',
+      });
+    }
   }
 }

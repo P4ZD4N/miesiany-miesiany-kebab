@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { JobOfferApplicationResponse, JobOfferGeneralResponse, NewCvResponse, NewJobOfferResponse, RemovedJobOfferResponse, UpdatedJobOfferResponse } from '../../responses/responses';
+import { JobOfferApplicationResponse, JobOfferGeneralResponse, JobOfferManagerResponse, NewCvResponse, NewJobOfferResponse, RemovedJobOfferResponse, UpdatedJobOfferResponse } from '../../responses/responses';
 import { JobOfferApplicationRequest, NewJobOfferRequest, RemovedJobOfferRequest, UpdatedJobOfferRequest } from '../../requests/requests';
 import { LangService } from '../lang/lang.service';
 
@@ -16,7 +16,12 @@ export class JobsService {
 
   getJobOffersForOtherUsers(): Observable<JobOfferGeneralResponse[]> {
 
-    return this.http.get<JobOfferGeneralResponse[]>(`${this.apiUrl}/job-offers/general`, { withCredentials: true })
+    return this.http.get<JobOfferGeneralResponse[]>(`${this.apiUrl}/job-offers/general`, { withCredentials: true });
+  }
+
+  getJobOffersForManager(): Observable<JobOfferManagerResponse[]> {
+
+    return this.http.get<JobOfferManagerResponse[]>(`${this.apiUrl}/job-offers/manager`, { withCredentials: true });
   }
 
   addNewJobOffer(newJobOffer: NewJobOfferRequest): Observable<NewJobOfferResponse> {

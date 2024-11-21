@@ -123,6 +123,17 @@ export interface JobEmploymentType {
   employment_type: EmploymentType  | null;
 }
 
+export interface JobApplicationResponse {
+  id: number;
+  applicant_first_name: string;
+  applicant_last_name: string;
+  applicant_email: string;
+  applicant_telephone: string;
+  additional_message: string;
+  is_student: boolean;
+  id_cv: number;
+}
+
 export interface JobOfferGeneralResponse {
   position_name: string;
   description: string;
@@ -130,6 +141,16 @@ export interface JobOfferGeneralResponse {
   is_active: boolean;
   job_employment_types: JobEmploymentType[];
   job_requirements: JobRequirement[];
+}
+
+export interface JobOfferManagerResponse {
+  position_name: string;
+  description: string;
+  hourly_wage: number;
+  is_active: boolean;
+  job_employment_types: JobEmploymentType[];
+  job_requirements: JobRequirement[];
+  job_applications: JobApplicationResponse[];
 }
 
 export interface NewJobOfferResponse {
