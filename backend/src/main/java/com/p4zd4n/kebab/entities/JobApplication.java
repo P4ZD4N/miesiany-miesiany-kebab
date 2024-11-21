@@ -39,7 +39,7 @@ public class JobApplication extends WithTimestamp {
     @Column(name = "is_student")
     private boolean isStudent;
 
-    @OneToOne(mappedBy = "jobApplication")
+    @OneToOne(mappedBy = "jobApplication", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cv cv;
 
     @ManyToOne
