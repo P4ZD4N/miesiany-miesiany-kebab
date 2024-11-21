@@ -81,7 +81,7 @@ public class JobsController {
     }
 
     @DeleteMapping("/remove-job-offer")
-    public ResponseEntity<RemovedJobOfferResponse> removeAddon(
+    public ResponseEntity<RemovedJobOfferResponse> removeJobOffer(
             @Valid @RequestBody RemovedJobOfferRequest request
     ) {
         log.info("Received remove job offer request");
