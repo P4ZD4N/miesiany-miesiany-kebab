@@ -177,7 +177,7 @@ public class JobOfferService {
                 .message("Successfully removed job offer with position name '" + jobOffer.getPositionName() + "'")
                 .build();
 
-        log.info("Successfully removed beverage with position name '{}'", jobOffer.getPositionName());
+        log.info("Successfully removed job offer with position name '{}'", jobOffer.getPositionName());
 
         return response;
     }
