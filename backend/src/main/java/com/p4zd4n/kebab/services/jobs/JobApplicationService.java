@@ -45,7 +45,7 @@ public class JobApplicationService {
 
         log.info("Started adding job offer application on position '{}'", request.positionName());
 
-        JobApplication newJobOffer = JobApplication.builder()
+        JobApplication newJobApplication = JobApplication.builder()
                 .applicantFirstName(request.applicantFirstName())
                 .applicantLastName(request.applicantLastName())
                 .applicantEmail(request.applicantEmail())
@@ -53,11 +53,11 @@ public class JobApplicationService {
                 .additionalMessage(request.additionalMessage())
                 .isStudent(request.isStudent())
                 .build();
-        newJobOffer.setJobOffer(jobOfferRepository.findByPositionName(request.positionName()).orElseThrow(
+        newJobApplication.setJobOffer(jobOfferRepository.findByPositionName(request.positionName()).orElseThrow(
                 () -> new JobOfferNotFoundException(request.positionName())
         ));
 
-        JobApplication savedNewJobApplication = jobApplicationRepository.save(newJobOffer);
+        JobApplication savedNewJobApplication = jobApplicationRepository.save(newJobApplication);
 
         JobOfferApplicationResponse response = JobOfferApplicationResponse.builder()
                 .applicationId(savedNewJobApplication.getId())
