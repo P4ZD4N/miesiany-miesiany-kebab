@@ -1,3 +1,6 @@
+
+
+
 # 💻 Miesiany Miesiany Kebab
 
 ## 👀 About
@@ -6,24 +9,19 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 
 ## 🔧 Tech Stack
 
-- Java 21
-- Spring Boot 3
-- Spring Security
-- Spring Data
-- Hibernate
-- Lombok
-- Maven
-- TypeScript
-- Angular 18
-- JUnit
-- Mockito
-- PostgreSQL
-- SQL
-- HTML
-- SCSS
-- Bootstrap
-- Docker
-- Bash
+ ***Backend:*** Java 21, Spring Boot 3, Spring Security, Spring Data, Hibernate, Lombok
+
+***Frontend:*** TypeScript 5, Angular 18, HTML, SCSS, Bootstrap
+
+***Testing:*** JUnit, Mockito
+
+***Databases:*** PostgreSQL, SQL
+
+***Build tools:*** Maven
+
+***DevOps:*** Docker, Bash
+
+***Other tools used during development:*** Postman, pgAdmin 4
 
 ## 💡 Features
 
@@ -38,6 +36,7 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 - Possibility to display highlighted with proper color opening hours of restaurant on each day. Manager can easily update these hours.
 - Possibility to display menu of the restaurant. In menu section clients can see three tables: meals, addons to your meal and beverages, which contains each item details like name, price, capacity or ingredients. This entire section is manageable by the manager. Employee with this role can add, update and remove each type of item. Items in each table are sorted by name.
 - Possibility to display contact details. In contact section clients can see contact data (including phone number and email address), nicknames at social media and map with location pointer. Contact data is editable by manager.
+- Job board, which enable to publish dateiled job offers by manager. Manager can add job offer with information such as position name, description, list of mandatory requirements, list of nice to have requirements, list of employment types and hourly wage gross. Once added, each job offer is fully customizable. Website guests can apply to each job offer by fulfilling form (with attaching a CV in PDF/DOC format!). Manager has possibility to display all candidates, which applied to job offer, remove those who do not fit the position or peek/download attached CV of desired candidate.
 
 
 ## 🔗 API
@@ -335,7 +334,7 @@ Removes existing ingredient.
 **Request Body:**
 ```json
 {
-  "name":  "Cucumber",
+  "name":  "Cucumber"
 }
 ```
 
@@ -365,6 +364,172 @@ Updates existing contact. You can update contacts of type EMAIL or TELEPHONE.
 }
 ```
 
+### JobsController
+
+#### GET /api/v1/jobs/job-offers/manager
+
+**Description:**  
+Retrieves all job offers, that are currently stored in the database. Response for manager contains all job offers properties including job offer applications.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+#### GET /api/v1/jobs/job-offers/general
+
+**Description:**  
+Retrieves all job offers, that are currently stored in the database. General response contain limited job offers properties (without job offer applications).
+
+#### POST /api/v1/jobs/add-job-offer
+
+**Description:**  
+Add new job offer. It is not possible to add job offer with the same position name as existing job offer. You can add job offer without specyfing job employment types and job requirements.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "position_name":  "Cook",
+  "description": "Write something...",
+  "hourly_wage": 30,
+  "job_employment_types": [
+	  {
+		"employment_type":  "PERMANENT"
+	  },
+	  {
+		"employment_type":  "MANDATE_CONTRACT"
+	  }
+  ],
+  "job_requirements": [
+	  {
+		"requirement_type":  "MANDATORY",
+		"description":  ":)"
+	  },
+	  {
+		"requirement_type":  "NICE_TO_HAVE",
+		"description":  "nice to have"
+	  }
+  ]
+}
+```
+
+#### PUT /api/v1/jobs/update-job-offer
+
+**Description:**  
+Updates existing job offer. You can update each property of job offer, but if you enter new position name same as different, existing job offer, it will not work.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "position_name":  "Cook",
+  "updated_position_name": "Coook",
+  "updated_description": "Write something...",
+  "updated_hourly_wage": 30,
+  "updated_employment_types": [
+	  {
+		"employment_type":  "PERMANENT"
+	  },
+	  {
+		"employment_type":  "MANDATE_CONTRACT"
+	  }
+  ],
+  "updated_requirements": [
+	  {
+		"requirement_type":  "MANDATORY",
+		"description":  ":)"
+	  },
+	  {
+		"requirement_type":  "NICE_TO_HAVE",
+		"description":  "nice to have"
+	  }
+  ],
+  "is_active": false
+}
+```
+
+#### DELETE /api/v1/jobs/remove-job-offer
+
+**Description:**  
+Removes existing job offer.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Body:**
+```json
+{
+  "position_name":  "Cook"
+}
+```
+
+#### POST /api/v1/jobs/add-job-offer-application
+
+**Description:**  
+Add new job offer application. You can add job offer application without adding optional additional message.
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "position_name":  "Cook",
+  "applicant_first_name": "Wiktor",
+  "applicant_last_name": "Chudy",
+  "applicant_email": "wiko700@gmail.com",
+  "applicant_telephone": "123456789",
+  "additional_message": "Write something...",
+  "is_student": true
+}
+```
+
+#### POST /api/v1/jobs/add-cv
+
+**Description:**  
+Add CV to the job offer application.
+
+**Request Params:**
+- `applicationId`: The ID of application, to which the CV is being attached. Must be a numeric value.
+	* Type: `Long`
+    * Required: Yes
+    * Example: `12345`
+- `cv`: The CV file in multipart/form-data format. Supported file formats: PDF, DOCX.
+	 * Type: `MultipartFile`
+	 * Required: Yes
+	 * Example: File named `cv.pdf` uploaded as an attachment in the form.
+
+#### GET /api/v1/jobs/download-cv/{id}
+
+**Description:**  
+Download CV with specified ID.
+
+#### DELETE /api/v1/jobs/remove-job-application
+
+**Description:**  
+Removes existing job application from job offer.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Body:**
+```json
+{
+  "position_name":  "Cook",
+  "application_id": 1
+}
+```
+
+
 ## 📋 Requirements
 - Java 21 (or higher)
 - Docker
@@ -388,6 +553,18 @@ Clone the project
 
 ```bash
 git clone git@github.com:P4ZD4N/miesiany-miesiany-kebab.git
+```
+
+Navigate to the frontend directory
+
+```bash
+cd /path/to/miesiany-miesiany-kebab/frontend
+```
+
+Install dependencies
+
+```bash
+npm install
 ```
 
 Navigate to the project directory
