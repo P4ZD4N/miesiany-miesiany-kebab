@@ -9,19 +9,19 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 
 ## 🔧 Tech Stack
 
- ***Backend:*** Java 21, Spring Boot 3, Spring Security, Spring Data, Hibernate, Lombok
+**Backend:** Java 21, Spring Boot 3, Spring Security, Spring Data, Hibernate, Lombok
 
-***Frontend:*** TypeScript 5, Angular 18, HTML, SCSS, Bootstrap
+**Frontend:** TypeScript 5, Angular 18, HTML, SCSS, Bootstrap
 
-***Testing:*** JUnit, Mockito
+**Testing:** JUnit, Mockito
 
-***Databases:*** PostgreSQL, SQL
+**Databases:** PostgreSQL, SQL
 
-***Build tools:*** Maven
+**Build tools:** Maven
 
-***DevOps:*** Docker, Bash
+**DevOps:** Docker, Bash
 
-***Other tools used during development:*** Postman, pgAdmin 4
+**Other tools used during development:** Postman, pgAdmin 4
 
 ## 💡 Features
 
