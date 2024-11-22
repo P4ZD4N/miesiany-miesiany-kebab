@@ -351,9 +351,9 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(JobApplicationNotFound.class)
-    public ResponseEntity<ExceptionResponse> handleJobApplicationNotFound(
-            JobApplicationNotFound exception,
+    @ExceptionHandler(JobApplicationNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleJobApplicationNotFoundException(
+            JobApplicationNotFoundException exception,
             HttpServletRequest request
     ) {
         log.error("Attempted request to {} with not existing job application", request.getRequestURI());

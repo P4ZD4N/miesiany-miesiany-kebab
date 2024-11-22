@@ -4,7 +4,7 @@ import com.p4zd4n.kebab.entities.Cv;
 import com.p4zd4n.kebab.entities.JobApplication;
 import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.notfound.CvNotFoundException;
-import com.p4zd4n.kebab.exceptions.notfound.JobApplicationNotFound;
+import com.p4zd4n.kebab.exceptions.notfound.JobApplicationNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.JobOfferNotFoundException;
 import com.p4zd4n.kebab.repositories.CvRepository;
 import com.p4zd4n.kebab.repositories.JobApplicationRepository;
@@ -13,7 +13,6 @@ import com.p4zd4n.kebab.requests.jobs.JobOfferApplicationRequest;
 import com.p4zd4n.kebab.responses.jobs.NewCvResponse;
 import com.p4zd4n.kebab.responses.jobs.JobOfferApplicationResponse;
 import com.p4zd4n.kebab.responses.jobs.RemovedApplicationResponse;
-import com.p4zd4n.kebab.responses.jobs.RemovedJobOfferResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -75,7 +74,7 @@ public class JobApplicationService {
         log.info("Started adding cv with name '{}'", cv.getOriginalFilename());
 
         JobApplication jobApplication = jobApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new JobApplicationNotFound(applicationId));
+                .orElseThrow(() -> new JobApplicationNotFoundException(applicationId));
 
         Cv newCv = Cv.builder()
                 .fileName(cv.getOriginalFilename())
@@ -121,7 +120,7 @@ public class JobApplicationService {
         );
 
         JobApplication jobApplication = jobApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new JobApplicationNotFound(applicationId));
+                .orElseThrow(() -> new JobApplicationNotFoundException(applicationId));
         jobOffer.getJobApplications().remove(jobApplication);
 
         jobApplicationRepository.delete(jobApplication);
