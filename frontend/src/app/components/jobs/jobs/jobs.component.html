@@ -238,7 +238,7 @@
     <tbody>
       <tr *ngFor="let application of selectedJobOffer?.job_applications">
         <td>
-          <button class="button-remove" (click)="removeJobApplication(selectedJobOffer?.position_name, application.id)">X</button>
+          <button class="button-remove" (click)="removeJobApplication(selectedJobOffer.position_name, application.id)">X</button>
         </td>
         <td>{{ application.applicant_first_name }}</td>
         <td>{{ application.applicant_last_name }}</td>
