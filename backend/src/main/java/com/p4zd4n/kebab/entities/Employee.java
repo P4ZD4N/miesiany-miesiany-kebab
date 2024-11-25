@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.entities;
 
+import com.p4zd4n.kebab.enums.EmploymentType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,8 +39,11 @@ public class Employee extends WithTimestamp{
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name = "monthly_salary", nullable = false)
-    private BigDecimal monthlySalary;
+    @Column(name = "employment_type", nullable = false)
+    private EmploymentType employmentType;
+
+    @Column(name = "hourly_wage", nullable = false)
+    private BigDecimal hourlyWage;
 
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
@@ -55,7 +59,8 @@ public class Employee extends WithTimestamp{
         String password,
         LocalDate dateOfBirth,
         String phoneNumber,
-        BigDecimal monthlySalary,
+        EmploymentType employmentType,
+        BigDecimal hourlyWage,
         boolean isActive,
         LocalDate hiredAt
     ) {
@@ -65,7 +70,8 @@ public class Employee extends WithTimestamp{
         this.password = password;
         this.dateOfBirth = dateOfBirth;
         this.phoneNumber = phoneNumber;
-        this.monthlySalary = monthlySalary;
+        this.hourlyWage = hourlyWage;
+        this.employmentType = employmentType;
         this.isActive = isActive;
         this.hiredAt = hiredAt;
     }

@@ -1,10 +1,8 @@
 package com.p4zd4n.kebab.exceptions;
 
-import com.p4zd4n.kebab.exceptions.alreadyexists.AddonAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.alreadyexists.BeverageAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.alreadyexists.IngredientAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.alreadyexists.MealAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.*;
 import com.p4zd4n.kebab.exceptions.invalid.*;
+import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
@@ -321,6 +319,54 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(JobOfferNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleJobOfferNotFoundException(
+            JobOfferNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing job offer: {}", request.getRequestURI(), exception.getPositionName());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(CvNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleCvNotFoundException(
+            CvNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing cv", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(JobApplicationNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleJobApplicationNotFoundException(
+            JobApplicationNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing job application", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
     @ExceptionHandler(BeverageAlreadyExistsException.class)
     public ResponseEntity<ItemTypeExceptionResponse> handleBeverageAlreadyExistsException(
             HttpServletRequest request
@@ -392,6 +438,24 @@ public class GlobalExceptionHandler {
                 .body(ItemTypeExceptionResponse
                         .builder()
                         .itemType("ingredient")
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(JobOfferAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleJobOfferAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing job offer", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("jobOffer.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
                         .statusCode(HttpStatus.CONFLICT.value())
                         .message(message)
                         .build());

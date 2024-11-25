@@ -1,10 +1,7 @@
 package com.p4zd4n.kebab.utils;
 
 import com.p4zd4n.kebab.entities.*;
-import com.p4zd4n.kebab.enums.ContactType;
-import com.p4zd4n.kebab.enums.DayOfWeek;
-import com.p4zd4n.kebab.enums.IngredientType;
-import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.enums.*;
 import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import org.springframework.boot.CommandLineRunner;
@@ -27,6 +24,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final MealRepository mealRepository;
     private final IngredientRepository ingredientRepository;
     private final ContactRepository contactRepository;
+    private final JobOfferRepository jobOfferRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -35,7 +33,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             AddonRepository addonRepository,
             MealRepository mealRepository,
             IngredientRepository ingredientRepository,
-            ContactRepository contactRepository
+            ContactRepository contactRepository,
+            JobOfferRepository jobOfferRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -44,6 +43,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.mealRepository = mealRepository;
         this.ingredientRepository = ingredientRepository;
         this.contactRepository = contactRepository;
+        this.jobOfferRepository = jobOfferRepository;
     }
 
     @Override
@@ -57,6 +57,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initIngredients();
         initMeals();
         initContacts();
+        initJobOffers();
     }
 
     private void initOpeningHours() {
@@ -82,7 +83,8 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .password(PasswordEncoder.encodePassword("employee123"))
                 .dateOfBirth(LocalDate.of(1990, 1, 1))
                 .phoneNumber("123456789")
-                .monthlySalary(BigDecimal.valueOf(3000))
+                .employmentType(EmploymentType.PERMANENT)
+                .hourlyWage(BigDecimal.valueOf(30))
                 .isActive(true)
                 .hiredAt(LocalDate.now())
                 .build();
@@ -99,7 +101,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 PasswordEncoder.encodePassword("manager123"),
                 LocalDate.of(2003, 8, 1),
                 "123456798",
-                BigDecimal.valueOf(5000),
+                BigDecimal.valueOf(40),
                 true,
                 LocalDate.now()
         );
@@ -350,5 +352,77 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         contactRepository.saveAll(List.of(telephone, email));
+    }
+
+    private void initJobOffers() {
+
+        JobOffer jobOffer1 = JobOffer.builder()
+                .positionName("Cook")
+                .description("We are searching a cook with a lot of passion and with some experience in preparing kebabs!")
+                .hourlyWage(BigDecimal.valueOf(25))
+                .build();
+
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                .requirementType(JobRequirementType.MANDATORY)
+                .description("1+ year of experience working on the similar position in other Kebab restaurant")
+                .build()
+        );
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("Health card")
+                        .build()
+        );
+
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("Ability to work in a fast-paced setting and manage pressure during peak hours")
+                        .build()
+        );
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                .requirementType(JobRequirementType.MANDATORY)
+                .description("Smile :)")
+                .build()
+        );
+        jobOffer1.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.NICE_TO_HAVE)
+                        .description("Willingness to work various shifts")
+                        .build()
+        );
+        jobOffer1.addEmploymentType(new JobEmploymentType(EmploymentType.PERMANENT));
+        jobOffer1.addEmploymentType(new JobEmploymentType(EmploymentType.MANDATE_CONTRACT));
+
+        JobOffer jobOffer2 = JobOffer.builder()
+                .positionName("Cashier")
+                .description("We are searching a cashier with student status!")
+                .hourlyWage(BigDecimal.valueOf(27.70))
+                .build();
+
+        jobOffer2.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("Student status")
+                        .build()
+        );
+        jobOffer2.addRequirement(
+                JobRequirement.builder()
+                .requirementType(JobRequirementType.MANDATORY)
+                .description("Smile :)")
+                .build()
+        );
+        jobOffer2.addRequirement(
+                JobRequirement.builder()
+                        .requirementType(JobRequirementType.MANDATORY)
+                        .description("Willingness to work various shifts")
+                        .build()
+        );
+        jobOffer2.addEmploymentType(new JobEmploymentType(EmploymentType.MANDATE_CONTRACT));
+
+        jobOfferRepository.save(jobOffer1);
+        jobOfferRepository.save(jobOffer2);
     }
 }

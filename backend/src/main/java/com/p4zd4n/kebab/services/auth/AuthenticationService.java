@@ -3,7 +3,7 @@ package com.p4zd4n.kebab.services.auth;
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.entities.Manager;
 import com.p4zd4n.kebab.enums.Role;
-import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotActiveException;
+import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidCredentialsException;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;

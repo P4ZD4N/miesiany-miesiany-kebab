@@ -12,6 +12,8 @@ import { MenuLayoutComponent } from './components/menu/menu.layout.component';
 import { MenuComponent } from './components/menu/menu/menu.component';
 import { ContactLayoutComponent } from './components/contact/contact-layout-component';
 import { ContactComponent } from './components/contact/contact/contact.component';
+import { JobsLayoutComponent } from './components/jobs/jobs.layout.component';
+import { JobsComponent } from './components/jobs/jobs/jobs.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -32,5 +34,8 @@ export const routes: Routes = [
     ]},
     { path: 'contact', component: ContactLayoutComponent, children: [
         { path: '', component: ContactComponent }
+    ]}, 
+    { path: 'jobs', component: JobsLayoutComponent, children: [
+        { path: '', component: JobsComponent }
     ]}, 
 ];

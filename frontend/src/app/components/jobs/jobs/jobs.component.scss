@@ -1,0 +1,332 @@
+.jobs, .job-applications {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+.job-details-header {
+    font-size: 20px;
+    color: red;
+}
+
+
+.add-job-offer-table td {
+    font-size: 24px;
+    color: white;
+}
+
+p {
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+}
+
+.job-details-detail {
+    font-size: 15px;
+    color: white;
+}
+
+.mat-accordion {
+    margin-top: 1rem;
+    width: 50%;
+    background-color: transparent;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header-title {
+    color: white;
+    align-items: center;
+}
+  
+.mat-expansion-panel .mat-expansion-panel-header-description {
+    font-weight: lighter;
+    color: white;
+}
+  
+.mat-expansion-panel {
+    background-color: rgb(20, 20, 20);
+}
+
+.mat-expansion-panel-header {
+    position: relative;
+    color: white;
+    background-color: black;
+    border-bottom: 3px solid red;
+    transition: 0.6s ease background-color;
+}
+  
+mat-expansion-panel-header.mat-expanded,
+mat-expansion-panel-header.mat-expanded:focus {
+    background-color: black;
+}
+  
+.mat-expansion-panel:not(.mat-expanded)
+.mat-expansion-panel-header:hover:not([aria-disabled="true"]) {
+    background-color: rgb(20, 20, 20);
+}
+
+.mat-expansion-panel.mat-expanded
+.mat-expansion-panel-header:hover:not([aria-disabled="true"]) {
+    background-color: rgb(20, 20, 20);
+}
+  
+.mat-expansion-panel:not(.mat-expanded) {
+    border-radius: 8px !important;
+    margin: 16px 0;
+}
+  
+.mat-expansion-panel.mat-expanded .mat-expansion-panel-header {
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.mat-expanded .mat-expansion-panel-header-title .material-icons{
+    transform: rotate(180deg);
+  }
+  
+  .mat-expansion-panel-header-title .open,
+.mat-expanded .mat-expansion-panel-header-title .close{
+  display: inline-block;
+}
+.mat-expanded .mat-expansion-panel-header-title .open,
+.mat-expansion-panel-header-title .close{
+  display: none;
+}
+
+.job-details-section {
+    padding: 1rem 0;
+}
+
+.custom-icon {
+    font-size: 24px; 
+}
+
+.ul-without-decoration {
+    list-style: none;
+}
+
+
+li:first-of-type {
+    margin-top: 1rem;
+}
+
+li {
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.button-update,.button-cancel, .button-accept, .button-remove {
+    font-size: 24px;
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.button-update {
+    color: rgb(0, 119, 255);
+
+    &:hover {
+        color: rgb(0, 59, 126);
+    }
+}
+
+.button-accept {
+    color: rgb(0, 255, 85);
+
+    &:hover {
+        color: rgb(0, 102, 34);
+    }
+}
+
+.button-remove, .button-cancel {
+    color: rgb(255, 0, 0);
+
+    &:hover {
+        color: #b90909;
+    }
+}
+
+.job-details-section > p {
+    width: 100%;
+}
+
+input, textarea {
+    margin-left: 1em;
+    font-size: 24px;
+    max-width: 100px;
+    color: white;
+    text-align: center;
+    background: inherit;
+    border: none;
+    border-bottom: 1px solid white;
+    outline: none;
+    transition: border-bottom 0.3s ease;
+
+    &:focus {
+        border-bottom: 1px solid red;
+    }
+    &[type=text] {
+        max-width: 800px;
+    }
+
+    &[type=checkbox] {
+        accent-color: red;
+    }
+}
+
+.green-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgb(13, 102, 25);
+    margin-right: 10px;
+}
+
+.gray-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgb(56, 56, 56);
+    margin-right: 10px;
+}
+
+div {
+    margin-bottom: 1em;
+}
+
+textarea {
+    padding: 0.5em;
+    text-align: center;
+    height: 40px;
+}
+
+textarea::-webkit-scrollbar {
+    width: 8px; 
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #333;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: none;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background-color: #ff0000; 
+}
+
+select {
+    margin-left: 1em;
+    font-size: 24px;
+    text-align: center;
+    color: white;
+    border: none;
+    border-bottom: 1px solid white;
+    outline: none;
+    background: inherit;
+    transition: border-bottom 0.3s ease;
+    cursor: pointer;
+
+    &:focus {
+        border-bottom: 1px solid red;
+    }
+}
+
+option {
+    text-align: center;
+    background: black;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+}
+
+div {
+    display: flex;
+    justify-content: center;
+}
+
+.error {
+    font-size: 24px;
+    margin-top: 1rem;
+    color: rgb(126, 15, 15);
+}
+
+.job-applications {
+    table {
+        margin-top: 1em;
+        margin-bottom: 1em;
+        border-collapse: collapse;
+        font-size: 16px;
+    }
+
+    table th {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #333;
+    }
+
+    table td {
+        word-break: break-word;
+        max-width: 250px;
+        text-align: center;
+        padding: 0.5em;
+        border: 1px solid #333;
+    }
+
+    thead {
+        background-color: #101010;
+        color: red;
+    }
+
+    tbody {
+        color: white;
+    }
+}
+
+@media (max-width: 1000px) {
+    p {
+        width: 70%;
+    }
+
+    .mat-accordion {
+        width: 70%;
+    }
+}
+
+@media (max-width: 750px) {
+    table {
+        padding: 0.5em;
+        width: 70%;
+        scrollbar-color: #ff0000 #f1f1f1; 
+        scrollbar-width: thin; 
+    }
+
+    .add-job-offer-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 600px) {
+    .job-applications {
+        table {
+            width: 90%;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap; 
+        }
+    }
+}
+

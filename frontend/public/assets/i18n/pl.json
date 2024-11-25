@@ -186,5 +186,42 @@
         "update": "Aktualizuj",
         "accept": "Akceptuj",
         "cancel": "Anuluj"
+    },
+    "jobs": {
+        "headline": "Praca",
+        "paragraph_top": "Zdolnych ludzi nigdy za malo! Przejrzyj aktualne oferty pracy i dolacz do zespolu!",
+        "description": "Opis stanowiska",
+        "requirements": "Wymagania",
+        "nice_to_have": "Nice to have",
+        "employment_types": "Mozliwosc zatrudnienia na umowach",
+        "employment_type": "Typ zatrudnienia",
+        "hourly_wage": "Stawka godzinowa",
+        "PERMANENT": "Umowa o prace",
+        "MANDATE_CONTRACT": "Umowa zlecenie",
+        "brutto": "brutto",
+        "button_add": "Dodaj oferte pracy",
+        "position": "Stanowisko",
+        "requirement_type": "Typ wymagania",
+        "requirement_description": "Opis wymagania",
+        "MANDATORY": "Wymagane",
+        "NICE_TO_HAVE": "Nice to have",
+        "accept": "Akceptuj",
+        "cancel": "Anuluj",
+        "update": "Aktualizuj",
+        "remove": "Usun",
+        "add": "Dodaj",
+        "position_name": "Pozycja",
+        "is_active": "Czy oferta jest aktywna",
+        "apply": "Aplikuj",
+        "candidates": "Kandydaci",
+        "job_applications": {
+            "headline": "Kandydaci na pozycje",
+            "first_name": "Imie",
+            "last_name": "Nazwisko",
+            "telephone": "Telefon",
+            "additional_message": "Dodatkowa wiadomosc",
+            "no_candidates": "Brak kandydatow!",
+            "button": "Wroc do listy ofert pracy"
+        }
     }
 }

@@ -1,5 +1,7 @@
 import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
+import { EmploymentType } from "../enums/employment-type.enum";
+import { RequirementType } from "../enums/requirement-type.enum";
 import { Role } from "../enums/role.enum";
 import { Size } from "../enums/size.enum";
 
@@ -108,6 +110,76 @@ export interface ContactResponse {
 }
 
 export interface UpdatedContactResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface JobRequirement {
+  requirement_type: RequirementType | null;
+  description: string;
+}
+
+export interface JobEmploymentType {
+  employment_type: EmploymentType  | null;
+}
+
+export interface JobApplicationResponse {
+  id: number;
+  applicant_first_name: string;
+  applicant_last_name: string;
+  applicant_email: string;
+  applicant_telephone: string;
+  additional_message: string;
+  is_student: boolean;
+  id_cv: number;
+}
+
+export interface JobOfferGeneralResponse {
+  position_name: string;
+  description: string;
+  hourly_wage: number;
+  is_active: boolean;
+  job_employment_types: JobEmploymentType[];
+  job_requirements: JobRequirement[];
+}
+
+export interface JobOfferManagerResponse {
+  position_name: string;
+  description: string;
+  hourly_wage: number;
+  is_active: boolean;
+  job_employment_types: JobEmploymentType[];
+  job_requirements: JobRequirement[];
+  job_applications: JobApplicationResponse[];
+}
+
+export interface NewJobOfferResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedJobOfferResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedJobOfferResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface JobOfferApplicationResponse {
+  application_id: number;
+  status_code: number;
+  message: string;
+}
+
+export interface NewCvResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedApplicationResponse {
   status_code: number;
   message: string;
 }

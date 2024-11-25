@@ -186,5 +186,42 @@
         "update": "Update",
         "accept": "Accept",
         "cancel": "Cancel"
+    },
+    "jobs": {
+        "headline": "Jobs",
+        "paragraph_top": "You can never have enough capable people! Browse current job offers and join the team!",
+        "description": "Description",
+        "requirements": "Requirements",
+        "nice_to_have": "Nice to have",
+        "employment_types": "Employment types",
+        "employment_type": "Employment type",
+        "hourly_wage": "Hourly wage",
+        "PERMANENT": "Permanent",
+        "MANDATE_CONTRACT": "Mandate contract",
+        "brutto": "gross",
+        "button_add": "Add job offer",
+        "position": "Position",
+        "requirement_type": "Requirement type",
+        "requirement_description": "Requirement description",
+        "MANDATORY": "Mandatory",
+        "NICE_TO_HAVE": "Nice to have",
+        "accept": "Accept",
+        "cancel": "Cancel",
+        "update": "Update",
+        "remove": "Remove",
+        "add": "Add",
+        "position_name": "Position name",
+        "is_active": "Is offer active",
+        "apply": "Apply",
+        "candidates": "Candidates",
+        "job_applications": {
+            "headline": "Candidates to position",
+            "first_name": "First name",
+            "last_name": "Last name",
+            "phone": "Phone",
+            "additional_message": "Additional message",
+            "no_candidates": "No candidates!",
+            "button": "Back to the list of jobs"
+        }
     }
 }
