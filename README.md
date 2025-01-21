@@ -397,22 +397,22 @@ Add new job offer. It is not possible to add job offer with the same position na
   "description": "Write something...",
   "hourly_wage": 30,
   "job_employment_types": [
-	  {
-		"employment_type":  "PERMANENT"
-	  },
-	  {
-		"employment_type":  "MANDATE_CONTRACT"
-	  }
+    {
+      "employment_type":  "PERMANENT"
+    },
+    {
+      "employment_type":  "MANDATE_CONTRACT"
+    }
   ],
   "job_requirements": [
-	  {
-		"requirement_type":  "MANDATORY",
-		"description":  ":)"
-	  },
-	  {
-		"requirement_type":  "NICE_TO_HAVE",
-		"description":  "nice to have"
-	  }
+    {
+      "requirement_type":  "MANDATORY",
+      "description":  ":)"
+    },
+    {
+      "requirement_type":  "NICE_TO_HAVE",
+      "description":  "nice to have"
+    }
   ]
 }
 ```
@@ -436,22 +436,22 @@ Updates existing job offer. You can update each property of job offer, but if yo
   "updated_description": "Write something...",
   "updated_hourly_wage": 30,
   "updated_employment_types": [
-	  {
-		"employment_type":  "PERMANENT"
-	  },
-	  {
-		"employment_type":  "MANDATE_CONTRACT"
-	  }
+    {
+      "employment_type":  "PERMANENT"
+    },
+    {
+      "employment_type":  "MANDATE_CONTRACT"
+    }
   ],
   "updated_requirements": [
-	  {
-		"requirement_type":  "MANDATORY",
-		"description":  ":)"
-	  },
-	  {
-		"requirement_type":  "NICE_TO_HAVE",
-		"description":  "nice to have"
-	  }
+    {
+      "requirement_type":  "MANDATORY",
+      "description":  ":)"
+    },
+    {
+      "requirement_type":  "NICE_TO_HAVE",
+      "description":  "nice to have"
+    }
   ],
   "is_active": false
 }
