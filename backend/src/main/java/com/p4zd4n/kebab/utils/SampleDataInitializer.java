@@ -25,6 +25,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final IngredientRepository ingredientRepository;
     private final ContactRepository contactRepository;
     private final JobOfferRepository jobOfferRepository;
+    private final MealPromotionsRepository mealPromotionsRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -34,7 +35,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             MealRepository mealRepository,
             IngredientRepository ingredientRepository,
             ContactRepository contactRepository,
-            JobOfferRepository jobOfferRepository
+            JobOfferRepository jobOfferRepository,
+            MealPromotionsRepository mealPromotionsRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -44,6 +46,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.ingredientRepository = ingredientRepository;
         this.contactRepository = contactRepository;
         this.jobOfferRepository = jobOfferRepository;
+        this.mealPromotionsRepository = mealPromotionsRepository;
     }
 
     @Override
@@ -58,6 +61,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initMeals();
         initContacts();
         initJobOffers();
+        initPromotions();
     }
 
     private void initOpeningHours() {
@@ -424,5 +428,22 @@ public class SampleDataInitializer implements CommandLineRunner {
 
         jobOfferRepository.save(jobOffer1);
         jobOfferRepository.save(jobOffer2);
+    }
+
+    private void initPromotions() {
+
+        MealPromotion largeSizePromotion = MealPromotion.builder()
+                .description("All large sizes -20%!")
+                .size(Size.LARGE)
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+
+        mealPromotionsRepository.save(largeSizePromotion);
+
+        mealRepository.findAll()
+            .forEach(meal -> {
+                meal.getPromotions().add(largeSizePromotion);
+                mealRepository.save(meal);
+        });
     }
 }

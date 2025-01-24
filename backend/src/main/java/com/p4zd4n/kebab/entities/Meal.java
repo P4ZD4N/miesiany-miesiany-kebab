@@ -31,6 +31,14 @@ public class Meal extends WithTimestamp {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "meal_promotions",
+            joinColumns = @JoinColumn(name = "meal_id"),
+            inverseJoinColumns = @JoinColumn(name = "promotion_id")
+    )
+    private List<MealPromotion> promotions = new ArrayList<>();
+
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
