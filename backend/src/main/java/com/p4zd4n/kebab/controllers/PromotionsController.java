@@ -25,7 +25,7 @@ public class PromotionsController {
 
     @GetMapping("/meal-promotions")
     public ResponseEntity<List<MealPromotionResponse>> getMealPromotions() {
-        log.info("Received get promotions request");
+        log.info("Received get meal promotions request");
         return ResponseEntity.ok(mealPromotionsService.getMealPromotions());
     }
 }
