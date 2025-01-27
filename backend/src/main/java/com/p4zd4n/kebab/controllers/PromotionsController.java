@@ -1,9 +1,12 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +47,25 @@ public class PromotionsController {
         NewMealPromotionResponse response = mealPromotionsService.addMealPromotion(request);
 
         log.info("Successfully added new meal promotion");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-meal-promotion")
+    public ResponseEntity<UpdatedMealPromotionResponse> updateMealPromotion(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UpdatedMealPromotionRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received update meal promotion request");
+
+        MealPromotion existingMealPromotion = mealPromotionsService.findMealPromotionById(request.updatedMealPromotionId());
+        UpdatedMealPromotionResponse response = mealPromotionsService.updateMealPromotion(existingMealPromotion, request);
+
+        log.info("Successfully updated meal promotion with id  '{}'", existingMealPromotion.getId());
 
         return ResponseEntity.ok(response);
     }
