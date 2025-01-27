@@ -1,7 +1,7 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.enums.Size;
-import com.p4zd4n.kebab.responses.promotions.MealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

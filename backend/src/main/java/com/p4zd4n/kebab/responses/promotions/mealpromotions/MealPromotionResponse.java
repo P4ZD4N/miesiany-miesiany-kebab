@@ -1,4 +1,4 @@
-package com.p4zd4n.kebab.responses.promotions;
+package com.p4zd4n.kebab.responses.promotions.mealpromotions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.p4zd4n.kebab.enums.Size;
