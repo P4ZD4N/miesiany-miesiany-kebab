@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class SampleDataInitializer implements CommandLineRunner {
@@ -433,8 +434,8 @@ public class SampleDataInitializer implements CommandLineRunner {
     private void initPromotions() {
 
         MealPromotion largeSizePromotion = MealPromotion.builder()
-                .description("All large sizes -20%!")
-                .size(Size.LARGE)
+                .description("All medium and large sizes -20%!")
+                .sizes(Set.of(Size.MEDIUM, Size.LARGE))
                 .discountPercentage(BigDecimal.valueOf(20))
                 .build();
 

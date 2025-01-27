@@ -43,7 +43,7 @@ public class MealPromotionsService {
 
         return MealPromotionResponse.builder()
                 .description(mealPromotion.getDescription())
-                .size(mealPromotion.getSize())
+                .sizes(mealPromotion.getSizes())
                 .discountPercentage(mealPromotion.getDiscountPercentage())
                 .mealNames(mealNames)
                 .build();

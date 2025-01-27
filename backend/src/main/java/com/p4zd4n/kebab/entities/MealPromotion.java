@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name = "promotions")
@@ -28,9 +25,11 @@ public class MealPromotion extends WithTimestamp {
     @Column(name = "description")
     private String description;
 
+    @ElementCollection(targetClass = Size.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "promotion_sizes", joinColumns = @JoinColumn(name = "promotion_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "size")
-    private Size size;
+    private Set<Size> sizes;
 
     @Column(name = "discount_percentage")
     private BigDecimal discountPercentage;
@@ -39,9 +38,9 @@ public class MealPromotion extends WithTimestamp {
     private List<Meal> meals = new ArrayList<>();
 
     @Builder
-    public MealPromotion(String description, Size size, BigDecimal discountPercentage) {
+    public MealPromotion(String description, Set<Size> sizes, BigDecimal discountPercentage) {
         this.description = description;
-        this.size = size;
+        this.sizes = sizes;
         this.discountPercentage = discountPercentage;
     }
 }
