@@ -15,6 +15,7 @@ public record UpdatedMealPromotionRequest(
         Long updatedMealPromotionId,
 
         @JsonProperty("updated_meal_promotion_description")
+        @Size(min = 1, max = 100, message = "{description.between1And100}")
         String updatedMealPromotionDescription,
 
         @JsonProperty("updated_meal_promotion_sizes")
