@@ -1,11 +1,15 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
-import com.p4zd4n.kebab.requests.menu.beverages.NewBeverageRequest;
+import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
+import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +30,7 @@ import java.util.Set;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +43,12 @@ public class PromotionsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private MealPromotionsRepository mealPromotionsRepository;
+
+    @MockBean
+    private MealRepository mealRepository;
 
     @MockBean
     private MealPromotionsService mealPromotionsService;
@@ -146,6 +155,80 @@ public class PromotionsControllerTest {
 
         for (String header : invalidHeaders) {
             mockMvc.perform(post("/api/v1/promotions/add-meal-promotion")
+                    .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void updateMealPromotion_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        MealPromotion mealPromotion = MealPromotion.builder()
+                .description("Large -20%")
+                .sizes(Set.of(Size.LARGE))
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        mealPromotion.setId(1L);
+
+        UpdatedMealPromotionRequest request = UpdatedMealPromotionRequest.builder()
+                .updatedMealPromotionId(1L)
+                .updatedMealPromotionDescription("Siema")
+                .build();
+
+        UpdatedMealPromotionResponse response = UpdatedMealPromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated meal promotion with id '1'")
+                .build();
+
+        when(mealPromotionsService.findMealPromotionById(1L)).thenReturn(mealPromotion);
+        when(mealPromotionsService.updateMealPromotion(mealPromotion, request)).thenReturn(response);
+
+        mockMvc.perform(put("/api/v1/promotions/update-meal-promotion")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully updated meal promotion with id '1'")));
+
+        verify(mealPromotionsService, times(1)).findMealPromotionById(request.updatedMealPromotionId());
+        verify(mealPromotionsService, times(1)).updateMealPromotion(mealPromotion, request);
+    }
+
+    @Test
+    public void updateMealPromotion_ShouldReturnBadRequest_WhenInvalidDescription() throws Exception {
+
+        UpdatedMealPromotionRequest request = UpdatedMealPromotionRequest.builder()
+                .updatedMealPromotionDescription("")
+                .build();
+
+        mockMvc.perform(put("/api/v1/promotions/update-meal-promotion")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateMealPromotion_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        UpdatedMealPromotionRequest request = UpdatedMealPromotionRequest.builder()
+                .updatedMealPromotionDescription("-10%")
+                .build();
+
+        mockMvc.perform(put("/api/v1/promotions/update-meal-promotion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateMealPromotion_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(put("/api/v1/promotions/update-meal-promotion")
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
