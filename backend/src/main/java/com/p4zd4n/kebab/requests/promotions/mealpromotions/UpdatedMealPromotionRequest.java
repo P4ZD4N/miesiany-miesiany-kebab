@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.requests.promotions.mealpromotions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 public record UpdatedMealPromotionRequest(
 
         @JsonProperty("updated_meal_promotion_id")
+        @NotNull(message = "{id.notNull}")
         Long updatedMealPromotionId,
 
         @JsonProperty("updated_meal_promotion_description")
