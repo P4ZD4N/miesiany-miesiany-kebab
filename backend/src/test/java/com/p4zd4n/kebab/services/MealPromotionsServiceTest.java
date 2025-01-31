@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.services;
 
+import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
@@ -7,8 +8,10 @@ import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
+import com.p4zd4n.kebab.responses.menu.meals.RemovedMealResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,10 +22,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -158,5 +158,24 @@ public class MealPromotionsServiceTest {
         assertEquals("Siema", mealPromotion.getDescription());
 
         verify(mealPromotionsRepository, times(1)).save(mealPromotion);
+    }
+
+    @Test
+    public void removeMealPromotion_ShouldRemoveMealPromotion_WhenValidRequest() {
+
+        MealPromotion mealPromotion = MealPromotion.builder()
+                .description("Large -20%")
+                .sizes(Set.of(Size.LARGE))
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        mealPromotion.setId(2L);
+
+        doNothing().when(mealPromotionsRepository).delete(mealPromotion);
+
+        RemovedMealPromotionResponse response = mealPromotionsService.removeMealPromotion(mealPromotion);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully removed meal promotion with id '2'", response.message());
     }
 }
