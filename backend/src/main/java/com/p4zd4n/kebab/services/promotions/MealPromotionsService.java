@@ -7,9 +7,12 @@ import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
+import com.p4zd4n.kebab.responses.menu.meals.RemovedMealResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -136,6 +139,27 @@ public class MealPromotionsService {
         }
 
         mealPromotionsRepository.save(mealPromotion);
+
+        return response;
+    }
+
+    public RemovedMealPromotionResponse removeMealPromotion(MealPromotion mealPromotion) {
+
+        log.info("Started removing meal promotion with id '{}'", mealPromotion.getId());
+
+        mealPromotion.getMeals().forEach(meal -> {
+            meal.getPromotions().remove(mealPromotion);
+            mealRepository.save(meal);
+        });
+
+        mealPromotionsRepository.delete(mealPromotion);
+
+        RemovedMealPromotionResponse response = RemovedMealPromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed meal promotion with id '" + mealPromotion.getId() + "'")
+                .build();
+
+        log.info("Successfully removed meal promotion with id '{}'", mealPromotion.getId());
 
         return response;
     }

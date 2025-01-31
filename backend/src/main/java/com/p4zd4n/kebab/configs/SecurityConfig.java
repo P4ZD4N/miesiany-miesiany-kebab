@@ -57,7 +57,8 @@ public class SecurityConfig {
                                 "/api/v1/jobs/download-cv/**",
                                 "/api/v1/jobs/remove-job-application",
                                 "/api/v1/promotions/add-meal-promotion",
-                                "/api/v1/promotions/update-meal-promotion").hasRole("MANAGER")
+                                "/api/v1/promotions/update-meal-promotion",
+                                "/api/v1/promotions/remove-meal-promotion").hasRole("MANAGER")
                         .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )

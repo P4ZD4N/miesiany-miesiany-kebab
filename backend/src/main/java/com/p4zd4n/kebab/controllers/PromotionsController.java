@@ -3,9 +3,11 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import jakarta.validation.Valid;
@@ -66,6 +68,18 @@ public class PromotionsController {
         UpdatedMealPromotionResponse response = mealPromotionsService.updateMealPromotion(existingMealPromotion, request);
 
         log.info("Successfully updated meal promotion with id  '{}'", existingMealPromotion.getId());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-meal-promotion")
+    public ResponseEntity<RemovedMealPromotionResponse> removeMealPromotion(
+            @Valid @RequestBody RemovedMealPromotionRequest request
+    ) {
+        log.info("Received remove meal promotion request");
+
+        MealPromotion existingMealPromotion = mealPromotionsService.findMealPromotionById(request.id());
+        RemovedMealPromotionResponse response = mealPromotionsService.removeMealPromotion(existingMealPromotion);
 
         return ResponseEntity.ok(response);
     }
