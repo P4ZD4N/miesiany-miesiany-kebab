@@ -1,14 +1,19 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
+import com.p4zd4n.kebab.requests.menu.beverages.RemovedBeverageRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
+import com.p4zd4n.kebab.responses.menu.beverages.RemovedBeverageResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -232,5 +237,38 @@ public class PromotionsControllerTest {
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    @Test
+    public void removeMealPromotion_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        MealPromotion mealPromotion = MealPromotion.builder()
+                .description("Large -20%")
+                .sizes(Set.of(Size.LARGE))
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        mealPromotion.setId(1L);
+
+        RemovedMealPromotionRequest request = RemovedMealPromotionRequest.builder()
+                .id(1L)
+                .build();
+
+        RemovedMealPromotionResponse response = RemovedMealPromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed meal promotion with id '1'")
+                .build();
+
+        when(mealPromotionsService.findMealPromotionById(request.id())).thenReturn(mealPromotion);
+        when(mealPromotionsService.removeMealPromotion(any(MealPromotion.class))).thenReturn(response);
+
+        mockMvc.perform(delete("/api/v1/promotions/remove-meal-promotion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully removed meal promotion with id '1'")));
+
+        verify(mealPromotionsService, times(1)).findMealPromotionById(request.id());
+        verify(mealPromotionsService, times(1)).removeMealPromotion(mealPromotion);
     }
 }
