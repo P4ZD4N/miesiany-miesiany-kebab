@@ -148,7 +148,6 @@ public class MealPromotionsServiceTest {
                 .updatedMealPromotionDescription("Siema")
                 .build();
 
-        when(mealPromotionsRepository.findById(request.updatedMealPromotionId())).thenReturn(Optional.of(mealPromotion));
         when(mealPromotionsRepository.save(any(MealPromotion.class))).thenReturn(mealPromotion);
 
         UpdatedMealPromotionResponse response = mealPromotionsService.updateMealPromotion(mealPromotion, request);
@@ -156,8 +155,8 @@ public class MealPromotionsServiceTest {
         assertNotNull(response);
         assertEquals(HttpStatus.OK.value(), response.statusCode());
         assertEquals("Successfully updated meal promotion with id '1'", response.message());
+        assertEquals("Siema", mealPromotion.getDescription());
 
-        verify(mealPromotionsRepository, times(1)).findById(1L);
         verify(mealPromotionsRepository, times(1)).save(mealPromotion);
     }
 }
