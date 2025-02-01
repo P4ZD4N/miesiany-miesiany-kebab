@@ -2,10 +2,16 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
+import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -55,6 +61,33 @@ public class BeveragePromotionsService {
                 .description(beveragePromotion.getDescription())
                 .discountPercentage(beveragePromotion.getDiscountPercentage())
                 .beveragesWithCapacities(beveragesWithCapacities)
+                .build();
+    }
+
+    public NewBeveragePromotionResponse addBeveragePromotion(NewBeveragePromotionRequest request) {
+
+        BeveragePromotion beveragePromotion = BeveragePromotion.builder()
+                .description(request.description())
+                .discountPercentage(request.discountPercentage())
+                .build();
+
+        BeveragePromotion savedBeveragePromotion = beveragePromotionsRepository.save(beveragePromotion);
+
+        if (request.beveragesWithCapacities() != null)
+            beverageRepository.findAll().stream()
+                .filter(beverage -> {
+                    return request.beveragesWithCapacities().containsKey(beverage.getName()) &&
+                            request.beveragesWithCapacities().get(beverage.getName()).contains(beverage.getCapacity());
+                })
+                .forEach(beverage -> {
+                    System.out.println(beverage.getName());
+                    beverage.setPromotion(beveragePromotion);
+                    beverageRepository.save(beverage);
+                });
+
+        return NewBeveragePromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully added new beverage promotion with id '" + savedBeveragePromotion.getId() + "'")
                 .build();
     }
 }
