@@ -11,15 +11,14 @@ import java.util.Set;
 @Builder
 public record NewMealPromotionRequest(
 
-        @JsonProperty("new_meal_promotion_description")
         @Size(min = 1, max = 100, message = "{description.between1And100}")
-        String newMealPromotionDescription,
+        String description,
 
-        @JsonProperty("new_meal_promotion_sizes")
-        Set<com.p4zd4n.kebab.enums.Size> newMealPromotionSizes,
+        Set<com.p4zd4n.kebab.enums.Size> sizes,
 
-        @JsonProperty("new_meal_promotion_discount_percentage")
-        BigDecimal newMealPromotionDiscountPercentage,
+        @JsonProperty("discount_percentage")
+        BigDecimal discountPercentage,
 
-        @JsonProperty("new_meal_promotion_meal_names") List<String> newMealPromotionMealNames
+        @JsonProperty("meal_names")
+        List<String> mealNames
 ) {}

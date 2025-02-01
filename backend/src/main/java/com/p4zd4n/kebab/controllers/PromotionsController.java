@@ -64,7 +64,7 @@ public class PromotionsController {
 
         log.info("Received update meal promotion request");
 
-        MealPromotion existingMealPromotion = mealPromotionsService.findMealPromotionById(request.updatedMealPromotionId());
+        MealPromotion existingMealPromotion = mealPromotionsService.findMealPromotionById(request.id());
         UpdatedMealPromotionResponse response = mealPromotionsService.updateMealPromotion(existingMealPromotion, request);
 
         log.info("Successfully updated meal promotion with id  '{}'", existingMealPromotion.getId());

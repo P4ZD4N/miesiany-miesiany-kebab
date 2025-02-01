@@ -1,6 +1,5 @@
 package com.p4zd4n.kebab.services;
 
-import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
@@ -8,7 +7,6 @@ import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
-import com.p4zd4n.kebab.responses.menu.meals.RemovedMealResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
@@ -75,16 +73,16 @@ public class MealPromotionsServiceTest {
     public void addMealPromotion_ShouldAddMeal_WhenValidRequest() {
 
         NewMealPromotionRequest request = NewMealPromotionRequest.builder()
-                .newMealPromotionDescription("-10%")
-                .newMealPromotionSizes(Set.of(Size.SMALL))
-                .newMealPromotionDiscountPercentage(BigDecimal.valueOf(10))
-                .newMealPromotionMealNames(List.of("Pita"))
+                .description("-10%")
+                .sizes(Set.of(Size.SMALL))
+                .discountPercentage(BigDecimal.valueOf(10))
+                .mealNames(List.of("Pita"))
                 .build();
 
         MealPromotion newMealPromotion = MealPromotion.builder()
-                .description(request.newMealPromotionDescription())
-                .sizes(request.newMealPromotionSizes())
-                .discountPercentage(request.newMealPromotionDiscountPercentage())
+                .description(request.description())
+                .sizes(request.sizes())
+                .discountPercentage(request.discountPercentage())
                 .build();
         newMealPromotion.setId(1L);
 
@@ -144,8 +142,8 @@ public class MealPromotionsServiceTest {
         mealPromotion.setId(1L);
 
         UpdatedMealPromotionRequest request = UpdatedMealPromotionRequest.builder()
-                .updatedMealPromotionId(1L)
-                .updatedMealPromotionDescription("Siema")
+                .id(1L)
+                .updatedDescription("Siema")
                 .build();
 
         when(mealPromotionsRepository.save(any(MealPromotion.class))).thenReturn(mealPromotion);

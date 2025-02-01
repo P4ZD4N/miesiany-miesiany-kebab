@@ -12,19 +12,19 @@ import java.util.Set;
 @Builder
 public record UpdatedMealPromotionRequest(
 
-        @JsonProperty("updated_meal_promotion_id")
         @NotNull(message = "{id.notNull}")
-        Long updatedMealPromotionId,
+        Long id,
 
-        @JsonProperty("updated_meal_promotion_description")
+        @JsonProperty("updated_description")
         @Size(min = 1, max = 100, message = "{description.between1And100}")
-        String updatedMealPromotionDescription,
+        String updatedDescription,
 
-        @JsonProperty("updated_meal_promotion_sizes")
-        Set<com.p4zd4n.kebab.enums.Size> updatedMealPromotionSizes,
+        @JsonProperty("updated_sizes")
+        Set<com.p4zd4n.kebab.enums.Size> updatedSizes,
 
-        @JsonProperty("updated_meal_promotion_discount_percentage")
-        BigDecimal updatedMealPromotionDiscountPercentage,
+        @JsonProperty("updated_discount_percentage")
+        BigDecimal updatedDiscountPercentage,
 
-        @JsonProperty("updated_meal_promotion_meal_names") List<String> updatedMealPromotionMealNames
+        @JsonProperty("updated_meal_names")
+        List<String> updatedMealNames
 ) {}

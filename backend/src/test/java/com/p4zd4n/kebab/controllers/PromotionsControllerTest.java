@@ -1,16 +1,13 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
-import com.p4zd4n.kebab.requests.menu.beverages.RemovedBeverageRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
-import com.p4zd4n.kebab.responses.menu.beverages.RemovedBeverageResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
@@ -98,10 +95,10 @@ public class PromotionsControllerTest {
     public void addMealPromotion_ShouldReturnOk_WhenValidRequest() throws Exception {
 
         NewMealPromotionRequest request = NewMealPromotionRequest.builder()
-                .newMealPromotionDescription("-10%")
-                .newMealPromotionSizes(Set.of(Size.SMALL))
-                .newMealPromotionDiscountPercentage(BigDecimal.valueOf(10))
-                .newMealPromotionMealNames(List.of("Pita"))
+                .description("-10%")
+                .sizes(Set.of(Size.SMALL))
+                .discountPercentage(BigDecimal.valueOf(10))
+                .mealNames(List.of("Pita"))
                 .build();
 
         NewMealPromotionResponse response = NewMealPromotionResponse.builder()
@@ -124,10 +121,10 @@ public class PromotionsControllerTest {
     public void addMealPromotion_ShouldReturnBadRequest_WhenInvalidDescription() throws Exception {
 
         NewMealPromotionRequest request = NewMealPromotionRequest.builder()
-                .newMealPromotionDescription("")
-                .newMealPromotionSizes(Set.of(Size.SMALL))
-                .newMealPromotionDiscountPercentage(BigDecimal.valueOf(10))
-                .newMealPromotionMealNames(List.of("Pita"))
+                .description("")
+                .sizes(Set.of(Size.SMALL))
+                .discountPercentage(BigDecimal.valueOf(10))
+                .mealNames(List.of("Pita"))
                 .build();
 
         mockMvc.perform(post("/api/v1/promotions/add-meal-promotion")
@@ -141,10 +138,10 @@ public class PromotionsControllerTest {
     public void addMealPromotion_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
 
         NewMealPromotionRequest request = NewMealPromotionRequest.builder()
-                .newMealPromotionDescription("-10%")
-                .newMealPromotionSizes(Set.of(Size.SMALL))
-                .newMealPromotionDiscountPercentage(BigDecimal.valueOf(10))
-                .newMealPromotionMealNames(List.of("Pita"))
+                .description("-10%")
+                .sizes(Set.of(Size.SMALL))
+                .discountPercentage(BigDecimal.valueOf(10))
+                .mealNames(List.of("Pita"))
                 .build();
 
         mockMvc.perform(post("/api/v1/promotions/add-meal-promotion")
@@ -176,8 +173,8 @@ public class PromotionsControllerTest {
         mealPromotion.setId(1L);
 
         UpdatedMealPromotionRequest request = UpdatedMealPromotionRequest.builder()
-                .updatedMealPromotionId(1L)
-                .updatedMealPromotionDescription("Siema")
+                .id(1L)
+                .updatedDescription("Siema")
                 .build();
 
         UpdatedMealPromotionResponse response = UpdatedMealPromotionResponse.builder()
@@ -196,7 +193,7 @@ public class PromotionsControllerTest {
                 .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
                 .andExpect(jsonPath("$.message", is("Successfully updated meal promotion with id '1'")));
 
-        verify(mealPromotionsService, times(1)).findMealPromotionById(request.updatedMealPromotionId());
+        verify(mealPromotionsService, times(1)).findMealPromotionById(request.id());
         verify(mealPromotionsService, times(1)).updateMealPromotion(mealPromotion, request);
     }
 
@@ -204,7 +201,7 @@ public class PromotionsControllerTest {
     public void updateMealPromotion_ShouldReturnBadRequest_WhenInvalidDescription() throws Exception {
 
         UpdatedMealPromotionRequest request = UpdatedMealPromotionRequest.builder()
-                .updatedMealPromotionDescription("")
+                .updatedDescription("")
                 .build();
 
         mockMvc.perform(put("/api/v1/promotions/update-meal-promotion")
@@ -218,7 +215,7 @@ public class PromotionsControllerTest {
     public void updateMealPromotion_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
 
         UpdatedMealPromotionRequest request = UpdatedMealPromotionRequest.builder()
-                .updatedMealPromotionDescription("-10%")
+                .updatedDescription("-10%")
                 .build();
 
         mockMvc.perform(put("/api/v1/promotions/update-meal-promotion")
