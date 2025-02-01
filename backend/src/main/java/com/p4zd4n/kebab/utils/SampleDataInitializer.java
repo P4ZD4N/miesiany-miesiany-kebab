@@ -27,6 +27,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final ContactRepository contactRepository;
     private final JobOfferRepository jobOfferRepository;
     private final MealPromotionsRepository mealPromotionsRepository;
+    private final BeveragePromotionsRepository beveragePromotionsRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -37,7 +38,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             IngredientRepository ingredientRepository,
             ContactRepository contactRepository,
             JobOfferRepository jobOfferRepository,
-            MealPromotionsRepository mealPromotionsRepository
+            MealPromotionsRepository mealPromotionsRepository,
+            BeveragePromotionsRepository beveragePromotionsRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -48,6 +50,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.contactRepository = contactRepository;
         this.jobOfferRepository = jobOfferRepository;
         this.mealPromotionsRepository = mealPromotionsRepository;
+        this.beveragePromotionsRepository = beveragePromotionsRepository;
     }
 
     @Override
@@ -446,5 +449,19 @@ public class SampleDataInitializer implements CommandLineRunner {
                 meal.getPromotions().add(largeSizePromotion);
                 mealRepository.save(meal);
         });
+
+        BeveragePromotion cocaColaPromotion = BeveragePromotion.builder()
+                .description("All Coca-Cola -50%!")
+                .discountPercentage(BigDecimal.valueOf(50))
+                .build();
+
+        beveragePromotionsRepository.save(cocaColaPromotion);
+
+        beverageRepository.findAll().stream()
+                .filter(beverage -> beverage.getName().contains("Coca-Cola"))
+                .forEach(beverage -> {
+                    beverage.setPromotion(cocaColaPromotion);
+                    beverageRepository.save(beverage);
+                });
     }
 }

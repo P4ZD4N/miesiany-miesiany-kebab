@@ -5,10 +5,12 @@ import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
+import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +26,11 @@ import java.util.List;
 public class PromotionsController {
 
     private final MealPromotionsService mealPromotionsService;
+    private final BeveragePromotionsService beveragePromotionsService;
 
-    public PromotionsController(MealPromotionsService mealPromotionsService) {
+    public PromotionsController(MealPromotionsService mealPromotionsService, BeveragePromotionsService beveragePromotionsService) {
         this.mealPromotionsService = mealPromotionsService;
+        this.beveragePromotionsService = beveragePromotionsService;
     }
 
     @GetMapping("/meal-promotions")
@@ -82,5 +86,11 @@ public class PromotionsController {
         RemovedMealPromotionResponse response = mealPromotionsService.removeMealPromotion(existingMealPromotion);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/beverage-promotions")
+    public ResponseEntity<List<BeveragePromotionResponse>> getBeveragePromotions() {
+        log.info("Received get beverage promotions request");
+        return ResponseEntity.ok(beveragePromotionsService.getBeveragePromotions());
     }
 }
