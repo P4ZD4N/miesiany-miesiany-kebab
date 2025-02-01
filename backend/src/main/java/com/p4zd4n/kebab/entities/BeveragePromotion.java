@@ -29,7 +29,7 @@ public class BeveragePromotion extends WithTimestamp {
     @Column(name = "discount_percentage")
     private BigDecimal discountPercentage;
 
-    @OneToMany(mappedBy = "beveragePromotion")
+    @OneToMany(mappedBy = "promotion")
     private List<Beverage> beverages = new ArrayList<>();
 
     @Builder
