@@ -3,15 +3,19 @@ package com.p4zd4n.kebab.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
+import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
+import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -50,10 +55,19 @@ public class PromotionsControllerTest {
     private MealPromotionsRepository mealPromotionsRepository;
 
     @MockBean
+    private BeveragePromotionsRepository beveragePromotionsRepository;
+
+    @MockBean
     private MealRepository mealRepository;
 
     @MockBean
+    private BeverageRepository beverageRepository;
+
+    @MockBean
     private MealPromotionsService mealPromotionsService;
+
+    @MockBean
+    private BeveragePromotionsService beveragePromotionsService;
 
     @BeforeEach
     public void setUp() {
@@ -267,5 +281,39 @@ public class PromotionsControllerTest {
 
         verify(mealPromotionsService, times(1)).findMealPromotionById(request.id());
         verify(mealPromotionsService, times(1)).removeMealPromotion(mealPromotion);
+    }
+
+    @Test
+    public void getBeveragePromotions_ShouldReturnBeveragePromotions_WhenCalled() throws Exception {
+
+        List<BeveragePromotionResponse> beveragePromotionsList = Arrays.asList(
+                BeveragePromotionResponse.builder()
+                        .description("Coca-Cola -20%")
+                        .discountPercentage(BigDecimal.valueOf(20))
+                        .beveragesWithCapacities(Map.of(
+                                "Coca-Cola",
+                                List.of(BigDecimal.valueOf(0.33))
+                        ))
+                        .build(),
+                BeveragePromotionResponse.builder()
+                        .description("Fanta -10%")
+                        .discountPercentage(BigDecimal.valueOf(10))
+                        .beveragesWithCapacities(Map.of(
+                                "Fanta",
+                                List.of(BigDecimal.valueOf(0.33))
+                        ))
+                        .build()
+        );
+
+        when(beveragePromotionsService.getBeveragePromotions()).thenReturn(beveragePromotionsList);
+
+        mockMvc.perform(get("/api/v1/promotions/beverage-promotions"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].beverages_with_capacities.Coca-Cola", hasSize(1)))
+                .andExpect(jsonPath("$[0].discount_percentage", is(20)))
+                .andExpect(jsonPath("$[1].description", is("Fanta -10%")));
+
+        verify(beveragePromotionsService, times(1)).getBeveragePromotions();
     }
 }
