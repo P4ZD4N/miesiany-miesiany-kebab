@@ -23,12 +23,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MealPromotionsService {
 
-    private final MealPromotionsRepository promotionsRepository;
     private final MealRepository mealRepository;
     private final MealPromotionsRepository mealPromotionsRepository;
 
-    public MealPromotionsService(MealPromotionsRepository promotionsRepository, MealRepository mealRepository, MealPromotionsRepository mealPromotionsRepository) {
-        this.promotionsRepository = promotionsRepository;
+    public MealPromotionsService(MealRepository mealRepository, MealPromotionsRepository mealPromotionsRepository) {
         this.mealRepository = mealRepository;
         this.mealPromotionsRepository = mealPromotionsRepository;
     }
@@ -37,7 +35,7 @@ public class MealPromotionsService {
 
         log.info("Started retrieving meal promotions");
 
-        List<MealPromotion> promotions = promotionsRepository.findAll();
+        List<MealPromotion> promotions = mealPromotionsRepository.findAll();
 
         List<MealPromotionResponse> response = promotions.stream()
                 .map(this::mapToResponse)
