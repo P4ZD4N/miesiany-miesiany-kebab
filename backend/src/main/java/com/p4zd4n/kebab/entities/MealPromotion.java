@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
-@Table(name = "promotions")
+@Table(name = "meals_promotions")
 @Getter
 @Setter
 @NoArgsConstructor
