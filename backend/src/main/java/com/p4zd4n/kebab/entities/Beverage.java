@@ -33,6 +33,10 @@ public class Beverage extends WithTimestamp {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @ManyToOne
+    @JoinColumn(name = "promotion_id")
+    private BeveragePromotion promotion;
+
     @Builder
     public Beverage(String name, BigDecimal price, BigDecimal capacity) {
         this.name = name;
