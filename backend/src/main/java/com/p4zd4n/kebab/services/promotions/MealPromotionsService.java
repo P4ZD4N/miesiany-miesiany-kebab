@@ -70,12 +70,13 @@ public class MealPromotionsService {
 
         MealPromotion savedMealPromotion = mealPromotionsRepository.save(mealPromotion);
 
-        mealRepository.findAll().stream()
-                .filter(meal -> request.mealNames().contains(meal.getName()))
-                .forEach(meal -> {
-                    meal.getPromotions().add(mealPromotion);
-                    mealRepository.save(meal);
-                });
+        if (request.mealNames() != null)
+            mealRepository.findAll().stream()
+                    .filter(meal -> request.mealNames().contains(meal.getName()))
+                    .forEach(meal -> {
+                        meal.getPromotions().add(mealPromotion);
+                        mealRepository.save(meal);
+                    });
 
         return NewMealPromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())
