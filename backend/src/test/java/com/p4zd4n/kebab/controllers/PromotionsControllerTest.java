@@ -7,10 +7,12 @@ import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
@@ -315,5 +317,70 @@ public class PromotionsControllerTest {
                 .andExpect(jsonPath("$[1].description", is("Fanta -10%")));
 
         verify(beveragePromotionsService, times(1)).getBeveragePromotions();
+    }
+
+    @Test
+    public void addBeveragePromotion_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        NewBeveragePromotionRequest request = NewBeveragePromotionRequest.builder()
+                .description("-10%")
+                .discountPercentage(BigDecimal.valueOf(10))
+                .build();
+
+        NewBeveragePromotionResponse response = NewBeveragePromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully added new beverage promotion with id '1'")
+                .build();
+
+        when(beveragePromotionsService.addBeveragePromotion(request)).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/promotions/add-beverage-promotion")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully added new beverage promotion with id '1'")));
+    }
+
+    @Test
+    public void addBeveragePromotion_ShouldReturnBadRequest_WhenInvalidDescription() throws Exception {
+
+        NewBeveragePromotionRequest request = NewBeveragePromotionRequest.builder()
+                .description("")
+                .discountPercentage(BigDecimal.valueOf(10))
+                .build();
+
+        mockMvc.perform(post("/api/v1/promotions/add-beverage-promotion")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addBeveragePromotion_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        NewBeveragePromotionRequest request = NewBeveragePromotionRequest.builder()
+                .description("-10%")
+                .discountPercentage(BigDecimal.valueOf(10))
+                .build();
+
+        mockMvc.perform(post("/api/v1/promotions/add-beverage-promotion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addBeveragePromotion_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(post("/api/v1/promotions/add-beverage-promotion")
+                    .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
     }
 }
