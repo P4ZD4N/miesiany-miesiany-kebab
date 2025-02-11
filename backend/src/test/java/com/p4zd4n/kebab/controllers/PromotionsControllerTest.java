@@ -9,12 +9,14 @@ import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
@@ -458,5 +460,37 @@ public class PromotionsControllerTest {
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    @Test
+    public void removeBeveragePromotion_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        BeveragePromotion beveragePromotion = BeveragePromotion.builder()
+                .description("Large -20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        beveragePromotion.setId(2L);
+
+        RemovedBeveragePromotionRequest request = RemovedBeveragePromotionRequest.builder()
+                .id(2L)
+                .build();
+
+        RemovedBeveragePromotionResponse response = RemovedBeveragePromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed beverage promotion with id '2'")
+                .build();
+
+        when(beveragePromotionsService.findBeveragePromotionById(request.id())).thenReturn(beveragePromotion);
+        when(beveragePromotionsService.removeBeveragePromotion(any(BeveragePromotion.class))).thenReturn(response);
+
+        mockMvc.perform(delete("/api/v1/promotions/remove-beverage-promotion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully removed beverage promotion with id '2'")));
+
+        verify(beveragePromotionsService, times(1)).findBeveragePromotionById(request.id());
+        verify(beveragePromotionsService, times(1)).removeBeveragePromotion(beveragePromotion);
     }
 }
