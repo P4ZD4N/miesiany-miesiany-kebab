@@ -4,16 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
-import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
-import com.p4zd4n.kebab.repositories.BeverageRepository;
-import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
-import com.p4zd4n.kebab.repositories.MealRepository;
+import com.p4zd4n.kebab.repositories.*;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
@@ -22,6 +20,7 @@ import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionRespons
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
+import com.p4zd4n.kebab.services.promotions.AddonPromotionsService;
 import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,10 +70,16 @@ public class PromotionsControllerTest {
     private BeverageRepository beverageRepository;
 
     @MockBean
+    private AddonRepository addonRepository;
+
+    @MockBean
     private MealPromotionsService mealPromotionsService;
 
     @MockBean
     private BeveragePromotionsService beveragePromotionsService;
+
+    @MockBean
+    private AddonPromotionsService addonPromotionsService;
 
     @BeforeEach
     public void setUp() {
@@ -492,5 +497,30 @@ public class PromotionsControllerTest {
 
         verify(beveragePromotionsService, times(1)).findBeveragePromotionById(request.id());
         verify(beveragePromotionsService, times(1)).removeBeveragePromotion(beveragePromotion);
+    }
+
+    @Test
+    public void getAddonPromotions_ShouldReturnAddonPromotions_WhenCalled() throws Exception {
+
+        List<AddonPromotionResponse> addonPromotionsList = Arrays.asList(
+                AddonPromotionResponse.builder()
+                        .description("-20%")
+                        .discountPercentage(BigDecimal.valueOf(20))
+                        .build(),
+                AddonPromotionResponse.builder()
+                        .description("-10%")
+                        .discountPercentage(BigDecimal.valueOf(10))
+                        .build()
+        );
+
+        when(addonPromotionsService.getAddonPromotions()).thenReturn(addonPromotionsList);
+
+        mockMvc.perform(get("/api/v1/promotions/addon-promotions"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].discount_percentage", is(20)))
+                .andExpect(jsonPath("$[1].description", is("-10%")));
+
+        verify(addonPromotionsService, times(1)).getAddonPromotions();
     }
 }
