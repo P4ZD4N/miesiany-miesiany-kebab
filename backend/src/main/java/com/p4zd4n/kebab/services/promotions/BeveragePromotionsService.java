@@ -2,17 +2,17 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
-import com.p4zd4n.kebab.entities.Meal;
+import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
-import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -143,6 +143,27 @@ public class BeveragePromotionsService {
             beveragePromotion.setDiscountPercentage(request.updatedDiscountPercentage());
 
         beveragePromotionsRepository.save(beveragePromotion);
+
+        return response;
+    }
+
+    public RemovedBeveragePromotionResponse removeBeveragePromotion(BeveragePromotion beveragePromotion) {
+
+        log.info("Started removing beverage promotion with id '{}'", beveragePromotion.getId());
+
+        beveragePromotion.getBeverages().forEach(beverage -> {
+            beverage.setPromotion(null);
+            beverageRepository.save(beverage);
+        });
+
+        beveragePromotionsRepository.delete(beveragePromotion);
+
+        RemovedBeveragePromotionResponse response = RemovedBeveragePromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed beverage promotion with id '" + beveragePromotion.getId() + "'")
+                .build();
+
+        log.info("Successfully removed beverage promotion with id '{}'", beveragePromotion.getId());
 
         return response;
     }

@@ -4,12 +4,14 @@ import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
@@ -133,6 +135,18 @@ public class PromotionsController {
                 existingBeveragePromotion, request);
 
         log.info("Successfully updated beverage promotion with id  '{}'", existingBeveragePromotion.getId());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-beverage-promotion")
+    public ResponseEntity<RemovedBeveragePromotionResponse> removeBeveragePromotion(
+            @Valid @RequestBody RemovedBeveragePromotionRequest request
+    ) {
+        log.info("Received remove beverage promotion request");
+
+        BeveragePromotion existingBeveragePromotion = beveragePromotionsService.findBeveragePromotionById(request.id());
+        RemovedBeveragePromotionResponse response = beveragePromotionsService.removeBeveragePromotion(existingBeveragePromotion);
 
         return ResponseEntity.ok(response);
     }
