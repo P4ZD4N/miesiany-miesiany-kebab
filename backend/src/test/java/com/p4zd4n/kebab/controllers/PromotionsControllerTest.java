@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
@@ -8,11 +9,13 @@ import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
@@ -379,6 +382,79 @@ public class PromotionsControllerTest {
 
         for (String header : invalidHeaders) {
             mockMvc.perform(post("/api/v1/promotions/add-beverage-promotion")
+                    .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void updateBeveragePromotion_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        BeveragePromotion beveragePromotion = BeveragePromotion.builder()
+                .description("-20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        beveragePromotion.setId(1L);
+
+        UpdatedBeveragePromotionRequest request = UpdatedBeveragePromotionRequest.builder()
+                .id(1L)
+                .updatedDescription("Siema")
+                .build();
+
+        UpdatedBeveragePromotionResponse response = UpdatedBeveragePromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated beverage promotion with id '1'")
+                .build();
+
+        when(beveragePromotionsService.findBeveragePromotionById(1L)).thenReturn(beveragePromotion);
+        when(beveragePromotionsService.updateBeveragePromotion(beveragePromotion, request)).thenReturn(response);
+
+        mockMvc.perform(put("/api/v1/promotions/update-beverage-promotion")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully updated beverage promotion with id '1'")));
+
+        verify(beveragePromotionsService, times(1)).findBeveragePromotionById(request.id());
+        verify(beveragePromotionsService, times(1)).updateBeveragePromotion(beveragePromotion, request);
+    }
+
+    @Test
+    public void updateBeveragePromotion_ShouldReturnBadRequest_WhenInvalidDescription() throws Exception {
+
+        UpdatedBeveragePromotionRequest request = UpdatedBeveragePromotionRequest.builder()
+                .updatedDescription("")
+                .build();
+
+        mockMvc.perform(put("/api/v1/promotions/update-beverage-promotion")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateBeveragePromotion_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        UpdatedBeveragePromotionRequest request = UpdatedBeveragePromotionRequest.builder()
+                .updatedDescription("-10%")
+                .build();
+
+        mockMvc.perform(put("/api/v1/promotions/update-beverage-promotion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateBeveragePromotion_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(put("/api/v1/promotions/update-beverage-promotion")
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
