@@ -8,8 +8,12 @@ import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -152,4 +156,29 @@ public class BeveragePromotionsServiceTest {
         verify(beveragePromotionsRepository, times(1)).findById(100L);
     }
 
+    @Test
+    public void updateBeveragePromotion_ShouldUpdateBeveragePromotion_WhenValidRequest() {
+
+        BeveragePromotion beveragePromotion = BeveragePromotion.builder()
+                .description("-20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        beveragePromotion.setId(1L);
+
+        UpdatedBeveragePromotionRequest request = UpdatedBeveragePromotionRequest.builder()
+                .id(1L)
+                .updatedDescription("Siema")
+                .build();
+
+        when(beveragePromotionsRepository.save(any(BeveragePromotion.class))).thenReturn(beveragePromotion);
+
+        UpdatedBeveragePromotionResponse response = beveragePromotionsService.updateBeveragePromotion(beveragePromotion, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully updated beverage promotion with id '1'", response.message());
+        assertEquals("Siema", beveragePromotion.getDescription());
+
+        verify(beveragePromotionsRepository, times(1)).save(beveragePromotion);
+    }
 }
