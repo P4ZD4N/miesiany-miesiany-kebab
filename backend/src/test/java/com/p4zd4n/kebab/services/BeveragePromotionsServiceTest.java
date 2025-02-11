@@ -1,19 +1,15 @@
 package com.p4zd4n.kebab.services;
 
 import com.p4zd4n.kebab.entities.BeveragePromotion;
-import com.p4zd4n.kebab.entities.MealPromotion;
-import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
-import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
-import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -180,5 +176,23 @@ public class BeveragePromotionsServiceTest {
         assertEquals("Siema", beveragePromotion.getDescription());
 
         verify(beveragePromotionsRepository, times(1)).save(beveragePromotion);
+    }
+
+    @Test
+    public void removeBeveragePromotion_ShouldRemoveBeveragePromotion_WhenValidRequest() {
+
+        BeveragePromotion beveragePromotion = BeveragePromotion.builder()
+                .description("-20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        beveragePromotion.setId(2L);
+
+        doNothing().when(beveragePromotionsRepository).delete(beveragePromotion);
+
+        RemovedBeveragePromotionResponse response = beveragePromotionsService.removeBeveragePromotion(beveragePromotion);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully removed beverage promotion with id '2'", response.message());
     }
 }
