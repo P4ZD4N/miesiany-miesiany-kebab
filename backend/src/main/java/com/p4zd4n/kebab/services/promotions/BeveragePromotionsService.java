@@ -2,19 +2,23 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
-import com.p4zd4n.kebab.entities.MealPromotion;
+import com.p4zd4n.kebab.entities.Meal;
+import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
+import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
-import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,7 +84,6 @@ public class BeveragePromotionsService {
                             request.beveragesWithCapacities().get(beverage.getName()).contains(beverage.getCapacity());
                 })
                 .forEach(beverage -> {
-                    System.out.println(beverage.getName());
                     beverage.setPromotion(beveragePromotion);
                     beverageRepository.save(beverage);
                 });
@@ -89,5 +92,58 @@ public class BeveragePromotionsService {
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully added new beverage promotion with id '" + savedBeveragePromotion.getId() + "'")
                 .build();
+    }
+
+    public BeveragePromotion findBeveragePromotionById(Long id) {
+
+        log.info("Started finding beverage promotion with id '{}'", id);
+
+        BeveragePromotion beveragePromotion = beveragePromotionsRepository.findById(id)
+                .orElseThrow(() -> new BeveragePromotionNotFoundException(id));
+
+        log.info("Successfully found beverage promotion with id '{}'", id);
+
+        return beveragePromotion;
+    }
+
+    public UpdatedBeveragePromotionResponse updateBeveragePromotion(
+            BeveragePromotion beveragePromotion, UpdatedBeveragePromotionRequest request
+    ) {
+        UpdatedBeveragePromotionResponse response = UpdatedBeveragePromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated beverage promotion with id '" + beveragePromotion.getId() + "'")
+                .build();
+
+        if (request.updatedDescription() != null)
+            beveragePromotion.setDescription(request.updatedDescription());
+
+        if (request.updatedBeveragesWithCapacities() != null) {
+            List<Beverage> updatedBeverages = beverageRepository.findAll().stream()
+                    .filter(beverage -> {
+                        return request.updatedBeveragesWithCapacities().containsKey(beverage.getName()) &&
+                                request.updatedBeveragesWithCapacities().get(beverage.getName()).contains(beverage.getCapacity());
+                    }).toList();
+            List<Beverage> existingBeverages = new ArrayList<>(beveragePromotion.getBeverages());
+
+            existingBeverages.forEach(beverage -> {
+                beverage.setPromotion(null);
+                beverageRepository.save(beverage);
+            });
+
+            updatedBeverages.forEach(beverage -> {
+                beverage.setPromotion(beveragePromotion);
+                beverageRepository.save(beverage);
+            });
+
+            beveragePromotion.getBeverages().clear();
+            beveragePromotion.getBeverages().addAll(updatedBeverages);
+        }
+
+        if (request.updatedDiscountPercentage() != null)
+            beveragePromotion.setDiscountPercentage(request.updatedDiscountPercentage());
+
+        beveragePromotionsRepository.save(beveragePromotion);
+
+        return response;
     }
 }

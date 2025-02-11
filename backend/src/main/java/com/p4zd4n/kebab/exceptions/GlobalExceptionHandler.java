@@ -482,7 +482,23 @@ public class GlobalExceptionHandler {
             MealPromotionNotFoundException exception,
             HttpServletRequest request
     ) {
-        log.error("Attempted request to {} with id of not existing meal promotion", request.getRequestURI());
+        log.error("Attempted request to {} with id of not existing meal promotion: {}", request.getRequestURI(), exception.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(BeveragePromotionNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleBeveragePromotionNotFoundException(
+            BeveragePromotionNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with id of not existing beverage promotion: {}", request.getRequestURI(), exception.getId());
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)

@@ -1,13 +1,16 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
@@ -110,6 +113,26 @@ public class PromotionsController {
         NewBeveragePromotionResponse response = beveragePromotionsService.addBeveragePromotion(request);
 
         log.info("Successfully added new beverage promotion");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-beverage-promotion")
+    public ResponseEntity<UpdatedBeveragePromotionResponse> updateBeveragePromotion(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UpdatedBeveragePromotionRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received update beverage promotion request");
+
+        BeveragePromotion existingBeveragePromotion = beveragePromotionsService.findBeveragePromotionById(request.id());
+        UpdatedBeveragePromotionResponse response = beveragePromotionsService.updateBeveragePromotion(
+                existingBeveragePromotion, request);
+
+        log.info("Successfully updated beverage promotion with id  '{}'", existingBeveragePromotion.getId());
 
         return ResponseEntity.ok(response);
     }
