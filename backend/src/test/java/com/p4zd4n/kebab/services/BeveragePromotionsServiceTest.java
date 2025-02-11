@@ -3,14 +3,13 @@ package com.p4zd4n.kebab.services;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
+import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
-import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +19,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class BeveragePromotionsServiceTest {
@@ -122,4 +117,39 @@ public class BeveragePromotionsServiceTest {
 
         verify(beveragePromotionsRepository, times(1)).save(any(BeveragePromotion.class));
     }
+
+
+    @Test
+    public void findBeveragePromotionById_ShouldReturnBeveragePromotion_IfExists() {
+
+        BeveragePromotion beveragePromotion = BeveragePromotion.builder()
+                .description("-20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+
+        when(beveragePromotionsRepository.findById(1L)).thenReturn(Optional.of(beveragePromotion));
+
+        BeveragePromotion foundBeveragePromotion = beveragePromotionsService.findBeveragePromotionById(1L);
+
+        assertNotNull(foundBeveragePromotion);
+        assertEquals("-20%", foundBeveragePromotion.getDescription());
+        assertEquals(BigDecimal.valueOf(20), foundBeveragePromotion.getDiscountPercentage());
+
+        verify(beveragePromotionsRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void findBeveragePromotionById_ShouldThrowBeveragePromotionNotFoundException_IfDoesNotExists() {
+
+        when(beveragePromotionsRepository.findById(100L)).thenThrow(new BeveragePromotionNotFoundException(100L));
+
+        BeveragePromotionNotFoundException exception = assertThrows(BeveragePromotionNotFoundException.class, () -> {
+            beveragePromotionsService.findBeveragePromotionById(100L);
+        });
+
+        assertEquals("Beverage promotion with id '100' not found!", exception.getMessage());
+
+        verify(beveragePromotionsRepository, times(1)).findById(100L);
+    }
+
 }
