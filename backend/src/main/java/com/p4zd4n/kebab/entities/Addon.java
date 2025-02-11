@@ -30,6 +30,10 @@ public class Addon extends WithTimestamp {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @ManyToOne
+    @JoinColumn(name = "promotion_id")
+    private AddonPromotion promotion;
+
     @Builder
     public Addon(String name, BigDecimal price) {
         this.name = name;

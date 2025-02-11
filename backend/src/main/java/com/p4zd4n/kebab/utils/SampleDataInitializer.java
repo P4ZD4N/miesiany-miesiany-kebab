@@ -28,6 +28,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final JobOfferRepository jobOfferRepository;
     private final MealPromotionsRepository mealPromotionsRepository;
     private final BeveragePromotionsRepository beveragePromotionsRepository;
+    private final AddonPromotionsRepository addonPromotionsRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -39,7 +40,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             ContactRepository contactRepository,
             JobOfferRepository jobOfferRepository,
             MealPromotionsRepository mealPromotionsRepository,
-            BeveragePromotionsRepository beveragePromotionsRepository
+            BeveragePromotionsRepository beveragePromotionsRepository,
+            AddonPromotionsRepository addonPromotionsRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -51,6 +53,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.jobOfferRepository = jobOfferRepository;
         this.mealPromotionsRepository = mealPromotionsRepository;
         this.beveragePromotionsRepository = beveragePromotionsRepository;
+        this.addonPromotionsRepository = addonPromotionsRepository;
     }
 
     @Override
@@ -462,6 +465,20 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .forEach(beverage -> {
                     beverage.setPromotion(cocaColaPromotion);
                     beverageRepository.save(beverage);
+                });
+
+        AddonPromotion fetaPromotion = AddonPromotion.builder()
+                .description("Feta -50%!")
+                .discountPercentage(BigDecimal.valueOf(50))
+                .build();
+
+        addonPromotionsRepository.save(fetaPromotion);
+
+        addonRepository.findAll().stream()
+                .filter(addon -> addon.getName().equalsIgnoreCase("Feta"))
+                .forEach(addon -> {
+                    addon.setPromotion(fetaPromotion);
+                    addonRepository.save(addon);
                 });
     }
 }

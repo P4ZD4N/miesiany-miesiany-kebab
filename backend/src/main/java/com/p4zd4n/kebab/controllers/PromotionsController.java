@@ -9,6 +9,7 @@ import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePr
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
@@ -17,6 +18,7 @@ import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionRespons
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
+import com.p4zd4n.kebab.services.promotions.AddonPromotionsService;
 import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import jakarta.validation.Valid;
@@ -34,10 +36,16 @@ public class PromotionsController {
 
     private final MealPromotionsService mealPromotionsService;
     private final BeveragePromotionsService beveragePromotionsService;
+    private final AddonPromotionsService addonPromotionsService;
 
-    public PromotionsController(MealPromotionsService mealPromotionsService, BeveragePromotionsService beveragePromotionsService) {
+    public PromotionsController(
+            MealPromotionsService mealPromotionsService,
+            BeveragePromotionsService beveragePromotionsService,
+            AddonPromotionsService addonPromotionsService
+    ) {
         this.mealPromotionsService = mealPromotionsService;
         this.beveragePromotionsService = beveragePromotionsService;
+        this.addonPromotionsService = addonPromotionsService;
     }
 
     @GetMapping("/meal-promotions")
@@ -149,5 +157,11 @@ public class PromotionsController {
         RemovedBeveragePromotionResponse response = beveragePromotionsService.removeBeveragePromotion(existingBeveragePromotion);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/addon-promotions")
+    public ResponseEntity<List<AddonPromotionResponse>> getAddonPromotions() {
+        log.info("Received get addon promotions request");
+        return ResponseEntity.ok(addonPromotionsService.getAddonPromotions());
     }
 }
