@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.requests.promotions.mealpromotions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
@@ -17,6 +18,7 @@ public record NewMealPromotionRequest(
         Set<com.p4zd4n.kebab.enums.Size> sizes,
 
         @JsonProperty("discount_percentage")
+        @NotNull(message = "{discountPercentage.notNull}")
         BigDecimal discountPercentage,
 
         @JsonProperty("meal_names")
