@@ -12,8 +12,10 @@ import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromot
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.RemovedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
 import com.p4zd4n.kebab.services.promotions.AddonPromotionsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -178,5 +180,23 @@ public class AddonPromotionsServiceTest {
         assertEquals("Siema", addonPromotion.getDescription());
 
         verify(addonPromotionsRepository, times(1)).save(addonPromotion);
+    }
+
+    @Test
+    public void removeAddonPromotion_ShouldRemoveAddonPromotion_WhenValidRequest() {
+
+        AddonPromotion addonPromotion = AddonPromotion.builder()
+                .description("-20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        addonPromotion.setId(2L);
+
+        doNothing().when(addonPromotionsRepository).delete(addonPromotion);
+
+        RemovedAddonPromotionResponse response = addonPromotionsService.removeAddonPromotion(addonPromotion);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully removed addon promotion with id '2'", response.message());
     }
 }
