@@ -2,25 +2,21 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.exceptions.notfound.AddonPromotionNotFoundException;
-import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.AddonPromotionsRepository;
 import com.p4zd4n.kebab.repositories.AddonRepository;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.RemovedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -135,6 +131,27 @@ public class AddonPromotionsService {
         }
 
         addonPromotionsRepository.save(addonPromotion);
+
+        return response;
+    }
+
+    public RemovedAddonPromotionResponse removeAddonPromotion(AddonPromotion addonPromotion) {
+
+        log.info("Started removing addon promotion with id '{}'", addonPromotion.getId());
+
+        addonPromotion.getAddons().forEach(addon -> {
+            addon.setPromotion(null);
+            addonRepository.save(addon);
+        });
+
+        addonPromotionsRepository.delete(addonPromotion);
+
+        RemovedAddonPromotionResponse response = RemovedAddonPromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed addon promotion with id '" + addonPromotion.getId() + "'")
+                .build();
+
+        log.info("Successfully removed addon promotion with id '{}'", addonPromotion.getId());
 
         return response;
     }

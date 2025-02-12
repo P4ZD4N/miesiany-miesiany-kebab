@@ -5,6 +5,7 @@ import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.addonpromotions.RemovedAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
@@ -14,6 +15,7 @@ import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionR
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.RemovedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
@@ -203,6 +205,18 @@ public class PromotionsController {
         UpdatedAddonPromotionResponse response = addonPromotionsService.updateAddonPromotion(existingAddonPromotion, request);
 
         log.info("Successfully updated addon promotion with id  '{}'", existingAddonPromotion.getId());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-addon-promotion")
+    public ResponseEntity<RemovedAddonPromotionResponse> removeAddonPromotion(
+            @Valid @RequestBody RemovedAddonPromotionRequest request
+    ) {
+        log.info("Received remove addon promotion request");
+
+        AddonPromotion existingAddonPromotion = addonPromotionsService.findAddonPromotionById(request.id());
+        RemovedAddonPromotionResponse response = addonPromotionsService.removeAddonPromotion(existingAddonPromotion);
 
         return ResponseEntity.ok(response);
     }
