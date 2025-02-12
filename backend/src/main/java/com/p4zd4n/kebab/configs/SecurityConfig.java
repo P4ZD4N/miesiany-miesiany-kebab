@@ -61,7 +61,9 @@ public class SecurityConfig {
                                 "/api/v1/promotions/remove-meal-promotion",
                                 "/api/v1/promotions/add-beverage-promotion",
                                 "/api/v1/promotions/update-meal-promotion",
-                                "/api/v1/promotions/remove-beverage-promotion").hasRole("MANAGER")
+                                "/api/v1/promotions/remove-beverage-promotion",
+                                "/api/v1/promotions/add-addon-promotion"
+                        ).hasRole("MANAGER")
                         .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )
