@@ -7,6 +7,7 @@ import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.repositories.*;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.addonpromotions.RemovedAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
@@ -16,6 +17,7 @@ import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionR
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.RemovedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
@@ -668,5 +670,37 @@ public class PromotionsControllerTest {
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    @Test
+    public void removeAddonPromotion_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        AddonPromotion addonPromotion = AddonPromotion.builder()
+                .description("-20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        addonPromotion.setId(2L);
+
+        RemovedAddonPromotionRequest request = RemovedAddonPromotionRequest.builder()
+                .id(2L)
+                .build();
+
+        RemovedAddonPromotionResponse response = RemovedAddonPromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed addon promotion with id '2'")
+                .build();
+
+        when(addonPromotionsService.findAddonPromotionById(request.id())).thenReturn(addonPromotion);
+        when(addonPromotionsService.removeAddonPromotion(any(AddonPromotion.class))).thenReturn(response);
+
+        mockMvc.perform(delete("/api/v1/promotions/remove-addon-promotion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully removed addon promotion with id '2'")));
+
+        verify(addonPromotionsService, times(1)).findAddonPromotionById(request.id());
+        verify(addonPromotionsService, times(1)).removeAddonPromotion(addonPromotion);
     }
 }
