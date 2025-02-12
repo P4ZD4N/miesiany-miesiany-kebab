@@ -1,18 +1,24 @@
 package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.*;
+import com.p4zd4n.kebab.exceptions.notfound.AddonPromotionNotFoundException;
+import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.AddonPromotionsRepository;
 import com.p4zd4n.kebab.repositories.AddonRepository;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,5 +85,57 @@ public class AddonPromotionsService {
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully added new addon promotion with id '" + savedAddonPromotion.getId() + "'")
                 .build();
+    }
+
+    public AddonPromotion findAddonPromotionById(Long id) {
+
+        log.info("Started finding addon promotion with id '{}'", id);
+
+        AddonPromotion addonPromotion = addonPromotionsRepository.findById(id)
+                .orElseThrow(() -> new AddonPromotionNotFoundException(id));
+
+        log.info("Successfully found addon promotion with id '{}'", id);
+
+        return addonPromotion;
+    }
+
+    public UpdatedAddonPromotionResponse updateAddonPromotion(
+            AddonPromotion addonPromotion, UpdatedAddonPromotionRequest request
+    ) {
+
+        UpdatedAddonPromotionResponse response = UpdatedAddonPromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated addon promotion with id '" + addonPromotion.getId() + "'")
+                .build();
+
+        if (request.updatedDescription() != null)
+            addonPromotion.setDescription(request.updatedDescription());
+
+        if (request.updatedDiscountPercentage() != null)
+            addonPromotion.setDiscountPercentage(request.updatedDiscountPercentage());
+
+        if (request.updatedAddonNames() != null) {
+            List<Addon> updatedAddons = addonRepository.findAll().stream()
+                    .filter(addon -> request.updatedAddonNames().contains(addon.getName()))
+                    .toList();
+            List<Addon> existingAddons = new ArrayList<>(addonPromotion.getAddons());
+
+            existingAddons.forEach(addon -> {
+                addon.setPromotion(null);
+                addonRepository.save(addon);
+            });
+
+            updatedAddons.forEach(addon -> {
+                addon.setPromotion(addonPromotion);
+                addonRepository.save(addon);
+            });
+
+            addonPromotion.getAddons().clear();
+            addonPromotion.getAddons().addAll(updatedAddons);
+        }
+
+        addonPromotionsRepository.save(addonPromotion);
+
+        return response;
     }
 }

@@ -1,9 +1,11 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.entities.AddonPromotion;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
@@ -12,6 +14,7 @@ import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionR
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
@@ -181,6 +184,25 @@ public class PromotionsController {
         NewAddonPromotionResponse response = addonPromotionsService.addAddonPromotion(request);
 
         log.info("Successfully added new addon promotion");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-addon-promotion")
+    public ResponseEntity<UpdatedAddonPromotionResponse> updateAddonPromotion(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UpdatedAddonPromotionRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received update addon promotion request");
+
+        AddonPromotion existingAddonPromotion = addonPromotionsService.findAddonPromotionById(request.id());
+        UpdatedAddonPromotionResponse response = addonPromotionsService.updateAddonPromotion(existingAddonPromotion, request);
+
+        log.info("Successfully updated addon promotion with id  '{}'", existingAddonPromotion.getId());
 
         return ResponseEntity.ok(response);
     }

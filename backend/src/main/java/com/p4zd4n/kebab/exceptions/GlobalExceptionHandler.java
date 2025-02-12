@@ -508,4 +508,20 @@ public class GlobalExceptionHandler {
                         .message(exception.getMessage())
                         .build());
     }
+
+    @ExceptionHandler(AddonPromotionNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleAddonPromotionNotFoundException(
+            AddonPromotionNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with id of not existing addon promotion: {}", request.getRequestURI(), exception.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
 }
