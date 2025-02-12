@@ -1,11 +1,13 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p4zd4n.kebab.entities.AddonPromotion;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.repositories.*;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
+import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
@@ -14,6 +16,7 @@ import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionR
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
@@ -589,6 +592,79 @@ public class PromotionsControllerTest {
 
         for (String header : invalidHeaders) {
             mockMvc.perform(post("/api/v1/promotions/add-addon-promotion")
+                    .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void updateAddonPromotion_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        AddonPromotion addonPromotion = AddonPromotion.builder()
+                .description("-20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+        addonPromotion.setId(1L);
+
+        UpdatedAddonPromotionRequest request = UpdatedAddonPromotionRequest.builder()
+                .id(1L)
+                .updatedDescription("Siema")
+                .build();
+
+        UpdatedAddonPromotionResponse response = UpdatedAddonPromotionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated addon promotion with id '1'")
+                .build();
+
+        when(addonPromotionsService.findAddonPromotionById(1L)).thenReturn(addonPromotion);
+        when(addonPromotionsService.updateAddonPromotion(addonPromotion, request)).thenReturn(response);
+
+        mockMvc.perform(put("/api/v1/promotions/update-addon-promotion")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully updated addon promotion with id '1'")));
+
+        verify(addonPromotionsService, times(1)).findAddonPromotionById(request.id());
+        verify(addonPromotionsService, times(1)).updateAddonPromotion(addonPromotion, request);
+    }
+
+    @Test
+    public void updateAddonPromotion_ShouldReturnBadRequest_WhenInvalidDescription() throws Exception {
+
+        UpdatedAddonPromotionRequest request = UpdatedAddonPromotionRequest.builder()
+                .updatedDescription("")
+                .build();
+
+        mockMvc.perform(put("/api/v1/promotions/update-addon-promotion")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateAddonPromotion_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        UpdatedAddonPromotionRequest request = UpdatedAddonPromotionRequest.builder()
+                .updatedDescription("-10%")
+                .build();
+
+        mockMvc.perform(put("/api/v1/promotions/update-addon-promotion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateAddonPromotion_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(put("/api/v1/promotions/update-addon-promotion")
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
