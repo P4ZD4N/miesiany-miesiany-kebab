@@ -3,6 +3,7 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
+import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
@@ -10,6 +11,7 @@ import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionReque
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.RemovedMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
+import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
@@ -163,5 +165,23 @@ public class PromotionsController {
     public ResponseEntity<List<AddonPromotionResponse>> getAddonPromotions() {
         log.info("Received get addon promotions request");
         return ResponseEntity.ok(addonPromotionsService.getAddonPromotions());
+    }
+
+    @PostMapping("/add-addon-promotion")
+    public ResponseEntity<NewAddonPromotionResponse> addAddonPromotion(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody NewAddonPromotionRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received add addon promotion request");
+
+        NewAddonPromotionResponse response = addonPromotionsService.addAddonPromotion(request);
+
+        log.info("Successfully added new addon promotion");
+
+        return ResponseEntity.ok(response);
     }
 }
