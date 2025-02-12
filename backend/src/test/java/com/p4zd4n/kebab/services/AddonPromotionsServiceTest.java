@@ -1,22 +1,15 @@
 package com.p4zd4n.kebab.services;
 
 import com.p4zd4n.kebab.entities.AddonPromotion;
-import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.exceptions.notfound.AddonPromotionNotFoundException;
-import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.AddonPromotionsRepository;
 import com.p4zd4n.kebab.repositories.AddonRepository;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
-import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
-import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.RemovedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
 import com.p4zd4n.kebab.services.promotions.AddonPromotionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

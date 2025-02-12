@@ -1,18 +1,14 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.Contact;
 import com.p4zd4n.kebab.enums.ContactType;
 import com.p4zd4n.kebab.exceptions.GlobalExceptionHandler;
-import com.p4zd4n.kebab.exceptions.alreadyexists.BeverageAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidEmailException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidPhoneException;
 import com.p4zd4n.kebab.requests.contact.UpdatedContactRequest;
-import com.p4zd4n.kebab.requests.menu.beverages.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.contact.ContactResponse;
 import com.p4zd4n.kebab.responses.contact.UpdatedContactResponse;
-import com.p4zd4n.kebab.responses.menu.beverages.UpdatedBeverageResponse;
 import com.p4zd4n.kebab.services.contact.ContactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

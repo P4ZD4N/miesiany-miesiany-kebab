@@ -2,7 +2,6 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
-import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
@@ -12,7 +11,6 @@ import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotio
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
-import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
