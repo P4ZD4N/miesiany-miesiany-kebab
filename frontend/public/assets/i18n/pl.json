@@ -241,6 +241,11 @@
             "XL": "XL"
         },
         "beverages": "Napoje",
-        "addons": "Dodatki"
+        "addons": "Dodatki",
+        "buttons": {
+            "accept": "Akceptuj",
+            "cancel": "Anuluj",
+            "add_meal_promotion": "Dodaj promocje na dania"
+        }
     }
 }

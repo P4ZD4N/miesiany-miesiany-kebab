@@ -113,3 +113,10 @@ export interface RemovedApplicationRequest {
   position_name: string;
   application_id: number;
 }
+
+export interface NewMealPromotionRequest {
+  promotion_description: string;
+  sizes: Size[];
+  discount_percentage: number;
+  meal_names: string[]
+}

@@ -202,3 +202,8 @@ export interface AddonPromotionResponse {
   discount_percentage: number;
   addon_names: string[]
 }
+
+export interface NewMealPromotionResponse {
+  status_code: number;
+  message: string;
+}

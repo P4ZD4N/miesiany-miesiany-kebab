@@ -241,6 +241,11 @@
             "XL": "XL"
         },
         "beverages": "Beverages",
-        "addons": "Addons"
+        "addons": "Addons",
+        "buttons": {
+            "accept": "Accept",
+            "cancel": "Cancel",
+            "add_meal_promotion": "Add meal promotion"
+        }
     }
 }

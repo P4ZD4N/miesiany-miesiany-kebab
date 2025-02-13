@@ -10,11 +10,6 @@
     color: red;
 }
 
-h1 {
-    color: red;
-    text-align: center;
-}
-
 .main-paragraph {
     width: 40%;
     text-align: center;
@@ -28,6 +23,33 @@ h1 {
     text-align: center;
     color: white;
     font-size: 32px;
+}
+
+.button-cancel, .button-accept {
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.button-accept {
+    color: rgb(0, 255, 85);
+
+    &:hover {
+        color: rgb(0, 102, 34);
+    }
+}
+
+.button-cancel {
+    color: rgb(255, 0, 0);
+
+    &:hover {
+        color: #b90909;
+    }
+}
+
+h1 {
+    color: red;
+    text-align: center;
 }
 
 thead {
@@ -64,4 +86,27 @@ ul {
 
 td {
     padding: 10px;
+}
+
+input {
+    color: white;
+    text-align: center;
+    background: inherit;
+    border: none;
+    border-bottom: 1px solid white;
+    outline: none;
+    transition: border-bottom 0.3s ease;
+
+    &:focus {
+        border-bottom: 1px solid red;
+    }
+    &[type=text] {
+        width: 100%;
+    }
+    &[type=number] {
+        max-width: 50px;
+    }
+    &[type=checkbox] {
+        accent-color: red;
+    }
 }

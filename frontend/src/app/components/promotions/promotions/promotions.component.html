@@ -3,6 +3,46 @@
     <p class="main-paragraph">{{ 'promotions.paragraph_top' | translate }}</p>
 
     <p class="x-promotions">{{ 'promotions.paragraph_meal_promotions' | translate }}</p>
+
+    <button class="btn btn-success" *ngIf="isManager() && !isAdding" (click)="showAddMealPromotionTable()">{{ 'promotions.buttons.add_meal_promotion' | translate }}</button>
+
+    <table class="add-meal-table" *ngIf="isAddingMealPromotion">
+        <tr>
+            <button class="button-accept" (click)="addMealPromotion()">{{ 'promotions.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideAddMealPromotionTable()">{{ 'promotions.buttons.cancel' | translate }}</button>
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="newMealPromotion.promotion_description" />
+        </tr>
+        <tr>
+            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" placeholder="{{ 'promotions.discount_percentage' | translate }}"  [(ngModel)]="newMealPromotion.discount_percentage" />%
+        </tr>
+        <tr>
+            <div *ngFor="let mealName of mealNames">
+                <label>
+                    <input 
+                        type="checkbox" 
+                        [value]="mealName" 
+                        (change)="toggleMealName(mealName, $event)" 
+                        [checked]="newMealPromotion.meal_names.includes(mealName)" />
+                    {{ 'menu.meals.' + mealName | translate }}
+                </label>
+            </div>
+        </tr>
+        <tr>
+            <div *ngFor="let size of sizeOrder">
+                <label>
+                    <input 
+                        type="checkbox" 
+                        [value]="size" 
+                        (change)="toggleSize(size, $event)" 
+                        [checked]="newMealPromotion.sizes.includes(size)" />
+                    {{ 'menu.meals.sizes.' + size | translate }}
+                </label>
+            </div>
+        </tr>
+    </table>
+
     <table class="meal-promotions-table">
         <thead>
             <th>{{ 'promotions.promotion_description' | translate }}</th>
@@ -17,7 +57,7 @@
                 <td>
                     <ul *ngFor="let mealName of mealPromotion.meal_names">
                         <li>
-                            <i class="fa-solid fa-utensils"></i> {{ mealName }}
+                            <i class="fa-solid fa-utensils"></i> {{ 'menu.meals.' + mealName | translate }}
                         </li>
                     </ul>
                 </td>
