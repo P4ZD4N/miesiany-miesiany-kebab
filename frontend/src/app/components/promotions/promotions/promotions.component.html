@@ -1,0 +1,79 @@
+<section class="promotions">
+    <h1>{{ 'promotions.headline' | translate }}</h1>
+    <p class="main-paragraph">{{ 'promotions.paragraph_top' | translate }}</p>
+
+    <p class="x-promotions">{{ 'promotions.paragraph_meal_promotions' | translate }}</p>
+    <table class="meal-promotions-table">
+        <thead>
+            <th>{{ 'promotions.promotion_description' | translate }}</th>
+            <th>{{ 'promotions.discount_percentage' | translate }}</th>
+            <th>{{ 'promotions.meals' | translate }}</th>
+            <th>{{ 'promotions.sizes' | translate }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let mealPromotion of mealPromotions">
+                <td>{{ mealPromotion.description }}</td>
+                <td>{{ mealPromotion.discount_percentage }}%</td>
+                <td>
+                    <ul *ngFor="let mealName of mealPromotion.meal_names">
+                        <li>
+                            <i class="fa-solid fa-utensils"></i> {{ mealName }}
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <ul *ngFor="let size of mealPromotion.sizes">
+                        <li>{{ 'promotions.sizes_list.' + size | translate }}</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="x-promotions">{{ 'promotions.paragraph_beverage_promotions' | translate }}</p>
+    <table class="beverage-promotions-table">
+        <thead>
+            <th>{{ 'promotions.promotion_description' | translate }}</th>
+            <th>{{ 'promotions.discount_percentage' | translate }}</th>
+            <th>{{ 'promotions.beverages' | translate }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let beveragePromotion of beveragePromotions">
+                <td>{{ beveragePromotion.description }}</td>
+                <td>{{ beveragePromotion.discount_percentage }}%</td>
+                <td>
+                    <ul *ngFor="let beverageWithCapacities of beveragePromotion.beverages_with_capacities | keyvalue">
+                        <li>
+                            <i class="fa-solid fa-martini-glass"></i> {{ beverageWithCapacities.key }}
+                            <ul *ngFor="let capacity of beverageWithCapacities.value">
+                                <li>- {{ capacity }}</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="x-promotions">{{ 'promotions.paragraph_addon_promotions' | translate }}</p>
+    <table class="addon-promotions-table">
+        <thead>
+            <th>{{ 'promotions.promotion_description' | translate }}</th>
+            <th>{{ 'promotions.discount_percentage' | translate }}</th>
+            <th>{{ 'promotions.addons' | translate }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let addonPromotion of addonPromotions">
+                <td>{{ addonPromotion.description }}</td>
+                <td>{{ addonPromotion.discount_percentage }}%</td>
+                <td>
+                    <ul *ngFor="let addonName of addonPromotion.addon_names">
+                        <li>
+                            <i class="fa-solid fa-plus"></i> {{ addonName }}
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>

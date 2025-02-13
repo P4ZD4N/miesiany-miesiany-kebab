@@ -14,6 +14,8 @@ import { ContactLayoutComponent } from './components/contact/contact-layout-comp
 import { ContactComponent } from './components/contact/contact/contact.component';
 import { JobsLayoutComponent } from './components/jobs/jobs.layout.component';
 import { JobsComponent } from './components/jobs/jobs/jobs.component';
+import { PromotionsLayoutComponent } from './components/promotions/promotions-layout-component';
+import { PromotionsComponent } from './components/promotions/promotions/promotions.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -37,5 +39,8 @@ export const routes: Routes = [
     ]}, 
     { path: 'jobs', component: JobsLayoutComponent, children: [
         { path: '', component: JobsComponent }
+    ]}, 
+    { path: 'promotions', component: PromotionsLayoutComponent, children: [
+        { path: '', component: PromotionsComponent }
     ]}, 
 ];

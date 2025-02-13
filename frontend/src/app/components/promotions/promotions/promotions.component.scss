@@ -1,0 +1,67 @@
+.promotions {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.fa-utensils, .fa-plus, .fa-martini-glass {
+    color: red;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+.main-paragraph {
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+}
+
+.x-promotions {
+    margin-top: 5rem;
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 32px;
+}
+
+thead {
+    border-bottom: 3px solid red;
+}
+
+table {
+    margin-bottom: 2rem;
+    font-size: 24px;
+    text-align: center;
+    width: 70%;
+    scrollbar-color: #ff0000 #f1f1f1; 
+    scrollbar-width: thin; 
+}
+
+th {
+    background-color: black;
+    color: red;
+    padding: 1rem;
+}
+
+tr {
+    color: white;
+    background: none;
+    border-bottom: 1px solid white;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 24px;
+}
+
+td {
+    padding: 10px;
+}

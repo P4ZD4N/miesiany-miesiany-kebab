@@ -183,3 +183,22 @@ export interface RemovedApplicationResponse {
   status_code: number;
   message: string;
 }
+
+export interface MealPromotionResponse {
+  description: string;
+  sizes: Size[];
+  discount_percentage: number;
+  meal_names: string[]
+}
+
+export interface BeveragePromotionResponse {
+  description: string;
+  discount_percentage: number;
+  beverages_with_capacities: { [key in string]: number[] };
+}
+
+export interface AddonPromotionResponse {
+  description: string;
+  discount_percentage: number;
+  addon_names: string[]
+}
