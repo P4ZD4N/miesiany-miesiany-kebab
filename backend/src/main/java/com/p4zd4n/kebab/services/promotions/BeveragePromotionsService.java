@@ -79,7 +79,8 @@ public class BeveragePromotionsService {
             beverageRepository.findAll().stream()
                 .filter(beverage -> {
                     return request.beveragesWithCapacities().containsKey(beverage.getName()) &&
-                            request.beveragesWithCapacities().get(beverage.getName()).contains(beverage.getCapacity());
+                            request.beveragesWithCapacities().get(beverage.getName()).stream()
+                                    .anyMatch(capacity -> capacity.compareTo(beverage.getCapacity()) == 0);
                 })
                 .forEach(beverage -> {
                     beverage.setPromotion(beveragePromotion);
