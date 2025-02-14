@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.entities.MealPromotion;
+import com.p4zd4n.kebab.exceptions.alreadyexists.MealPromotionAlreadyExists;
 import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
@@ -61,6 +62,18 @@ public class MealPromotionsService {
     }
 
     public NewMealPromotionResponse addMealPromotion(NewMealPromotionRequest request) {
+
+        if (request.mealNames() != null && request.sizes() != null) {
+            mealRepository.findAll().stream()
+                    .filter(meal -> request.mealNames().contains(meal.getName()))
+                    .forEach(meal -> {
+                        boolean hasMatchingSize = meal.getPromotions().stream()
+                                .anyMatch(mealPromotion -> mealPromotion.getSizes().stream()
+                                        .anyMatch(size -> request.sizes().contains(size)));
+
+                        if (hasMatchingSize) throw new MealPromotionAlreadyExists(meal.getName());
+                    });
+        }
 
         MealPromotion mealPromotion = MealPromotion.builder()
                 .description(request.description())

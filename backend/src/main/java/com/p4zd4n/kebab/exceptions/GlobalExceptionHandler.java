@@ -524,4 +524,23 @@ public class GlobalExceptionHandler {
                         .message(exception.getMessage())
                         .build());
     }
+
+    @ExceptionHandler(MealPromotionAlreadyExists.class)
+    public ResponseEntity<ExceptionResponse> handleMealPromotionAlreadyExists(
+            MealPromotionAlreadyExists exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing meal promotion for '{}'", request.getRequestURI(), exception.getMealName());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("mealPromotion.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
 }
