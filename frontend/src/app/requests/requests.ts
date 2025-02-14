@@ -115,7 +115,7 @@ export interface RemovedApplicationRequest {
 }
 
 export interface NewMealPromotionRequest {
-  promotion_description: string;
+  description: string;
   sizes: Size[];
   discount_percentage: number;
   meal_names: string[]

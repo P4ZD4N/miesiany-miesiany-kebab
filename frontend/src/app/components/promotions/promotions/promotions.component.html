@@ -8,11 +8,10 @@
 
     <table class="add-meal-table" *ngIf="isAddingMealPromotion">
         <tr>
-            <button class="button-accept" (click)="addMealPromotion()">{{ 'promotions.buttons.accept' | translate }}</button>
-            <button class="button-cancel" (click)="hideAddMealPromotionTable()">{{ 'promotions.buttons.cancel' | translate }}</button>
+            <h1>{{ 'promotions.new_meal_promotion' | translate }}</h1>
         </tr>
         <tr>
-            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="newMealPromotion.promotion_description" />
+            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="newMealPromotion.description" />
         </tr>
         <tr>
             {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" placeholder="{{ 'promotions.discount_percentage' | translate }}"  [(ngModel)]="newMealPromotion.discount_percentage" />%
@@ -40,6 +39,13 @@
                     {{ 'menu.meals.sizes.' + size | translate }}
                 </label>
             </div>
+        </tr>
+        <tr>
+            <button class="button-accept" (click)="addMealPromotion()">{{ 'promotions.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideAddMealPromotionTable()">{{ 'promotions.buttons.cancel' | translate }}</button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
         </tr>
     </table>
 

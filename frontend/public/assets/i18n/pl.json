@@ -246,6 +246,7 @@
             "accept": "Akceptuj",
             "cancel": "Anuluj",
             "add_meal_promotion": "Dodaj promocje na dania"
-        }
+        },
+        "new_meal_promotion": "Nowa promocja na dania"
     }
 }

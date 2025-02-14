@@ -25,7 +25,7 @@ export class PromotionsComponent implements OnInit {
   sizeOrder: Size[] = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.XL];
 
   newMealPromotion: NewMealPromotionRequest = {
-    promotion_description: '',
+    description: '',
     sizes: [],
     discount_percentage: 0,
     meal_names: []
@@ -137,11 +137,12 @@ export class PromotionsComponent implements OnInit {
     this.hideErrorMessages();
     this.isAddingMealPromotion = false;
     this.isAdding = false;
+    this.resetNewMealPromotion();
   }
 
   resetNewMealPromotion(): void {
     this.newMealPromotion = {
-      promotion_description: '',
+      description: '',
       sizes: [],
       discount_percentage: 0,
       meal_names: []
@@ -159,6 +160,7 @@ export class PromotionsComponent implements OnInit {
   handleError(error: any) {
     if (error.errorMessages) {
       this.errorMessages = error.errorMessages;
+      console.log(this.errorMessages);
     } else {
       this.errorMessages = { general: 'An unexpected error occurred' };
     }
