@@ -112,6 +112,19 @@ public class MealPromotionsService {
 
     public UpdatedMealPromotionResponse updateMealPromotion(MealPromotion mealPromotion, UpdatedMealPromotionRequest request) {
 
+        if (request.updatedMealNames() != null && request.updatedSizes() != null) {
+            mealRepository.findAll().stream()
+                    .filter(meal -> request.updatedMealNames().contains(meal.getName()))
+                    .forEach(meal -> {
+                        boolean hasMatchingSize = meal.getPromotions().stream()
+                                .filter(mp -> !mp.getId().equals(mealPromotion.getId()))
+                                .anyMatch(mp -> mp.getSizes().stream()
+                                        .anyMatch(size -> request.updatedSizes().contains(size)));
+
+                        if (hasMatchingSize) throw new MealPromotionAlreadyExists(meal.getName());
+                    });
+        }
+
         UpdatedMealPromotionResponse response = UpdatedMealPromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully updated meal promotion with id '" + mealPromotion.getId() + "'")
