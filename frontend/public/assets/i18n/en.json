@@ -245,8 +245,11 @@
         "buttons": {
             "accept": "Accept",
             "cancel": "Cancel",
+            "update": "Update",
+            "remove": "Remove",
             "add_meal_promotion": "Add meal promotion"
         },
-        "new_meal_promotion": "New meal promotion"
+        "new_meal_promotion": "New meal promotion",
+        "update_meal_promotion": "Updated meal promotion"
     }
 }

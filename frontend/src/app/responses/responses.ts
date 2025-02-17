@@ -185,10 +185,12 @@ export interface RemovedApplicationResponse {
 }
 
 export interface MealPromotionResponse {
+  id: number;
   description: string;
   sizes: Size[];
   discount_percentage: number;
   meal_names: string[]
+  isEditing?: boolean;
 }
 
 export interface BeveragePromotionResponse {
@@ -204,6 +206,11 @@ export interface AddonPromotionResponse {
 }
 
 export interface NewMealPromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedMealPromotionResponse {
   status_code: number;
   message: string;
 }

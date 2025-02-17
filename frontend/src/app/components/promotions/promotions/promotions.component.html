@@ -4,7 +4,7 @@
 
     <p class="x-promotions">{{ 'promotions.paragraph_meal_promotions' | translate }}</p>
 
-    <button class="btn btn-success" *ngIf="isManager() && !isAdding" (click)="showAddMealPromotionTable()">{{ 'promotions.buttons.add_meal_promotion' | translate }}</button>
+    <button class="btn btn-success" *ngIf="isManager() && !isAdding && !isEditing" (click)="showAddMealPromotionTable()">{{ 'promotions.buttons.add_meal_promotion' | translate }}</button>
 
     <table class="add-meal-table" *ngIf="isAddingMealPromotion">
         <tr>
@@ -14,18 +14,29 @@
             <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="newMealPromotion.description" />
         </tr>
         <tr>
-            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" placeholder="{{ 'promotions.discount_percentage' | translate }}"  [(ngModel)]="newMealPromotion.discount_percentage" />%
+            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="newMealPromotion.discount_percentage" />%
         </tr>
         <tr>
             <div *ngFor="let mealName of mealNames">
-                <label>
+                <label *ngIf="isMealTranslationAvailable(mealName); else defaultName">
                     <input 
                         type="checkbox" 
                         [value]="mealName" 
-                        (change)="toggleMealName(mealName, $event)" 
+                        (change)="toggleMealNameAdd(mealName, $event)" 
                         [checked]="newMealPromotion.meal_names.includes(mealName)" />
                     {{ 'menu.meals.' + mealName | translate }}
                 </label>
+
+                <ng-template #defaultName>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            [value]="mealName" 
+                            (change)="toggleMealNameAdd(mealName, $event)" 
+                            [checked]="newMealPromotion.meal_names.includes(mealName)" />
+                        {{ mealName }}
+                    </label>
+                </ng-template>
             </div>
         </tr>
         <tr>
@@ -47,10 +58,89 @@
         <tr *ngIf="errorMessages" class="error">
             {{ errorMessages['message'] }}
         </tr>
+        <tr *ngIf="errorMessages['description']" class="error">
+            {{ errorMessages['description'] }}
+        </tr>
+        <tr *ngIf="errorMessages['discountPercentage']" class="error">
+            {{ errorMessages['discountPercentage'] }}
+        </tr>
+    </table>
+
+    <table class="update-meal-table" *ngIf="isEditing">
+        <tr>
+            <h1>{{ 'promotions.update_meal_promotion' | translate }}</h1>
+        </tr>
+        <tr>
+            <input 
+                type="text" 
+                placeholder="{{ 'promotions.promotion_description' | translate }}"
+                [(ngModel)]="updatedMealPromotion!.updated_description" />
+        </tr>
+        <tr>
+            {{ 'promotions.discount_percentage' | translate }}: 
+            <input 
+                type="number" 
+                min="0" 
+                max="100" 
+                [(ngModel)]="updatedMealPromotion!.updated_discount_percentage" />%
+        </tr>
+        <tr>
+            <div *ngFor="let mealName of mealNames">
+                <label *ngIf="isMealTranslationAvailable(mealName); else defaultName">
+                    <input 
+                        type="checkbox" 
+                        [value]="mealName" 
+                        (change)="toggleMealNameEdit(mealName, $event)" 
+                        [checked]="updatedMealPromotion!.updated_meal_names.includes(mealName)" />
+                    {{ 'menu.meals.' + mealName | translate }}
+                </label>
+
+                <ng-template #defaultName>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            [value]="mealName" 
+                            (change)="toggleMealNameEdit(mealName, $event)" 
+                            [checked]="updatedMealPromotion!.updated_meal_names.includes(mealName)" />
+                        {{ mealName }}
+                    </label>
+                </ng-template>
+            </div>
+        </tr>
+        <tr>
+            <div *ngFor="let size of sizeOrder">
+                <label>
+                    <input 
+                        type="checkbox" 
+                        [value]="size" 
+                        (change)="toggleSizeEdit(size, $event)" 
+                        [checked]="updatedMealPromotion!.updated_sizes.includes(size)" />
+                    {{ 'menu.meals.sizes.' + size | translate }}
+                </label>
+            </div>
+        </tr>
+        <tr>
+            <button class="button-accept" *ngIf="updatedMealPromotion" (click)="saveMealPromotionRow(updatedMealPromotion)">
+                {{ 'promotions.buttons.accept' | translate }}
+            </button>
+            <button class="button-cancel" (click)="hideEditableMealPromotionRow(currentlyEditedPromotion)">
+                {{ 'promotions.buttons.cancel' | translate }}
+            </button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
+        </tr>
+        <tr *ngIf="errorMessages['updatedDescription']" class="error">
+            {{ errorMessages['updatedDescription'] }}
+        </tr>
+        <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
+            {{ errorMessages['updatedDiscountPercentage'] }}
+        </tr>
     </table>
 
     <table class="meal-promotions-table">
         <thead>
+            <th *ngIf="isManager()"></th>
             <th>{{ 'promotions.promotion_description' | translate }}</th>
             <th>{{ 'promotions.discount_percentage' | translate }}</th>
             <th>{{ 'promotions.meals' | translate }}</th>
@@ -58,13 +148,23 @@
         </thead>
         <tbody>
             <tr *ngFor="let mealPromotion of mealPromotions">
+                <td *ngIf="isManager()">
+                    <button class="button-update" *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding" (click)="editMealPromotinRow(mealPromotion)">{{ 'promotions.buttons.update' | translate }}</button>
+                    <button class="button-remove" *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding" (click)="removeMealPromotion(mealPromotion)">{{ 'promotions.buttons.remove' | translate }}</button>
+                </td>
                 <td>{{ mealPromotion.description }}</td>
                 <td>{{ mealPromotion.discount_percentage }}%</td>
                 <td>
                     <ul *ngFor="let mealName of mealPromotion.meal_names">
-                        <li>
+                        <li *ngIf="isMealTranslationAvailable(mealName); else defaultName">
                             <i class="fa-solid fa-utensils"></i> {{ 'menu.meals.' + mealName | translate }}
                         </li>
+                        
+                        <ng-template #defaultName>
+                            <li>
+                                <i class="fa-solid fa-utensils"></i> {{ mealName }}
+                            </li>
+                        </ng-template>
                     </ul>
                 </td>
                 <td>

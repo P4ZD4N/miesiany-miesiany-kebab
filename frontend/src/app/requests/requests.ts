@@ -120,3 +120,11 @@ export interface NewMealPromotionRequest {
   discount_percentage: number;
   meal_names: string[]
 }
+
+export interface UpdatedMealPromotionRequest {
+  id: number;
+  updated_description: string;
+  updated_sizes: Size[];
+  updated_discount_percentage: number;
+  updated_meal_names: string[];
+}

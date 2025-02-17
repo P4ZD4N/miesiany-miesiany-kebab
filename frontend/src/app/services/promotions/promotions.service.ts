@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewMealPromotionResponse } from '../../responses/responses';
+import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewMealPromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewMealPromotionRequest } from '../../requests/requests';
+import { NewMealPromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +38,18 @@ export class PromotionsService {
           map(response => response),
           catchError(this.handleError)
         )
+  }
+
+  updateMealPromotion(request: UpdatedMealPromotionRequest): Observable<UpdatedMealPromotionResponse> {
+    
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+  
+    return this.http.put<UpdatedMealPromotionResponse>(`${this.apiUrl}/update-meal-promotion`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
   }
 
   handleError(error: HttpErrorResponse) {

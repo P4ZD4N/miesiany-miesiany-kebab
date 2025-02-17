@@ -245,8 +245,11 @@
         "buttons": {
             "accept": "Akceptuj",
             "cancel": "Anuluj",
+            "update": "Aktualizuj",
+            "remove": "Usun",
             "add_meal_promotion": "Dodaj promocje na dania"
         },
-        "new_meal_promotion": "Nowa promocja na dania"
+        "new_meal_promotion": "Nowa promocja na dania",
+        "update_meal_promotion": "Aktualizowana promocja na dania"
     }
 }

@@ -25,10 +25,18 @@
     font-size: 32px;
 }
 
-.button-cancel, .button-accept {
+.button-update,.button-cancel, .button-accept, .button-remove {
     background: none;
     border: none;
     transition: color 0.3s ease;
+}
+
+.button-update {
+    color: rgb(0, 119, 255);
+
+    &:hover {
+        color: rgb(0, 59, 126);
+    }
 }
 
 .button-accept {
@@ -39,7 +47,7 @@
     }
 }
 
-.button-cancel {
+.button-remove, .button-cancel {
     color: rgb(255, 0, 0);
 
     &:hover {
@@ -110,7 +118,7 @@ input {
         width: 100%;
     }
     &[type=number] {
-        max-width: 50px;
+        max-width: 70px;
     }
     &[type=checkbox] {
         accent-color: red;
