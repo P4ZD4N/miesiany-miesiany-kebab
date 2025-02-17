@@ -128,3 +128,7 @@ export interface UpdatedMealPromotionRequest {
   updated_discount_percentage: number;
   updated_meal_names: string[];
 }
+
+export interface RemovedMealPromotionRequest {
+  id: number;
+}

@@ -214,3 +214,8 @@ export interface UpdatedMealPromotionResponse {
   status_code: number;
   message: string;
 }
+
+export interface RemovedMealPromotionResponse {
+  status_code: number;
+  message: string;
+}

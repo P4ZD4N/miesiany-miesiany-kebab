@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
 import { CommonModule } from '@angular/common';
-import { NewMealPromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
+import { NewMealPromotionRequest, RemovedMealPromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Size } from '../../../enums/size.enum';
 import { MenuService } from '../../../services/menu/menu.service';
@@ -218,7 +218,7 @@ export class PromotionsComponent implements OnInit {
     this.promotionsService.updateMealPromotion(updatedPromotion).subscribe({
       next: (response) => {
         Swal.fire({
-          text: this.langService.currentLang === 'pl' ? 'Pomyślnie zaktualizowano promocję!' : 'Successfully updated the promotion!',
+          text: this.langService.currentLang === 'pl' ? 'Pomyślnie zaktualizowano promocję na dania!' : 'Successfully updated meal promotion!',
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
@@ -246,9 +246,41 @@ export class PromotionsComponent implements OnInit {
     this.hideErrorMessages();
   }
 
-  removeMealPromotion(mealPromotion: MealPromotionResponse) {
-
-  }
+  removeMealPromotion(mealPromotion: MealPromotionResponse): void {
+      const confirmationMessage =
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac ta promocje na dania?`
+          : `Are you sure you want to remove this meal promotion?`;
+  
+      Swal.fire({
+        title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+        text: confirmationMessage,
+        icon: 'warning',
+        iconColor: 'red',
+        showCancelButton: true,
+        confirmButtonColor: '#0077ff',
+        cancelButtonColor: 'red',
+        background: 'black',
+        color: 'white',
+        confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+        cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.promotionsService.removeMealPromotion({ id: mealPromotion.id } as RemovedMealPromotionRequest).subscribe(() => {
+            Swal.fire({
+              text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto promocje na dania!` : `Successfully removed meal promotion!`,
+              icon: 'success',
+              iconColor: 'green',
+              confirmButtonColor: 'green',
+              background: 'black',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
+            this.loadMealPromotions();
+          });
+        }
+      });
+    }
 
   isMealTranslationAvailable(mealName: string): boolean {
     const translatedName = this.translate.instant('menu.meals.' + mealName);
