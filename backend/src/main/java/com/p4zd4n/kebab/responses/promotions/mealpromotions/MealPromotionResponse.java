@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Builder
 public record MealPromotionResponse(
+        Long id,
         String description,
         Set<Size> sizes,
         @JsonProperty("discount_percentage") BigDecimal discountPercentage,

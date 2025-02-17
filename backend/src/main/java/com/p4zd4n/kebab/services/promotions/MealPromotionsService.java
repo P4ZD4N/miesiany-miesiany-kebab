@@ -54,6 +54,7 @@ public class MealPromotionsService {
                 .toList();
 
         return MealPromotionResponse.builder()
+                .id(mealPromotion.getId())
                 .description(mealPromotion.getDescription())
                 .sizes(mealPromotion.getSizes())
                 .discountPercentage(mealPromotion.getDiscountPercentage())
