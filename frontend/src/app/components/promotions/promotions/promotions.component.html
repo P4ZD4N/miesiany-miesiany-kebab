@@ -138,7 +138,8 @@
         </tr>
     </table>
 
-    <table class="meal-promotions-table">
+    <h2 *ngIf="mealPromotions.length == 0">{{ 'promotions.no_meal_promotions' | translate }}</h2>
+    <table *ngIf="mealPromotions.length != 0" class="meal-promotions-table">
         <thead>
             <th *ngIf="isManager()"></th>
             <th>{{ 'promotions.promotion_description' | translate }}</th>

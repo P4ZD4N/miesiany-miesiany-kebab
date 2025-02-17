@@ -88,6 +88,11 @@ span:first-of-type{
     margin-bottom: 2rem;
 }
 
+.span-without-style {
+    width: 100% !important; 
+    font-size: 24px !important;
+}
+
 .meal-name {
     font-size: 22px;
     display: inline-block;
@@ -182,6 +187,11 @@ option {
         width: 80%;
     }
 
+    .span-without-style {
+        width: 100% !important; 
+        font-size: 20px !important;
+    }
+
     .error {
         font-size: 20px;
     }
@@ -202,6 +212,10 @@ option {
 
     ul {
         font-size: 18px;
+    }
+    .span-without-style {
+        width: 100% !important; 
+        font-size: 20px !important;
     }
 }
 

@@ -1005,4 +1005,15 @@ export class MenuComponent implements OnInit {
       return firstBeverageNameTranslated.localeCompare(secondBeverageNameTranslated);
     });
   }
+
+  hasPromotionToThisSize(meal: MealResponse, size: string): { hasPromotion: boolean, discountPercentage: number } {
+    const sizeEnum = Size[size as keyof typeof Size];
+    const promotion = meal.meal_promotions.find(m => m.sizes.includes(sizeEnum))
+
+    if (promotion) {
+      return { hasPromotion: true, discountPercentage: promotion.discount_percentage };
+    }
+    
+    return { hasPromotion: false, discountPercentage: 0 };
+  }
 }

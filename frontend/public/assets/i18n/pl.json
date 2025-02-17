@@ -250,6 +250,7 @@
             "add_meal_promotion": "Dodaj promocje na dania"
         },
         "new_meal_promotion": "Nowa promocja na dania",
-        "update_meal_promotion": "Aktualizowana promocja na dania"
+        "update_meal_promotion": "Aktualizowana promocja na dania",
+        "no_meal_promotions": "Aktualnie brak promocji na dania! Zapisz sie na newsletter, aby nie przegapic okazji!"
     }
 }

@@ -62,6 +62,7 @@ public class MealService {
                 .name(meal.getName())
                 .prices(prices)
                 .ingredients(ingredientResponses)
+                .mealPromotions(meal.getPromotions())
                 .build();
     }
 

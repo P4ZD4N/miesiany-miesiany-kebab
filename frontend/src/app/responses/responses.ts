@@ -39,10 +39,18 @@ export interface SimpleMealIngredient {
   ingredient_type: string;
 }
 
+export interface MealPromotion {
+  id: number;
+  description: string;
+  sizes: Size[];
+  discount_percentage: number;
+}
+
 export interface MealResponse {
   name: string;
   prices: { [key in Size]: number };
   ingredients: SimpleMealIngredient[];
+  meal_promotions: MealPromotion[];
   isEditing?: boolean;
 }
 

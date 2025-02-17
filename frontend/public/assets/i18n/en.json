@@ -250,6 +250,7 @@
             "add_meal_promotion": "Add meal promotion"
         },
         "new_meal_promotion": "New meal promotion",
-        "update_meal_promotion": "Updated meal promotion"
+        "update_meal_promotion": "Updated meal promotion",
+        "no_meal_promotions": "Currently no meal promotions! Sign up for our newsletter to don't miss occasions!"
     }
 }

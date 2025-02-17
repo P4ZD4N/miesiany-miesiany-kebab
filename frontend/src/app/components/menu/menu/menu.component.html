@@ -236,10 +236,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <ng-container *ngIf="!meal.isEditing">
+                            <ng-container *ngIf="!meal.isEditing && meal.meal_promotions.length == 0">
                                 <tr *ngFor="let price of meal.prices | keyvalue: sortSizes">
                                     <td>{{ 'menu.meals.sizes.' + price.key | translate }}</td>
                                     <td>{{ formatPrice(price.value) }}</td>
+                                </tr>
+                            </ng-container>
+                            <ng-container *ngIf="!meal.isEditing && meal.meal_promotions.length != 0">
+                                <tr *ngFor="let price of meal.prices | keyvalue: sortSizes">
+                                    <td>{{ 'menu.meals.sizes.' + price.key | translate }}</td>
+                                    <td>
+                                        <del *ngIf="hasPromotionToThisSize(meal, price.key).hasPromotion">
+                                            {{ formatPrice(price.value) }}
+                                        </del>
+                                        <span class="span-without-style" *ngIf="hasPromotionToThisSize(meal, price.key).hasPromotion">
+                                            {{ formatPrice(price.value * (1 - hasPromotionToThisSize(meal, price.key).discountPercentage / 100)) }}
+                                        </span>
+                                        <span class="span-without-style" *ngIf="!hasPromotionToThisSize(meal, price.key).hasPromotion">
+                                            {{ formatPrice(price.value) }}
+                                        </span>
+                                    </td>
                                 </tr>
                             </ng-container>
                             <ng-container *ngIf="meal.isEditing">
