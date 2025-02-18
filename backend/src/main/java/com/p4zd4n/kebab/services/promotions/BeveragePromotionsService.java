@@ -60,6 +60,7 @@ public class BeveragePromotionsService {
                 ));
 
         return BeveragePromotionResponse.builder()
+                .id(beveragePromotion.getId())
                 .description(beveragePromotion.getDescription())
                 .discountPercentage(beveragePromotion.getDiscountPercentage())
                 .beveragesWithCapacities(beveragesWithCapacities)

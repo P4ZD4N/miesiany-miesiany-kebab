@@ -9,6 +9,7 @@ import java.util.Map;
 
 @Builder
 public record BeveragePromotionResponse(
+        Long id,
         String description,
         @JsonProperty("discount_percentage") BigDecimal discountPercentage,
         @JsonProperty("beverages_with_capacities") Map<String, List<BigDecimal>> beveragesWithCapacities
