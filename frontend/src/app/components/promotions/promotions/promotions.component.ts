@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { AddonPromotionResponse, BeveragePromotionResponse, BeverageResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
 import { CommonModule } from '@angular/common';
-import { NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedMealPromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
+import { NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedMealPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Size } from '../../../enums/size.enum';
 import { MenuService } from '../../../services/menu/menu.service';
@@ -47,11 +47,14 @@ export class PromotionsComponent implements OnInit {
 
   mealPromotionForms: { [key: string]: FormGroup } = {};
 
-  currentlyEditedPromotion: MealPromotionResponse | null = null;
+  currentlyEditedPromotion: MealPromotionResponse | BeveragePromotionResponse | null = null;
   updatedMealPromotion: UpdatedMealPromotionRequest | null = null;
+  updatedBeveragePromotion: UpdatedBeveragePromotionRequest | null = null;
 
   isAddingMealPromotion = false;
+  isEditingMealPromotion = false;
   isAddingBeveragePromotion = false;
+  isEditingBeveragePromotion = false;
   isAdding = false;
   isEditing = false;
 
@@ -279,6 +282,20 @@ export class PromotionsComponent implements OnInit {
     }
   }
 
+  toggleCapacityEdit(beverageName: string, capacity: number, event: Event) {
+    if (!this.updatedBeveragePromotion) return;
+    
+    const checked = (event.target as HTMLInputElement).checked;
+    
+    if (checked) {
+      if (!this.updatedBeveragePromotion.updated_beverages_with_capacities[beverageName]) {
+        this.updatedBeveragePromotion.updated_beverages_with_capacities[beverageName] = [];
+      }
+
+      this.updatedBeveragePromotion.updated_beverages_with_capacities[beverageName].push(capacity);
+    } else this.updatedBeveragePromotion.updated_beverages_with_capacities[beverageName] = this.updatedBeveragePromotion.updated_beverages_with_capacities[beverageName].filter(c => c !== capacity);
+  }
+
   editMealPromotinRow(mealPromotion: MealPromotionResponse) {
     if (this.isEditing) {
       return;
@@ -286,6 +303,7 @@ export class PromotionsComponent implements OnInit {
 
     this.hideErrorMessages();
     this.isEditing = true;
+    this.isEditingMealPromotion = true;
     this.currentlyEditedPromotion = mealPromotion;
     mealPromotion.isEditing = true;
 
@@ -298,13 +316,32 @@ export class PromotionsComponent implements OnInit {
     };
   }
 
-  saveMealPromotionRow(updatedPromotion: UpdatedMealPromotionRequest) {
+  editBeveragePromotinRow(beveragePromotion: BeveragePromotionResponse) {
+    if (this.isEditing) {
+      return;
+    }
+
+    this.hideErrorMessages();
+    this.isEditing = true;
+    this.isEditingBeveragePromotion = true;
+    this.currentlyEditedPromotion = beveragePromotion;
+    beveragePromotion.isEditing = true;
+
+    this.updatedBeveragePromotion = {
+      id: beveragePromotion.id,
+      updated_description: beveragePromotion.description,
+      updated_discount_percentage: beveragePromotion.discount_percentage,
+      updated_beverages_with_capacities: {...beveragePromotion.beverages_with_capacities}
+    };
+  }
+
+  updateMealPromotion(updatedPromotion: UpdatedMealPromotionRequest) {
     if (!updatedPromotion || !this.currentlyEditedPromotion) return;
     
     this.promotionsService.updateMealPromotion(updatedPromotion).subscribe({
       next: (response) => {
         Swal.fire({
-          text: this.langService.currentLang === 'pl' ? 'Pomyślnie zaktualizowano promocję na dania!' : 'Successfully updated meal promotion!',
+          text: this.langService.currentLang === 'pl' ? 'Pomyslnie zaktualizowano promocje na dania!' : 'Successfully updated meal promotion!',
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
@@ -314,7 +351,7 @@ export class PromotionsComponent implements OnInit {
         });
   
         this.loadMealPromotions();
-        this.hideEditableMealPromotionRow(this.currentlyEditedPromotion);
+        this.hideUpdatePromotionTable();
       },
       error: (error) => {
         this.handleError(error);
@@ -322,55 +359,91 @@ export class PromotionsComponent implements OnInit {
     });
   }
 
-  hideEditableMealPromotionRow(mealPromotion: MealPromotionResponse | null) {
+  updateBeveragePromotion(updatedPromotion: UpdatedBeveragePromotionRequest) {
+    if (!updatedPromotion || !this.currentlyEditedPromotion) return;
+    
+    this.promotionsService.updateBeveragePromotion(updatedPromotion).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? 'Pomyslnie zaktualizowano promocje na napoje!' : 'Successfully updated beverage promotion!',
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+  
+        this.loadBeveragePromotions();
+        this.hideUpdatePromotionTable();
+      },
+      error: (error) => {
+        this.handleError(error);
+      }
+    });
+  }
+
+  hideUpdatePromotionTable() {
     if (this.currentlyEditedPromotion) {
       this.currentlyEditedPromotion.isEditing = false;
     }
     this.currentlyEditedPromotion = null;
     this.updatedMealPromotion = null;
+    this.updatedBeveragePromotion = null;
     this.isEditing = false;
+    this.isEditingBeveragePromotion = false;
+    this.isEditingMealPromotion = false;
     this.hideErrorMessages();
   }
 
   removeMealPromotion(mealPromotion: MealPromotionResponse): void {
-      const confirmationMessage =
-        this.langService.currentLang === 'pl'
-          ? `Czy na pewno chcesz usunac ta promocje na dania?`
-          : `Are you sure you want to remove this meal promotion?`;
-  
-      Swal.fire({
-        title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
-        text: confirmationMessage,
-        icon: 'warning',
-        iconColor: 'red',
-        showCancelButton: true,
-        confirmButtonColor: '#0077ff',
-        cancelButtonColor: 'red',
-        background: 'black',
-        color: 'white',
-        confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
-        cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.promotionsService.removeMealPromotion({ id: mealPromotion.id } as RemovedMealPromotionRequest).subscribe(() => {
-            Swal.fire({
-              text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto promocje na dania!` : `Successfully removed meal promotion!`,
-              icon: 'success',
-              iconColor: 'green',
-              confirmButtonColor: 'green',
-              background: 'black',
-              color: 'white',
-              confirmButtonText: 'Ok',
-            });
-            this.loadMealPromotions();
+    const confirmationMessage =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ta promocje na dania?`
+        : `Are you sure you want to remove this meal promotion?`;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.promotionsService.removeMealPromotion({ id: mealPromotion.id } as RemovedMealPromotionRequest).subscribe(() => {
+          Swal.fire({
+            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto promocje na dania!` : `Successfully removed meal promotion!`,
+            icon: 'success',
+            iconColor: 'green',
+            confirmButtonColor: 'green',
+            background: 'black',
+            color: 'white',
+            confirmButtonText: 'Ok',
           });
-        }
-      });
-    }
+          this.loadMealPromotions();
+        });
+      }
+    });
+  }
+
+  removeBeveragePromotion(beveragePromotion: BeveragePromotionResponse): void {
+
+  }
 
   isMealTranslationAvailable(mealName: string): boolean {
     const translatedName = this.translate.instant('menu.meals.' + mealName);
     return translatedName !== 'menu.meals.' + mealName;
+  }
+
+  isBeverageTranslationAvailable(beverageName: string): boolean {
+    const translatedName = this.translate.instant('menu.beverages.' + beverageName);
+    return translatedName !== 'menu.beverages.' + beverageName;
   }
 
   isManager(): boolean {

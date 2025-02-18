@@ -253,6 +253,7 @@
         "new_meal_promotion": "New meal promotion",
         "new_beverage_promotion": "New beverage promotion",
         "update_meal_promotion": "Updated meal promotion",
+        "update_beverage_promotion": "Updated beverage promotion",
         "no_meal_promotions": "Currently no meal promotions! Sign up for our newsletter to don't miss occasions!"
     }
 }

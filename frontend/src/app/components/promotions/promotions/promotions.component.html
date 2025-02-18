@@ -66,7 +66,7 @@
         </tr>
     </table>
 
-    <table class="update-meal-table" *ngIf="isEditing">
+    <table class="update-meal-table" *ngIf="isEditingMealPromotion">
         <tr>
             <h1>{{ 'promotions.update_meal_promotion' | translate }}</h1>
         </tr>
@@ -120,10 +120,10 @@
             </div>
         </tr>
         <tr>
-            <button class="button-accept" *ngIf="updatedMealPromotion" (click)="saveMealPromotionRow(updatedMealPromotion)">
+            <button class="button-accept" *ngIf="updatedMealPromotion" (click)="updateMealPromotion(updatedMealPromotion)">
                 {{ 'promotions.buttons.accept' | translate }}
             </button>
-            <button class="button-cancel" (click)="hideEditableMealPromotionRow(currentlyEditedPromotion)">
+            <button class="button-cancel" (click)="hideUpdatePromotionTable()">
                 {{ 'promotions.buttons.cancel' | translate }}
             </button>
         </tr>
@@ -192,7 +192,16 @@
             {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="newBeveragePromotion.discount_percentage" />%
         </tr>
         <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
-            <i class="fa-solid fa-martini-glass"></i> {{ beverage[0] }}
+            <span *ngIf="isBeverageTranslationAvailable(beverage[0]); else defaultName">
+                <i class="fa-solid fa-martini-glass"></i> {{ 'menu.beverages.' + beverage[0] | translate }}
+            </span>
+            
+            <ng-template #defaultName>
+                <span>
+                    <i class="fa-solid fa-utensils"></i> {{ beverage[0] }}
+                </span>
+            </ng-template>
+
             <ul *ngFor="let capacity of beverage[1]">
                 <li>
                     <label>
@@ -221,24 +230,84 @@
         </tr>
     </table>
 
+    <table class="update-beverage-table" *ngIf="isEditingBeveragePromotion">
+        <tr>
+            <h1>{{ 'promotions.update_beverage_promotion' | translate }}</h1>
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="updatedBeveragePromotion!.updated_description" />
+        </tr>
+        <tr>
+            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="updatedBeveragePromotion!.updated_discount_percentage" />%
+        </tr>
+        <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
+            <span *ngIf="isBeverageTranslationAvailable(beverage[0]); else defaultName">
+                <i class="fa-solid fa-martini-glass"></i> {{ 'menu.beverages.' + beverage[0] | translate }}
+            </span>
+            
+            <ng-template #defaultName>
+                <span>
+                    <i class="fa-solid fa-utensils"></i> {{ beverage[0] }}
+                </span>
+            </ng-template>
+
+            <ul *ngFor="let capacity of beverage[1]">
+                <li>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            [value]="capacity" 
+                            (change)="toggleCapacityEdit(beverage[0], capacity, $event)" 
+                            [checked]="updatedBeveragePromotion!.updated_beverages_with_capacities[beverage[0]]?.includes(capacity)" />
+                            {{ capacity }} L
+                    </label>
+                </li>
+            </ul>
+        </tr>
+        <tr>
+            <button class="button-accept" *ngIf="updatedBeveragePromotion" (click)="updateBeveragePromotion(updatedBeveragePromotion)">{{ 'promotions.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideUpdatePromotionTable()">{{ 'promotions.buttons.cancel' | translate }}</button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
+        </tr>
+        <tr *ngIf="errorMessages['updatedDescription']" class="error">
+            {{ errorMessages['updatedDescription'] }}
+        </tr>
+        <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
+            {{ errorMessages['updatedDiscountPercentage'] }}
+        </tr>
+    </table>
+
     <table class="beverage-promotions-table">
         <thead>
+            <th></th>
             <th>{{ 'promotions.promotion_description' | translate }}</th>
             <th>{{ 'promotions.discount_percentage' | translate }}</th>
             <th>{{ 'promotions.beverages' | translate }}</th>
         </thead>
         <tbody>
             <tr *ngFor="let beveragePromotion of beveragePromotions">
+                <td *ngIf="isManager()">
+                    <button class="button-update" *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding" (click)="editBeveragePromotinRow(beveragePromotion)">{{ 'promotions.buttons.update' | translate }}</button>
+                    <button class="button-remove" *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding" (click)="removeBeveragePromotion(beveragePromotion)">{{ 'promotions.buttons.remove' | translate }}</button>
+                </td>
                 <td>{{ beveragePromotion.description }}</td>
                 <td>{{ beveragePromotion.discount_percentage }}%</td>
                 <td>
                     <ul *ngFor="let beverageWithCapacities of beveragePromotion.beverages_with_capacities | keyvalue">
-                        <li>
-                            <i class="fa-solid fa-martini-glass"></i> {{ beverageWithCapacities.key }}
+                        <li *ngIf="isBeverageTranslationAvailable(beverageWithCapacities.key); else defaultName">
+                            <i class="fa-solid fa-martini-glass"></i> {{ 'menu.beverages.' + beverageWithCapacities.key | translate }}
                             <ul *ngFor="let capacity of beverageWithCapacities.value">
                                 <li>- {{ capacity }}</li>
                             </ul>
                         </li>
+                        
+                        <ng-template #defaultName>
+                            <li>
+                                <i class="fa-solid fa-utensils"></i> {{ beverageWithCapacities.key }}
+                            </li>
+                        </ng-template>
                     </ul>
                 </td>
             </tr>

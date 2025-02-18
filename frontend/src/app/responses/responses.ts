@@ -202,9 +202,11 @@ export interface MealPromotionResponse {
 }
 
 export interface BeveragePromotionResponse {
+  id: number;
   description: string;
   discount_percentage: number;
   beverages_with_capacities: { [key in string]: number[] };
+  isEditing?: boolean;
 }
 
 export interface AddonPromotionResponse {
@@ -229,6 +231,11 @@ export interface RemovedMealPromotionResponse {
 }
 
 export interface NewBeveragePromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedBeveragePromotionResponse {
   status_code: number;
   message: string;
 }

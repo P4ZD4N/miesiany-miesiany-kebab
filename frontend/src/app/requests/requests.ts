@@ -138,3 +138,10 @@ export interface NewBeveragePromotionRequest {
   discount_percentage: number;
   beverages_with_capacities: { [key in string]: number[] };
 }
+
+export interface UpdatedBeveragePromotionRequest {
+  id: number;
+  updated_description: string;
+  updated_discount_percentage: number;
+  updated_beverages_with_capacities: { [key in string]: number[] };
+}

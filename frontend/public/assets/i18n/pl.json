@@ -253,6 +253,7 @@
         "new_meal_promotion": "Nowa promocja na dania",
         "new_beverage_promotion": "Nowa promocja na napoje",
         "update_meal_promotion": "Aktualizowana promocja na dania",
+        "update_beverage_promotion": "Aktualizowana promocja na napoje",
         "no_meal_promotions": "Aktualnie brak promocji na dania! Zapisz sie na newsletter, aby nie przegapic okazji!"
     }
 }
