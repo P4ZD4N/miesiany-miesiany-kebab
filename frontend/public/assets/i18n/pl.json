@@ -247,9 +247,11 @@
             "cancel": "Anuluj",
             "update": "Aktualizuj",
             "remove": "Usun",
-            "add_meal_promotion": "Dodaj promocje na dania"
+            "add_meal_promotion": "Dodaj promocje na dania",
+            "add_beverage_promotion": "Dodaj promocje na napoje"
         },
         "new_meal_promotion": "Nowa promocja na dania",
+        "new_beverage_promotion": "Nowa promocja na napoje",
         "update_meal_promotion": "Aktualizowana promocja na dania",
         "no_meal_promotions": "Aktualnie brak promocji na dania! Zapisz sie na newsletter, aby nie przegapic okazji!"
     }

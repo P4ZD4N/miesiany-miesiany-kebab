@@ -178,6 +178,49 @@
     </table>
 
     <p class="x-promotions">{{ 'promotions.paragraph_beverage_promotions' | translate }}</p>
+
+    <button class="btn btn-success" *ngIf="isManager() && !isAdding && !isEditing" (click)="showAddBeveragePromotionTable()">{{ 'promotions.buttons.add_beverage_promotion' | translate }}</button>
+
+    <table class="add-beverage-table" *ngIf="isAddingBeveragePromotion">
+        <tr>
+            <h1>{{ 'promotions.new_beverage_promotion' | translate }}</h1>
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="newBeveragePromotion.description" />
+        </tr>
+        <tr>
+            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="newBeveragePromotion.discount_percentage" />%
+        </tr>
+        <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
+            <i class="fa-solid fa-martini-glass"></i> {{ beverage[0] }}
+            <ul *ngFor="let capacity of beverage[1]">
+                <li>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            [value]="capacity" 
+                            (change)="toggleCapacityAdd(beverage[0], capacity, $event)" 
+                            [checked]="newBeveragePromotion.beverages_with_capacities[beverage[0]]?.includes(capacity)" />
+                            {{ capacity }} L
+                    </label>
+                </li>
+            </ul>
+        </tr>
+        <tr>
+            <button class="button-accept" (click)="addBeveragePromotion()">{{ 'promotions.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideAddBeveragePromotionTable()">{{ 'promotions.buttons.cancel' | translate }}</button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
+        </tr>
+        <tr *ngIf="errorMessages['description']" class="error">
+            {{ errorMessages['description'] }}
+        </tr>
+        <tr *ngIf="errorMessages['discountPercentage']" class="error">
+            {{ errorMessages['discountPercentage'] }}
+        </tr>
+    </table>
+
     <table class="beverage-promotions-table">
         <thead>
             <th>{{ 'promotions.promotion_description' | translate }}</th>

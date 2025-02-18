@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewMealPromotionResponse, RemovedMealPromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
+import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewBeveragePromotionResponse, NewMealPromotionResponse, RemovedMealPromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewMealPromotionRequest, RemovedMealPromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
+import { NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedMealPromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -54,13 +54,25 @@ export class PromotionsService {
 
   removeMealPromotion(request: RemovedMealPromotionRequest): Observable<RemovedMealPromotionResponse> {
   
-      const requestBody = { id: request.id };
-  
-      return this.http.delete<RemovedMealPromotionResponse>(`${this.apiUrl}/remove-meal-promotion`, { body: requestBody, withCredentials: true }).pipe(
-        map(response => response),
-        catchError(this.handleError)
-      )
-    }
+    const requestBody = { id: request.id };
+
+    return this.http.delete<RemovedMealPromotionResponse>(`${this.apiUrl}/remove-meal-promotion`, { body: requestBody, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  addBeveragePromotion(request: NewBeveragePromotionRequest): Observable<NewBeveragePromotionResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.post<NewBeveragePromotionResponse>(`${this.apiUrl}/add-beverage-promotion`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
 
   handleError(error: HttpErrorResponse) {
   

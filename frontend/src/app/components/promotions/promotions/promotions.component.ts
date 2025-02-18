@@ -4,9 +4,9 @@ import { PromotionsService } from '../../../services/promotions/promotions.servi
 import { LangService } from '../../../services/lang/lang.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
+import { AddonPromotionResponse, BeveragePromotionResponse, BeverageResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
 import { CommonModule } from '@angular/common';
-import { NewMealPromotionRequest, RemovedMealPromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
+import { NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedMealPromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Size } from '../../../enums/size.enum';
 import { MenuService } from '../../../services/menu/menu.service';
@@ -22,6 +22,8 @@ import Swal from 'sweetalert2';
 export class PromotionsComponent implements OnInit {
 
   mealNames: string[] = []
+  beveragesWithCapacities: { [key in string]: number[] } = {}
+  beveragesWithCapacitiesEntries: [string, number[]][] = [];
   sizeOrder: Size[] = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.XL];
 
   newMealPromotion: NewMealPromotionRequest = {
@@ -29,6 +31,12 @@ export class PromotionsComponent implements OnInit {
     sizes: [],
     discount_percentage: 0,
     meal_names: []
+  };
+
+  newBeveragePromotion: NewBeveragePromotionRequest = {
+    description: '',
+    discount_percentage: 0,
+    beverages_with_capacities: {}
   };
 
   mealPromotions: MealPromotionResponse[] = [];
@@ -43,6 +51,7 @@ export class PromotionsComponent implements OnInit {
   updatedMealPromotion: UpdatedMealPromotionRequest | null = null;
 
   isAddingMealPromotion = false;
+  isAddingBeveragePromotion = false;
   isAdding = false;
   isEditing = false;
 
@@ -63,6 +72,7 @@ export class PromotionsComponent implements OnInit {
     this.loadBeveragePromotions();
     this.loadAddonPromotions();
     this.loadMealNames();
+    this.loadBeveragesWithCapacities();
   }
 
   loadMealPromotions(): void {
@@ -109,12 +119,37 @@ export class PromotionsComponent implements OnInit {
     );
   }
 
+  loadBeveragesWithCapacities(): void {
+    this.menuService.getBeverages().subscribe(
+      (data: BeverageResponse[]) => {
+        data.forEach(b => {
+          if (!this.beveragesWithCapacities[b.name]) {
+            this.beveragesWithCapacities[b.name] = []
+          }
+
+          this.beveragesWithCapacities[b.name].push(b.capacity)
+        });
+
+        this.beveragesWithCapacitiesEntries = Object.entries(this.beveragesWithCapacities).sort((a, b) => a[0].localeCompare(b[0]));
+      },
+      error => {
+        this.handleError(error);
+      },
+    );
+  }
+
   showAddMealPromotionTable(): void {
     this.hideErrorMessages();
     this.isAddingMealPromotion = true;
     this.isAdding = true;
   }
 
+  showAddBeveragePromotionTable(): void {
+    this.hideErrorMessages();
+    this.isAddingBeveragePromotion = true;
+    this.isAdding = true;
+  }
+ 
   addMealPromotion(): void {
     this.promotionsService.addMealPromotion(this.newMealPromotion).subscribe({
       next: (response) => {
@@ -139,11 +174,42 @@ export class PromotionsComponent implements OnInit {
     });
   }
 
+  addBeveragePromotion(): void {
+    this.promotionsService.addBeveragePromotion(this.newBeveragePromotion).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano nowa promocje na napoje'!` : `Successfully added new beverage promotion!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        this.loadBeveragePromotions();
+        this.resetNewBeveragePromotion();
+        this.hideAddBeveragePromotionTable();
+        this.hideErrorMessages();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
+  }
+ 
   hideAddMealPromotionTable(): void {
     this.hideErrorMessages();
     this.isAddingMealPromotion = false;
     this.isAdding = false;
     this.resetNewMealPromotion();
+  }
+
+  hideAddBeveragePromotionTable(): void {
+    this.hideErrorMessages();
+    this.isAddingBeveragePromotion = false;
+    this.isAdding = false;
+    this.resetNewBeveragePromotion();
   }
 
   resetNewMealPromotion(): void {
@@ -152,6 +218,14 @@ export class PromotionsComponent implements OnInit {
       sizes: [],
       discount_percentage: 0,
       meal_names: []
+    };
+  }
+
+  resetNewBeveragePromotion(): void {
+    this.newBeveragePromotion = {
+      description: '',
+      discount_percentage: 0,
+      beverages_with_capacities: {}
     };
   }
 
@@ -167,6 +241,18 @@ export class PromotionsComponent implements OnInit {
     
     if (checked) this.newMealPromotion.meal_names.push(mealName);
     else this.newMealPromotion.meal_names = this.newMealPromotion.meal_names.filter(mn => mn !== mealName);
+  }
+
+  toggleCapacityAdd(beverageName: string, capacity: number, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+
+    if (checked) {
+      if (!this.newBeveragePromotion.beverages_with_capacities[beverageName]) {
+        this.newBeveragePromotion.beverages_with_capacities[beverageName] = [];
+      }
+
+      this.newBeveragePromotion.beverages_with_capacities[beverageName].push(capacity);
+    } else this.newBeveragePromotion.beverages_with_capacities[beverageName] = this.newBeveragePromotion.beverages_with_capacities[beverageName].filter(c => c !== capacity);
   }
 
   toggleSizeEdit(size: Size, event: Event) {

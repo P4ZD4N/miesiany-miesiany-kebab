@@ -132,3 +132,9 @@ export interface UpdatedMealPromotionRequest {
 export interface RemovedMealPromotionRequest {
   id: number;
 }
+
+export interface NewBeveragePromotionRequest {
+  description: string;
+  discount_percentage: number;
+  beverages_with_capacities: { [key in string]: number[] };
+}
