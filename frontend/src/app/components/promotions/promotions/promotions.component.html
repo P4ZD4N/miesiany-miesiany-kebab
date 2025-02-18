@@ -279,7 +279,8 @@
         </tr>
     </table>
 
-    <table class="beverage-promotions-table">
+    <h2 *ngIf="beveragePromotions.length === 0">{{ 'promotions.no_beverage_promotions' | translate }}</h2>
+    <table *ngIf="beveragePromotions.length !== 0" class="beverage-promotions-table">
         <thead>
             <th></th>
             <th>{{ 'promotions.promotion_description' | translate }}</th>

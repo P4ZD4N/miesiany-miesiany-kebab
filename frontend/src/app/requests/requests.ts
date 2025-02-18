@@ -145,3 +145,7 @@ export interface UpdatedBeveragePromotionRequest {
   updated_discount_percentage: number;
   updated_beverages_with_capacities: { [key in string]: number[] };
 }
+
+export interface RemovedBeveragePromotionRequest {
+  id: number;
+}

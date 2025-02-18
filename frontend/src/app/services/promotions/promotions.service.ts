@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewBeveragePromotionResponse, NewMealPromotionResponse, RemovedMealPromotionResponse, UpdatedBeveragePromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
+import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewBeveragePromotionResponse, NewMealPromotionResponse, RemovedBeveragePromotionResponse, RemovedMealPromotionResponse, UpdatedBeveragePromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedMealPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
+import { NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -81,6 +81,16 @@ export class PromotionsService {
     });
   
     return this.http.put<UpdatedBeveragePromotionResponse>(`${this.apiUrl}/update-beverage-promotion`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  removeBeveragePromotion(request: RemovedBeveragePromotionRequest): Observable<RemovedBeveragePromotionResponse> {
+  
+    const requestBody = { id: request.id };
+
+    return this.http.delete<RemovedBeveragePromotionResponse>(`${this.apiUrl}/remove-beverage-promotion`, { body: requestBody, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )
