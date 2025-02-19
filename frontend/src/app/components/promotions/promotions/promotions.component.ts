@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { AddonPromotionResponse, AddonResponse, BeveragePromotionResponse, BeverageResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
 import { CommonModule } from '@angular/common';
-import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
+import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedAddonPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Size } from '../../../enums/size.enum';
 import { MenuService } from '../../../services/menu/menu.service';
@@ -54,15 +54,17 @@ export class PromotionsComponent implements OnInit {
 
   mealPromotionForms: { [key: string]: FormGroup } = {};
 
-  currentlyEditedPromotion: MealPromotionResponse | BeveragePromotionResponse | null = null;
+  currentlyEditedPromotion: MealPromotionResponse | BeveragePromotionResponse | AddonPromotionResponse | null = null;
   updatedMealPromotion: UpdatedMealPromotionRequest | null = null;
   updatedBeveragePromotion: UpdatedBeveragePromotionRequest | null = null;
+  updatedAddonPromotion: UpdatedAddonPromotionRequest | null = null;
 
   isAddingMealPromotion = false;
   isEditingMealPromotion = false;
   isAddingBeveragePromotion = false;
   isEditingBeveragePromotion = false;
   isAddingAddonPromotion = false;
+  isEditingAddonPromotion = false;
   isAdding = false;
   isEditing = false;
 
@@ -159,6 +161,8 @@ export class PromotionsComponent implements OnInit {
         this.handleError(error);
       },
     );
+
+    console.log(this.addonNames)
   }
 
   showAddMealPromotionTable(): void {
@@ -369,6 +373,18 @@ export class PromotionsComponent implements OnInit {
     } else this.updatedBeveragePromotion.updated_beverages_with_capacities[beverageName] = this.updatedBeveragePromotion.updated_beverages_with_capacities[beverageName].filter(c => c !== capacity);
   }
 
+  toggleAddonNameEdit(addonName: string, event: Event) {
+    if (!this.updatedAddonPromotion) return;
+    
+    const checked = (event.target as HTMLInputElement).checked;
+    
+    if (checked) {
+      this.updatedAddonPromotion.updated_addon_names.push(addonName);
+    } else {
+      this.updatedAddonPromotion.updated_addon_names = this.updatedAddonPromotion.updated_addon_names.filter(an => an !== addonName);
+    }
+  }
+
   editMealPromotinRow(mealPromotion: MealPromotionResponse) {
     if (this.isEditing) {
       return;
@@ -405,6 +421,25 @@ export class PromotionsComponent implements OnInit {
       updated_description: beveragePromotion.description,
       updated_discount_percentage: beveragePromotion.discount_percentage,
       updated_beverages_with_capacities: {...beveragePromotion.beverages_with_capacities}
+    };
+  }
+
+  editAddonPromotinRow(addonPromotion: AddonPromotionResponse) {
+    if (this.isEditing) {
+      return;
+    }
+
+    this.hideErrorMessages();
+    this.isEditing = true;
+    this.isEditingAddonPromotion = true;
+    this.currentlyEditedPromotion = addonPromotion;
+    addonPromotion.isEditing = true;
+
+    this.updatedAddonPromotion = {
+      id: addonPromotion.id,
+      updated_description: addonPromotion.description,
+      updated_discount_percentage: addonPromotion.discount_percentage,
+      updated_addon_names: [...addonPromotion.addon_names]
     };
   }
 
@@ -457,16 +492,44 @@ export class PromotionsComponent implements OnInit {
     });
   }
 
+  updateAddonPromotion(updatedPromotion: UpdatedAddonPromotionRequest) {
+    if (!updatedPromotion || !this.currentlyEditedPromotion) return;
+    
+    this.promotionsService.updateAddonPromotion(updatedPromotion).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? 'Pomyslnie zaktualizowano promocje na dodatki!' : 'Successfully updated addon promotion!',
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+  
+        this.loadAddonPromotions();
+        this.hideUpdatePromotionTable();
+      },
+      error: (error) => {
+        this.handleError(error);
+      }
+    });
+  }
+
   hideUpdatePromotionTable() {
     if (this.currentlyEditedPromotion) {
       this.currentlyEditedPromotion.isEditing = false;
     }
+
     this.currentlyEditedPromotion = null;
     this.updatedMealPromotion = null;
     this.updatedBeveragePromotion = null;
+    this.updatedAddonPromotion = null;
     this.isEditing = false;
     this.isEditingBeveragePromotion = false;
     this.isEditingMealPromotion = false;
+    this.isEditingAddonPromotion = false;
+
     this.hideErrorMessages();
   }
 
@@ -540,6 +603,10 @@ export class PromotionsComponent implements OnInit {
         });
       }
     });
+  }
+
+  removeAddonPromotion(addonPromotion: AddonPromotionResponse): void {
+
   }
 
   isMealTranslationAvailable(mealName: string): boolean {

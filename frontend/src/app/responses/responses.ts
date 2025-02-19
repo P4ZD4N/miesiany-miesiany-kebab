@@ -217,9 +217,11 @@ export interface BeveragePromotionResponse {
 }
 
 export interface AddonPromotionResponse {
+  id: number;
   description: string;
   discount_percentage: number;
   addon_names: string[]
+  isEditing?: boolean;
 }
 
 export interface NewMealPromotionResponse {
@@ -253,6 +255,11 @@ export interface RemovedBeveragePromotionResponse {
 }
 
 export interface NewAddonPromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedAddonPromotionResponse {
   status_code: number;
   message: string;
 }

@@ -367,21 +367,92 @@
         </tr>
     </table>
 
+    <table class="update-addon-table" *ngIf="isEditingAddonPromotion">
+        <tr>
+            <h1>{{ 'promotions.update_addon_promotion' | translate }}</h1>
+        </tr>
+        <tr>
+            <input 
+                type="text" 
+                placeholder="{{ 'promotions.promotion_description' | translate }}"
+                [(ngModel)]="updatedAddonPromotion!.updated_description" />
+        </tr>
+        <tr>
+            {{ 'promotions.discount_percentage' | translate }}: 
+            <input 
+                type="number" 
+                min="0" 
+                max="100" 
+                [(ngModel)]="updatedAddonPromotion!.updated_discount_percentage" />%
+        </tr>
+        <tr>
+            <div *ngFor="let addonName of addonNames">
+                <label *ngIf="isAddonTranslationAvailable(addonName); else defaultName">
+                    <input 
+                        type="checkbox" 
+                        [value]="addonName" 
+                        (change)="toggleAddonNameEdit(addonName, $event)" 
+                        [checked]="updatedAddonPromotion!.updated_addon_names.includes(addonName)" />
+                    {{ 'menu.addons.' + addonName | translate }}
+                </label>
+
+                <ng-template #defaultName>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            [value]="addonName" 
+                            (change)="toggleAddonNameEdit(addonName, $event)" 
+                            [checked]="updatedAddonPromotion!.updated_addon_names.includes(addonName)" />
+                        {{ addonName }}
+                    </label>
+                </ng-template>
+            </div>
+        </tr>
+        <tr>
+            <button class="button-accept" *ngIf="updatedAddonPromotion" (click)="updateAddonPromotion(updatedAddonPromotion)">
+                {{ 'promotions.buttons.accept' | translate }}
+            </button>
+            <button class="button-cancel" (click)="hideUpdatePromotionTable()">
+                {{ 'promotions.buttons.cancel' | translate }}
+            </button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
+        </tr>
+        <tr *ngIf="errorMessages['updatedDescription']" class="error">
+            {{ errorMessages['updatedDescription'] }}
+        </tr>
+        <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
+            {{ errorMessages['updatedDiscountPercentage'] }}
+        </tr>
+    </table>
+
     <table class="addon-promotions-table">
         <thead>
+            <th *ngIf="isManager()"></th>
             <th>{{ 'promotions.promotion_description' | translate }}</th>
             <th>{{ 'promotions.discount_percentage' | translate }}</th>
             <th>{{ 'promotions.addons' | translate }}</th>
         </thead>
         <tbody>
             <tr *ngFor="let addonPromotion of addonPromotions">
+                <td *ngIf="isManager()">
+                    <button class="button-update" *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding" (click)="editAddonPromotinRow(addonPromotion)">{{ 'promotions.buttons.update' | translate }}</button>
+                    <button class="button-remove" *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding" (click)="removeAddonPromotion(addonPromotion)">{{ 'promotions.buttons.remove' | translate }}</button>
+                </td>
                 <td>{{ addonPromotion.description }}</td>
                 <td>{{ addonPromotion.discount_percentage }}%</td>
                 <td>
                     <ul *ngFor="let addonName of addonPromotion.addon_names">
-                        <li>
-                            <i class="fa-solid fa-plus"></i> {{ addonName }}
+                        <li *ngIf="isAddonTranslationAvailable(addonName); else defaultName">
+                            <i class="fa-solid fa-plus"></i> {{ 'menu.addons.' + addonName | translate }}
                         </li>
+
+                        <ng-template #defaultName>
+                            <li>
+                                <i class="fa-solid fa-plus"></i> {{ addonName }}
+                            </li>
+                        </ng-template>
                     </ul>
                 </td>
             </tr>

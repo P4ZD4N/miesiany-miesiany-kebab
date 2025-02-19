@@ -155,3 +155,10 @@ export interface NewAddonPromotionRequest {
   discount_percentage: number;
   addon_names: string[]
 }
+
+export interface UpdatedAddonPromotionRequest {
+  id: number;
+  updated_description: string;
+  updated_discount_percentage: number;
+  updated_addon_names: string[];
+}
