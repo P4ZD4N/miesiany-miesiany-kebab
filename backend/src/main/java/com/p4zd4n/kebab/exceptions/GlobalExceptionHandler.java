@@ -476,4 +476,71 @@ public class GlobalExceptionHandler {
                         .message(exception.getMessage())
                         .build());
     }
+
+    @ExceptionHandler(MealPromotionNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleMealPromotionNotFoundException(
+            MealPromotionNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with id of not existing meal promotion: {}", request.getRequestURI(), exception.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(BeveragePromotionNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleBeveragePromotionNotFoundException(
+            BeveragePromotionNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with id of not existing beverage promotion: {}", request.getRequestURI(), exception.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(AddonPromotionNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleAddonPromotionNotFoundException(
+            AddonPromotionNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with id of not existing addon promotion: {}", request.getRequestURI(), exception.getId());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(MealPromotionAlreadyExists.class)
+    public ResponseEntity<ExceptionResponse> handleMealPromotionAlreadyExists(
+            MealPromotionAlreadyExists exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing meal promotion for '{}'", request.getRequestURI(), exception.getMealName());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("mealPromotion.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
 }

@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.responses.menu.beverages;
 
+import com.p4zd4n.kebab.entities.BeveragePromotion;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -8,5 +9,6 @@ import java.math.BigDecimal;
 public record BeverageResponse(
         String name,
         BigDecimal capacity,
-        BigDecimal price
+        BigDecimal price,
+        BeveragePromotion promotion
 ) {}

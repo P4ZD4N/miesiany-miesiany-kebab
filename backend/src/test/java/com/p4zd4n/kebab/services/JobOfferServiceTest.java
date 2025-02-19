@@ -1,15 +1,12 @@
 package com.p4zd4n.kebab.services;
 
-import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.alreadyexists.JobOfferAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.notfound.JobOfferNotFoundException;
 import com.p4zd4n.kebab.repositories.JobOfferRepository;
 import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
-import com.p4zd4n.kebab.requests.jobs.RemovedJobOfferRequest;
 import com.p4zd4n.kebab.requests.jobs.UpdatedJobOfferRequest;
 import com.p4zd4n.kebab.responses.jobs.*;
-import com.p4zd4n.kebab.responses.menu.addons.AddonResponse;
 import com.p4zd4n.kebab.services.jobs.JobOfferService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

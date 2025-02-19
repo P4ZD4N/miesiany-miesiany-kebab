@@ -1,19 +1,13 @@
 package com.p4zd4n.kebab.services;
 
-import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.Contact;
 import com.p4zd4n.kebab.enums.ContactType;
-import com.p4zd4n.kebab.enums.DayOfWeek;
-import com.p4zd4n.kebab.exceptions.alreadyexists.BeverageAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.alreadyexists.IngredientAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidPhoneException;
 import com.p4zd4n.kebab.exceptions.notfound.ContactNotFoundException;
 import com.p4zd4n.kebab.repositories.ContactRepository;
 import com.p4zd4n.kebab.requests.contact.UpdatedContactRequest;
-import com.p4zd4n.kebab.requests.menu.beverages.UpdatedBeverageRequest;
 import com.p4zd4n.kebab.responses.contact.ContactResponse;
 import com.p4zd4n.kebab.responses.contact.UpdatedContactResponse;
-import com.p4zd4n.kebab.responses.menu.beverages.UpdatedBeverageResponse;
 import com.p4zd4n.kebab.services.contact.ContactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

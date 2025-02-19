@@ -20,16 +20,30 @@ export interface RemovedBeverageResponse {
   message: string;
 }
 
+export interface BeveragePromotion {
+  id: number;
+  description: string;
+  discount_percentage: number;
+}
+
 export interface BeverageResponse {
   name: string;
   capacity: number;
   price: number;
+  promotion: BeveragePromotion;
   isEditing?: boolean;
+}
+
+export interface AddonPromotion {
+  id: number;
+  description: string;
+  discount_percentage: number;
 }
 
 export interface AddonResponse {
   name: string;
   price: number;
+  promotion: AddonPromotionResponse;
   isEditing?: boolean;
 }
 
@@ -39,10 +53,18 @@ export interface SimpleMealIngredient {
   ingredient_type: string;
 }
 
+export interface MealPromotion {
+  id: number;
+  description: string;
+  sizes: Size[];
+  discount_percentage: number;
+}
+
 export interface MealResponse {
   name: string;
   prices: { [key in Size]: number };
   ingredients: SimpleMealIngredient[];
+  meal_promotions: MealPromotion[];
   isEditing?: boolean;
 }
 
@@ -180,6 +202,76 @@ export interface NewCvResponse {
 }
 
 export interface RemovedApplicationResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface MealPromotionResponse {
+  id: number;
+  description: string;
+  sizes: Size[];
+  discount_percentage: number;
+  meal_names: string[]
+  isEditing?: boolean;
+}
+
+export interface BeveragePromotionResponse {
+  id: number;
+  description: string;
+  discount_percentage: number;
+  beverages_with_capacities: { [key in string]: number[] };
+  isEditing?: boolean;
+}
+
+export interface AddonPromotionResponse {
+  id: number;
+  description: string;
+  discount_percentage: number;
+  addon_names: string[]
+  isEditing?: boolean;
+}
+
+export interface NewMealPromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedMealPromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedMealPromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface NewBeveragePromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedBeveragePromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedBeveragePromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface NewAddonPromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedAddonPromotionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedAddonPromotionResponse {
   status_code: number;
   message: string;
 }

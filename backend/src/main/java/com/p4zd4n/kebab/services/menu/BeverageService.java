@@ -50,6 +50,7 @@ public class BeverageService {
                 .name(beverage.getName())
                 .capacity(beverage.getCapacity())
                 .price(beverage.getPrice())
+                .promotion(beverage.getPromotion())
                 .build();
     }
 

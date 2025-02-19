@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class SampleDataInitializer implements CommandLineRunner {
@@ -25,6 +26,9 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final IngredientRepository ingredientRepository;
     private final ContactRepository contactRepository;
     private final JobOfferRepository jobOfferRepository;
+    private final MealPromotionsRepository mealPromotionsRepository;
+    private final BeveragePromotionsRepository beveragePromotionsRepository;
+    private final AddonPromotionsRepository addonPromotionsRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -34,7 +38,10 @@ public class SampleDataInitializer implements CommandLineRunner {
             MealRepository mealRepository,
             IngredientRepository ingredientRepository,
             ContactRepository contactRepository,
-            JobOfferRepository jobOfferRepository
+            JobOfferRepository jobOfferRepository,
+            MealPromotionsRepository mealPromotionsRepository,
+            BeveragePromotionsRepository beveragePromotionsRepository,
+            AddonPromotionsRepository addonPromotionsRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -44,6 +51,9 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.ingredientRepository = ingredientRepository;
         this.contactRepository = contactRepository;
         this.jobOfferRepository = jobOfferRepository;
+        this.mealPromotionsRepository = mealPromotionsRepository;
+        this.beveragePromotionsRepository = beveragePromotionsRepository;
+        this.addonPromotionsRepository = addonPromotionsRepository;
     }
 
     @Override
@@ -58,6 +68,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initMeals();
         initContacts();
         initJobOffers();
+        initPromotions();
     }
 
     private void initOpeningHours() {
@@ -424,5 +435,50 @@ public class SampleDataInitializer implements CommandLineRunner {
 
         jobOfferRepository.save(jobOffer1);
         jobOfferRepository.save(jobOffer2);
+    }
+
+    private void initPromotions() {
+
+        MealPromotion largeSizePromotion = MealPromotion.builder()
+                .description("All medium and large sizes -20%!")
+                .sizes(Set.of(Size.MEDIUM, Size.LARGE))
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build();
+
+        mealPromotionsRepository.save(largeSizePromotion);
+
+        mealRepository.findAll()
+            .forEach(meal -> {
+                meal.getPromotions().add(largeSizePromotion);
+                mealRepository.save(meal);
+        });
+
+        BeveragePromotion cocaColaPromotion = BeveragePromotion.builder()
+                .description("All Coca-Cola -50%!")
+                .discountPercentage(BigDecimal.valueOf(50))
+                .build();
+
+        beveragePromotionsRepository.save(cocaColaPromotion);
+
+        beverageRepository.findAll().stream()
+                .filter(beverage -> beverage.getName().contains("Coca-Cola"))
+                .forEach(beverage -> {
+                    beverage.setPromotion(cocaColaPromotion);
+                    beverageRepository.save(beverage);
+                });
+
+        AddonPromotion fetaPromotion = AddonPromotion.builder()
+                .description("Feta -50%!")
+                .discountPercentage(BigDecimal.valueOf(50))
+                .build();
+
+        addonPromotionsRepository.save(fetaPromotion);
+
+        addonRepository.findAll().stream()
+                .filter(addon -> addon.getName().equalsIgnoreCase("Feta"))
+                .forEach(addon -> {
+                    addon.setPromotion(fetaPromotion);
+                    addonRepository.save(addon);
+                });
     }
 }

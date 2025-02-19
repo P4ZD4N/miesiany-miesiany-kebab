@@ -113,3 +113,56 @@ export interface RemovedApplicationRequest {
   position_name: string;
   application_id: number;
 }
+
+export interface NewMealPromotionRequest {
+  description: string;
+  sizes: Size[];
+  discount_percentage: number;
+  meal_names: string[]
+}
+
+export interface UpdatedMealPromotionRequest {
+  id: number;
+  updated_description: string;
+  updated_sizes: Size[];
+  updated_discount_percentage: number;
+  updated_meal_names: string[];
+}
+
+export interface RemovedMealPromotionRequest {
+  id: number;
+}
+
+export interface NewBeveragePromotionRequest {
+  description: string;
+  discount_percentage: number;
+  beverages_with_capacities: { [key in string]: number[] };
+}
+
+export interface UpdatedBeveragePromotionRequest {
+  id: number;
+  updated_description: string;
+  updated_discount_percentage: number;
+  updated_beverages_with_capacities: { [key in string]: number[] };
+}
+
+export interface RemovedBeveragePromotionRequest {
+  id: number;
+}
+
+export interface NewAddonPromotionRequest {
+  description: string;
+  discount_percentage: number;
+  addon_names: string[]
+}
+
+export interface UpdatedAddonPromotionRequest {
+  id: number;
+  updated_description: string;
+  updated_discount_percentage: number;
+  updated_addon_names: string[];
+}
+
+export interface RemovedAddonPromotionRequest {
+  id: number;
+}
