@@ -1,5 +1,15 @@
 # 💻 Miesiany Miesiany Kebab
 
+## 📜 Table of Contents
+1. [👀 About](#about)
+2. [🔧 Tech Stack](#tech-stack)
+3. [💡 Features](#features)
+4. [🔗 API](#api)
+5. [📋 Requirements](#requirements)
+6. [🌍 Environment Variables](#environment-variables)
+7. [▶️ Run](#run)
+8. [⚡ Usage](#usage)
+
 ## 👀 About
 
 Full-stack application for a fictional kebab restaurant called "Miesiany Miesiany Kebab". The application is also intended to serve as a restaurant's business card, in order to reach a larger number of customers, and to enable the fulfillment and tracking of orders.
