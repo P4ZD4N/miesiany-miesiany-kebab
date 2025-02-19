@@ -1,6 +1,3 @@
-
-
-
 # 💻 Miesiany Miesiany Kebab
 
 ## 👀 About
@@ -32,11 +29,13 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 - Multilingual validation for all forms. Validation messages are sent by backend in appropriate language specified in request header,
 - Integration with TomTom Map API to add map with pointer, which aims to help potential customers easily locate restaurant.
 - Bash script, which starts PostgreSQL database, backend and frontend with one command.
+- Possibility to follow application flow and diagnose potential issues by accessing informational, warning and error logs in console.
 - Possibility to display home page. This is the "first contact section", which means, that clients see it firstly, after navigating to /. For this reason, this section had to be best thought out from a marketing perspective. I placed there many informations, that can encourage potential customer to place the order. Home page is divided to four subsections: hero section, about us, awards and location. Subsections contain, among others, many marketing slogans, certificates, guarantees, acknowledgments and a map with a pointer.
 - Possibility to display highlighted with proper color opening hours of restaurant on each day. Manager can easily update these hours.
 - Possibility to display menu of the restaurant. In menu section clients can see three tables: meals, addons to your meal and beverages, which contains each item details like name, price, capacity or ingredients. This entire section is manageable by the manager. Employee with this role can add, update and remove each type of item. Items in each table are sorted by name.
 - Possibility to display contact details. In contact section clients can see contact data (including phone number and email address), nicknames at social media and map with location pointer. Contact data is editable by manager.
 - Job board, which enable to publish dateiled job offers by manager. Manager can add job offer with information such as position name, description, list of mandatory requirements, list of nice to have requirements, list of employment types and hourly wage gross. Once added, each job offer is fully customizable. Website guests can apply to each job offer by fulfilling form (with attaching a CV in PDF/DOC format!). Manager has possibility to display all candidates, which applied to job offer, remove those who do not fit the position or peek/download attached CV of desired candidate.
+- Promotions for meals, beverages and addons. It is possible to display promotions details in proper section on website by all users. If some menu position is already added to certain promotion, users can see price change in menu section on website. All promotions are editable and easy to maintain by manager. Manager can add, update and delete promotions.
 
 
 ## 🔗 API
@@ -529,6 +528,215 @@ Removes existing job application from job offer.
 }
 ```
 
+### PromotionsController
+
+#### GET /api/v1/promotions/meal-promotions
+
+**Description:**  
+Retrieves all meal promotions, that are currently stored in the database.
+
+#### POST /api/v1/promotions/add-meal-promotion
+
+**Description:**
+Add new meal promotion. You can add meal promotion without specifying meal names and sizes. Description and discount percentage are necessary fields.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "description":  "All Large and XL -50%!",
+  "discount_percentage": 50,
+  "meal_names":  [
+    "Pita Kebab Salads",
+    "Pita Kebab Salads and Fries"
+  ],
+  "sizes": [
+    "LARGE",
+    "XL"
+  ]
+}
+```
+
+#### PUT /api/v1/promotions/update-meal-promotion
+
+**Description:**
+Update existing meal promotion. You can update meal promotion without specifying any property except id. Id is necessary to identify proper promotion. If you won't update certain property, you shouldn't specify it in request.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "id": 1,
+  "updated_description": "All Large -40%!",
+  "updated_discount_percentage": 40,
+  "updated_meal_names":  [
+    "Pita Kebab Salads",
+    "Pita Kebab Salads and Fries"
+  ],
+  "updated_sizes": [
+    "LARGE"
+  ]
+}
+```
+
+#### DELETE /api/v1/promotions/remove-meal-promotion
+
+**Description:**  
+Removes existing meal promotion.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Body:**
+```json
+{
+  "id": 1
+}
+```
+
+#### GET /api/v1/promotions/beverage-promotions
+
+**Description:**  
+Retrieves all beverage promotions, that are currently stored in the database.
+
+#### POST /api/v1/promotions/add-beverage-promotion
+
+**Description:**
+Add new beverage promotion. You can add beverage promotion without specifying beverage names with their capacities. Description and discount percentage are necessary fields.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "description": "All Coca-Cola -30%!",
+  "discount_percentage": 30,
+  "beverages_with_capacities": {
+    "Coca-Cola": [0.33,  0.5],
+    "Coca-Cola Zero": [0.33]
+  }
+}
+```
+
+#### PUT /api/v1/promotions/update-beverage-promotion
+
+**Description:**
+Update existing beverage promotion. You can update meal promotion without specifying any property except id. Id is necessary to identify proper promotion. If you won't update certain property, you shouldn't specify it in request.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "id": 1,
+  "updated_description": "All Fanta -40%!",
+  "updated_discount_percentage": 40,
+  "updated_beverages_with_capacities": {
+    "Fanta": [0.33]
+  }
+}
+```
+
+#### DELETE /api/v1/promotions/remove-beverage-promotion
+
+**Description:**  
+Removes existing beverage promotion.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Body:**
+```json
+{
+  "id": 1
+}
+```
+-------
+
+#### GET /api/v1/promotions/addon-promotions
+
+**Description:**  
+Retrieves all addon promotions, that are currently stored in the database.
+
+#### POST /api/v1/promotions/add-addon-promotion
+
+**Description:**
+Add new addon promotion. You can add addon promotion without specifying addon names. Description and discount percentage are necessary fields.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "description": "Jalapeno and Feta -60%!",
+  "discount_percentage": 60,
+  "addon_names": [
+    "Jalapeno",
+    "Feta"
+  ]
+}
+```
+
+#### PUT /api/v1/promotions/update-addon-promotion
+
+**Description:**
+Update existing addon promotion. You can update addon promotion without specifying any property except id. Id is necessary to identify proper promotion. If you won't update certain property, you shouldn't specify it in request.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "id": 1,
+  "updated_description": "Herbs -10%!",
+  "updated_discount_percentage": 10,
+  "updated_addon_names": [
+    "Herbs"
+  ]
+}
+```
+
+#### DELETE /api/v1/promotions/remove-addon-promotion
+
+**Description:**  
+Removes existing addon promotion.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Body:**
+```json
+{
+  "id": 1
+}
+```
+
 
 ## 📋 Requirements
 - Java 21 (or higher)
@@ -588,3 +796,4 @@ http://localhost:4200
 ```
 
 That's It! You can start using kebab app :) 
+
