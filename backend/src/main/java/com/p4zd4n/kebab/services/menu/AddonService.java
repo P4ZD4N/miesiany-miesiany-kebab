@@ -48,6 +48,7 @@ public class AddonService {
         return AddonResponse.builder()
                 .name(addon.getName())
                 .price(addon.getPrice())
+                .promotion(addon.getPromotion())
                 .build();
     }
 

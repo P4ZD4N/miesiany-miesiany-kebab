@@ -400,7 +400,20 @@
                     <td>{{ addon.name }}</td>
                 </ng-template>
 
-                <td *ngIf="!addon.isEditing">{{ formatPrice(addon.price) }}</td>
+
+                <ng-container *ngIf="!addon.isEditing && addon.promotion === null">
+                    <td *ngIf="!addon.isEditing">{{ formatPrice(addon.price) }}</td>
+                </ng-container>
+                <ng-container *ngIf="!addon.isEditing && addon.promotion !== null">
+                    <td>
+                        <del>
+                            {{ formatPrice(addon.price) }}
+                        </del>
+                        <span class="span-without-style">
+                            {{ formatPrice(addon.price * (1 - addon.promotion.discount_percentage / 100)) }}
+                        </span>
+                    </td>
+                </ng-container>
                 <td *ngIf="addon.isEditing">
                     <input type="number" formControlName="price" step="0.01" />
                 </td>

@@ -34,9 +34,16 @@ export interface BeverageResponse {
   isEditing?: boolean;
 }
 
+export interface AddonPromotion {
+  id: number;
+  description: string;
+  discount_percentage: number;
+}
+
 export interface AddonResponse {
   name: string;
   price: number;
+  promotion: AddonPromotionResponse;
   isEditing?: boolean;
 }
 
