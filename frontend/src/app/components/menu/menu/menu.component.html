@@ -466,7 +466,19 @@
                     <input type="number" formControlName="capacity" />
                 </td>
 
-                <td *ngIf="!beverage.isEditing">{{ formatPrice(beverage.price) }}</td>
+                <ng-container *ngIf="!beverage.isEditing && beverage.promotion === null">
+                    <td *ngIf="!beverage.isEditing">{{ formatPrice(beverage.price) }}</td>
+                </ng-container>
+                <ng-container *ngIf="!beverage.isEditing && beverage.promotion !== null">
+                    <td>
+                        <del>
+                            {{ formatPrice(beverage.price) }}
+                        </del>
+                        <span class="span-without-style">
+                            {{ formatPrice(beverage.price * (1 - beverage.promotion.discount_percentage / 100)) }}
+                        </span>
+                    </td>
+                </ng-container>
                 <td *ngIf="beverage.isEditing">
                     <input type="number" formControlName="price" step="0.01" />
                 </td>

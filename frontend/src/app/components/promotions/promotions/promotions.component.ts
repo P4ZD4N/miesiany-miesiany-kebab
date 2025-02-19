@@ -360,6 +360,7 @@ export class PromotionsComponent implements OnInit {
   }
 
   updateBeveragePromotion(updatedPromotion: UpdatedBeveragePromotionRequest) {
+    console.log(updatedPromotion);
     if (!updatedPromotion || !this.currentlyEditedPromotion) return;
     
     this.promotionsService.updateBeveragePromotion(updatedPromotion).subscribe({

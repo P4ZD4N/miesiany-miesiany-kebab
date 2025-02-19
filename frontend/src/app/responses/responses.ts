@@ -20,10 +20,17 @@ export interface RemovedBeverageResponse {
   message: string;
 }
 
+export interface BeveragePromotion {
+  id: number;
+  description: string;
+  discount_percentage: number;
+}
+
 export interface BeverageResponse {
   name: string;
   capacity: number;
   price: number;
+  promotion: BeveragePromotion;
   isEditing?: boolean;
 }
 
