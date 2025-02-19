@@ -4,9 +4,9 @@ import { PromotionsService } from '../../../services/promotions/promotions.servi
 import { LangService } from '../../../services/lang/lang.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AddonPromotionResponse, BeveragePromotionResponse, BeverageResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
+import { AddonPromotionResponse, AddonResponse, BeveragePromotionResponse, BeverageResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
 import { CommonModule } from '@angular/common';
-import { NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
+import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Size } from '../../../enums/size.enum';
 import { MenuService } from '../../../services/menu/menu.service';
@@ -21,9 +21,10 @@ import Swal from 'sweetalert2';
 })
 export class PromotionsComponent implements OnInit {
 
-  mealNames: string[] = []
-  beveragesWithCapacities: { [key in string]: number[] } = {}
+  mealNames: string[] = [];
+  beveragesWithCapacities: { [key in string]: number[] } = {};
   beveragesWithCapacitiesEntries: [string, number[]][] = [];
+  addonNames: string[] = [];
   sizeOrder: Size[] = [Size.SMALL, Size.MEDIUM, Size.LARGE, Size.XL];
 
   newMealPromotion: NewMealPromotionRequest = {
@@ -39,9 +40,15 @@ export class PromotionsComponent implements OnInit {
     beverages_with_capacities: {}
   };
 
+  newAddonPromotion: NewAddonPromotionRequest = {
+    description: '',
+    discount_percentage: 0,
+    addon_names: []
+  };
+
   mealPromotions: MealPromotionResponse[] = [];
   beveragePromotions: BeveragePromotionResponse[] = [];
-  addonPromotions: AddonPromotionResponse[] = []
+  addonPromotions: AddonPromotionResponse[] = [];
   errorMessages: { [key: string]: string } = {};
   languageChangeSubscription: Subscription;
 
@@ -55,6 +62,7 @@ export class PromotionsComponent implements OnInit {
   isEditingMealPromotion = false;
   isAddingBeveragePromotion = false;
   isEditingBeveragePromotion = false;
+  isAddingAddonPromotion = false;
   isAdding = false;
   isEditing = false;
 
@@ -76,6 +84,7 @@ export class PromotionsComponent implements OnInit {
     this.loadAddonPromotions();
     this.loadMealNames();
     this.loadBeveragesWithCapacities();
+    this.loadAddonNames();
   }
 
   loadMealPromotions(): void {
@@ -141,6 +150,17 @@ export class PromotionsComponent implements OnInit {
     );
   }
 
+  loadAddonNames(): void {
+    this.menuService.getAddons().subscribe(
+      (data: AddonResponse[]) => {
+        this.addonNames = data.map(addon => addon.name)
+      },
+      error => {
+        this.handleError(error);
+      },
+    );
+  }
+
   showAddMealPromotionTable(): void {
     this.hideErrorMessages();
     this.isAddingMealPromotion = true;
@@ -150,6 +170,12 @@ export class PromotionsComponent implements OnInit {
   showAddBeveragePromotionTable(): void {
     this.hideErrorMessages();
     this.isAddingBeveragePromotion = true;
+    this.isAdding = true;
+  }
+
+  showAddAddonPromotionTable() {
+    this.hideErrorMessages();
+    this.isAddingAddonPromotion = true;
     this.isAdding = true;
   }
  
@@ -200,6 +226,30 @@ export class PromotionsComponent implements OnInit {
       },
     });
   }
+
+  addAddonPromotion(): void {
+    this.promotionsService.addAddonPromotion(this.newAddonPromotion).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano nowa promocje na dania'!` : `Successfully added new meal promotion!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        this.loadAddonPromotions();
+        this.resetNewAddonPromotion();
+        this.hideAddAddonPromotionTable();
+        this.hideErrorMessages();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
+  }
  
   hideAddMealPromotionTable(): void {
     this.hideErrorMessages();
@@ -213,6 +263,13 @@ export class PromotionsComponent implements OnInit {
     this.isAddingBeveragePromotion = false;
     this.isAdding = false;
     this.resetNewBeveragePromotion();
+  }
+
+  hideAddAddonPromotionTable(): void {
+    this.hideErrorMessages();
+    this.isAddingAddonPromotion = false;
+    this.isAdding = false;
+    this.resetNewAddonPromotion();
   }
 
   resetNewMealPromotion(): void {
@@ -229,6 +286,14 @@ export class PromotionsComponent implements OnInit {
       description: '',
       discount_percentage: 0,
       beverages_with_capacities: {}
+    };
+  }
+
+  resetNewAddonPromotion(): void {
+    this.newAddonPromotion = {
+      description: '',
+      discount_percentage: 0,
+      addon_names: []
     };
   }
 
@@ -257,6 +322,14 @@ export class PromotionsComponent implements OnInit {
       this.newBeveragePromotion.beverages_with_capacities[beverageName].push(capacity);
     } else this.newBeveragePromotion.beverages_with_capacities[beverageName] = this.newBeveragePromotion.beverages_with_capacities[beverageName].filter(c => c !== capacity);
   }
+
+  toggleAddonNameAdd(addonName: string, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    
+    if (checked) this.newAddonPromotion.addon_names.push(addonName);
+    else this.newAddonPromotion.addon_names = this.newAddonPromotion.addon_names.filter(an => an !== addonName);
+  }
+
 
   toggleSizeEdit(size: Size, event: Event) {
     if (!this.updatedMealPromotion) return;
@@ -477,6 +550,11 @@ export class PromotionsComponent implements OnInit {
   isBeverageTranslationAvailable(beverageName: string): boolean {
     const translatedName = this.translate.instant('menu.beverages.' + beverageName);
     return translatedName !== 'menu.beverages.' + beverageName;
+  }
+
+  isAddonTranslationAvailable(addonName: string): boolean {
+    const translatedName = this.translate.instant('menu.addons.' + addonName);
+    return translatedName !== 'menu.addons.' + addonName;
   }
 
   isManager(): boolean {

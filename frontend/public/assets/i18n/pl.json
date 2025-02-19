@@ -248,10 +248,12 @@
             "update": "Aktualizuj",
             "remove": "Usun",
             "add_meal_promotion": "Dodaj promocje na dania",
-            "add_beverage_promotion": "Dodaj promocje na napoje"
+            "add_beverage_promotion": "Dodaj promocje na napoje",
+            "add_addon_promotion": "Dodaj promocje na dodatki"
         },
         "new_meal_promotion": "Nowa promocja na dania",
         "new_beverage_promotion": "Nowa promocja na napoje",
+        "new_addon_promotion": "Nowa promocja na dodatki",
         "update_meal_promotion": "Aktualizowana promocja na dania",
         "update_beverage_promotion": "Aktualizowana promocja na napoje",
         "no_meal_promotions": "Aktualnie brak promocji na dania! Zapisz sie na newsletter, aby nie przegapic okazji!",

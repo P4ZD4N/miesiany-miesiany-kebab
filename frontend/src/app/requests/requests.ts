@@ -149,3 +149,9 @@ export interface UpdatedBeveragePromotionRequest {
 export interface RemovedBeveragePromotionRequest {
   id: number;
 }
+
+export interface NewAddonPromotionRequest {
+  description: string;
+  discount_percentage: number;
+  addon_names: string[]
+}

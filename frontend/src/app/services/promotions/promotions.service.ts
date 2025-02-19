@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewBeveragePromotionResponse, NewMealPromotionResponse, RemovedBeveragePromotionResponse, RemovedMealPromotionResponse, UpdatedBeveragePromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
+import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewAddonPromotionResponse, NewBeveragePromotionResponse, NewMealPromotionResponse, RemovedBeveragePromotionResponse, RemovedMealPromotionResponse, UpdatedBeveragePromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
+import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -31,13 +31,13 @@ export class PromotionsService {
   addMealPromotion(request: NewMealPromotionRequest): Observable<NewMealPromotionResponse> {
 
     const headers = new HttpHeaders({
-          'Accept-Language': this.langService.currentLang
-        });
-    
-        return this.http.post<NewMealPromotionResponse>(`${this.apiUrl}/add-meal-promotion`, request, { headers, withCredentials: true }).pipe(
-          map(response => response),
-          catchError(this.handleError)
-        )
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.post<NewMealPromotionResponse>(`${this.apiUrl}/add-meal-promotion`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
   }
 
   updateMealPromotion(request: UpdatedMealPromotionRequest): Observable<UpdatedMealPromotionResponse> {
@@ -91,6 +91,18 @@ export class PromotionsService {
     const requestBody = { id: request.id };
 
     return this.http.delete<RemovedBeveragePromotionResponse>(`${this.apiUrl}/remove-beverage-promotion`, { body: requestBody, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  addAddonPromotion(request: NewAddonPromotionRequest): Observable<NewAddonPromotionResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.post<NewAddonPromotionResponse>(`${this.apiUrl}/add-addon-promotion`, request, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

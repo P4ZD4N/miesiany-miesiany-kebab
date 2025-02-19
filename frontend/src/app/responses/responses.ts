@@ -251,3 +251,8 @@ export interface RemovedBeveragePromotionResponse {
   status_code: number;
   message: string;
 }
+
+export interface NewAddonPromotionResponse {
+  status_code: number;
+  message: string;
+}
