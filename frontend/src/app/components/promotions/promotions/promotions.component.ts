@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { AddonPromotionResponse, AddonResponse, BeveragePromotionResponse, BeverageResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
 import { CommonModule } from '@angular/common';
-import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedAddonPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
+import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedAddonPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedAddonPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Size } from '../../../enums/size.enum';
 import { MenuService } from '../../../services/menu/menu.service';
@@ -606,7 +606,39 @@ export class PromotionsComponent implements OnInit {
   }
 
   removeAddonPromotion(addonPromotion: AddonPromotionResponse): void {
+    const confirmationMessage =
+    this.langService.currentLang === 'pl'
+    ? `Czy na pewno chcesz usunac ta promocje na dodatki?`
+    : `Are you sure you want to remove this addon promotion?`;
 
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.promotionsService.removeAddonPromotion({ id: addonPromotion.id } as RemovedAddonPromotionRequest).subscribe(() => {
+          Swal.fire({
+            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto promocje na dodatki!` : `Successfully removed addon promotion!`,
+            icon: 'success',
+            iconColor: 'green',
+            confirmButtonColor: 'green',
+            background: 'black',
+            color: 'white',
+            confirmButtonText: 'Ok',
+          });
+          this.loadAddonPromotions();
+        });
+      }
+    });
   }
 
   isMealTranslationAvailable(mealName: string): boolean {

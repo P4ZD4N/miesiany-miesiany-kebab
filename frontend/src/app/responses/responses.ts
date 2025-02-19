@@ -263,3 +263,8 @@ export interface UpdatedAddonPromotionResponse {
   status_code: number;
   message: string;
 }
+
+export interface RemovedAddonPromotionResponse {
+  status_code: number;
+  message: string;
+}

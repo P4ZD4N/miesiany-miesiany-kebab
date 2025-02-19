@@ -162,3 +162,7 @@ export interface UpdatedAddonPromotionRequest {
   updated_discount_percentage: number;
   updated_addon_names: string[];
 }
+
+export interface RemovedAddonPromotionRequest {
+  id: number;
+}

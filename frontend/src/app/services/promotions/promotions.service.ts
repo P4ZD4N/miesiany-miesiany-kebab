@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewAddonPromotionResponse, NewBeveragePromotionResponse, NewMealPromotionResponse, RemovedBeveragePromotionResponse, RemovedMealPromotionResponse, UpdatedAddonPromotionResponse, UpdatedBeveragePromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
+import { AddonPromotionResponse, BeveragePromotionResponse, MealPromotionResponse, NewAddonPromotionResponse, NewBeveragePromotionResponse, NewMealPromotionResponse, RemovedAddonPromotionResponse, RemovedBeveragePromotionResponse, RemovedMealPromotionResponse, UpdatedAddonPromotionResponse, UpdatedBeveragePromotionResponse, UpdatedMealPromotionResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedAddonPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
+import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedAddonPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedAddonPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -115,6 +115,16 @@ export class PromotionsService {
     });
   
     return this.http.put<UpdatedAddonPromotionResponse>(`${this.apiUrl}/update-addon-promotion`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  removeAddonPromotion(request: RemovedAddonPromotionRequest): Observable<RemovedAddonPromotionResponse> {
+  
+    const requestBody = { id: request.id };
+
+    return this.http.delete<RemovedAddonPromotionResponse>(`${this.apiUrl}/remove-addon-promotion`, { body: requestBody, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

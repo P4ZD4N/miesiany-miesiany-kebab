@@ -427,7 +427,8 @@
         </tr>
     </table>
 
-    <table class="addon-promotions-table">
+    <h2 *ngIf="addonPromotions.length === 0">{{ 'promotions.no_addon_promotions' | translate }}</h2>
+    <table *ngIf="addonPromotions.length !== 0" class="addon-promotions-table">
         <thead>
             <th *ngIf="isManager()"></th>
             <th>{{ 'promotions.promotion_description' | translate }}</th>
