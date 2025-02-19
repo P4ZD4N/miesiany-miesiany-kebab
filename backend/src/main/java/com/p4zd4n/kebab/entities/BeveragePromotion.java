@@ -1,5 +1,8 @@
 package com.p4zd4n.kebab.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.p4zd4n.kebab.enums.Size;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -16,6 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class BeveragePromotion extends WithTimestamp {
 
     @Id
@@ -30,6 +34,7 @@ public class BeveragePromotion extends WithTimestamp {
     private BigDecimal discountPercentage;
 
     @OneToMany(mappedBy = "promotion")
+    @JsonIgnore
     private List<Beverage> beverages = new ArrayList<>();
 
     @Builder

@@ -121,7 +121,7 @@ public class BeveragePromotionsService {
             List<Beverage> updatedBeverages = beverageRepository.findAll().stream()
                     .filter(beverage -> {
                         return request.updatedBeveragesWithCapacities().containsKey(beverage.getName()) &&
-                                request.updatedBeveragesWithCapacities().get(beverage.getName()).contains(beverage.getCapacity());
+                                request.updatedBeveragesWithCapacities().get(beverage.getName()).contains(beverage.getCapacity().stripTrailingZeros());
                     }).toList();
             List<Beverage> existingBeverages = new ArrayList<>(beveragePromotion.getBeverages());
 
