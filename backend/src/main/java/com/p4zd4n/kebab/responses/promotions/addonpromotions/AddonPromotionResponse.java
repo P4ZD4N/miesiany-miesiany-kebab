@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Builder
 public record AddonPromotionResponse(
+        Long id,
         String description,
         @JsonProperty("discount_percentage") BigDecimal discountPercentage,
         @JsonProperty("addon_names") Set<String> addonNames

@@ -54,6 +54,7 @@ public class AddonPromotionsService {
                 .collect(Collectors.toSet());
 
         return AddonPromotionResponse.builder()
+                .id(addonPromotion.getId())
                 .description(addonPromotion.getDescription())
                 .discountPercentage(addonPromotion.getDiscountPercentage())
                 .addonNames(addonNames)
