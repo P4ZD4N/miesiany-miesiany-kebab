@@ -198,7 +198,7 @@
             
             <ng-template #defaultName>
                 <span>
-                    <i class="fa-solid fa-utensils"></i> {{ beverage[0] }}
+                    <i class="fa-solid fa-martini-glass"></i> {{ beverage[0] }}
                 </span>
             </ng-template>
 
@@ -247,7 +247,7 @@
             
             <ng-template #defaultName>
                 <span>
-                    <i class="fa-solid fa-utensils"></i> {{ beverage[0] }}
+                    <i class="fa-solid fa-martini-glass"></i> {{ beverage[0] }}
                 </span>
             </ng-template>
 
@@ -297,16 +297,16 @@
                 <td>{{ beveragePromotion.discount_percentage }}%</td>
                 <td>
                     <ul *ngFor="let beverageWithCapacities of beveragePromotion.beverages_with_capacities | keyvalue">
-                        <li *ngIf="isBeverageTranslationAvailable(beverageWithCapacities.key); else defaultName">
+                        <li style="white-space: nowrap;" *ngIf="isBeverageTranslationAvailable(beverageWithCapacities.key); else defaultName">
                             <i class="fa-solid fa-martini-glass"></i> {{ 'menu.beverages.' + beverageWithCapacities.key | translate }}
                             <ul *ngFor="let capacity of beverageWithCapacities.value">
-                                <li>- {{ capacity }}</li>
+                                <li>• {{ capacity }} L</li>
                             </ul>
                         </li>
                         
                         <ng-template #defaultName>
                             <li>
-                                <i class="fa-solid fa-utensils"></i> {{ beverageWithCapacities.key }}
+                                <i class="fa-solid fa-martini-glass"></i> {{ beverageWithCapacities.key }}
                             </li>
                         </ng-template>
                     </ul>
