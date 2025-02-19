@@ -60,7 +60,7 @@ public class SecurityConfig {
                                 "/api/v1/promotions/update-meal-promotion",
                                 "/api/v1/promotions/remove-meal-promotion",
                                 "/api/v1/promotions/add-beverage-promotion",
-                                "/api/v1/promotions/update-meal-promotion",
+                                "/api/v1/promotions/update-beverage-promotion",
                                 "/api/v1/promotions/remove-beverage-promotion",
                                 "/api/v1/promotions/add-addon-promotion",
                                 "/api/v1/promotions/update-addon-promotion",
