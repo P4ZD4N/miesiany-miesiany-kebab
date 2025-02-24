@@ -29,6 +29,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final MealPromotionsRepository mealPromotionsRepository;
     private final BeveragePromotionsRepository beveragePromotionsRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
+    private final NewsletterRepository newsletterRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -41,7 +42,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             JobOfferRepository jobOfferRepository,
             MealPromotionsRepository mealPromotionsRepository,
             BeveragePromotionsRepository beveragePromotionsRepository,
-            AddonPromotionsRepository addonPromotionsRepository
+            AddonPromotionsRepository addonPromotionsRepository,
+            NewsletterRepository newsletterRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -54,6 +56,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.mealPromotionsRepository = mealPromotionsRepository;
         this.beveragePromotionsRepository = beveragePromotionsRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
+        this.newsletterRepository = newsletterRepository;
     }
 
     @Override
@@ -69,6 +72,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initContacts();
         initJobOffers();
         initPromotions();
+        initNewsletterSubscribers();
     }
 
     private void initOpeningHours() {
@@ -480,5 +484,15 @@ public class SampleDataInitializer implements CommandLineRunner {
                     addon.setPromotion(fetaPromotion);
                     addonRepository.save(addon);
                 });
+    }
+
+    private void initNewsletterSubscribers() {
+        NewsletterSubscriber newsletterSubscriber = NewsletterSubscriber.builder()
+                .subscriberFirstName("Wiktor")
+                .email("example@example.com")
+                .isActive(true)
+                .build();
+
+        newsletterRepository.save(newsletterSubscriber);
     }
 }
