@@ -490,6 +490,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         NewsletterSubscriber newsletterSubscriber = NewsletterSubscriber.builder()
                 .subscriberFirstName("Wiktor")
                 .email("example@example.com")
+                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
                 .isActive(true)
                 .build();
 
