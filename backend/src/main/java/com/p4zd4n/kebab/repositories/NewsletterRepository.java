@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface NewsletterRepository extends JpaRepository<NewsletterSubscriber, Long> {
     Optional<NewsletterSubscriber> findByEmail(String email);
+    Optional<NewsletterSubscriber> findByOtp(Integer otp);
 }
