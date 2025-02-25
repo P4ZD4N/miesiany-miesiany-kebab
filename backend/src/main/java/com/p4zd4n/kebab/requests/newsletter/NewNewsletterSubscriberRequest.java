@@ -1,10 +1,8 @@
 package com.p4zd4n.kebab.requests.newsletter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 
 @Builder
@@ -23,5 +21,9 @@ public record NewNewsletterSubscriberRequest(
             flags = Pattern.Flag.CASE_INSENSITIVE,
             message = "{email.invalidFormat}"
         )
-        String email
+        String email,
+
+        @JsonProperty("messages_language")
+        @NotNull(message = "{messagesLanguage.notNull}")
+        NewsletterMessagesLanguage newsletterMessagesLanguage
 ) {}
