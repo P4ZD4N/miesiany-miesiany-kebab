@@ -7,6 +7,7 @@ import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
 import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
 import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
 import com.p4zd4n.kebab.services.newsletter.NewsletterService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -66,7 +67,7 @@ public class NewsletterServiceTest {
     }
 
     @Test
-    public void addNewsletterSubscriber_ShouldAddSubscriber_WhenSubscriberWithTheSameEmailDoesNotExist() {
+    public void addNewsletterSubscriber_ShouldAddSubscriber_WhenSubscriberWithTheSameEmailDoesNotExist() throws MessagingException {
 
         NewNewsletterSubscriberRequest request = NewNewsletterSubscriberRequest.builder()
                 .firstName("Wiktor")
