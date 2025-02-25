@@ -1,6 +1,9 @@
 package com.p4zd4n.kebab.services.newsletter;
 
+import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.entities.NewsletterSubscriber;
+import com.p4zd4n.kebab.exceptions.alreadyexists.MealAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.SubscriberAlreadyExistsException;
 import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
 import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
@@ -10,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +53,17 @@ public class NewsletterService {
 
     public NewNewsletterSubscriberResponse addNewsletterSubscriber(NewNewsletterSubscriberRequest request) {
 
-        // TODO: P4ZD4N
+        Optional<NewsletterSubscriber> subscriber = newsletterRepository.findByEmail(request.email());
+
+        if (subscriber.isPresent()) throw new SubscriberAlreadyExistsException(request.email());
+
+        NewsletterSubscriber newSubscriber = NewsletterSubscriber.builder()
+                .email(request.email())
+                .subscriberFirstName(request.firstName())
+                .isActive(false)
+                .build();
+
+        newsletterRepository.save(newSubscriber);
 
         return NewNewsletterSubscriberResponse.builder()
                 .statusCode(HttpStatus.OK.value())

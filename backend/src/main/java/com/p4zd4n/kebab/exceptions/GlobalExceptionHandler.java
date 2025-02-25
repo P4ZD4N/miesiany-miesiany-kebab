@@ -543,4 +543,23 @@ public class GlobalExceptionHandler {
                         .message(message)
                         .build());
     }
+
+    @ExceptionHandler(SubscriberAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleSubscriberAlreadyExistsException(
+            SubscriberAlreadyExistsException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing subscriber email '{}'", request.getRequestURI(), exception.getEmail());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("subscriber.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
 }
