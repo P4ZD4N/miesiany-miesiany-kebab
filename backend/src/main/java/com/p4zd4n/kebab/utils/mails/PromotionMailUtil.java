@@ -8,6 +8,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,6 +24,7 @@ public class PromotionMailUtil {
         this.javaMailSender = javaMailSender;
     }
 
+    @Async
     public void sendEng(String recipient, Promotion promotion) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -54,6 +56,7 @@ public class PromotionMailUtil {
         javaMailSender.send(message);
     }
 
+    @Async
     public void sendPl(String recipient, Promotion promotion) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
