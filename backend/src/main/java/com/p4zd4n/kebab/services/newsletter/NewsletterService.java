@@ -1,9 +1,7 @@
 package com.p4zd4n.kebab.services.newsletter;
 
-import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.entities.NewsletterSubscriber;
 import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
-import com.p4zd4n.kebab.exceptions.alreadyexists.MealAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.alreadyexists.SubscriberAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
 import com.p4zd4n.kebab.exceptions.failed.OtpGenerationFailedException;
@@ -18,8 +16,8 @@ import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
 import com.p4zd4n.kebab.responses.newsletter.RegenerateOtpResponse;
 import com.p4zd4n.kebab.responses.newsletter.VerifyNewsletterSubscriptionResponse;
 import com.p4zd4n.kebab.utils.OtpUtil;
-import com.p4zd4n.kebab.utils.VerificationMailUtil;
-import com.p4zd4n.kebab.utils.WelcomeMailUtil;
+import com.p4zd4n.kebab.utils.mails.VerificationMailUtil;
+import com.p4zd4n.kebab.utils.mails.WelcomeMailUtil;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

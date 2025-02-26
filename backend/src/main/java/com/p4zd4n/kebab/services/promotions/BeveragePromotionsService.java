@@ -2,15 +2,20 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
+import com.p4zd4n.kebab.entities.NewsletterSubscriber;
+import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.notfound.BeveragePromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.BeveragePromotionsRepository;
 import com.p4zd4n.kebab.repositories.BeverageRepository;
+import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.NewBeveragePromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.UpdatedBeveragePromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
+import com.p4zd4n.kebab.utils.mails.PromotionMailUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,13 +32,19 @@ public class BeveragePromotionsService {
 
     private final BeveragePromotionsRepository beveragePromotionsRepository;
     private final BeverageRepository beverageRepository;
+    private final NewsletterRepository newsletterRepository;
+    private final PromotionMailUtil promotionMailUtil;
 
     public BeveragePromotionsService(
         BeveragePromotionsRepository beveragePromotionsRepository,
-        BeverageRepository beverageRepository
+        BeverageRepository beverageRepository,
+        NewsletterRepository newsletterRepository,
+        PromotionMailUtil promotionMailUtil
     ) {
         this.beveragePromotionsRepository = beveragePromotionsRepository;
         this.beverageRepository = beverageRepository;
+        this.newsletterRepository = newsletterRepository;
+        this.promotionMailUtil = promotionMailUtil;
     }
 
     public List<BeveragePromotionResponse> getBeveragePromotions() {
@@ -67,7 +78,7 @@ public class BeveragePromotionsService {
                 .build();
     }
 
-    public NewBeveragePromotionResponse addBeveragePromotion(NewBeveragePromotionRequest request) {
+    public NewBeveragePromotionResponse addBeveragePromotion(NewBeveragePromotionRequest request) throws MessagingException {
 
         BeveragePromotion beveragePromotion = BeveragePromotion.builder()
                 .description(request.description())
@@ -87,6 +98,13 @@ public class BeveragePromotionsService {
                     beverage.setPromotion(beveragePromotion);
                     beverageRepository.save(beverage);
                 });
+
+        for (NewsletterSubscriber subscriber : newsletterRepository.findAll()) {
+            if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
+                promotionMailUtil.sendEng(subscriber.getEmail(), savedBeveragePromotion);
+            else
+                promotionMailUtil.sendPl(subscriber.getEmail(), savedBeveragePromotion);
+        }
 
         return NewBeveragePromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())

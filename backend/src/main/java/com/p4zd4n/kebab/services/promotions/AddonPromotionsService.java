@@ -1,9 +1,11 @@
 package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.*;
+import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.notfound.AddonPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.AddonPromotionsRepository;
 import com.p4zd4n.kebab.repositories.AddonRepository;
+import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
@@ -11,6 +13,8 @@ import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionRe
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.RemovedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 
+import com.p4zd4n.kebab.utils.mails.PromotionMailUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,10 +30,19 @@ public class AddonPromotionsService {
 
     private final AddonRepository addonRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
+    private final NewsletterRepository newsletterRepository;
+    private final PromotionMailUtil promotionMailUtil;
 
-    public AddonPromotionsService(AddonRepository addonRepository, AddonPromotionsRepository addonPromotionsRepository) {
+    public AddonPromotionsService(
+            AddonRepository addonRepository,
+            AddonPromotionsRepository addonPromotionsRepository,
+            NewsletterRepository newsletterRepository,
+            PromotionMailUtil promotionMailUtil
+    ) {
         this.addonRepository = addonRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
+        this.newsletterRepository = newsletterRepository;
+        this.promotionMailUtil = promotionMailUtil;
     }
 
     public List<AddonPromotionResponse> getAddonPromotions() {
@@ -61,7 +74,7 @@ public class AddonPromotionsService {
                 .build();
     }
 
-    public NewAddonPromotionResponse addAddonPromotion(NewAddonPromotionRequest request) {
+    public NewAddonPromotionResponse addAddonPromotion(NewAddonPromotionRequest request) throws MessagingException {
 
         AddonPromotion addonPromotion = AddonPromotion.builder()
                 .description(request.description())
@@ -77,6 +90,13 @@ public class AddonPromotionsService {
                         addon.setPromotion(addonPromotion);
                         addonRepository.save(addon);
                     });
+
+        for (NewsletterSubscriber subscriber : newsletterRepository.findAll()) {
+            if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
+                promotionMailUtil.sendEng(subscriber.getEmail(), savedAddonPromotion);
+            else
+                promotionMailUtil.sendPl(subscriber.getEmail(), savedAddonPromotion);
+        }
 
         return NewAddonPromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())

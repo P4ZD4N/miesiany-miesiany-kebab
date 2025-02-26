@@ -28,6 +28,7 @@ import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotion
 import com.p4zd4n.kebab.services.promotions.AddonPromotionsService;
 import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +66,7 @@ public class PromotionsController {
     public ResponseEntity<NewMealPromotionResponse> addMealPromotion(
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewMealPromotionRequest request
-    ) {
+    ) throws MessagingException {
         if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
             throw new InvalidAcceptLanguageHeaderValue(language);
         }
@@ -120,7 +121,7 @@ public class PromotionsController {
     public ResponseEntity<NewBeveragePromotionResponse> addBeveragePromotion(
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewBeveragePromotionRequest request
-    ) {
+    ) throws MessagingException {
         if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
             throw new InvalidAcceptLanguageHeaderValue(language);
         }
@@ -176,7 +177,7 @@ public class PromotionsController {
     public ResponseEntity<NewAddonPromotionResponse> addAddonPromotion(
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewAddonPromotionRequest request
-    ) {
+    ) throws MessagingException {
         if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
             throw new InvalidAcceptLanguageHeaderValue(language);
         }

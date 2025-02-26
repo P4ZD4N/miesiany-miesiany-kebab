@@ -1,4 +1,4 @@
-package com.p4zd4n.kebab.utils;
+package com.p4zd4n.kebab.utils.mails;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

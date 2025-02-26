@@ -2,16 +2,21 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.entities.MealPromotion;
+import com.p4zd4n.kebab.entities.NewsletterSubscriber;
+import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.alreadyexists.MealPromotionAlreadyExists;
 import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
+import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
+import com.p4zd4n.kebab.utils.mails.PromotionMailUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,10 +31,19 @@ public class MealPromotionsService {
 
     private final MealRepository mealRepository;
     private final MealPromotionsRepository mealPromotionsRepository;
+    private final NewsletterRepository newsletterRepository;
+    private final PromotionMailUtil promotionMailUtil;
 
-    public MealPromotionsService(MealRepository mealRepository, MealPromotionsRepository mealPromotionsRepository) {
+    public MealPromotionsService(
+            MealRepository mealRepository,
+            MealPromotionsRepository mealPromotionsRepository,
+            NewsletterRepository newsletterRepository,
+            PromotionMailUtil promotionMailUtil
+    ) {
         this.mealRepository = mealRepository;
         this.mealPromotionsRepository = mealPromotionsRepository;
+        this.newsletterRepository = newsletterRepository;
+        this.promotionMailUtil = promotionMailUtil;
     }
 
     public List<MealPromotionResponse> getMealPromotions() {
@@ -62,7 +76,7 @@ public class MealPromotionsService {
                 .build();
     }
 
-    public NewMealPromotionResponse addMealPromotion(NewMealPromotionRequest request) {
+    public NewMealPromotionResponse addMealPromotion(NewMealPromotionRequest request) throws MessagingException {
 
         if (request.mealNames() != null && request.sizes() != null) {
             mealRepository.findAll().stream()
@@ -91,6 +105,13 @@ public class MealPromotionsService {
                         meal.getPromotions().add(mealPromotion);
                         mealRepository.save(meal);
                     });
+
+        for (NewsletterSubscriber subscriber : newsletterRepository.findAll()) {
+            if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
+                promotionMailUtil.sendEng(subscriber.getEmail(), savedMealPromotion);
+            else
+                promotionMailUtil.sendPl(subscriber.getEmail(), savedMealPromotion);
+        }
 
         return NewMealPromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())

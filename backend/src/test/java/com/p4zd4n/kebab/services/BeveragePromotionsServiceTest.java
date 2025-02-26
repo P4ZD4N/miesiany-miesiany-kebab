@@ -11,6 +11,7 @@ import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromo
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
 import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -66,7 +67,7 @@ public class BeveragePromotionsServiceTest {
     }
 
     @Test
-    public void addBeveragePromotion_ShouldAddBeverage_WhenValidRequestWithNullMapInRequest() {
+    public void addBeveragePromotion_ShouldAddBeverage_WhenValidRequestWithNullMapInRequest() throws MessagingException {
 
         NewBeveragePromotionRequest request = NewBeveragePromotionRequest.builder()
                 .description("-10%")
@@ -91,7 +92,7 @@ public class BeveragePromotionsServiceTest {
     }
 
     @Test
-    public void addBeveragePromotion_ShouldAddBeverage_WhenValidRequestWithNotNullMapInRequest() {
+    public void addBeveragePromotion_ShouldAddBeverage_WhenValidRequestWithNotNullMapInRequest() throws MessagingException {
 
         NewBeveragePromotionRequest request = NewBeveragePromotionRequest.builder()
                 .description("-10%")

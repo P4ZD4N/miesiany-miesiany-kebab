@@ -11,6 +11,7 @@ import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionRe
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.RemovedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.AddonPromotionsService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -66,7 +67,7 @@ public class AddonPromotionsServiceTest {
     }
 
     @Test
-    public void addAddonPromotion_ShouldAddAddonPromotion_WhenValidRequestWithNullSetInRequest() {
+    public void addAddonPromotion_ShouldAddAddonPromotion_WhenValidRequestWithNullSetInRequest() throws MessagingException {
 
         NewAddonPromotionRequest request = NewAddonPromotionRequest.builder()
                 .description("-10%")
@@ -91,7 +92,7 @@ public class AddonPromotionsServiceTest {
     }
 
     @Test
-    public void addAddonPromotion_ShouldAddAddonPromotion_WhenValidRequestWithNotNullSetInRequest() {
+    public void addAddonPromotion_ShouldAddAddonPromotion_WhenValidRequestWithNotNullSetInRequest() throws MessagingException {
 
         NewAddonPromotionRequest request = NewAddonPromotionRequest.builder()
                 .description("-10%")

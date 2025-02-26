@@ -3,7 +3,6 @@ package com.p4zd4n.kebab.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.p4zd4n.kebab.enums.Size;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class BeveragePromotion extends WithTimestamp {
+public class BeveragePromotion extends WithTimestamp implements Promotion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

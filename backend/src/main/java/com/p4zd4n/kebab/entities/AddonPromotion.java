@@ -19,7 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AddonPromotion extends WithTimestamp {
+public class AddonPromotion extends WithTimestamp implements Promotion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
