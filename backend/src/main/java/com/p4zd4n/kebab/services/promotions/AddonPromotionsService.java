@@ -91,7 +91,7 @@ public class AddonPromotionsService {
                         addonRepository.save(addon);
                     });
 
-        for (NewsletterSubscriber subscriber : newsletterRepository.findAll()) {
+        for (NewsletterSubscriber subscriber : newsletterRepository.findAllByIsActiveTrue()) {
             if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
                 promotionMailUtil.sendEng(subscriber, savedAddonPromotion);
             else
