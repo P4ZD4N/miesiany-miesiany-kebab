@@ -121,9 +121,9 @@ public class NewsletterService {
         newsletterRepository.save(subscriber);
 
         if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
-            welcomeMailUtil.sendEng(request.email());
+            welcomeMailUtil.sendEng(subscriber);
         else
-            welcomeMailUtil.sendPl(request.email());
+            welcomeMailUtil.sendPl(subscriber);
 
         return VerifyNewsletterSubscriptionResponse.builder()
                 .statusCode(HttpStatus.OK.value())

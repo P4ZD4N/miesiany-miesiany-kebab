@@ -1,9 +1,6 @@
 package com.p4zd4n.kebab.utils.mails;
 
-import com.p4zd4n.kebab.entities.AddonPromotion;
-import com.p4zd4n.kebab.entities.BeveragePromotion;
-import com.p4zd4n.kebab.entities.MealPromotion;
-import com.p4zd4n.kebab.entities.Promotion;
+import com.p4zd4n.kebab.entities.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,12 +22,12 @@ public class PromotionMailUtil {
     }
 
     @Async
-    public void sendEng(String recipient, Promotion promotion) throws MessagingException {
+    public void sendEng(NewsletterSubscriber subscriber, Promotion promotion) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true);
 
-        mimeMessageHelper.setTo(recipient);
+        mimeMessageHelper.setTo(subscriber.getEmail());
         mimeMessageHelper.setSubject(SUBJECT_ENG);
 
         if (promotion instanceof MealPromotion mealPromotion) {
@@ -57,12 +54,12 @@ public class PromotionMailUtil {
     }
 
     @Async
-    public void sendPl(String recipient, Promotion promotion) throws MessagingException {
+    public void sendPl(NewsletterSubscriber subscriber, Promotion promotion) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true);
 
-        mimeMessageHelper.setTo(recipient);
+        mimeMessageHelper.setTo(subscriber.getEmail());
         mimeMessageHelper.setSubject(SUBJECT_PL);
 
         if (promotion instanceof MealPromotion mealPromotion) {

@@ -93,9 +93,9 @@ public class AddonPromotionsService {
 
         for (NewsletterSubscriber subscriber : newsletterRepository.findAll()) {
             if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
-                promotionMailUtil.sendEng(subscriber.getEmail(), savedAddonPromotion);
+                promotionMailUtil.sendEng(subscriber, savedAddonPromotion);
             else
-                promotionMailUtil.sendPl(subscriber.getEmail(), savedAddonPromotion);
+                promotionMailUtil.sendPl(subscriber, savedAddonPromotion);
         }
 
         return NewAddonPromotionResponse.builder()

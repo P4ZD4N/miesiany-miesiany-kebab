@@ -101,9 +101,9 @@ public class BeveragePromotionsService {
 
         for (NewsletterSubscriber subscriber : newsletterRepository.findAll()) {
             if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
-                promotionMailUtil.sendEng(subscriber.getEmail(), savedBeveragePromotion);
+                promotionMailUtil.sendEng(subscriber, savedBeveragePromotion);
             else
-                promotionMailUtil.sendPl(subscriber.getEmail(), savedBeveragePromotion);
+                promotionMailUtil.sendPl(subscriber, savedBeveragePromotion);
         }
 
         return NewBeveragePromotionResponse.builder()
