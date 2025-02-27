@@ -96,6 +96,13 @@ public class MealPromotionsService {
                 .discountPercentage(request.discountPercentage())
                 .build();
 
+        if (request.mealNames() != null) {
+            List<Meal> meals = mealRepository.findAll().stream()
+                    .filter(meal -> request.mealNames().contains(meal.getName()))
+                    .toList();
+            mealPromotion.getMeals().addAll(meals);
+        }
+
         MealPromotion savedMealPromotion = mealPromotionsRepository.save(mealPromotion);
 
         if (request.mealNames() != null)

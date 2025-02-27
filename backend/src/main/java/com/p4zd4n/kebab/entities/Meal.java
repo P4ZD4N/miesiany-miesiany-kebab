@@ -42,7 +42,7 @@ public class Meal extends WithTimestamp {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "meal_prices", joinColumns = @JoinColumn(name = "meal_id"))
     @MapKeyColumn(name = "size")
     @Column(name = "price")
