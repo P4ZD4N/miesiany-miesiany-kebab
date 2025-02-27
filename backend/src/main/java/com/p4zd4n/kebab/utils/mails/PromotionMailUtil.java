@@ -59,11 +59,9 @@ public class PromotionMailUtil {
             String htmlContent = templateEngine.process("meal-promotion-mail", context);
             mimeMessageHelper.setText(htmlContent, true);
         } else if (promotion instanceof BeveragePromotion beveragePromotion) {
-            mimeMessageHelper.setText(
-                "New beverage promotion with " +
-                beveragePromotion.getDiscountPercentage() +
-                "% discount percentage is available!"
-            );
+            Context context = getBeveragePromotionContext(subscriber, beveragePromotion, NewsletterMessagesLanguage.ENGLISH);
+            String htmlContent = templateEngine.process("beverage-promotion-mail", context);
+            mimeMessageHelper.setText(htmlContent, true);
         } else if (promotion instanceof AddonPromotion addonPromotion) {
             mimeMessageHelper.setText(
                 "New addon promotion with " +
@@ -89,11 +87,9 @@ public class PromotionMailUtil {
             String htmlContent = templateEngine.process("meal-promotion-mail", context);
             mimeMessageHelper.setText(htmlContent, true);
         } else if (promotion instanceof BeveragePromotion beveragePromotion) {
-            mimeMessageHelper.setText(
-                "Nowa promocja na napoje z " +
-                beveragePromotion.getDiscountPercentage() +
-                "% zniżki jest dostępna!"
-            );
+            Context context = getBeveragePromotionContext(subscriber, beveragePromotion, NewsletterMessagesLanguage.POLISH);
+            String htmlContent = templateEngine.process("beverage-promotion-mail", context);
+            mimeMessageHelper.setText(htmlContent, true);
         } else if (promotion instanceof AddonPromotion addonPromotion) {
             mimeMessageHelper.setText(
                 "Nowa promocja na dodatki z " +
@@ -120,7 +116,7 @@ public class PromotionMailUtil {
                 "paragraph1", PARAGRAPH_1_ENG,
                 "paragraph2", PARAGRAPH_2_ENG,
                 "description", "Promotion description: " + mealPromotion.getDescription(),
-                "meals", mealPromotion.getMeals(),
+                "mealPromotion", mealPromotion,
                 "anchor1", ANCHOR_1_ENG
             ));
             return context;
@@ -133,6 +129,40 @@ public class PromotionMailUtil {
                 "paragraph2", PARAGRAPH_2_PL,
                 "description", "Opis promocji: " + mealPromotion.getDescription(),
                 "mealPromotion", mealPromotion,
+                "anchor1", ANCHOR_1_PL
+        ));
+
+        return context;
+    }
+
+    private Context getBeveragePromotionContext(
+            NewsletterSubscriber subscriber,
+            BeveragePromotion beveragePromotion,
+            NewsletterMessagesLanguage language
+    ) {
+
+        Context context = new Context();
+
+        if (language.equals(NewsletterMessagesLanguage.ENGLISH)) {
+            context.setVariables(Map.of(
+                    "heading1", HEADING_ENG + subscriber.getSubscriberFirstName() + "!",
+                    "heading2", "New beverage promotion",
+                    "paragraph1", PARAGRAPH_1_ENG,
+                    "paragraph2", PARAGRAPH_2_ENG,
+                    "description", "Promotion description: " + beveragePromotion.getDescription(),
+                    "beveragePromotion", beveragePromotion,
+                    "anchor1", ANCHOR_1_ENG
+            ));
+            return context;
+        }
+
+        context.setVariables(Map.of(
+                "heading1", HEADING_PL + subscriber.getSubscriberFirstName() + "!",
+                "heading2", "Nowa promocja na napoje",
+                "paragraph1", PARAGRAPH_1_PL,
+                "paragraph2", PARAGRAPH_2_PL,
+                "description", "Opis promocji: " + beveragePromotion.getDescription(),
+                "beveragePromotion", beveragePromotion,
                 "anchor1", ANCHOR_1_PL
         ));
 

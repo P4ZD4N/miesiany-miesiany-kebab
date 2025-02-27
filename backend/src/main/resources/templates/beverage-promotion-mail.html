@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal Promotion Mail Template</title>
+    <title>Beverage Promotion Mail Template</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,17 +51,17 @@
             color: #000000;
             text-decoration: none;
         }
-        .meals {
+        .beverages {
             margin: 25px 0;
         }
-        .meal {
+        .beverage {
             padding: 15px;
             margin-bottom: 15px;
             background-color: #f8f8f8;
             border-radius: 5px;
             border-left: 4px solid #e60000;
         }
-        .meal-size-container {
+        .beverage-capacity-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -70,11 +70,11 @@
             padding: 5px 0;
             border-bottom: 1px dashed #ddd;
         }
-        .meal-details {
+        .beverage-details {
             flex: 1;
             min-width: 200px;
         }
-        .meal-name {
+        .beverage-name {
             font-weight: bold;
             font-size: 18px;
             margin-bottom: 15px;
@@ -83,7 +83,7 @@
             padding-bottom: 5px;
             display: inline-block;
         }
-        .meal-sizes {
+        .beverage-capacity {
             color: #333;
             font-size: 16px;
             font-weight: bold;
@@ -140,7 +140,7 @@
             .email-container {
                 width: 100%;
             }
-            .meal-size-container {
+            .beverage-capacity-container {
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -168,17 +168,17 @@
         <div class="promotion-heading" th:text="${heading2}"></div>
         <div class="promotion-description" th:text="${description}"></div>
 
-        <div class="meals">
-            <div class="meal" th:each="meal : ${mealPromotion.meals}">
-                <div class="meal-name" th:text="${meal.name}"></div>
-                <div class="meal-size-container" th:each="size : ${mealPromotion.sizes}">
-                    <div class="meal-details">
-                        <div class="meal-sizes" th:text="${size}"></div>
+        <div class="beverages">
+            <div class="beverage" th:each="beverage : ${beveragePromotion.beverages}">
+                <div class="beverage-name" th:text="${beverage.name}"></div>
+                <div class="beverage-capacity-container">
+                    <div class="beverage-details">
+                        <div class="beverage-capacity" th:text="${beverage.capacity + ' L'}"></div>
                     </div>
                     <div class="price-container">
-                        <div class="old-price" th:text="${meal.prices[T(com.p4zd4n.kebab.enums.Size).valueOf(size)] + ' zł'}"></div>
-                        <div class="discount-badge" th:text="${'-' + mealPromotion.discountPercentage + '%'}"></div>
-                        <div class="new-price" th:text="${meal.prices[T(com.p4zd4n.kebab.enums.Size).valueOf(size)] - (meal.prices[T(com.p4zd4n.kebab.enums.Size).valueOf(size)] * mealPromotion.discountPercentage / 100)} + ' zł'"></div>
+                        <div class="old-price" th:text="${beverage.price + ' zł'}"></div>
+                        <div class="discount-badge" th:text="${'-' + beveragePromotion.discountPercentage + '%'}"></div>
+                        <div class="new-price" th:text="${beverage.price - (beverage.price * beveragePromotion.discountPercentage / 100)} + ' zł'"></div>
                     </div>
                 </div>
             </div>

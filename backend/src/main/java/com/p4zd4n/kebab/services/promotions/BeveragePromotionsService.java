@@ -85,6 +85,13 @@ public class BeveragePromotionsService {
                 .discountPercentage(request.discountPercentage())
                 .build();
 
+        if (request.beveragesWithCapacities() != null) {
+            List<Beverage> beverages = beverageRepository.findAll().stream()
+                    .filter(beverage -> request.beveragesWithCapacities().containsKey(beverage.getName()))
+                    .toList();
+            beveragePromotion.getBeverages().addAll(beverages);
+        }
+
         BeveragePromotion savedBeveragePromotion = beveragePromotionsRepository.save(beveragePromotion);
 
         if (request.beveragesWithCapacities() != null)
