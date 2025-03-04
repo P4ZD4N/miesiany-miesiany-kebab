@@ -4,7 +4,7 @@ import com.p4zd4n.kebab.entities.NewsletterSubscriber;
 import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.alreadyexists.SubscriberAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
-import com.p4zd4n.kebab.exceptions.failed.OtpGenerationFailedException;
+import com.p4zd4n.kebab.exceptions.failed.OtpRegenerationFailedException;
 import com.p4zd4n.kebab.exceptions.notfound.SubscriberNotFoundException;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.repositories.NewsletterRepository;
@@ -136,7 +136,11 @@ public class NewsletterService {
         NewsletterSubscriber subscriber = newsletterRepository.findByEmail(request.email())
                 .orElseThrow(() -> new SubscriberNotFoundException(request.email()));
 
-        Integer newOtp = generateOtpIfNotExists();
+        if (Duration.between(subscriber.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds() < OtpUtil.OTP_REGENERATION_TIME_SECONDS) {
+            throw new OtpRegenerationFailedException(OtpUtil.OTP_REGENERATION_TIME_SECONDS);
+        }
+
+        Integer newOtp = otpUtil.generateOtp();
 
         if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
             verificationMailUtil.sendEng(request.email(), newOtp);
@@ -151,20 +155,5 @@ public class NewsletterService {
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully regenerated otp for subscriber with email '" + request.email() + "'!")
                 .build();
-    }
-
-    private Integer generateOtpIfNotExists() {
-
-        Integer otp;
-        final int MAX_ATTEMPTS = 5;
-        int attempts = 0;
-
-        while (attempts < MAX_ATTEMPTS) {
-            otp = otpUtil.generateOtp();
-            if (newsletterRepository.findByOtp(otp).isEmpty()) return otp;
-            attempts++;
-        }
-
-        throw new OtpGenerationFailedException(MAX_ATTEMPTS);
     }
 }

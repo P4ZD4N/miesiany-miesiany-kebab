@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.exceptions;
 
 import com.p4zd4n.kebab.exceptions.alreadyexists.*;
 import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
+import com.p4zd4n.kebab.exceptions.failed.OtpRegenerationFailedException;
 import com.p4zd4n.kebab.exceptions.invalid.*;
 import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
@@ -624,6 +625,25 @@ public class GlobalExceptionHandler {
                         .builder()
                         .statusCode(HttpStatus.GONE.value())
                         .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(OtpRegenerationFailedException.class)
+    public ResponseEntity<ExceptionResponse> handleOtpRegenerationFailedException(
+            OtpRegenerationFailedException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} in less than {} seconds from last request", request.getRequestURI(), exception.getOtoRegenerationTimeSeconds());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("otp.regenerationFailed", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
                         .build());
     }
 }
