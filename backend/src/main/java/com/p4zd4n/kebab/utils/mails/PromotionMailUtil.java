@@ -63,11 +63,9 @@ public class PromotionMailUtil {
             String htmlContent = templateEngine.process("beverage-promotion-mail", context);
             mimeMessageHelper.setText(htmlContent, true);
         } else if (promotion instanceof AddonPromotion addonPromotion) {
-            mimeMessageHelper.setText(
-                "New addon promotion with " +
-                addonPromotion.getDiscountPercentage() +
-                "% discount percentage is available!"
-            );
+            Context context = getAddonPromotionContext(subscriber, addonPromotion, NewsletterMessagesLanguage.ENGLISH);
+            String htmlContent = templateEngine.process("addon-promotion-mail", context);
+            mimeMessageHelper.setText(htmlContent, true);
         }
 
         javaMailSender.send(message);
@@ -91,11 +89,9 @@ public class PromotionMailUtil {
             String htmlContent = templateEngine.process("beverage-promotion-mail", context);
             mimeMessageHelper.setText(htmlContent, true);
         } else if (promotion instanceof AddonPromotion addonPromotion) {
-            mimeMessageHelper.setText(
-                "Nowa promocja na dodatki z " +
-                addonPromotion.getDiscountPercentage() +
-                "% zniżki jest dostępna!"
-            );
+            Context context = getAddonPromotionContext(subscriber, addonPromotion, NewsletterMessagesLanguage.POLISH);
+            String htmlContent = templateEngine.process("addon-promotion-mail", context);
+            mimeMessageHelper.setText(htmlContent, true);
         }
 
         javaMailSender.send(message);
@@ -163,6 +159,39 @@ public class PromotionMailUtil {
                 "paragraph2", PARAGRAPH_2_PL,
                 "description", "Opis promocji: " + beveragePromotion.getDescription(),
                 "beveragePromotion", beveragePromotion,
+                "anchor1", ANCHOR_1_PL
+        ));
+
+        return context;
+    }
+
+    private Context getAddonPromotionContext(
+            NewsletterSubscriber subscriber,
+            AddonPromotion addonPromotion,
+            NewsletterMessagesLanguage language
+    ) {
+        Context context = new Context();
+
+        if (language.equals(NewsletterMessagesLanguage.ENGLISH)) {
+            context.setVariables(Map.of(
+                    "heading1", HEADING_ENG + subscriber.getSubscriberFirstName() + "!",
+                    "heading2", "New addon promotion",
+                    "paragraph1", PARAGRAPH_1_ENG,
+                    "paragraph2", PARAGRAPH_2_ENG,
+                    "description", "Promotion description: " + addonPromotion.getDescription(),
+                    "addonPromotion", addonPromotion,
+                    "anchor1", ANCHOR_1_ENG
+            ));
+            return context;
+        }
+
+        context.setVariables(Map.of(
+                "heading1", HEADING_PL + subscriber.getSubscriberFirstName() + "!",
+                "heading2", "Nowa promocja na dodatki",
+                "paragraph1", PARAGRAPH_1_PL,
+                "paragraph2", PARAGRAPH_2_PL,
+                "description", "Opis promocji: " + addonPromotion.getDescription(),
+                "addonPromotion", addonPromotion,
                 "anchor1", ANCHOR_1_PL
         ));
 

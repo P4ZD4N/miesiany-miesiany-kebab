@@ -81,6 +81,13 @@ public class AddonPromotionsService {
                 .discountPercentage(request.discountPercentage())
                 .build();
 
+        if (request.addonNames() != null) {
+            List<Addon> addons = addonRepository.findAll().stream()
+                    .filter(addon -> request.addonNames().contains(addon.getName()))
+                    .toList();
+            addonPromotion.getAddons().addAll(addons);
+        }
+
         AddonPromotion savedAddonPromotion = addonPromotionsRepository.save(addonPromotion);
 
         if (request.addonNames() != null)
