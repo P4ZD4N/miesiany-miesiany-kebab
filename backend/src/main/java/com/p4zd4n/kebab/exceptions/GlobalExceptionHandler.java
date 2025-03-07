@@ -597,34 +597,34 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(OtpNotMatchesException.class)
-    public ResponseEntity<ExceptionResponse> handleOtpNotMatchesException(
-            OtpNotMatchesException exception,
-            HttpServletRequest request
-    ) {
+    public ResponseEntity<ExceptionResponse> handleOtpNotMatchesException(HttpServletRequest request) {
         log.error("Attempted request to {} with not matching OTP", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("otp.notMatching", null, locale);
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.CONFLICT.value())
-                        .message(exception.getMessage())
+                        .message(message)
                         .build());
     }
 
     @ExceptionHandler(OtpExpiredException.class)
-    public ResponseEntity<ExceptionResponse> handleOtpExpiredException(
-            OtpExpiredException exception,
-            HttpServletRequest request
-    ) {
+    public ResponseEntity<ExceptionResponse> handleOtpExpiredException(HttpServletRequest request) {
         log.error("Attempted request to {} with expired OTP", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("otp.expired", null, locale);
 
         return ResponseEntity
                 .status(HttpStatus.GONE)
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.GONE.value())
-                        .message(exception.getMessage())
+                        .message(message)
                         .build());
     }
 
