@@ -3,11 +3,9 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
 import com.p4zd4n.kebab.requests.newsletter.RegenerateOtpRequest;
+import com.p4zd4n.kebab.requests.newsletter.UnsubscribeRequest;
 import com.p4zd4n.kebab.requests.newsletter.VerifyNewsletterSubscriptionRequest;
-import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
-import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
-import com.p4zd4n.kebab.responses.newsletter.RegenerateOtpResponse;
-import com.p4zd4n.kebab.responses.newsletter.VerifyNewsletterSubscriptionResponse;
+import com.p4zd4n.kebab.responses.newsletter.*;
 import com.p4zd4n.kebab.services.newsletter.NewsletterService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -85,6 +83,24 @@ public class NewsletterController {
         RegenerateOtpResponse response = newsletterService.regenerateOtp(request);
 
         log.info("Successfully regenerated otp");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/unsubscribe")
+    public ResponseEntity<UnsubscribeResponse> unsubscribe(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UnsubscribeRequest request
+    ) throws MessagingException {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received unsubscribe request from user with email '{}'", request.email());
+
+        UnsubscribeResponse response = newsletterService.unsubscribe(request);
+
+        log.info("User with '{}' email successfully unsubscribed newsletter", request.email());
 
         return ResponseEntity.ok(response);
     }

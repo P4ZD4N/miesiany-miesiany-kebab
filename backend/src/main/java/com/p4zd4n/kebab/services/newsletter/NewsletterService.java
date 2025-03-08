@@ -10,12 +10,11 @@ import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
 import com.p4zd4n.kebab.requests.newsletter.RegenerateOtpRequest;
+import com.p4zd4n.kebab.requests.newsletter.UnsubscribeRequest;
 import com.p4zd4n.kebab.requests.newsletter.VerifyNewsletterSubscriptionRequest;
-import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
-import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
-import com.p4zd4n.kebab.responses.newsletter.RegenerateOtpResponse;
-import com.p4zd4n.kebab.responses.newsletter.VerifyNewsletterSubscriptionResponse;
+import com.p4zd4n.kebab.responses.newsletter.*;
 import com.p4zd4n.kebab.utils.OtpUtil;
+import com.p4zd4n.kebab.utils.mails.GoodbyeMailUtil;
 import com.p4zd4n.kebab.utils.mails.VerificationMailUtil;
 import com.p4zd4n.kebab.utils.mails.WelcomeMailUtil;
 import jakarta.mail.MessagingException;
@@ -37,17 +36,20 @@ public class NewsletterService {
     private final OtpUtil otpUtil;
     private final VerificationMailUtil verificationMailUtil;
     private final WelcomeMailUtil welcomeMailUtil;
+    private final GoodbyeMailUtil goodbyeMailUtil;
 
     public NewsletterService(
             NewsletterRepository newsletterRepository,
             OtpUtil otpUtil,
             VerificationMailUtil verificationMailUtil,
-            WelcomeMailUtil welcomeMailUtil
+            WelcomeMailUtil welcomeMailUtil,
+            GoodbyeMailUtil goodbyeMailUtil
     ) {
         this.newsletterRepository = newsletterRepository;
         this.otpUtil = otpUtil;
         this.verificationMailUtil = verificationMailUtil;
         this.welcomeMailUtil = welcomeMailUtil;
+        this.goodbyeMailUtil = goodbyeMailUtil;
     }
 
     public List<NewsletterSubscriberResponse> getSubscribers() {
@@ -154,6 +156,24 @@ public class NewsletterService {
         return RegenerateOtpResponse.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully regenerated otp for subscriber with email '" + request.email() + "'!")
+                .build();
+    }
+
+    public UnsubscribeResponse unsubscribe(UnsubscribeRequest request) throws MessagingException {
+
+        NewsletterSubscriber subscriber = newsletterRepository.findByEmail(request.email())
+                .orElseThrow(() -> new SubscriberNotFoundException(request.email()));
+
+        if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
+            goodbyeMailUtil.sendEng(subscriber);
+        else
+            goodbyeMailUtil.sendPl(subscriber);
+
+        newsletterRepository.delete(subscriber);
+
+        return UnsubscribeResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully deleted subscriber with email '" + request.email() + "'!")
                 .build();
     }
 }
