@@ -138,7 +138,7 @@
         </tr>
     </table>
 
-    <h2 *ngIf="mealPromotions.length == 0">{{ 'promotions.no_meal_promotions' | translate }}</h2>
+    <p class="no-promotion" *ngIf="mealPromotions.length == 0">{{ 'promotions.no_meal_promotions' | translate }}</p>
     <table *ngIf="mealPromotions.length != 0" class="meal-promotions-table">
         <thead>
             <th *ngIf="isManager()"></th>
@@ -279,7 +279,7 @@
         </tr>
     </table>
 
-    <h2 *ngIf="beveragePromotions.length === 0">{{ 'promotions.no_beverage_promotions' | translate }}</h2>
+    <p class="no-promotion" *ngIf="beveragePromotions.length === 0">{{ 'promotions.no_beverage_promotions' | translate }}</p>
     <table *ngIf="beveragePromotions.length !== 0" class="beverage-promotions-table">
         <thead>
             <th *ngIf="isManager()"></th>
@@ -427,7 +427,7 @@
         </tr>
     </table>
 
-    <h2 *ngIf="addonPromotions.length === 0">{{ 'promotions.no_addon_promotions' | translate }}</h2>
+    <p class="no-promotion" *ngIf="addonPromotions.length === 0">{{ 'promotions.no_addon_promotions' | translate }}</p>
     <table *ngIf="addonPromotions.length !== 0" class="addon-promotions-table">
         <thead>
             <th *ngIf="isManager()"></th>
@@ -459,4 +459,8 @@
             </tr>
         </tbody>
     </table>
+
+    <p class="newsletter-paragraph" *ngIf="!isManager()">{{ 'promotions.paragraph_bottom' | translate }}</p>
+
+    <button class="btn btn-success" *ngIf="!isManager()" (click)="startSigningUpToNewsletter()">{{ 'promotions.buttons.sign_up' | translate }}</button>
 </section>

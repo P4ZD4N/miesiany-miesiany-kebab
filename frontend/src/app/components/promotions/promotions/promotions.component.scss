@@ -17,12 +17,27 @@
     font-size: 24px;
 }
 
+.newsletter-paragraph {
+    margin-top: 5rem;
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+}
+
 .x-promotions {
     margin-top: 5rem;
     width: 40%;
     text-align: center;
     color: white;
     font-size: 32px;
+}
+
+.no-promotion {
+    width: 40%;
+    text-align: center;
+    color: red;
+    font-size: 24px;
 }
 
 .button-update,.button-cancel, .button-accept, .button-remove {
@@ -61,16 +76,16 @@
     color: rgb(126, 15, 15);
 }
 
+::ng-deep .custom-validation-message {
+    background-color: #141414 !important;
+    color: #F27474 !important;
+    padding: 8px !important;
+    margin-top: 10px !important;
+}
+
 h1 {
     color: red;
     text-align: center;
-}
-
-h2 {
-    width: 40%;
-    text-align: center;
-    color: red;
-    font-size: 28px;
 }
 
 thead {

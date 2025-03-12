@@ -10,3 +10,15 @@ body {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.swal-radio-container {
+  background-color: #141414 !important;
+}
+
+.swal-radio-container label {
+  color: white !important;
+}
+
+.swal-radio-container input[type="radio"] {
+  accent-color: red; 
+}

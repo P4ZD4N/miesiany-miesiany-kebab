@@ -275,3 +275,18 @@ export interface RemovedAddonPromotionResponse {
   status_code: number;
   message: string;
 }
+
+export interface NewNewsletterSubscriberResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface VerifyNewsletterSubscriptionResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RegenerateOtpResponse {
+  status_code: number;
+  message: string;
+}

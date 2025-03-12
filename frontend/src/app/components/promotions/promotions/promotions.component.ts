@@ -6,11 +6,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { AddonPromotionResponse, AddonResponse, BeveragePromotionResponse, BeverageResponse, MealPromotionResponse, MealResponse } from '../../../responses/responses';
 import { CommonModule } from '@angular/common';
-import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, RemovedAddonPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedAddonPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest } from '../../../requests/requests';
+import { NewAddonPromotionRequest, NewBeveragePromotionRequest, NewMealPromotionRequest, NewNewsletterSubscriberRequest, RegenerateOtpRequest, RemovedAddonPromotionRequest, RemovedBeveragePromotionRequest, RemovedMealPromotionRequest, UpdatedAddonPromotionRequest, UpdatedBeveragePromotionRequest, UpdatedMealPromotionRequest, VerifyNewsletterSubscriptionRequest } from '../../../requests/requests';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Size } from '../../../enums/size.enum';
 import { MenuService } from '../../../services/menu/menu.service';
 import Swal from 'sweetalert2';
+import { NewsletterService } from '../../../services/newsletter/newsletter.service';
 
 @Component({
   selector: 'app-promotions',
@@ -74,6 +75,7 @@ export class PromotionsComponent implements OnInit {
       private langService: LangService,
       private translate: TranslateService,
       private menuService: MenuService, 
+      private newsletterService: NewsletterService
     ) {
       this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
         this.hideErrorMessages();
@@ -637,6 +639,401 @@ export class PromotionsComponent implements OnInit {
           });
           this.loadAddonPromotions();
         });
+      }
+    });
+  }
+
+  async startSigningUpToNewsletter(): Promise<void> {
+    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+
+    const { value: firstName } = await Swal.fire({
+      title: this.langService.currentLang === 'pl' ? `Czesc!` : `Hi!`,
+      text: this.langService.currentLang === 'pl' ? `Podaj swoje imie :)` : `Enter your name :)`,
+      input: "text",
+      inputPlaceholder: this.langService.currentLang === 'pl' ? `Twoje imie` : `Your name`,
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: '#198754',
+      showCancelButton: true,
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+    });
+
+    if (firstName) {
+      this.startEnteringNewsletterEmail(String(firstName).charAt(0).toUpperCase() + String(firstName).slice(1).toLocaleLowerCase());
+    }
+  }
+
+  async startEnteringNewsletterEmail(firstName: string): Promise<void> {
+    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const errorText = this.langService.currentLang === 'pl' ? 'Podaj poprawny adres email' : 'Please enter a valid email';
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const { value: email } = await Swal.fire({
+      title: this.langService.currentLang === 'pl' ? `Milo Cie poznac ${firstName}!` : `Nice to meet you ${firstName}!`,
+      input: "email",
+      inputLabel: this.langService.currentLang === 'pl' ? `Podaj swoj email` : `Enter your email`,
+      inputPlaceholder: this.langService.currentLang === 'pl' ? `Twoj email` : `Your email`,
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: '#198754',
+      showCancelButton: true,
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+      customClass: {
+        validationMessage: 'custom-validation-message',
+      },
+      inputValidator: (value) => {
+        if (!value || !emailRegex.test(value)) {
+          return errorText;
+        }
+
+        return null;
+      },
+    });
+    
+    if (email) {
+      this.startChoosingNewsletterLanguage(firstName, email)
+    }
+  }
+
+  async startChoosingNewsletterLanguage(firstName: string, email: string): Promise<void> {
+    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac jezyk' : 'Please select a language';
+
+    const inputOptions = new Promise((resolve) => {
+      resolve({
+        "POLISH": this.langService.currentLang === 'pl' ? `🇵🇱 Polski` : `🇵🇱 Polish`,
+        "ENGLISH": this.langService.currentLang === 'pl' ? `🇺🇸 Angielski` : `🇺🇸 English`
+      });
+    });
+
+    const { value: language } = await Swal.fire({
+      title: `${firstName}!`,
+      text:this.langService.currentLang === 'pl' ? `Wybierz jezyk, w jakim chcesz otrzymywac wiadomosci!` : `Choose language, in which you would like to receive messages!`,
+      input: "radio",
+      inputOptions,
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: '#198754',
+      showCancelButton: true,
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+      customClass: {
+        validationMessage: 'custom-validation-message',
+        input: 'swal-radio-container'
+      },
+      inputValidator: (value) => {
+        if (!value) {
+          return errorText;
+        }
+        return null;
+      },
+    });
+    
+    if (language) {
+      this.subscribeNewsletter({
+        first_name: firstName,
+        email: email,
+        messages_language: language
+      });
+    }
+  }
+
+  async subscribeNewsletter(request: NewNewsletterSubscriberRequest): Promise<void> {
+
+    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const regenerateButtonText = this.langService.currentLang === 'pl' ? 'Nowy kod' : 'New code';
+
+    this.newsletterService.subscribe(request).subscribe({
+      next: async (response) => {
+        const otp = await Swal.fire({
+          allowOutsideClick: false,
+          title: this.langService.currentLang === 'pl' ? 
+            'Potwierdz subskrypcje!' : 
+            'Confirm subscription!',
+          input: "text",
+          text: this.langService.currentLang === 'pl' ? 
+            'Wyslalismy do Ciebie wiadomosc email, w ktorej znajdziesz kod. Wpisz go ponizej' : 
+            'We sent to you email message, in which you can find code. Enter it below',
+          inputPlaceholder: this.langService.currentLang === 'pl' ? `6-cyfrowy kod` : `6-digit code`,
+          confirmButtonColor: 'green',
+          showCancelButton: true,
+          cancelButtonText: cancelButtonText,
+          cancelButtonColor: 'red',
+          showDenyButton: true,
+          denyButtonText: regenerateButtonText, 
+          denyButtonColor: '#007bff',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+          inputValidator: (value) => {
+            if (!value) {
+              return this.langService.currentLang === 'pl' ? 
+                'Musisz wprowadzic kod!' : 
+                'You need to enter the code!';
+            }
+            
+            if (value.length !== 6) {
+              return this.langService.currentLang === 'pl' ? 
+                'Kod musi miec dokladnie 6 cyfr!' : 
+                'Code must be exactly 6 digits!';
+            }
+            
+            if (!/^\d+$/.test(value)) {
+              return this.langService.currentLang === 'pl' ? 
+                'Kod moze zawierac tylko cyfry!' : 
+                'Code can only contain digits!';
+            }
+            
+            return null;
+          },
+          customClass: {
+            validationMessage: 'custom-validation-message'
+          },
+        });
+
+        if (otp.isConfirmed && otp.value) {
+          this.verifySubscription({
+            otp: Number(otp.value),
+            email: request.email
+          });
+        } else if (otp.isDenied) {
+          this.regenerateOtp({
+            email: request.email
+          });
+        }
+      },
+      error: async (error) => {
+        this.handleError(error);
+        await Swal.fire({
+          title: this.langService.currentLang === 'pl' ? 
+            'Wystapil blad' : 
+            'Error occured',
+          text: error.errorMessages.message,
+          icon: 'error',
+          iconColor: 'red',
+          confirmButtonColor: 'red',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+      }
+    });
+  }
+
+  verifySubscription(request: VerifyNewsletterSubscriptionRequest) {
+    this.newsletterService.verifySubscription(request).subscribe({
+      next: async (response) => {
+        await Swal.fire({
+          title: this.langService.currentLang === 'pl' ? 
+            'Subskrypcja potwierdzona!' : 
+            'Subscription confirmed!',
+          text: this.langService.currentLang === 'pl' ? 
+            'Dziekujemy, ze chcesz byc czescia kebabowej spolecznosci! Mamy nadzieje, ze przyszle promocje Cie zainteresuja :)' : 
+            'Thank you for your desire to be part of the kebab community! We hope that future promotions will be interesting for you :)',
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+      },
+      error: async (error) => {
+        const errorMessage = error.errorMessages?.message || 
+                             (this.langService.currentLang === 'pl' ? 
+                             'Wystapil blad. Sprawdz kod i sprobuj ponownie.' : 
+                             'A validation error occurred. Check code and try again.');
+        const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+        const regenerateButtonText = this.langService.currentLang === 'pl' ? 'Nowy kod' : 'New code';
+
+        const otp = await Swal.fire({
+          allowOutsideClick: false,
+          title: this.langService.currentLang === 'pl' ? 
+            'Sprobuj ponownie!' : 
+            'Try again!',
+          input: 'text',
+          text: errorMessage,
+          inputPlaceholder: this.langService.currentLang === 'pl' ? 
+            '6-cyfrowy kod' : 
+            '6-digit code',
+          confirmButtonColor: 'green',
+          showCancelButton: true,
+          cancelButtonColor: 'red',
+          cancelButtonText: cancelButtonText,
+          showDenyButton: true,
+          denyButtonText: regenerateButtonText, 
+          denyButtonColor: '#007bff',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+          inputValidator: (value) => {
+            if (!value) {
+              return this.langService.currentLang === 'pl' ? 
+                'Musisz wprowadzic kod!' : 
+                'You need to enter the code!';
+            }
+            if (value.length !== 6) {
+              return this.langService.currentLang === 'pl' ? 
+                'Kod musi miec dokladnie 6 cyfr!' : 
+                'Code must be exactly 6 digits!';
+            }
+            if (!/^\d+$/.test(value)) {
+              return this.langService.currentLang === 'pl' ? 
+                'Kod moze zawierac tylko cyfry!' : 
+                'Code can only contain digits!';
+            }
+            return null;
+          },
+          customClass: {
+            validationMessage: 'custom-validation-message'
+          },
+        });
+
+        if (otp.isConfirmed && otp.value) {
+          this.verifySubscription({
+            otp: otp.value,
+            email: request.email
+          });
+        } else if (otp.isDenied) {
+          this.regenerateOtp({
+            email: request.email
+          });
+        }
+      }
+    });
+  }
+
+  regenerateOtp(request: RegenerateOtpRequest) {
+
+    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const regenerateButtonText = this.langService.currentLang === 'pl' ? 'Nowy kod' : 'New code';
+
+    this.newsletterService.regenerateOtp(request).subscribe({
+      next: async (response) => {
+        const otp = await Swal.fire({
+          allowOutsideClick: false,
+          title: this.langService.currentLang === 'pl' ? 
+            'Nowy kod wygenerowany!' : 
+            'New code generated!',
+          input: "text",
+          text: this.langService.currentLang === 'pl' ? 
+            'Wyslalismy do Ciebie wiadomosc email, w ktorej znajdziesz nowy kod. Wpisz go ponizej' : 
+            'We sent to you email message, in which you can find new code. Enter it below',
+          inputPlaceholder: this.langService.currentLang === 'pl' ? `6-cyfrowy kod` : `6-digit code`,
+          confirmButtonColor: 'green',
+          showCancelButton: true,
+          cancelButtonText: cancelButtonText,
+          cancelButtonColor: 'red',
+          showDenyButton: true,
+          denyButtonText: regenerateButtonText, 
+          denyButtonColor: '#007bff',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+          inputValidator: (value) => {
+            if (!value) {
+              return this.langService.currentLang === 'pl' ? 
+                'Musisz wprowadzic kod!' : 
+                'You need to enter the code!';
+            }
+            
+            if (value.length !== 6) {
+              return this.langService.currentLang === 'pl' ? 
+                'Kod musi miec dokladnie 6 cyfr!' : 
+                'Code must be exactly 6 digits!';
+            }
+            
+            if (!/^\d+$/.test(value)) {
+              return this.langService.currentLang === 'pl' ? 
+                'Kod moze zawierac tylko cyfry!' : 
+                'Code can only contain digits!';
+            }
+            
+            return null;
+          },
+          customClass: {
+            validationMessage: 'custom-validation-message'
+          },
+        });
+
+        if (otp.isConfirmed && otp.value) {
+          this.verifySubscription({
+            otp: Number(otp.value),
+            email: request.email
+          });
+        } else if (otp.isDenied) {
+          this.regenerateOtp({
+            email: request.email
+          });
+        }
+      },
+      error: async (error) => {
+        const errorMessage = error.errorMessages?.message || 
+                             (this.langService.currentLang === 'pl' ? 
+                             'Wystapil blad. Sprawdz kod i sprobuj ponownie.' : 
+                             'A validation error occurred. Check code and try again.');
+        const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+        const regenerateButtonText = this.langService.currentLang === 'pl' ? 'Nowy kod' : 'New code';
+
+        const otp = await Swal.fire({
+          allowOutsideClick: false,
+          title: this.langService.currentLang === 'pl' ? 
+            'Sprobuj ponownie!' : 
+            'Try again!',
+          input: 'text',
+          text: errorMessage,
+          inputPlaceholder: this.langService.currentLang === 'pl' ? 
+            '6-cyfrowy kod' : 
+            '6-digit code',
+          confirmButtonColor: 'green',
+          showCancelButton: true,
+          cancelButtonColor: 'red',
+          cancelButtonText: cancelButtonText,
+          showDenyButton: true,
+          denyButtonText: regenerateButtonText, 
+          denyButtonColor: '#007bff',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+          inputValidator: (value) => {
+            if (!value) {
+              return this.langService.currentLang === 'pl' ? 
+                'Musisz wprowadzic kod!' : 
+                'You need to enter the code!';
+            }
+            if (value.length !== 6) {
+              return this.langService.currentLang === 'pl' ? 
+                'Kod musi miec dokladnie 6 cyfr!' : 
+                'Code must be exactly 6 digits!';
+            }
+            if (!/^\d+$/.test(value)) {
+              return this.langService.currentLang === 'pl' ? 
+                'Kod moze zawierac tylko cyfry!' : 
+                'Code can only contain digits!';
+            }
+            return null;
+          },
+          customClass: {
+            validationMessage: 'custom-validation-message'
+          },
+        });
+
+        if (otp.isConfirmed && otp.value) {
+          this.verifySubscription({
+            otp: otp.value,
+            email: request.email
+          });
+        } else if (otp.isDenied) {
+          this.regenerateOtp({
+            email: request.email
+          });
+        }
       }
     });
   }
