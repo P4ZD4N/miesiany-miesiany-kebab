@@ -72,8 +72,8 @@ public class WelcomeMailUtil {
                     "heading", HEADING_ENG + subscriber.getSubscriberFirstName() + "!",
                     "paragraph1", PARAGRAPH_1_ENG,
                     "paragraph2", PARAGRAPH_2_ENG,
-                    "anchor1", ANCHOR_1_ENG
-
+                    "anchor1", ANCHOR_1_ENG,
+                    "subscriber", subscriber
             ));
             return context;
         }
@@ -82,7 +82,8 @@ public class WelcomeMailUtil {
                 "heading", HEADING_PL + subscriber.getSubscriberFirstName() + "!",
                 "paragraph1", PARAGRAPH_1_PL,
                 "paragraph2", PARAGRAPH_2_PL,
-                "anchor1", ANCHOR_1_PL
+                "anchor1", ANCHOR_1_PL,
+                "subscriber", subscriber
         ));
 
         return context;

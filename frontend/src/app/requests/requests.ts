@@ -182,3 +182,7 @@ export interface VerifyNewsletterSubscriptionRequest {
 export interface RegenerateOtpRequest {
   email: string;
 }
+
+export interface UnsubscribeRequest {
+  email: string;
+}

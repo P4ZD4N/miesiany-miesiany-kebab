@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewNewsletterSubscriberRequest, RegenerateOtpRequest, VerifyNewsletterSubscriptionRequest } from '../../requests/requests';
-import { NewNewsletterSubscriberResponse, RegenerateOtpResponse, VerifyNewsletterSubscriptionResponse } from '../../responses/responses';
+import { NewNewsletterSubscriberRequest, RegenerateOtpRequest, UnsubscribeRequest, VerifyNewsletterSubscriptionRequest } from '../../requests/requests';
+import { NewNewsletterSubscriberResponse, RegenerateOtpResponse, UnsubscribeResponse, VerifyNewsletterSubscriptionResponse } from '../../responses/responses';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +44,18 @@ export class NewsletterService {
     });
       
     return this.http.put<RegenerateOtpResponse>(`${this.apiUrl}/regenerate-otp`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  unsubscribe(request: UnsubscribeRequest): Observable<UnsubscribeResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+      
+    return this.http.post<UnsubscribeResponse>(`${this.apiUrl}/unsubscribe`, request, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

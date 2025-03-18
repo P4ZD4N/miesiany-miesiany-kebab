@@ -1,0 +1,36 @@
+.unsubscribe {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+p {
+    width: 40%;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+}
+
+.button-yes {
+    color: rgb(0, 255, 85);
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+        color: rgb(0, 102, 34);
+    }
+}
+
+.error {
+    font-size: 24px;
+    margin-top: 1rem;
+    color: rgb(126, 15, 15);
+}

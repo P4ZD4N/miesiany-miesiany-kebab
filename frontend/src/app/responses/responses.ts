@@ -290,3 +290,8 @@ export interface RegenerateOtpResponse {
   status_code: number;
   message: string;
 }
+
+export interface UnsubscribeResponse {
+  status_code: number;
+  message: string;
+}

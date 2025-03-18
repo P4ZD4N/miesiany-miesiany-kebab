@@ -262,5 +262,12 @@
         "no_meal_promotions": "Aktualnie brak promocji na dania! Zapisz sie na newsletter, aby nie przegapic okazji!",
         "no_beverage_promotions": "Aktualnie brak promocji na napoje! Zapisz sie na newsletter, aby nie przegapic okazji!",
         "no_addon_promotions": "Aktualnie brak promocji na dodatki! Zapisz sie na newsletter, aby nie przegapic okazji!"
+    },
+    "unsubscribe": {
+        "headline": "Drogi Kliencie",
+        "paragraph_top": "Czy jestes pewny, ze chcesz odsubskrybowac nasz newsletter?",
+        "buttons": {
+            "yes": "Tak, wypisz mnie"
+        }
     }
 }

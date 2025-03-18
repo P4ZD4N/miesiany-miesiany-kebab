@@ -262,5 +262,12 @@
         "no_meal_promotions": "Currently no meal promotions! Sign up for our newsletter to don't miss occasions!",
         "no_beverage_promotions": "Currently no beverage promotions! Sign up for our newsletter to don't miss occasions!",
         "no_addon_promotions": "Currently no addon promotions! Sign up for our newsletter to don't miss occasions!"
+    },
+    "unsubscribe": {
+        "headline": "Dear Customer",
+        "paragraph_top": "Are you sure you want to unsubscribe our newsletter?",
+        "buttons": {
+            "yes": "Yes, sign me out"
+        }
     }
 }

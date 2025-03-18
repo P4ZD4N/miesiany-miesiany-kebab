@@ -113,7 +113,8 @@ public class PromotionMailUtil {
                 "paragraph2", PARAGRAPH_2_ENG,
                 "description", "Promotion description: " + mealPromotion.getDescription(),
                 "mealPromotion", mealPromotion,
-                "anchor1", ANCHOR_1_ENG
+                "anchor1", ANCHOR_1_ENG,
+                "subscriber", subscriber
             ));
             return context;
         }
@@ -125,7 +126,8 @@ public class PromotionMailUtil {
                 "paragraph2", PARAGRAPH_2_PL,
                 "description", "Opis promocji: " + mealPromotion.getDescription(),
                 "mealPromotion", mealPromotion,
-                "anchor1", ANCHOR_1_PL
+                "anchor1", ANCHOR_1_PL,
+                "subscriber", subscriber
         ));
 
         return context;
@@ -147,7 +149,8 @@ public class PromotionMailUtil {
                     "paragraph2", PARAGRAPH_2_ENG,
                     "description", "Promotion description: " + beveragePromotion.getDescription(),
                     "beveragePromotion", beveragePromotion,
-                    "anchor1", ANCHOR_1_ENG
+                    "anchor1", ANCHOR_1_ENG,
+                    "subscriber", subscriber
             ));
             return context;
         }
@@ -159,7 +162,8 @@ public class PromotionMailUtil {
                 "paragraph2", PARAGRAPH_2_PL,
                 "description", "Opis promocji: " + beveragePromotion.getDescription(),
                 "beveragePromotion", beveragePromotion,
-                "anchor1", ANCHOR_1_PL
+                "anchor1", ANCHOR_1_PL,
+                "subscriber", subscriber
         ));
 
         return context;
@@ -180,7 +184,8 @@ public class PromotionMailUtil {
                     "paragraph2", PARAGRAPH_2_ENG,
                     "description", "Promotion description: " + addonPromotion.getDescription(),
                     "addonPromotion", addonPromotion,
-                    "anchor1", ANCHOR_1_ENG
+                    "anchor1", ANCHOR_1_ENG,
+                    "subscriber", subscriber
             ));
             return context;
         }
@@ -192,7 +197,8 @@ public class PromotionMailUtil {
                 "paragraph2", PARAGRAPH_2_PL,
                 "description", "Opis promocji: " + addonPromotion.getDescription(),
                 "addonPromotion", addonPromotion,
-                "anchor1", ANCHOR_1_PL
+                "anchor1", ANCHOR_1_PL,
+                "subscriber", subscriber
         ));
 
         return context;

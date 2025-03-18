@@ -81,11 +81,7 @@ public class VerificationMailUtil {
                     "paragraph2", PARAGRAPH_2_ENG,
                     "paragraph3", PARAGRAPH_3_ENG,
                     "paragraph4", PARAGRAPH_4_ENG,
-                    "paragraph5", PARAGRAPH_5_ENG
-
-            ));
-            context.setVariables(Map.of(
-                    "anchor1", ANCHOR_1_ENG,
+                    "paragraph5", PARAGRAPH_5_ENG,
                     "otp", otp
             ));
 
@@ -98,11 +94,7 @@ public class VerificationMailUtil {
                 "paragraph2", PARAGRAPH_2_PL,
                 "paragraph3", PARAGRAPH_3_PL,
                 "paragraph4", PARAGRAPH_4_PL,
-                "paragraph5", PARAGRAPH_5_PL
-
-        ));
-        context.setVariables(Map.of(
-                "anchor1", ANCHOR_1_PL,
+                "paragraph5", PARAGRAPH_5_PL,
                 "otp", otp
         ));
 
