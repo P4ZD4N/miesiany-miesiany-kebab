@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -42,6 +43,7 @@ public class VerificationMailUtil {
         this.templateEngine = templateEngine;
     }
 
+    @Async
     public void sendEng(String recipient, Integer otp) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -56,6 +58,7 @@ public class VerificationMailUtil {
         javaMailSender.send(message);
     }
 
+    @Async
     public void sendPl(String recipient, Integer otp) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
