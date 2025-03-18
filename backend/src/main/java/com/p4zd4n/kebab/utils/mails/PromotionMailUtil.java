@@ -1,7 +1,10 @@
 package com.p4zd4n.kebab.utils.mails;
 
 import com.p4zd4n.kebab.entities.*;
+import com.p4zd4n.kebab.entities.interfaces.Promotion;
 import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
+import com.p4zd4n.kebab.repositories.NewsletterRepository;
+import com.p4zd4n.kebab.utils.interfaces.Observer;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,10 +15,11 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @Component
-public class PromotionMailUtil {
+public class PromotionMailUtil implements Observer {
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
@@ -40,9 +44,25 @@ public class PromotionMailUtil {
     private static final String PARAGRAPH_2_PL = "© " + LocalDate.now().getYear() + " Miesiany Miesiany Kebab. Wszelkie prawa zastrzeżone.";
     private static final String ANCHOR_1_PL = "Wypisz się";
 
-    public PromotionMailUtil(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
+    private final NewsletterRepository newsletterRepository;
+
+    public PromotionMailUtil(JavaMailSender javaMailSender, TemplateEngine templateEngine, NewsletterRepository newsletterRepository) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
+        this.newsletterRepository = newsletterRepository;
+    }
+
+    @Override
+    @Async
+    public void update(Promotion promotion) throws MessagingException {
+        List<NewsletterSubscriber> subscribers = newsletterRepository.findAllByIsActiveTrue();
+
+        for (NewsletterSubscriber subscriber : subscribers) {
+            if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
+                sendEng(subscriber, promotion);
+            else
+                sendPl(subscriber, promotion);
+        }
     }
 
     @Async

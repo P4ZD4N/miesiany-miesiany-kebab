@@ -1,11 +1,9 @@
 package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.*;
-import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.notfound.AddonPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.AddonPromotionsRepository;
 import com.p4zd4n.kebab.repositories.AddonRepository;
-import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.AddonPromotionResponse;
@@ -30,18 +28,15 @@ public class AddonPromotionsService {
 
     private final AddonRepository addonRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
-    private final NewsletterRepository newsletterRepository;
     private final PromotionMailUtil promotionMailUtil;
 
     public AddonPromotionsService(
             AddonRepository addonRepository,
             AddonPromotionsRepository addonPromotionsRepository,
-            NewsletterRepository newsletterRepository,
             PromotionMailUtil promotionMailUtil
     ) {
         this.addonRepository = addonRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
-        this.newsletterRepository = newsletterRepository;
         this.promotionMailUtil = promotionMailUtil;
     }
 
@@ -89,6 +84,7 @@ public class AddonPromotionsService {
         }
 
         AddonPromotion savedAddonPromotion = addonPromotionsRepository.save(addonPromotion);
+        savedAddonPromotion.registerObserver(promotionMailUtil);
 
         if (request.addonNames() != null)
             addonRepository.findAll().stream()
@@ -98,12 +94,7 @@ public class AddonPromotionsService {
                         addonRepository.save(addon);
                     });
 
-        for (NewsletterSubscriber subscriber : newsletterRepository.findAllByIsActiveTrue()) {
-            if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
-                promotionMailUtil.sendEng(subscriber, savedAddonPromotion);
-            else
-                promotionMailUtil.sendPl(subscriber, savedAddonPromotion);
-        }
+        savedAddonPromotion.notifyObservers();
 
         return NewAddonPromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())

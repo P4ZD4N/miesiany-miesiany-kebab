@@ -2,13 +2,10 @@ package com.p4zd4n.kebab.services.promotions;
 
 import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.entities.MealPromotion;
-import com.p4zd4n.kebab.entities.NewsletterSubscriber;
-import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.alreadyexists.MealPromotionAlreadyExists;
 import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
 import com.p4zd4n.kebab.repositories.MealPromotionsRepository;
 import com.p4zd4n.kebab.repositories.MealRepository;
-import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.NewMealPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.mealpromotions.UpdatedMealPromotionRequest;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionResponse;
@@ -31,18 +28,15 @@ public class MealPromotionsService {
 
     private final MealRepository mealRepository;
     private final MealPromotionsRepository mealPromotionsRepository;
-    private final NewsletterRepository newsletterRepository;
     private final PromotionMailUtil promotionMailUtil;
 
     public MealPromotionsService(
             MealRepository mealRepository,
             MealPromotionsRepository mealPromotionsRepository,
-            NewsletterRepository newsletterRepository,
             PromotionMailUtil promotionMailUtil
     ) {
         this.mealRepository = mealRepository;
         this.mealPromotionsRepository = mealPromotionsRepository;
-        this.newsletterRepository = newsletterRepository;
         this.promotionMailUtil = promotionMailUtil;
     }
 
@@ -104,6 +98,7 @@ public class MealPromotionsService {
         }
 
         MealPromotion savedMealPromotion = mealPromotionsRepository.save(mealPromotion);
+        savedMealPromotion.registerObserver(promotionMailUtil);
 
         if (request.mealNames() != null)
             mealRepository.findAll().stream()
@@ -113,12 +108,7 @@ public class MealPromotionsService {
                         mealRepository.save(meal);
                     });
 
-        for (NewsletterSubscriber subscriber : newsletterRepository.findAllByIsActiveTrue()) {
-            if (subscriber.getNewsletterMessagesLanguage().equals(NewsletterMessagesLanguage.ENGLISH))
-                promotionMailUtil.sendEng(subscriber, savedMealPromotion);
-            else
-                promotionMailUtil.sendPl(subscriber, savedMealPromotion);
-        }
+        savedMealPromotion.notifyObservers();
 
         return NewMealPromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())
