@@ -5,15 +5,19 @@ import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.GlobalExceptionHandler;
 import com.p4zd4n.kebab.exceptions.alreadyexists.SubscriberAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
+import com.p4zd4n.kebab.exceptions.failed.OtpRegenerationFailedException;
 import com.p4zd4n.kebab.exceptions.notfound.SubscriberNotFoundException;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
+import com.p4zd4n.kebab.requests.newsletter.RegenerateOtpRequest;
 import com.p4zd4n.kebab.requests.newsletter.VerifyNewsletterSubscriptionRequest;
 import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
 import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
+import com.p4zd4n.kebab.responses.newsletter.RegenerateOtpResponse;
 import com.p4zd4n.kebab.responses.newsletter.VerifyNewsletterSubscriptionResponse;
 import com.p4zd4n.kebab.services.newsletter.NewsletterService;
+import com.p4zd4n.kebab.utils.OtpUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -282,16 +286,6 @@ public class NewsletterControllerTest {
 
         when(newsletterService.verifySubscription(request)).thenThrow(new SubscriberNotFoundException(request.email()));
 
-        MessageSource messageSource = mock(MessageSource.class);
-        when(messageSource.getMessage("otp.expired", null, Locale.forLanguageTag("en")))
-                .thenReturn("Subscriber with email '" + request.email() + "' not found!");
-
-        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(new NewsletterController(newsletterService))
-                .setControllerAdvice(exceptionHandler)
-                .build();
-
         mockMvc.perform(put("/api/v1/newsletter/verify-subscription")
                 .header("Accept-Language", "en")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -325,6 +319,104 @@ public class NewsletterControllerTest {
         for (String header : invalidHeaders) {
             mockMvc.perform(put("/api/v1/newsletter/verify-subscription")
                     .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void regenerateOtp_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
+                .email("example@example.com")
+                .build();
+
+        RegenerateOtpResponse response = RegenerateOtpResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully regenerated otp for subscriber with email '" + request.email() + "'!")
+                .build();
+
+        when(newsletterService.regenerateOtp(request)).thenReturn(response);
+
+        mockMvc.perform(put("/api/v1/newsletter/regenerate-otp")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully regenerated otp for subscriber with email '" + request.email() + "'!")));
+    }
+
+    @Test
+    public void regenerateOtp_ShouldReturnConflict_WhenOtpRegenerationFails() throws Exception {
+
+        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
+                .email("wiko700@gmail.com")
+                .build();
+
+        when(newsletterService.regenerateOtp(request)).thenThrow(new OtpRegenerationFailedException(OtpUtil.OTP_REGENERATION_TIME_SECONDS));
+
+        MessageSource messageSource = mock(MessageSource.class);
+        when(messageSource.getMessage("otp.regenerationFailed", null, Locale.forLanguageTag("en")))
+                .thenReturn("OTP regeneration failed! Please try again in a moment!");
+
+        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new NewsletterController(newsletterService))
+                .setControllerAdvice(exceptionHandler)
+                .build();
+
+        mockMvc.perform(put("/api/v1/newsletter/regenerate-otp")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status_code", is(409)))
+                .andExpect(jsonPath("$.message", is("OTP regeneration failed! Please try again in a moment!")));
+
+        verify(newsletterService, times(1)).regenerateOtp(request);
+    }
+
+    @Test
+    public void regenerateOtp_ShouldReturnNotFound_WhenSubscriberNotFound() throws Exception {
+
+        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
+                .email("wiko700@gmail.com")
+                .build();
+
+        when(newsletterService.regenerateOtp(request)).thenThrow(new SubscriberNotFoundException(request.email()));
+
+        mockMvc.perform(put("/api/v1/newsletter/regenerate-otp")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status_code", is(404)))
+                .andExpect(jsonPath("$.message", is("Subscriber with email '" + request.email() + "' not found!")));
+
+        verify(newsletterService, times(1)).regenerateOtp(request);
+    }
+
+    @Test
+    public void regenerateOtp_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
+                .email("wiko700@gmail.com")
+                .build();
+
+        mockMvc.perform(put("/api/v1/newsletter/regenerate-otp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void regenerateOtp_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(put("/api/v1/newsletter/regenerate-otp")
+                    .header("Accept-Lan~guage", header))
                     .andExpect(status().isBadRequest());
         }
     }
