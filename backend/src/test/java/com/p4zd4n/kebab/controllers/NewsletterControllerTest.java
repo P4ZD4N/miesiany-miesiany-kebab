@@ -211,7 +211,7 @@ public class NewsletterControllerTest {
     }
 
     @Test
-    public void subscribe_ShouldReturnConflict_WhenOtpNotMatches() throws Exception {
+    public void verifySubscription_ShouldReturnConflict_WhenOtpNotMatches() throws Exception {
 
         VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
                 .otp(123456)
