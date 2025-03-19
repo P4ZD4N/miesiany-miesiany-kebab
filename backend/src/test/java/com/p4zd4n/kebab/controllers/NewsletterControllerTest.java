@@ -296,8 +296,8 @@ public class NewsletterControllerTest {
                 .header("Accept-Language", "en")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.status_code", is(409)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status_code", is(404)))
                 .andExpect(jsonPath("$.message", is("Subscriber with email '" + request.email() + "' not found!")));
 
         verify(newsletterService, times(1)).verifySubscription(request);
