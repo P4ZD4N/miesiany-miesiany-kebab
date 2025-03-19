@@ -1,12 +1,18 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.GlobalExceptionHandler;
 import com.p4zd4n.kebab.exceptions.alreadyexists.SubscriberAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
+import com.p4zd4n.kebab.exceptions.notfound.SubscriberNotFoundException;
+import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
+import com.p4zd4n.kebab.requests.newsletter.VerifyNewsletterSubscriptionRequest;
 import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
 import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
+import com.p4zd4n.kebab.responses.newsletter.VerifyNewsletterSubscriptionResponse;
 import com.p4zd4n.kebab.services.newsletter.NewsletterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +34,7 @@ import java.util.Locale;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -89,6 +94,7 @@ public class NewsletterControllerTest {
         NewNewsletterSubscriberRequest request = NewNewsletterSubscriberRequest.builder()
                 .firstName("Wiktor")
                 .email("example@example.com")
+                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
                 .build();
 
         NewNewsletterSubscriberResponse response = NewNewsletterSubscriberResponse.builder()
@@ -113,6 +119,7 @@ public class NewsletterControllerTest {
         NewNewsletterSubscriberRequest request = NewNewsletterSubscriberRequest.builder()
                 .firstName("Wiktor")
                 .email("example@example.com")
+                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
                 .build();
 
         when(newsletterService.addNewsletterSubscriber(request)).thenThrow(new SubscriberAlreadyExistsException(request.email()));
@@ -174,6 +181,149 @@ public class NewsletterControllerTest {
 
         for (String header : invalidHeaders) {
             mockMvc.perform(post("/api/v1/newsletter/subscribe")
+                    .header("Accept-Language", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    public void verifySubscription_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
+                .otp(123456)
+                .email("wiko700@gmail.com")
+                .build();
+
+        VerifyNewsletterSubscriptionResponse response = VerifyNewsletterSubscriptionResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully verified newsletter subscriber")
+                .build();
+
+        when(newsletterService.verifySubscription(request)).thenReturn(response);
+
+        mockMvc.perform(put("/api/v1/newsletter/verify-subscription")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully verified newsletter subscriber")));
+    }
+
+    @Test
+    public void subscribe_ShouldReturnConflict_WhenOtpNotMatches() throws Exception {
+
+        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
+                .otp(123456)
+                .email("wiko700@gmail.com")
+                .build();
+
+        when(newsletterService.verifySubscription(request)).thenThrow(new OtpNotMatchesException());
+
+        MessageSource messageSource = mock(MessageSource.class);
+        when(messageSource.getMessage("otp.notMatching", null, Locale.forLanguageTag("en")))
+                .thenReturn("OTP not matching! Please ensure the code was entered correctly!");
+
+        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new NewsletterController(newsletterService))
+                .setControllerAdvice(exceptionHandler)
+                .build();
+
+        mockMvc.perform(put("/api/v1/newsletter/verify-subscription")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status_code", is(409)))
+                .andExpect(jsonPath("$.message", is("OTP not matching! Please ensure the code was entered correctly!")));
+
+        verify(newsletterService, times(1)).verifySubscription(request);
+    }
+
+    @Test
+    public void verifySubscription_ShouldReturnGone_WhenOtpExpired() throws Exception {
+
+        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
+                .otp(123456)
+                .email("wiko700@gmail.com")
+                .build();
+
+        when(newsletterService.verifySubscription(request)).thenThrow(new OtpExpiredException());
+
+        MessageSource messageSource = mock(MessageSource.class);
+        when(messageSource.getMessage("otp.expired", null, Locale.forLanguageTag("en")))
+                .thenReturn("OTP expired! Please regenerate OTP and try again!");
+
+        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new NewsletterController(newsletterService))
+                .setControllerAdvice(exceptionHandler)
+                .build();
+
+        mockMvc.perform(put("/api/v1/newsletter/verify-subscription")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isGone())
+                .andExpect(jsonPath("$.status_code", is(410)))
+                .andExpect(jsonPath("$.message", is("OTP expired! Please regenerate OTP and try again!")));
+
+        verify(newsletterService, times(1)).verifySubscription(request);
+    }
+
+    @Test
+    public void verifySubscription_ShouldReturnNotFound_WhenSubscriberNotFound() throws Exception {
+
+        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
+                .otp(123456)
+                .email("wiko700@gmail.com")
+                .build();
+
+        when(newsletterService.verifySubscription(request)).thenThrow(new SubscriberNotFoundException(request.email()));
+
+        MessageSource messageSource = mock(MessageSource.class);
+        when(messageSource.getMessage("otp.expired", null, Locale.forLanguageTag("en")))
+                .thenReturn("Subscriber with email '" + request.email() + "' not found!");
+
+        GlobalExceptionHandler exceptionHandler = new GlobalExceptionHandler(messageSource);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new NewsletterController(newsletterService))
+                .setControllerAdvice(exceptionHandler)
+                .build();
+
+        mockMvc.perform(put("/api/v1/newsletter/verify-subscription")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status_code", is(409)))
+                .andExpect(jsonPath("$.message", is("Subscriber with email '" + request.email() + "' not found!")));
+
+        verify(newsletterService, times(1)).verifySubscription(request);
+    }
+
+    @Test
+    public void verifySubscription_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
+                .otp(123456)
+                .email("wiko700@gmail.com")
+                .build();
+
+        mockMvc.perform(put("/api/v1/newsletter/verify-subscription")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void verifySubscription_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(put("/api/v1/newsletter/verify-subscription")
                     .header("Accept-Language", header))
                     .andExpect(status().isBadRequest());
         }
