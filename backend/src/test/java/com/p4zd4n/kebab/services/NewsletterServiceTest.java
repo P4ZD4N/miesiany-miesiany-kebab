@@ -10,13 +10,12 @@ import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
 import com.p4zd4n.kebab.requests.newsletter.RegenerateOtpRequest;
+import com.p4zd4n.kebab.requests.newsletter.UnsubscribeRequest;
 import com.p4zd4n.kebab.requests.newsletter.VerifyNewsletterSubscriptionRequest;
-import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
-import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
-import com.p4zd4n.kebab.responses.newsletter.RegenerateOtpResponse;
-import com.p4zd4n.kebab.responses.newsletter.VerifyNewsletterSubscriptionResponse;
+import com.p4zd4n.kebab.responses.newsletter.*;
 import com.p4zd4n.kebab.services.newsletter.NewsletterService;
 import com.p4zd4n.kebab.utils.OtpUtil;
+import com.p4zd4n.kebab.utils.mails.GoodbyeMailUtil;
 import com.p4zd4n.kebab.utils.mails.VerificationMailUtil;
 import com.p4zd4n.kebab.utils.mails.WelcomeMailUtil;
 import jakarta.mail.MessagingException;
@@ -48,6 +47,9 @@ public class NewsletterServiceTest {
 
     @Mock
     private WelcomeMailUtil welcomeMailUtil;
+
+    @Mock
+    private GoodbyeMailUtil goodbyeMailUtil;
 
     @InjectMocks
     private NewsletterService newsletterService;
@@ -308,6 +310,53 @@ public class NewsletterServiceTest {
         verify(newsletterRepository, times(1)).findByEmail(request.email());
         verify(otpUtil, never()).generateOtp();
         verify(verificationMailUtil, never()).sendEng(request.email(), 132543);
+        verify(newsletterRepository, never()).save(any());
+    }
+
+    //
+
+    @Test
+    public void unsubscribe_ShouldDeleteSubscriber_WhenSubscriberExists() throws MessagingException {
+
+        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
+                .subscriberFirstName("Wiktor")
+                .email("example@example.com")
+                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+                .isActive(false)
+                .otp(123456)
+                .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS + 10))
+                .build();
+
+        UnsubscribeRequest request = UnsubscribeRequest.builder()
+                .email("example@example.com")
+                .build();
+
+        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+
+        UnsubscribeResponse response = newsletterService.unsubscribe(request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully deleted subscriber with email '" + request.email() + "'!", response.message());
+
+        verify(newsletterRepository, times(1)).findByEmail(request.email());
+        verify(goodbyeMailUtil, times(1)).sendPl(subscriber);
+        verify(newsletterRepository, times(1)).delete(subscriber);
+    }
+
+    @Test
+    public void unsubscribe_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist() throws MessagingException {
+
+        UnsubscribeRequest request = UnsubscribeRequest.builder()
+                .email("example@example.com")
+                .build();
+
+        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+
+        assertThrows(SubscriberNotFoundException.class, () -> newsletterService.unsubscribe(request));
+
+        verify(newsletterRepository, times(1)).findByEmail(request.email());
+        verify(goodbyeMailUtil, never()).sendEng(any());
         verify(newsletterRepository, never()).save(any());
     }
 }
