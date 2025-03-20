@@ -1,5 +1,7 @@
 package com.p4zd4n.kebab.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.p4zd4n.kebab.enums.IngredientType;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
@@ -27,9 +29,9 @@ public class Meal extends WithTimestamp {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @ManyToMany(mappedBy = "meals")
+    @JsonIgnore
+    private List<Order> orders = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

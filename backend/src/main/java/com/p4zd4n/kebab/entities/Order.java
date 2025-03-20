@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
 import jakarta.persistence.*;
@@ -8,8 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,54 +32,64 @@ public class Order extends WithTimestamp {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @Column(name = "customer_phone", nullable = false)
+    @Column(name = "customer_phone")
     private String customerPhone;
 
-    @Column(name = "street", nullable = false)
+    @Column(name = "customer_email")
+    private String customerEmail;
+
+    @Column(name = "street")
     private String street;
 
-    @Column(name = "house_number", nullable = false)
+    @Column(name = "house_number")
     private String houseNumber;
 
-    @Column(name = "postal_code", nullable = false)
+    @Column(name = "postal_code")
     private String postalCode;
 
-    @Column(name = "city", nullable = false)
+    @Column(name = "city")
     private String city;
 
-    @Column(name = "total_amount", nullable = false)
-    private BigDecimal totalAmount;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "order_meals",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "meal_id")
+    )
+    private List<Meal> meals = new ArrayList<>();
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "order_beverages",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "addon_id")
+    )
+    private List<Beverage> beverages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    private List<Meal> meals;
-
-    @OneToMany(mappedBy = "order")
-    private List<Beverage> beverages;
-
-    @OneToMany(mappedBy = "order")
-    private List<Addon> addons;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "order_addons",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "addon_id")
+    )
+    private List<Addon> addons = new ArrayList<>();
 
     @Builder
     public Order(OrderType orderType,
                  OrderStatus orderStatus,
                  String customerPhone,
+                 String customerEmail,
                  String street,
                  String houseNumber,
                  String postalCode,
-                 String city,
-                 BigDecimal totalAmount,
-                 boolean isActive) {
+                 String city) {
         this.orderType = orderType;
         this.orderStatus = orderStatus;
         this.customerPhone = customerPhone;
+        this.customerEmail = customerEmail;
         this.street = street;
         this.houseNumber = houseNumber;
         this.postalCode = postalCode;
         this.city = city;
-        this.totalAmount = totalAmount;
-        this.isActive = isActive;
     }
 }

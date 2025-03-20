@@ -30,6 +30,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final BeveragePromotionsRepository beveragePromotionsRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
     private final NewsletterRepository newsletterRepository;
+    private final OrdersRepository ordersRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -43,7 +44,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             MealPromotionsRepository mealPromotionsRepository,
             BeveragePromotionsRepository beveragePromotionsRepository,
             AddonPromotionsRepository addonPromotionsRepository,
-            NewsletterRepository newsletterRepository
+            NewsletterRepository newsletterRepository,
+            OrdersRepository ordersRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -57,6 +59,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.beveragePromotionsRepository = beveragePromotionsRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
         this.newsletterRepository = newsletterRepository;
+        this.ordersRepository = ordersRepository;
     }
 
     @Override
@@ -73,6 +76,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initJobOffers();
         initPromotions();
         initNewsletterSubscribers();
+        initOrders();
     }
 
     private void initOpeningHours() {
@@ -495,5 +499,30 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         newsletterRepository.save(newsletterSubscriber);
+    }
+
+    private void initOrders() {
+
+        Meal meal = mealRepository.findByName("Pita Kebab Salads and Fries")
+                .orElseThrow(() -> new RuntimeException("Meal not found"));
+        Addon addon = addonRepository.findByName("Feta")
+                .orElseThrow(() -> new RuntimeException("Addon not found"));
+        Beverage beverage = beverageRepository.findByNameAndCapacity("Coca-Cola", BigDecimal.valueOf(0.33))
+                .orElseThrow(() -> new RuntimeException("Beverage not found"));
+
+        Order order = Order.builder()
+                .orderType(OrderType.ON_SITE)
+                .orderStatus(OrderStatus.RECEIVED)
+                .customerPhone("123456789")
+                .customerEmail("example@example.com")
+                .build();
+
+        order = ordersRepository.save(order);
+
+        order.getMeals().add(meal);
+        order.getAddons().add(addon);
+        order.getBeverages().add(beverage);
+
+        ordersRepository.save(order);
     }
 }
