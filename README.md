@@ -1,22 +1,24 @@
 # 💻 Miesiany Miesiany Kebab
 
+![](./images/logo.png)
+
 ## 📜 Table of Contents
-1. [👀 About](#-about)
-2. [🔧 Tech Stack](#-tech-stack)
-3. [💡 Features](#f-eatures)
-4. [🔗 API](#-api)
-5. [📋 Requirements](#-requirements)
-6. [🌍 Environment Variables](#-environment-variables)
-7. [▶️ Run](#-run)
-8. [⚡ Usage](#-usage)
+1. [👀 About](#about)
+2. [🔧 Tech Stack](#tech-stack)
+3. [💡 Features](#features)
+4. [🔗 API](#api)
+5. [📋 Requirements](#requirements)
+6. [🌍 Configuration](#configuration)
+7. [▶️ Run](#run)
+8. [⚡ Usage](#usage)
 
 ## 👀 About
 
-Full-stack application for a fictional kebab restaurant called "Miesiany Miesiany Kebab". The application is also intended to serve as a restaurant's business card, in order to reach a larger number of customers, and to enable the fulfillment and tracking of orders.
+Gastronomic industry plays an important role in the economy. Nowadays many gastronomic businesses, which exists in both big cities and small villages are often visited by people. For this reason, I decided to create full-stack application, which can solve problems typical for this industry. Based on my own preferences, I chose a kebab restaurant, but all functionalities, which I implemented can be also applied to other types of restaurants. Application is intended to serve as a business card, to reach more customers and to encourage them to stay longer, but also to enable order accomplishment and tracking. It take care of availability of all valuable for customer information in a convenient way. System is also convenient for employees of restaurant. It enable to manage restaurant, handle orders and customers in more efficient way. Majority of components visible on website is easy to customize and update by manager.
 
 ## 🔧 Tech Stack
 
-**Backend:** Java 21, Spring Boot 3, Spring Security, Spring Data, Hibernate, Lombok
+**Backend:** Java 21, Spring Boot 3, Spring Security, Spring Data, Hibernate, Thymeleaf, Lombok
 
 **Frontend:** TypeScript 5, Angular 18, HTML, SCSS, Bootstrap
 
@@ -44,9 +46,9 @@ Full-stack application for a fictional kebab restaurant called "Miesiany Miesian
 - Possibility to display highlighted with proper color opening hours of restaurant on each day. Manager can easily update these hours.
 - Possibility to display menu of the restaurant. In menu section clients can see three tables: meals, addons to your meal and beverages, which contains each item details like name, price, capacity or ingredients. This entire section is manageable by the manager. Employee with this role can add, update and remove each type of item. Items in each table are sorted by name.
 - Possibility to display contact details. In contact section clients can see contact data (including phone number and email address), nicknames at social media and map with location pointer. Contact data is editable by manager.
-- Job board, which enable to publish dateiled job offers by manager. Manager can add job offer with information such as position name, description, list of mandatory requirements, list of nice to have requirements, list of employment types and hourly wage gross. Once added, each job offer is fully customizable. Website guests can apply to each job offer by fulfilling form (with attaching a CV in PDF/DOC format!). Manager has possibility to display all candidates, which applied to job offer, remove those who do not fit the position or peek/download attached CV of desired candidate.
+- Job board, which enable to publish dateiled job offers by manager. Manager can add job offer with information such as position name, description, list of mandatory requirements, list of nice to have requirements, list of employment types and hourly wage gross. Once added, each job offer is fully customizable. Website guests can apply to each job offer by fulfilling form (with attaching a CV in PDF/DOC format). Manager has possibility to display all candidates, which applied to job offer, remove those who do not fit the position or peek/download attached CV of desired candidate.
 - Promotions for meals, beverages and addons. It is possible to display promotions details in proper section on website by all users. If some menu position is already added to certain promotion, users can see price change in menu section on website. All promotions are editable and easy to maintain by manager. Manager can add, update and delete promotions.
-
+- Multilingual newsletter with email verification implemented with usage of Observer design pattern. Each customer has possibility to sign up to newsletter focused on promotions and choose preffered language of email messages (Polish or English). When manager adds some promotion, then email is sent to all verified subscribers. Some methods were created as asynchronous to enhance application preformance. It is also possibility to unsubscribe newsletter at any time.
 
 ## 🔗 API
 
@@ -747,6 +749,79 @@ Removes existing addon promotion.
 }
 ```
 
+### NewsletterController
+ 
+#### GET /api/v1/newsletter/subscribers
+
+**Description:**  
+Retrieves all subscribers, that are signed up to newsletter.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+#### POST /api/v1/newsletter/subscribe
+
+**Description:**
+Subscribe newsletter. Customer must specify first name, email and newsletter messages language
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "first_name": "Wiktor",
+  "email": "example@example.com",
+  "messages_language":"POLISH" 
+}
+```
+
+#### PUT /api/v1/newsletter/verify-subscription
+
+**Description:**  
+Verifies subscription with OTP code. Verification is mandatory, because email messages are sent only to verified subscribers.
+
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "email": "example@example.com",
+  "otp": 123456
+}
+```
+
+#### PUT /api/v1/newsletter/regenerate-otp
+
+**Description:**  
+Regenerates OTP code. OTP can be regenerated only at certain intervals.
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "email": "example@example.com"
+}
+```
+
+#### POST /api/v1/newsletter/unsubscribe
+
+**Description:**
+Unsubscribe newsletter. Customer can sign out from newsletter at any time.
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "email": "example@example.com"
+}
+```
 
 ## 📋 Requirements
 - Java 21 (or higher)
@@ -754,9 +829,11 @@ Removes existing addon promotion.
 - ng
 - npm
 
-## 🌍 Environment Variables
+## 🌍 Configuration
 
-To run this project and ensure, that app will work properly, you need to add the following line to your .env file. You need it to see the map with restaurant location on home page.
+### Frontend
+
+To run this project and ensure, that app will work properly, you need to add the following line to your `.env ` file. You need it to see the map with restaurant location on home page.
 
 - `MAP_API_KEY=<YOUR_API_KEY>`
 
@@ -764,6 +841,15 @@ Do it step by step:
 1. Navigate to `https://developer.tomtom.com/` and log in to your account. Then create new Map Display API key and copy it.
 2. Create `.env` file on the following path: `/miesiany-miesiany-kebab/frontend/src/.env`
 3. Add previously copied API key to `.env` file
+
+### Backend
+
+You need to add the following lines to your `application.properties` file to make newsletter work properly.
+
+- `spring.mail.host=<MAIL_HOST>`
+- `spring.mail.port=<MAIL_PORT>`
+- `spring.mail.username=<MAIL_USERNAME>` 
+- `spring.mail.password=<APP_PASSWORD>`
 
 ## ▶️ Run
 

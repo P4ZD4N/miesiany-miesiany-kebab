@@ -12,6 +12,8 @@ import com.p4zd4n.kebab.responses.promotions.mealpromotions.MealPromotionRespons
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
+import com.p4zd4n.kebab.utils.mails.PromotionMailUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,10 +28,16 @@ public class MealPromotionsService {
 
     private final MealRepository mealRepository;
     private final MealPromotionsRepository mealPromotionsRepository;
+    private final PromotionMailUtil promotionMailUtil;
 
-    public MealPromotionsService(MealRepository mealRepository, MealPromotionsRepository mealPromotionsRepository) {
+    public MealPromotionsService(
+            MealRepository mealRepository,
+            MealPromotionsRepository mealPromotionsRepository,
+            PromotionMailUtil promotionMailUtil
+    ) {
         this.mealRepository = mealRepository;
         this.mealPromotionsRepository = mealPromotionsRepository;
+        this.promotionMailUtil = promotionMailUtil;
     }
 
     public List<MealPromotionResponse> getMealPromotions() {
@@ -62,7 +70,7 @@ public class MealPromotionsService {
                 .build();
     }
 
-    public NewMealPromotionResponse addMealPromotion(NewMealPromotionRequest request) {
+    public NewMealPromotionResponse addMealPromotion(NewMealPromotionRequest request) throws MessagingException {
 
         if (request.mealNames() != null && request.sizes() != null) {
             mealRepository.findAll().stream()
@@ -82,7 +90,15 @@ public class MealPromotionsService {
                 .discountPercentage(request.discountPercentage())
                 .build();
 
+        if (request.mealNames() != null) {
+            List<Meal> meals = mealRepository.findAll().stream()
+                    .filter(meal -> request.mealNames().contains(meal.getName()))
+                    .toList();
+            mealPromotion.getMeals().addAll(meals);
+        }
+
         MealPromotion savedMealPromotion = mealPromotionsRepository.save(mealPromotion);
+        savedMealPromotion.registerObserver(promotionMailUtil);
 
         if (request.mealNames() != null)
             mealRepository.findAll().stream()
@@ -91,6 +107,8 @@ public class MealPromotionsService {
                         meal.getPromotions().add(mealPromotion);
                         mealRepository.save(meal);
                     });
+
+        savedMealPromotion.notifyObservers();
 
         return NewMealPromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())

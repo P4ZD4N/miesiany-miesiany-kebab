@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodbye Mail Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #000000;
+            padding: 20px;
+            text-align: center;
+        }
+        .logo-container {
+            height: 80px;
+            width: 200px;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .content {
+            padding: 20px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .footer {
+            background-color: #e60000;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 20px;
+            font-size: 14px;
+        }
+        .social-icons {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .social-icons a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #000000;
+            text-decoration: none;
+        }
+        @media screen and (max-width: 600px) {
+            .email-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <div class="logo-container">
+            <img src="https://github.com/P4ZD4N/miesiany-miesiany-kebab/blob/19-add-promotions-newsletter/images/logo.png?raw=true" alt="Logo" style="max-width: 100%; max-height: 100%;">
+        </div>
+    </div>
+
+    <div class="content">
+        <h2 style="color: #e60000;" th:text="${heading}"></h2>
+        <p th:text="${paragraph1}"></p>
+    </div>
+
+    <div class="social-icons">
+        <a href="#">Facebook</a> |
+        <a href="#">Instagram</a> |
+        <a href="#">TikTok</a>
+    </div>
+
+    <div class="footer">
+        <p th:text="${paragraph2}"></p>
+        <p>ul. Szkolna 89, 42-274 Kopalnia</p>
+    </div>
+</div>
+</body>
+</html>

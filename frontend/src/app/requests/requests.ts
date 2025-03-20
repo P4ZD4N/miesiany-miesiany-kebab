@@ -1,6 +1,7 @@
 import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
 import { IngredientType } from "../enums/ingredient-type.enum";
+import { NewsletterMessagesLanguage } from "../enums/newsletter-messages-language.enum";
 import { Size } from "../enums/size.enum";
 import { JobEmploymentType, JobRequirement, SimpleMealIngredient } from "../responses/responses";
 
@@ -165,4 +166,23 @@ export interface UpdatedAddonPromotionRequest {
 
 export interface RemovedAddonPromotionRequest {
   id: number;
+}
+
+export interface NewNewsletterSubscriberRequest {
+  first_name: string;
+  email: string;
+  messages_language: NewsletterMessagesLanguage;
+}
+
+export interface VerifyNewsletterSubscriptionRequest {
+  email: string;
+  otp: number;
+}
+
+export interface RegenerateOtpRequest {
+  email: string;
+}
+
+export interface UnsubscribeRequest {
+  email: string;
 }

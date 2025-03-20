@@ -16,6 +16,8 @@ import { JobsLayoutComponent } from './components/jobs/jobs.layout.component';
 import { JobsComponent } from './components/jobs/jobs/jobs.component';
 import { PromotionsLayoutComponent } from './components/promotions/promotions-layout-component';
 import { PromotionsComponent } from './components/promotions/promotions/promotions.component';
+import { UnsubscribeLayoutComponent } from './components/unsubscribe/unsubscribe-layout-component';
+import { UnsubscribeComponent } from './components/unsubscribe/unsubscribe/unsubscribe.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -42,5 +44,8 @@ export const routes: Routes = [
     ]}, 
     { path: 'promotions', component: PromotionsLayoutComponent, children: [
         { path: '', component: PromotionsComponent }
+    ]}, 
+    { path: 'unsubscribe', component: UnsubscribeLayoutComponent, children: [
+        { path: '', component: UnsubscribeComponent }
     ]}, 
 ];

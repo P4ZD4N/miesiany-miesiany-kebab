@@ -11,6 +11,8 @@ import com.p4zd4n.kebab.responses.promotions.beveragepromotions.BeveragePromotio
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.NewBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeveragePromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
+import com.p4zd4n.kebab.utils.mails.PromotionMailUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,13 +29,16 @@ public class BeveragePromotionsService {
 
     private final BeveragePromotionsRepository beveragePromotionsRepository;
     private final BeverageRepository beverageRepository;
+    private final PromotionMailUtil promotionMailUtil;
 
     public BeveragePromotionsService(
         BeveragePromotionsRepository beveragePromotionsRepository,
-        BeverageRepository beverageRepository
+        BeverageRepository beverageRepository,
+        PromotionMailUtil promotionMailUtil
     ) {
         this.beveragePromotionsRepository = beveragePromotionsRepository;
         this.beverageRepository = beverageRepository;
+        this.promotionMailUtil = promotionMailUtil;
     }
 
     public List<BeveragePromotionResponse> getBeveragePromotions() {
@@ -67,14 +72,22 @@ public class BeveragePromotionsService {
                 .build();
     }
 
-    public NewBeveragePromotionResponse addBeveragePromotion(NewBeveragePromotionRequest request) {
+    public NewBeveragePromotionResponse addBeveragePromotion(NewBeveragePromotionRequest request) throws MessagingException {
 
         BeveragePromotion beveragePromotion = BeveragePromotion.builder()
                 .description(request.description())
                 .discountPercentage(request.discountPercentage())
                 .build();
 
+        if (request.beveragesWithCapacities() != null) {
+            List<Beverage> beverages = beverageRepository.findAll().stream()
+                    .filter(beverage -> request.beveragesWithCapacities().containsKey(beverage.getName()))
+                    .toList();
+            beveragePromotion.getBeverages().addAll(beverages);
+        }
+
         BeveragePromotion savedBeveragePromotion = beveragePromotionsRepository.save(beveragePromotion);
+        savedBeveragePromotion.registerObserver(promotionMailUtil);
 
         if (request.beveragesWithCapacities() != null)
             beverageRepository.findAll().stream()
@@ -87,6 +100,8 @@ public class BeveragePromotionsService {
                     beverage.setPromotion(beveragePromotion);
                     beverageRepository.save(beverage);
                 });
+
+        savedBeveragePromotion.notifyObservers();
 
         return NewBeveragePromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())

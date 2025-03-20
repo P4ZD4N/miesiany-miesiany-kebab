@@ -12,6 +12,7 @@ import com.p4zd4n.kebab.responses.promotions.mealpromotions.NewMealPromotionResp
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -70,7 +71,7 @@ public class MealPromotionsServiceTest {
     }
 
     @Test
-    public void addMealPromotion_ShouldAddMeal_WhenValidRequest() {
+    public void addMealPromotion_ShouldAddMeal_WhenValidRequest() throws MessagingException {
 
         NewMealPromotionRequest request = NewMealPromotionRequest.builder()
                 .description("-10%")

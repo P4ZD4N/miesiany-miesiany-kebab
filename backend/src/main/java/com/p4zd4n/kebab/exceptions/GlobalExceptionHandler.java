@@ -1,12 +1,16 @@
 package com.p4zd4n.kebab.exceptions;
 
 import com.p4zd4n.kebab.exceptions.alreadyexists.*;
+import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
+import com.p4zd4n.kebab.exceptions.failed.OtpRegenerationFailedException;
 import com.p4zd4n.kebab.exceptions.invalid.*;
 import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
+import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -534,6 +538,105 @@ public class GlobalExceptionHandler {
 
         Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
         String message = messageSource.getMessage("mealPromotion.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(SubscriberAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleSubscriberAlreadyExistsException(
+            SubscriberAlreadyExistsException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing subscriber email '{}'", request.getRequestURI(), exception.getEmail());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("subscriber.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler({MessagingException.class})
+    public ResponseEntity<ExceptionResponse> handleMessagingException(HttpServletRequest request) {
+        log.error("Attempted request to {} and unable to send email", request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.SERVICE_UNAVAILABLE.value())
+                        .message("Unable to send email!")
+                        .build());
+    }
+
+    @ExceptionHandler(SubscriberNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleSubscriberNotFoundException(
+            SubscriberNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with email of not existing newsletter subscriber {}", request.getRequestURI(), exception.getEmail());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(OtpNotMatchesException.class)
+    public ResponseEntity<ExceptionResponse> handleOtpNotMatchesException(HttpServletRequest request) {
+        log.error("Attempted request to {} with not matching OTP", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("otp.notMatching", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(OtpExpiredException.class)
+    public ResponseEntity<ExceptionResponse> handleOtpExpiredException(HttpServletRequest request) {
+        log.error("Attempted request to {} with expired OTP", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("otp.expired", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.GONE)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.GONE.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(OtpRegenerationFailedException.class)
+    public ResponseEntity<ExceptionResponse> handleOtpRegenerationFailedException(
+            OtpRegenerationFailedException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} in less than {} seconds from last request", request.getRequestURI(), exception.getOtoRegenerationTimeSeconds());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("otp.regenerationFailed", null, locale);
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)

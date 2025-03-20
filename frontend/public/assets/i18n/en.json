@@ -227,6 +227,7 @@
     "promotions": {
         "headline": "Promotions",
         "paragraph_top": "Check out our current promotions!",
+        "paragraph_bottom": "Haven’t found any interesting promotions? Sign up for our newsletter to stay updated on new occasions!",
         "paragraph_meal_promotions": "Meal promotions",
         "paragraph_beverage_promotions": "Beverage promotions",
         "paragraph_addon_promotions": "Addon promotions",
@@ -249,7 +250,8 @@
             "remove": "Remove",
             "add_meal_promotion": "Add meal promotion",
             "add_beverage_promotion": "Add beverage promotion",
-            "add_addon_promotion": "Add addon promotion"
+            "add_addon_promotion": "Add addon promotion",
+            "sign_up": "Sign up for newsletter"
         },
         "new_meal_promotion": "New meal promotion",
         "new_beverage_promotion": "New beverage promotion",
@@ -260,5 +262,12 @@
         "no_meal_promotions": "Currently no meal promotions! Sign up for our newsletter to don't miss occasions!",
         "no_beverage_promotions": "Currently no beverage promotions! Sign up for our newsletter to don't miss occasions!",
         "no_addon_promotions": "Currently no addon promotions! Sign up for our newsletter to don't miss occasions!"
+    },
+    "unsubscribe": {
+        "headline": "Dear Customer",
+        "paragraph_top": "Are you sure you want to unsubscribe our newsletter?",
+        "buttons": {
+            "yes": "Yes, sign me out"
+        }
     }
 }

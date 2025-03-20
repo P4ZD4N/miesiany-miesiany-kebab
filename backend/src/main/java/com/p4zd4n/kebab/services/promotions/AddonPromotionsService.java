@@ -11,6 +11,8 @@ import com.p4zd4n.kebab.responses.promotions.addonpromotions.NewAddonPromotionRe
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.RemovedAddonPromotionResponse;
 import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 
+import com.p4zd4n.kebab.utils.mails.PromotionMailUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,10 +28,16 @@ public class AddonPromotionsService {
 
     private final AddonRepository addonRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
+    private final PromotionMailUtil promotionMailUtil;
 
-    public AddonPromotionsService(AddonRepository addonRepository, AddonPromotionsRepository addonPromotionsRepository) {
+    public AddonPromotionsService(
+            AddonRepository addonRepository,
+            AddonPromotionsRepository addonPromotionsRepository,
+            PromotionMailUtil promotionMailUtil
+    ) {
         this.addonRepository = addonRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
+        this.promotionMailUtil = promotionMailUtil;
     }
 
     public List<AddonPromotionResponse> getAddonPromotions() {
@@ -61,14 +69,22 @@ public class AddonPromotionsService {
                 .build();
     }
 
-    public NewAddonPromotionResponse addAddonPromotion(NewAddonPromotionRequest request) {
+    public NewAddonPromotionResponse addAddonPromotion(NewAddonPromotionRequest request) throws MessagingException {
 
         AddonPromotion addonPromotion = AddonPromotion.builder()
                 .description(request.description())
                 .discountPercentage(request.discountPercentage())
                 .build();
 
+        if (request.addonNames() != null) {
+            List<Addon> addons = addonRepository.findAll().stream()
+                    .filter(addon -> request.addonNames().contains(addon.getName()))
+                    .toList();
+            addonPromotion.getAddons().addAll(addons);
+        }
+
         AddonPromotion savedAddonPromotion = addonPromotionsRepository.save(addonPromotion);
+        savedAddonPromotion.registerObserver(promotionMailUtil);
 
         if (request.addonNames() != null)
             addonRepository.findAll().stream()
@@ -77,6 +93,8 @@ public class AddonPromotionsService {
                         addon.setPromotion(addonPromotion);
                         addonRepository.save(addon);
                     });
+
+        savedAddonPromotion.notifyObservers();
 
         return NewAddonPromotionResponse.builder()
                 .statusCode(HttpStatus.OK.value())
