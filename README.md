@@ -3,6 +3,7 @@
 ![](./images/logo.png)
 
 ## 📜 Table of Contents
+
 1. [👀 About](#about)
 2. [🔧 Tech Stack](#tech-stack)
 3. [💡 Features](#features)
