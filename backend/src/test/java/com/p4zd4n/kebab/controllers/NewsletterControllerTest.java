@@ -11,11 +11,9 @@ import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
 import com.p4zd4n.kebab.requests.newsletter.RegenerateOtpRequest;
+import com.p4zd4n.kebab.requests.newsletter.UnsubscribeRequest;
 import com.p4zd4n.kebab.requests.newsletter.VerifyNewsletterSubscriptionRequest;
-import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
-import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
-import com.p4zd4n.kebab.responses.newsletter.RegenerateOtpResponse;
-import com.p4zd4n.kebab.responses.newsletter.VerifyNewsletterSubscriptionResponse;
+import com.p4zd4n.kebab.responses.newsletter.*;
 import com.p4zd4n.kebab.services.newsletter.NewsletterService;
 import com.p4zd4n.kebab.utils.OtpUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -416,6 +414,76 @@ public class NewsletterControllerTest {
 
         for (String header : invalidHeaders) {
             mockMvc.perform(put("/api/v1/newsletter/regenerate-otp")
+                    .header("Accept-Lan~guage", header))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    //
+
+    @Test
+    public void unsubscribe_ShouldReturnOk_WhenValidRequest() throws Exception {
+
+        UnsubscribeRequest request = UnsubscribeRequest.builder()
+                .email("example@example.com")
+                .build();
+
+        UnsubscribeResponse response = UnsubscribeResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully deleted subscriber with email '" + request.email() + "'!")
+                .build();
+
+        when(newsletterService.unsubscribe(request)).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/newsletter/unsubscribe")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status_code", is(HttpStatus.OK.value())))
+                .andExpect(jsonPath("$.message", is("Successfully deleted subscriber with email '" + request.email() + "'!")));
+    }
+
+    @Test
+    public void unsubscribe_ShouldReturnNotFound_WhenSubscriberNotFound() throws Exception {
+
+        UnsubscribeRequest request = UnsubscribeRequest.builder()
+                .email("wiko700@gmail.com")
+                .build();
+
+        when(newsletterService.unsubscribe(request)).thenThrow(new SubscriberNotFoundException(request.email()));
+
+        mockMvc.perform(post("/api/v1/newsletter/unsubscribe")
+                .header("Accept-Language", "en")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status_code", is(404)))
+                .andExpect(jsonPath("$.message", is("Subscriber with email '" + request.email() + "' not found!")));
+
+        verify(newsletterService, times(1)).unsubscribe(request);
+    }
+
+    @Test
+    public void unsubscribe_ShouldReturnBadRequest_WhenMissingHeader() throws Exception {
+
+        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
+                .email("wiko700@gmail.com")
+                .build();
+
+        mockMvc.perform(post("/api/v1/newsletter/unsubscribe")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void unsubscribe_ShouldReturnBadRequest_WhenInvalidHeader() throws Exception {
+
+        String[] invalidHeaders = {"fr", "ES", "ENG", "RuS", "GER", "Sw", "aa", ""};
+
+        for (String header : invalidHeaders) {
+            mockMvc.perform(post("/api/v1/newsletter/unsubscribe")
                     .header("Accept-Lan~guage", header))
                     .andExpect(status().isBadRequest());
         }
