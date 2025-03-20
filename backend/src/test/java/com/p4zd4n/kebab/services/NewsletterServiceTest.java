@@ -4,13 +4,16 @@ import com.p4zd4n.kebab.entities.NewsletterSubscriber;
 import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.exceptions.alreadyexists.SubscriberAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
+import com.p4zd4n.kebab.exceptions.failed.OtpRegenerationFailedException;
 import com.p4zd4n.kebab.exceptions.notfound.SubscriberNotFoundException;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.repositories.NewsletterRepository;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
+import com.p4zd4n.kebab.requests.newsletter.RegenerateOtpRequest;
 import com.p4zd4n.kebab.requests.newsletter.VerifyNewsletterSubscriptionRequest;
 import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
 import com.p4zd4n.kebab.responses.newsletter.NewsletterSubscriberResponse;
+import com.p4zd4n.kebab.responses.newsletter.RegenerateOtpResponse;
 import com.p4zd4n.kebab.responses.newsletter.VerifyNewsletterSubscriptionResponse;
 import com.p4zd4n.kebab.services.newsletter.NewsletterService;
 import com.p4zd4n.kebab.utils.OtpUtil;
@@ -202,7 +205,7 @@ public class NewsletterServiceTest {
                 .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
                 .isActive(false)
                 .otp(123456)
-                .otpGeneratedTime(LocalDateTime.now().minusHours(1))
+                .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_EXPIRATION_SECONDS + 10))
                 .build();
 
         VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
@@ -220,7 +223,7 @@ public class NewsletterServiceTest {
 
     @Test
     public void verifySubscription_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist() throws MessagingException {
-        
+
         VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
                 .email("aaaa@example.com")
                 .otp(123456)
@@ -231,6 +234,80 @@ public class NewsletterServiceTest {
         assertThrows(SubscriberNotFoundException.class, () -> newsletterService.verifySubscription(request));
 
         verify(newsletterRepository, times(1)).findByEmail(request.email());
+        verify(newsletterRepository, never()).save(any());
+    }
+
+    @Test
+    public void regenerateOtp_ShouldRegenerateOtp_WhenSubscriberExistsAndTimeIsValid() throws MessagingException {
+
+        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
+                .subscriberFirstName("Wiktor")
+                .email("example@example.com")
+                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+                .isActive(false)
+                .otp(123456)
+                .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS + 10))
+                .build();
+
+        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
+                .email("example@example.com")
+                .build();
+
+        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+        when(otpUtil.generateOtp()).thenReturn(123457);
+
+        RegenerateOtpResponse response = newsletterService.regenerateOtp(request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully regenerated otp for subscriber with email '" + request.email() + "'!", response.message());
+
+        verify(newsletterRepository, times(1)).findByEmail(request.email());
+        verify(otpUtil, times(1)).generateOtp();
+        verify(verificationMailUtil, times(1)).sendPl(subscriber.getEmail(), 123457);
+        verify(newsletterRepository, times(1)).save(subscriber);
+    }
+
+    @Test
+    public void regenerateOtp_ShouldThrowOtpRegenerationFailedException_WhenRegenerationTimeNotPassed() throws MessagingException {
+
+        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
+                .subscriberFirstName("Wiktor")
+                .email("example@example.com")
+                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+                .isActive(false)
+                .otp(123456)
+                .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS - 10))
+                .build();
+
+        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
+                .email("example@example.com")
+                .build();
+
+        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+
+        assertThrows(OtpRegenerationFailedException.class, () -> newsletterService.regenerateOtp(request));
+
+        verify(newsletterRepository, times(1)).findByEmail(request.email());
+        verify(otpUtil, never()).generateOtp();
+        verify(verificationMailUtil, never()).sendEng(subscriber.getEmail(), 132543);
+        verify(newsletterRepository, never()).save(any());
+    }
+
+    @Test
+    public void regenerateOtp_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist() throws MessagingException {
+
+        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
+                .email("example@example.com")
+                .build();
+
+        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+
+        assertThrows(SubscriberNotFoundException.class, () -> newsletterService.regenerateOtp(request));
+
+        verify(newsletterRepository, times(1)).findByEmail(request.email());
+        verify(otpUtil, never()).generateOtp();
+        verify(verificationMailUtil, never()).sendEng(request.email(), 132543);
         verify(newsletterRepository, never()).save(any());
     }
 }
