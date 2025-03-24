@@ -5,8 +5,10 @@ import com.p4zd4n.kebab.exceptions.notfound.OrderNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
 import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
+import com.p4zd4n.kebab.responses.menu.addons.RemovedAddonResponse;
 import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
+import com.p4zd4n.kebab.responses.orders.RemovedOrderResponse;
 import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -239,5 +241,20 @@ public class OrdersService {
                 order.addIngredient(ingredient, quantity);
             }
         }
+    }
+
+    public RemovedOrderResponse removeOrder(Order order) {
+        log.info("Started removing order with id '{}'", order.getId());
+
+        ordersRepository.delete(order);
+
+        RemovedOrderResponse response = RemovedOrderResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed order with od '" + order.getId() + "'")
+                .build();
+
+        log.info("Successfully removed order with id '{}'", order.getId());
+
+        return response;
     }
 }

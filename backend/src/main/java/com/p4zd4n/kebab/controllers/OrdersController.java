@@ -4,8 +4,10 @@ import com.p4zd4n.kebab.entities.Order;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
 import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
+import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
+import com.p4zd4n.kebab.responses.orders.RemovedOrderResponse;
 import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
 import com.p4zd4n.kebab.services.orders.OrdersService;
 import jakarta.validation.Valid;
@@ -66,6 +68,18 @@ public class OrdersController {
         UpdatedOrderResponse response = ordersService.updateOrder(existingOrder, request);
 
         log.info("Successfully updated new order");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-order")
+    public ResponseEntity<RemovedOrderResponse> removeOrder(
+            @Valid @RequestBody RemovedBeveragePromotionRequest request
+    ) {
+        log.info("Received remove order request");
+
+        Order existingOrder = ordersService.findOrderById(request.id());
+        RemovedOrderResponse response = ordersService.removeOrder(existingOrder);
 
         return ResponseEntity.ok(response);
     }

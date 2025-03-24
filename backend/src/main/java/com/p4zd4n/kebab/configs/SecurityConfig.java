@@ -70,7 +70,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "api/v1/auth/logout",
                                 "/api/v1/orders/all",
-                                "/api/v1/orders/update-order"
+                                "/api/v1/orders/update-order",
+                                "/api/v1/orders/remove-order"
                         ).hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )
