@@ -65,10 +65,13 @@ public class SecurityConfig {
                                 "/api/v1/promotions/add-addon-promotion",
                                 "/api/v1/promotions/update-addon-promotion",
                                 "/api/v1/promotions/remove-addon-promotion",
-                                "/api/v1/newsletter/subscribers",
-                                "/api/v1/orders/all"
+                                "/api/v1/newsletter/subscribers"
                         ).hasRole("MANAGER")
-                        .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
+                        .requestMatchers(
+                                "api/v1/auth/logout",
+                                "/api/v1/orders/all",
+                                "/api/v1/orders/update-order"
+                        ).hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

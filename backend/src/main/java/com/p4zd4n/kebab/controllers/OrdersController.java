@@ -1,9 +1,12 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.entities.Order;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
+import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
 import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
+import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
 import com.p4zd4n.kebab.services.orders.OrdersService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +47,25 @@ public class OrdersController {
         NewOrderResponse response = ordersService.addOrder(request);
 
         log.info("Successfully added new order");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-order")
+    public ResponseEntity<UpdatedOrderResponse> updateOrder(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UpdatedOrderRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received update order request");
+
+        Order existingOrder = ordersService.findOrderById(request.id());
+        UpdatedOrderResponse response = ordersService.updateOrder(existingOrder, request);
+
+        log.info("Successfully updated new order");
 
         return ResponseEntity.ok(response);
     }
