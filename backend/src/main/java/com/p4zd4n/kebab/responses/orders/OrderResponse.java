@@ -20,6 +20,7 @@ public record OrderResponse(
         @JsonProperty("house_number") Integer houseNumber,
         @JsonProperty("postal_code") String postalCode,
         String city,
+        @JsonProperty("additional_comments") String additionalComments,
         List<OrderMeal> meals,
         List<OrderBeverage> beverages,
         List<OrderAddon> addons,

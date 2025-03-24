@@ -96,6 +96,7 @@ public class OrdersService {
                 .houseNumber(order.getHouseNumber())
                 .postalCode(order.getPostalCode())
                 .city(order.getCity())
+                .additionalComments(order.getAdditionalComments())
                 .meals(meals)
                 .beverages(beverages)
                 .addons(addons)
@@ -126,6 +127,10 @@ public class OrdersService {
 
         if (request.city() != null && !request.city().isBlank()) {
             order.setCity(request.city());
+        }
+
+        if (request.additionalComments() != null && !request.additionalComments().isBlank()) {
+            order.setAdditionalComments(request.additionalComments());
         }
 
         Order savedOrder = ordersRepository.save(order);
@@ -170,6 +175,9 @@ public class OrdersService {
         if (request.houseNumber() != null && request.houseNumber() > 0) order.setHouseNumber(request.houseNumber());
         if (request.postalCode() != null && !request.postalCode().isBlank()) order.setPostalCode(request.postalCode());
         if (request.city() != null && !request.city().isBlank()) order.setCity(request.city());
+        if (request.additionalComments() != null && !request.additionalComments().isBlank()) {
+            order.setAdditionalComments(request.additionalComments());
+        }
 
         if (request.meals() != null) {
             order.getOrderMeals().clear();

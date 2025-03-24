@@ -49,6 +49,9 @@ public class Order extends WithTimestamp {
     @Column(name = "city")
     private String city;
 
+    @Column(name = "additional_comments")
+    private String additionalComments;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderMeal> orderMeals = new ArrayList<>();
 
@@ -69,7 +72,8 @@ public class Order extends WithTimestamp {
                  String street,
                  Integer houseNumber,
                  String postalCode,
-                 String city) {
+                 String city,
+                 String additionalComments) {
         this.orderType = orderType;
         this.orderStatus = orderStatus;
         this.customerPhone = customerPhone;
@@ -78,6 +82,7 @@ public class Order extends WithTimestamp {
         this.houseNumber = houseNumber;
         this.postalCode = postalCode;
         this.city = city;
+        this.additionalComments = additionalComments;
     }
 
     public void addMeal(Meal meal, Integer quantity) {

@@ -44,6 +44,9 @@ public record UpdatedOrderRequest(
         @JsonProperty("updated_city")
         String city,
 
+        @JsonProperty("updated_additional_comments")
+        String additionalComments,
+
         @JsonProperty("updated_meals")
         Map<String, Integer> meals,
 

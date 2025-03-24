@@ -1,9 +1,6 @@
 package com.p4zd4n.kebab.requests.orders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.p4zd4n.kebab.entities.Addon;
-import com.p4zd4n.kebab.entities.Beverage;
-import com.p4zd4n.kebab.entities.Meal;
 import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
 import jakarta.validation.constraints.Email;
@@ -13,7 +10,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 @Builder
@@ -46,6 +42,9 @@ public record NewOrderRequest(
         String postalCode,
 
         String city,
+
+        @JsonProperty("additional_comments")
+        String additionalComments,
 
         Map<String, Integer> meals,
 
