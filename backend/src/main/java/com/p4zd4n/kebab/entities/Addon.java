@@ -29,9 +29,6 @@ public class Addon extends WithTimestamp {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @ManyToMany(mappedBy = "addons")
-    @JsonIgnore
-    private List<Order> orders = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "promotion_id")

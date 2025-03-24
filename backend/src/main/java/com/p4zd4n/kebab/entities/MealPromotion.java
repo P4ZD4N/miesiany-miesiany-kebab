@@ -48,6 +48,7 @@ public class MealPromotion extends WithTimestamp implements Promotion, Observabl
     private List<Meal> meals = new ArrayList<>();
 
     @Transient
+    @JsonIgnore
     private List<Observer> observers = new ArrayList<>();
 
     @Builder

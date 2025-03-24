@@ -29,10 +29,6 @@ public class Meal extends WithTimestamp {
     @Column(name = "id")
     private Long id;
 
-    @ManyToMany(mappedBy = "meals")
-    @JsonIgnore
-    private List<Order> orders = new ArrayList<>();
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "meal_promotions",

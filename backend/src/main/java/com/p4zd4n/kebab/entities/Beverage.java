@@ -32,10 +32,6 @@ public class Beverage extends WithTimestamp {
     @Column(name = "capacity", nullable = false)
     private BigDecimal capacity;
 
-    @ManyToMany(mappedBy = "beverages")
-    @JsonIgnore
-    private List<Order> orders = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "promotion_id")
     private BeveragePromotion promotion;

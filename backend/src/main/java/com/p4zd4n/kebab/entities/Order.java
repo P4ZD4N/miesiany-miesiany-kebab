@@ -1,6 +1,5 @@
 package com.p4zd4n.kebab.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
 import jakarta.persistence.*;
@@ -42,7 +41,7 @@ public class Order extends WithTimestamp {
     private String street;
 
     @Column(name = "house_number")
-    private String houseNumber;
+    private Integer houseNumber;
 
     @Column(name = "postal_code")
     private String postalCode;
@@ -50,29 +49,14 @@ public class Order extends WithTimestamp {
     @Column(name = "city")
     private String city;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "order_meals",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "meal_id")
-    )
-    private List<Meal> meals = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderMeal> orderMeals = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "order_beverages",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "addon_id")
-    )
-    private List<Beverage> beverages = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderBeverage> orderBeverages = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "order_addons",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "addon_id")
-    )
-    private List<Addon> addons = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderAddon> orderAddons = new ArrayList<>();
 
     @Builder
     public Order(OrderType orderType,
@@ -80,7 +64,7 @@ public class Order extends WithTimestamp {
                  String customerPhone,
                  String customerEmail,
                  String street,
-                 String houseNumber,
+                 Integer houseNumber,
                  String postalCode,
                  String city) {
         this.orderType = orderType;
@@ -91,5 +75,32 @@ public class Order extends WithTimestamp {
         this.houseNumber = houseNumber;
         this.postalCode = postalCode;
         this.city = city;
+    }
+
+    public void addMeal(Meal meal, Integer quantity) {
+        OrderMeal orderMeal = OrderMeal.builder()
+            .order(this)
+            .meal(meal)
+            .quantity(quantity)
+            .build();
+        orderMeals.add(orderMeal);
+    }
+
+    public void addBeverage(Beverage beverage, Integer quantity) {
+        OrderBeverage orderBeverage = OrderBeverage.builder()
+                .order(this)
+                .beverage(beverage)
+                .quantity(quantity)
+                .build();
+        orderBeverages.add(orderBeverage);
+    }
+
+    public void addAddon(Addon addon, Integer quantity) {
+        OrderAddon orderAddon = OrderAddon.builder()
+                .order(this)
+                .addon(addon)
+                .quantity(quantity)
+                .build();
+        orderAddons.add(orderAddon);
     }
 }
