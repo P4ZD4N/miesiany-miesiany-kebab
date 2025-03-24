@@ -2,23 +2,17 @@ package com.p4zd4n.kebab.services.orders;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.exceptions.notfound.OrderNotFoundException;
-import com.p4zd4n.kebab.repositories.AddonRepository;
-import com.p4zd4n.kebab.repositories.BeverageRepository;
-import com.p4zd4n.kebab.repositories.MealRepository;
-import com.p4zd4n.kebab.repositories.OrdersRepository;
+import com.p4zd4n.kebab.repositories.*;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
 import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
-import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
 import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
 import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
-import com.p4zd4n.kebab.responses.promotions.addonpromotions.UpdatedAddonPromotionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,12 +25,14 @@ public class OrdersService {
     private final MealRepository mealRepository;
     private final BeverageRepository beverageRepository;
     private final AddonRepository addonRepository;
+    private final IngredientRepository ingredientRepository;
 
-    public OrdersService(OrdersRepository ordersRepository, MealRepository mealRepository, BeverageRepository beverageRepository, AddonRepository addonRepository) {
+    public OrdersService(OrdersRepository ordersRepository, MealRepository mealRepository, BeverageRepository beverageRepository, AddonRepository addonRepository, IngredientRepository ingredientRepository) {
         this.ordersRepository = ordersRepository;
         this.mealRepository = mealRepository;
         this.beverageRepository = beverageRepository;
         this.addonRepository = addonRepository;
+        this.ingredientRepository = ingredientRepository;
     }
 
     public List<OrderResponse> getOrders() {
@@ -80,6 +76,14 @@ public class OrdersService {
                         .build())
                 .toList();
 
+        List<OrderIngredient> ingredients = order.getOrderIngredients().stream()
+                .map(orderIngredient -> OrderIngredient.builder()
+                        .order(order)
+                        .ingredient(orderIngredient.getIngredient())
+                        .quantity(orderIngredient.getQuantity())
+                        .build())
+                .toList();
+
         return OrderResponse.builder()
                 .id(order.getId())
                 .orderType(order.getOrderType())
@@ -93,6 +97,7 @@ public class OrdersService {
                 .meals(meals)
                 .beverages(beverages)
                 .addons(addons)
+                .ingredients(ingredients)
                 .build();
     }
 
@@ -126,6 +131,7 @@ public class OrdersService {
         if (request.meals() != null) addMeals(order, request.meals());
         if (request.beverages() != null && !request.beverages().isEmpty()) addBeverages(order, request.beverages());
         if (request.addons() != null && !request.addons().isEmpty()) addAddons(order, request.addons());
+        if (request.ingredients() != null && !request.ingredients().isEmpty()) addIngredients(order, request.ingredients());
 
         savedOrder = ordersRepository.save(savedOrder);
 
@@ -178,6 +184,11 @@ public class OrdersService {
             addAddons(order, request.addons());
         }
 
+        if (request.ingredients() != null && !request.ingredients().isEmpty()) {
+            order.getOrderIngredients().clear();
+            addIngredients(order, request.ingredients());
+        }
+
         ordersRepository.save(order);
 
         return response;
@@ -216,6 +227,16 @@ public class OrdersService {
             Integer quantity = addonQuantities.get(addon.getName());
             if (quantity != null && quantity > 0) {
                 order.addAddon(addon, quantity);
+            }
+        }
+    }
+
+    private void addIngredients(Order order, Map<String, Integer> ingredientQuantities) {
+        List<Ingredient> ingredients = ingredientRepository.findAllByNameIn(ingredientQuantities.keySet());
+        for (Ingredient ingredient : ingredients) {
+            Integer quantity = ingredientQuantities.get(ingredient.getName());
+            if (quantity != null && quantity > 0) {
+                order.addIngredient(ingredient, quantity);
             }
         }
     }

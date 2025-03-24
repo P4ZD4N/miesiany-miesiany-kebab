@@ -509,6 +509,10 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .orElseThrow(() -> new RuntimeException("Addon not found"));
         Beverage beverage = beverageRepository.findByNameAndCapacity("Coca-Cola", BigDecimal.valueOf(0.33))
                 .orElseThrow(() -> new RuntimeException("Beverage not found"));
+        Ingredient sauce = ingredientRepository.findByName("Hot Sauce")
+                .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+        Ingredient meat = ingredientRepository.findByName("Chicken")
+                .orElseThrow(() -> new RuntimeException("Ingredient not found"));
 
         Order order = Order.builder()
                 .orderType(OrderType.ON_SITE)
@@ -522,6 +526,8 @@ public class SampleDataInitializer implements CommandLineRunner {
         order.addMeal(meal, 1);
         order.addAddon(addon, 2);
         order.addBeverage(beverage, 1);
+        order.addIngredient(sauce, 1);
+        order.addIngredient(meat, 1);
 
         ordersRepository.save(order);
     }

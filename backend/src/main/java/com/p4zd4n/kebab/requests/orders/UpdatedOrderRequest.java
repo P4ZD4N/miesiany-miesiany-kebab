@@ -51,5 +51,8 @@ public record UpdatedOrderRequest(
         Map<String, Map<BigDecimal, Integer>> beverages,
 
         @JsonProperty("updated_addons")
-        Map<String, Integer> addons
+        Map<String, Integer> addons,
+
+        @JsonProperty("updated_ingredients")
+        Map<String, Integer> ingredients
 ) {}

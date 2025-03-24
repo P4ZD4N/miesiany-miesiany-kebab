@@ -22,5 +22,6 @@ public record OrderResponse(
         String city,
         List<OrderMeal> meals,
         List<OrderBeverage> beverages,
-        List<OrderAddon> addons
+        List<OrderAddon> addons,
+        List<OrderIngredient> ingredients
 ) {}

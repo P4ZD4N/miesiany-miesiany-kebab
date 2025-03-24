@@ -58,6 +58,9 @@ public class Order extends WithTimestamp {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderAddon> orderAddons = new ArrayList<>();
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderIngredient> orderIngredients = new ArrayList<>();
+
     @Builder
     public Order(OrderType orderType,
                  OrderStatus orderStatus,
@@ -102,5 +105,14 @@ public class Order extends WithTimestamp {
                 .quantity(quantity)
                 .build();
         orderAddons.add(orderAddon);
+    }
+
+    public void addIngredient(Ingredient ingredient, Integer quantity) {
+        OrderIngredient orderIngredient = OrderIngredient.builder()
+                .order(this)
+                .ingredient(ingredient)
+                .quantity(quantity)
+                .build();
+        orderIngredients.add(orderIngredient);
     }
 }
