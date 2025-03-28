@@ -4,6 +4,14 @@ img {
     cursor: pointer;
 }
 
+::ng-deep .custom-validation-message {
+    background-color: #141414 !important;
+    color: #F27474 !important;
+    padding: 8px !important;
+    margin-top: 10px !important;
+    text-align: center;
+}
+
 .navbar {
     background-color: #000000 !important;
     position: fixed;

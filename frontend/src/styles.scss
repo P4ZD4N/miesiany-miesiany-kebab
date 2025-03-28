@@ -22,3 +22,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .swal-radio-container input[type="radio"] {
   accent-color: red; 
 }
+
+.swal-radio-container-orders {
+  background-color: #141414 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.swal-radio-container-orders input[type="radio"] {
+  accent-color: red; 
+}

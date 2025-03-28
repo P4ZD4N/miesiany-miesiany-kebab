@@ -65,7 +65,7 @@
           </li>
 
           <li class="nav-item">
-              <a class="btn btn-danger" href="#">{{ 'common.navbar.order' | translate }}</a>
+              <a class="btn btn-danger" (click)="startPlacingOrder()">{{ 'common.navbar.order' | translate }}</a>
           </li>
 
           <li class="nav-item" *ngIf="isManager()">
