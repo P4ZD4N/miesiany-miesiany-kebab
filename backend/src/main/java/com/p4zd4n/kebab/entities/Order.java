@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.entities;
 
 import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
+import com.p4zd4n.kebab.enums.Size;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -85,10 +86,11 @@ public class Order extends WithTimestamp {
         this.additionalComments = additionalComments;
     }
 
-    public void addMeal(Meal meal, Integer quantity) {
+    public void addMeal(Meal meal, Size size, Integer quantity) {
         OrderMeal orderMeal = OrderMeal.builder()
             .order(this)
             .meal(meal)
+            .size(size)
             .quantity(quantity)
             .build();
         orderMeals.add(orderMeal);

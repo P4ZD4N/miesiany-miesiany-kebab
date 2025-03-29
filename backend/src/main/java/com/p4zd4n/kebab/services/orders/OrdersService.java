@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.services.orders;
 
 import com.p4zd4n.kebab.entities.*;
+import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.notfound.OrderNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
@@ -58,6 +59,7 @@ public class OrdersService {
                 .map(orderMeal -> OrderMeal.builder()
                         .order(order)
                         .meal(orderMeal.getMeal())
+                        .size(orderMeal.getSize())
                         .quantity(orderMeal.getQuantity())
                         .build())
                 .toList();
@@ -204,12 +206,16 @@ public class OrdersService {
         return response;
     }
 
-    private void addMeals(Order order, Map<String, Integer> mealQuantities) {
+    private void addMeals(Order order, Map<String, Map<Size, Integer>> mealQuantities) {
         List<Meal> meals = mealRepository.findAllByNameIn(mealQuantities.keySet());
         for (Meal meal : meals) {
-            Integer quantity = mealQuantities.get(meal.getName());
-            if (quantity != null && quantity > 0) {
-                order.addMeal(meal, quantity);
+            Map<Size, Integer> sizeQuantities = mealQuantities.get(meal.getName());
+
+            for (Map.Entry<Size, Integer> entry : sizeQuantities.entrySet()) {
+                Size size = entry.getKey();
+                Integer quantity = entry.getValue();
+
+                if (quantity != null && quantity > 0) order.addMeal(meal, size, quantity);
             }
         }
     }

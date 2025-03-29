@@ -3,6 +3,7 @@ package com.p4zd4n.kebab.requests.orders;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
+import com.p4zd4n.kebab.enums.Size;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -46,7 +47,7 @@ public record NewOrderRequest(
         @JsonProperty("additional_comments")
         String additionalComments,
 
-        Map<String, Integer> meals,
+        Map<String, Map<Size, Integer>> meals,
 
         Map<String, Map<BigDecimal, Integer>> beverages,
 

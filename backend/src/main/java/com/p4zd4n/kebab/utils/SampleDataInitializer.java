@@ -523,7 +523,7 @@ public class SampleDataInitializer implements CommandLineRunner {
 
         order = ordersRepository.save(order);
 
-        order.addMeal(meal, 1);
+        order.addMeal(meal, Size.XL, 1);
         order.addAddon(addon, 2);
         order.addBeverage(beverage, 1);
         order.addIngredient(sauce, 1);

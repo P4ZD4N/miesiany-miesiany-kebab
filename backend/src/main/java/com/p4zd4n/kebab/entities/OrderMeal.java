@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.p4zd4n.kebab.enums.Size;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,13 +30,17 @@ public class OrderMeal {
     @JoinColumn(name = "meal_id", nullable = false)
     private Meal meal;
 
+    @Column(name = "size", nullable = false)
+    private Size size;
+
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @Builder
-    public OrderMeal(Order order, Meal meal, Integer quantity) {
+    public OrderMeal(Order order, Meal meal, Size size, Integer quantity) {
         this.order = order;
         this.meal = meal;
+        this.size = size;
         this.quantity = quantity;
     }
 }
