@@ -662,4 +662,41 @@ public class GlobalExceptionHandler {
                         .message(exception.getMessage())
                         .build());
     }
+
+    @ExceptionHandler(InvalidIngredientException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidIngredientException(
+            InvalidIngredientException exception,
+            HttpServletRequest request
+    ) {
+        log.error(
+            "Attempted request to {} with invalid ingredient type '{}' where valid ingredient type was '{}' ",
+            request.getRequestURI(),
+            exception.getInvalidIngredientType(),
+            exception.getValidIngredientType()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidMealKeyFormatException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidMealKeyFormatException(
+            InvalidMealKeyFormatException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid meal key '{}'", request.getRequestURI(), exception.getMealKey());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
 }

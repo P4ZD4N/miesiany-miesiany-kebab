@@ -1,12 +1,14 @@
 package com.p4zd4n.kebab.services.orders;
 
 import com.p4zd4n.kebab.entities.*;
+import com.p4zd4n.kebab.entities.key.MealKey;
 import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.exceptions.invalid.InvalidMealKeyFormatException;
+import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.OrderNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
 import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
-import com.p4zd4n.kebab.responses.menu.addons.RemovedAddonResponse;
 import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
 import com.p4zd4n.kebab.responses.orders.RemovedOrderResponse;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -137,7 +141,11 @@ public class OrdersService {
 
         Order savedOrder = ordersRepository.save(order);
 
-        if (request.meals() != null) addMeals(order, request.meals());
+        if (request.meals() != null) addMeals(order, request.meals().entrySet().stream()
+            .collect(Collectors.toMap(
+                    entry -> parseMealKey(entry.getKey()),
+                    Map.Entry::getValue
+            )));
         if (request.beverages() != null && !request.beverages().isEmpty()) addBeverages(order, request.beverages());
         if (request.addons() != null && !request.addons().isEmpty()) addAddons(order, request.addons());
         if (request.ingredients() != null && !request.ingredients().isEmpty()) addIngredients(order, request.ingredients());
@@ -183,7 +191,11 @@ public class OrdersService {
 
         if (request.meals() != null) {
             order.getOrderMeals().clear();
-            addMeals(order, request.meals());
+            addMeals(order, request.meals().entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> parseMealKey(entry.getKey()),
+                        Map.Entry::getValue
+                )));
         }
 
         if (request.beverages() != null && !request.beverages().isEmpty()) {
@@ -206,18 +218,54 @@ public class OrdersService {
         return response;
     }
 
-    private void addMeals(Order order, Map<String, Map<Size, Integer>> mealQuantities) {
-        List<Meal> meals = mealRepository.findAllByNameIn(mealQuantities.keySet());
-        for (Meal meal : meals) {
-            Map<Size, Integer> sizeQuantities = mealQuantities.get(meal.getName());
+    private void addMeals(Order order, Map<MealKey, Map<Size, Integer>> mealQuantities) {
+        Map<MealKey, Meal> mealMap = mealQuantities.keySet().stream()
+                .map(mealKey -> {
+                    Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
+                    if (optionalMeal.isPresent()) {
+                        Meal existingMeal = optionalMeal.get();
+                        existingMeal.addIngredient(mealKey.getMeat());
+                        existingMeal.addIngredient(mealKey.getSauce());
+                        return Map.entry(mealKey, existingMeal);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-            for (Map.Entry<Size, Integer> entry : sizeQuantities.entrySet()) {
-                Size size = entry.getKey();
-                Integer quantity = entry.getValue();
+        for (Map.Entry<MealKey, Map<Size, Integer>> entry : mealQuantities.entrySet()) {
+            MealKey mealKey = entry.getKey();
+            Map<Size, Integer> sizeQuantities = entry.getValue();
+            Meal meal = mealMap.get(mealKey);
+
+            if (meal == null) continue;
+
+            for (Map.Entry<Size, Integer> sizeEntry : sizeQuantities.entrySet()) {
+                Size size = sizeEntry.getKey();
+                Integer quantity = sizeEntry.getValue();
 
                 if (quantity != null && quantity > 0) order.addMeal(meal, size, quantity);
             }
         }
+    }
+
+    private MealKey parseMealKey(String key) {
+        String[] parts = key.split("_");
+
+        if (parts.length != 3) throw new InvalidMealKeyFormatException(key);
+
+        System.out.println(ingredientRepository.findAll().size());
+        System.out.println(ingredientRepository.findAll());
+        Ingredient meat = ingredientRepository.findByName(parts[1])
+                .orElseThrow(() -> new IngredientNotFoundException(parts[1]));
+        Ingredient sauce = ingredientRepository.findByName(parts[2])
+                .orElseThrow(() -> new IngredientNotFoundException(parts[2]));
+
+        return MealKey.builder()
+                .mealName(parts[0])
+                .meat(meat)
+                .sauce(sauce)
+                .build();
     }
 
     private void addBeverages(Order order, Map<String, Map<BigDecimal, Integer>> beverageQuantities) {
