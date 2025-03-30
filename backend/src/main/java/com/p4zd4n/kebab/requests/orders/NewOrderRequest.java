@@ -51,7 +51,5 @@ public record NewOrderRequest(
 
         Map<String, Map<BigDecimal, Integer>> beverages,
 
-        Map<String, Integer> addons,
-
-        Map<String, Integer> ingredients
+        Map<String, Integer> addons
 ) {}

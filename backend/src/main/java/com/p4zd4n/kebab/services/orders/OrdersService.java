@@ -148,7 +148,6 @@ public class OrdersService {
             )));
         if (request.beverages() != null && !request.beverages().isEmpty()) addBeverages(order, request.beverages());
         if (request.addons() != null && !request.addons().isEmpty()) addAddons(order, request.addons());
-        if (request.ingredients() != null && !request.ingredients().isEmpty()) addIngredients(order, request.ingredients());
 
         savedOrder = ordersRepository.save(savedOrder);
 
@@ -206,11 +205,6 @@ public class OrdersService {
         if (request.addons() != null && !request.addons().isEmpty()) {
             order.getOrderAddons().clear();
             addAddons(order, request.addons());
-        }
-
-        if (request.ingredients() != null && !request.ingredients().isEmpty()) {
-            order.getOrderIngredients().clear();
-            addIngredients(order, request.ingredients());
         }
 
         ordersRepository.save(order);

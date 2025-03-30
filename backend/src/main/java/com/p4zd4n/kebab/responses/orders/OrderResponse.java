@@ -23,6 +23,5 @@ public record OrderResponse(
         @JsonProperty("additional_comments") String additionalComments,
         List<OrderMeal> meals,
         List<OrderBeverage> beverages,
-        List<OrderAddon> addons,
-        List<OrderIngredient> ingredients
+        List<OrderAddon> addons
 ) {}
