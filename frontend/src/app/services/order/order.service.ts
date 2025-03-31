@@ -6,16 +6,30 @@ import { MenuService } from '../menu/menu.service';
 import { AddonResponse, BeverageResponse, IngredientResponse, MealPromotion, MealResponse } from '../../responses/responses';
 import Swal from 'sweetalert2';
 import { Size } from '../../enums/size.enum';
+import { NewOrderRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
 
+  storageKey = 'orderData';
+
   beverages: BeverageResponse[] = [];
   addons: AddonResponse[] = [];
   meals: MealResponse[] = [];
   ingredients: IngredientResponse[] = [];
+
+  order: NewOrderRequest = {
+    order_type: null, 
+    order_status: null,
+    customer_phone: '',
+    customer_email: '',
+    meals: {},
+    beverages: {},
+    addons: {},
+    total_price: 0
+  };
 
   constructor(
     private translate: TranslateService,
@@ -376,8 +390,23 @@ export class OrderService {
         ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100) 
         : baseUnitPrice;
       const finalTotalPrice = (finalUnitPrice * quantity).toFixed(2);
+      const mealKey = mealName + '_' + meatSelect.value + '_' + sauceSelect.value;
 
-      console.log(sizeSelect.value + ' ' + meatSelect.value + ' ' + sauceSelect.value + ' ' + quantityInput.value + ' ' + finalTotalPrice);
+      if (!this.order.meals[mealKey]) {
+        this.order.meals[mealKey] = {
+          [Size.SMALL]: 0,
+          [Size.MEDIUM]: 0,
+          [Size.LARGE]: 0,
+          [Size.XL]: 0
+        };
+      }
+
+      this.order.meals[mealKey][selectedSize] += quantity;
+      this.order.total_price += parseFloat(finalTotalPrice);
+
+      this.setOrderData(this.order);
+
+      console.log(this.getOrderData());
     }
   }
 
@@ -569,7 +598,20 @@ export class OrderService {
         : baseUnitPrice;
       const finalTotalPrice = (finalUnitPrice * quantity).toFixed(2);
 
-      console.log(selectedCapacity + ' ' + quantityInput.value + ' ' + finalTotalPrice);
+      if (!this.order.beverages[beverage.name]) {
+        this.order.beverages[beverage.name] = {}; 
+      }
+      
+      if (!this.order.beverages[beverage.name][beverage.capacity]) {
+        this.order.beverages[beverage.name][beverage.capacity] = 0;
+      }
+
+      this.order.beverages[beverage.name][beverage.capacity] += quantity;
+      this.order.total_price += parseFloat(finalTotalPrice);
+
+      this.setOrderData(this.order);
+
+      console.log(this.getOrderData());
     }
   } 
 
@@ -711,6 +753,17 @@ export class OrderService {
       const finalTotalPrice = (finalUnitPrice * quantity).toFixed(2);
 
       console.log(addonSelect.value + ' ' + quantityInput.value + ' ' + finalTotalPrice);
+
+      if (!this.order.addons[addon.name]) {
+        this.order.addons[addon.name] = 0; 
+      }
+
+      this.order.addons[addon.name] += quantity;
+      this.order.total_price += parseFloat(finalTotalPrice);
+
+      this.setOrderData(this.order);
+
+      console.log(this.getOrderData());
     }
   } 
 
@@ -732,5 +785,18 @@ export class OrderService {
   isAddonTranslationAvailable(addonName: string): boolean {
     const translatedName = this.translate.instant('menu.addons.' + addonName);
     return translatedName !== 'menu.addons.' + addonName;
+  }
+
+  setOrderData(order: NewOrderRequest): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(order));
+  }
+
+  getOrderData(): NewOrderRequest | null {
+    const data = localStorage.getItem(this.storageKey);
+    return data ? JSON.parse(data) : null;
+  }
+
+  clearOrderData(): void {
+    localStorage.removeItem(this.storageKey);
   }
 }

@@ -2,6 +2,8 @@ import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
 import { IngredientType } from "../enums/ingredient-type.enum";
 import { NewsletterMessagesLanguage } from "../enums/newsletter-messages-language.enum";
+import { OrderStatus } from "../enums/order-status.enum";
+import { OrderType } from "../enums/order-type.enum";
 import { Size } from "../enums/size.enum";
 import { JobEmploymentType, JobRequirement, SimpleMealIngredient } from "../responses/responses";
 
@@ -185,4 +187,20 @@ export interface RegenerateOtpRequest {
 
 export interface UnsubscribeRequest {
   email: string;
+}
+
+export interface NewOrderRequest {
+  order_type: OrderType | null;
+  order_status: OrderStatus | null;
+  customer_phone: string;
+  customer_email: string;
+  street?: string;
+  house_number?: number;
+  postal_code?: string;
+  city?: string;
+  additional_comments?: string;
+  meals: { [key in string]: { [key in Size]: number } };
+  beverages: { [key in string]: { [key in number]: number } };
+  addons: { [key in string]: number };
+  total_price: number;
 }
