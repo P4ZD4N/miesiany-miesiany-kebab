@@ -106,7 +106,6 @@ public class OrdersService {
                 .meals(meals)
                 .beverages(beverages)
                 .addons(addons)
-                .ingredients(ingredients)
                 .build();
     }
 
