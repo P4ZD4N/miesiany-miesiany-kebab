@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from '../lang/lang.service';
-import { AuthenticationService } from '../authentication/authentication.service';
 import { MenuService } from '../menu/menu.service';
 import { AddonResponse, BeverageResponse, IngredientResponse, MealPromotion, MealResponse } from '../../responses/responses';
 import Swal from 'sweetalert2';
@@ -34,7 +33,6 @@ export class OrderService {
   constructor(
     private translate: TranslateService,
     private langService: LangService,
-    private authenticationService: AuthenticationService,
     private menuService: MenuService
   ) { }
 
@@ -84,10 +82,21 @@ export class OrderService {
 
   async startPlacingOrder(): Promise<void> {
   
-    this.loadMeals();
-    this.loadIngredients();
-    this.loadBeverages();
-    this.loadAddons();
+    if (this.beverages.length === 0) {
+      this.loadBeverages();
+    }
+
+    if (this.addons.length === 0) {
+      this.loadAddons();
+    }
+
+    if (this.meals.length === 0) {
+      this.loadMeals();
+    }
+
+    if (this.ingredients.length === 0) {
+      this.loadIngredients();
+    }
 
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
     const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac co chcesz zamowic' : 'Please select what do you want to order';
