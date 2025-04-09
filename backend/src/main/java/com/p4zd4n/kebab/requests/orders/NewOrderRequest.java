@@ -5,7 +5,6 @@ import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
 import com.p4zd4n.kebab.enums.Size;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -25,12 +24,10 @@ public record NewOrderRequest(
         OrderStatus orderStatus,
 
         @JsonProperty("customer_phone")
-        @NotBlank(message = "{phone.notBlank}")
         @Pattern(regexp = "^[0-9]{9}$", message = "{phone.invalidFormat}")
         String customerPhone,
 
         @JsonProperty("customer_email")
-        @NotBlank(message = "{email.notBlank}")
         @Email(message = "{email.invalidFormat}")
         String customerEmail,
 
