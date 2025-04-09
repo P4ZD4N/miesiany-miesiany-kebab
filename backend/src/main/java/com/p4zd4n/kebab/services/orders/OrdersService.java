@@ -153,6 +153,7 @@ public class OrdersService {
         return NewOrderResponse.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully added new order with id '" + savedOrder.getId() + "'")
+                .id(savedOrder.getId())
                 .build();
     }
 

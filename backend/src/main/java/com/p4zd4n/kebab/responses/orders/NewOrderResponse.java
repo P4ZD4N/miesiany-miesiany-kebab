@@ -6,5 +6,6 @@ import lombok.Builder;
 @Builder
 public record NewOrderResponse(
         @JsonProperty("status_code") Integer statusCode,
-        String message
+        String message,
+        Long id
 ) {}
