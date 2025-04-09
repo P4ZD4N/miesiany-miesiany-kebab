@@ -71,7 +71,12 @@ export class NavbarComponent implements OnInit {
     return this.currentFlag;
   }
 
+  doesOrderExist(): boolean {
+    const orderData = this.orderService.getOrderData();
+    return orderData?.total_price !== undefined && orderData?.total_price > 0;
+  }
+ 
   async startPlacingOrder(): Promise<void> {
-    this.orderService.startPlacingOrder();
+    this.orderService.selectNextOrderItem();
   }
 }

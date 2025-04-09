@@ -1,6 +1,8 @@
 import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
 import { EmploymentType } from "../enums/employment-type.enum";
+import { OrderStatus } from "../enums/order-status.enum";
+import { OrderType } from "../enums/order-type.enum";
 import { RequirementType } from "../enums/requirement-type.enum";
 import { Role } from "../enums/role.enum";
 import { Size } from "../enums/size.enum";
@@ -292,6 +294,26 @@ export interface RegenerateOtpResponse {
 }
 
 export interface UnsubscribeResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface OrderResponse {
+  order_type: OrderType;
+  order_status: OrderStatus
+  customer_phone: string;
+  customer_email: string;
+  street: string;
+  house_number: number;
+  postal_code: string;
+  city: string;
+  additional_comments: string;
+  meals: { [key in string]: { [key in Size]: number } };
+  beverages: { [key in string]: { [key in number]: number } };
+  addons: { [key in string]: number };
+}
+
+export interface NewOrderResponse {
   status_code: number;
   message: string;
 }

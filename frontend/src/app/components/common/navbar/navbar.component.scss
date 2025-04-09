@@ -12,6 +12,34 @@ img {
     text-align: center;
 }
 
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+.btn-warning {
+    background-color: #ffc107;
+    color: white;
+}
+  
+.icon-active {
+    margin-left: 10px;  
+    color: green;
+}
+  
+.icon-active {
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(2px);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
 .navbar {
     background-color: #000000 !important;
     position: fixed;
