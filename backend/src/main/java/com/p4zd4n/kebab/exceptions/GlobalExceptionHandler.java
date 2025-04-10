@@ -2,11 +2,13 @@ package com.p4zd4n.kebab.exceptions;
 
 import com.p4zd4n.kebab.exceptions.alreadyexists.*;
 import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
+import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
 import com.p4zd4n.kebab.exceptions.failed.OtpRegenerationFailedException;
 import com.p4zd4n.kebab.exceptions.invalid.*;
 import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
+import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchException;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
@@ -697,6 +699,43 @@ public class GlobalExceptionHandler {
                         .builder()
                         .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(TrackOrderDataDoesNotMatchException.class)
+    public ResponseEntity<ExceptionResponse> handleTrackOrderDataDoesNotMatchException(
+            HttpServletRequest request,
+            TrackOrderDataDoesNotMatchException exception
+    ) {
+        log.error(
+            "Attempted request to {} with ID ({}) and customer phone number ({}) which do not match any existing order",
+            request.getRequestURI(), exception.getId(), exception.getCustomerPhone());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("orderData.notMatching", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(TrackOrderExpiredException.class)
+    public ResponseEntity<ExceptionResponse> handleTrackOrderExpiredException(HttpServletRequest request) {
+        log.error("Attempted request to {}, but tracking for this order is no longer available, because last update was over 40 minutes ago", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("trackOrder.expired", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.GONE)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.GONE.value())
+                        .message(message)
                         .build());
     }
 }

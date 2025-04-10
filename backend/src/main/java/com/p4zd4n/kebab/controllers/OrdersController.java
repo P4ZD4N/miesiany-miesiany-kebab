@@ -3,6 +3,7 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.entities.Order;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
+import com.p4zd4n.kebab.requests.orders.TrackOrderRequest;
 import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
@@ -49,6 +50,24 @@ public class OrdersController {
         NewOrderResponse response = ordersService.addOrder(request);
 
         log.info("Successfully added new order");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/track-order")
+    public ResponseEntity<OrderResponse> trackOrder(
+        @RequestHeader(value = "Accept-Language") String language,
+        @Valid @RequestBody TrackOrderRequest request
+    ) {
+        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
+            throw new InvalidAcceptLanguageHeaderValue(language);
+        }
+
+        log.info("Received track order request");
+
+        OrderResponse response = ordersService.trackOrder(request);
+
+        log.info("Successfully started tracking order");
 
         return ResponseEntity.ok(response);
     }

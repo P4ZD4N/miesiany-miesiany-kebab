@@ -2,12 +2,16 @@ package com.p4zd4n.kebab.services.orders;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.entities.key.MealKey;
+import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidMealKeyFormatException;
 import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.OrderNotFoundException;
+import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchException;
 import com.p4zd4n.kebab.repositories.*;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
+import com.p4zd4n.kebab.requests.orders.TrackOrderRequest;
 import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
 import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
@@ -18,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -167,6 +172,22 @@ public class OrdersService {
         log.info("Successfully found order with id '{}'", id);
 
         return order;
+    }
+
+    public OrderResponse trackOrder(TrackOrderRequest request) {
+
+        Order order = ordersRepository.findById(request.id())
+                .orElseThrow(() -> new OrderNotFoundException(request.id()));
+
+        if (!order.getCustomerPhone().equals(request.customerPhone())) {
+            throw new TrackOrderDataDoesNotMatchException(request.id(), request.customerPhone());
+        }
+
+        if (order.getUpdatedAt().isBefore(LocalDateTime.now().minusMinutes(40))) {
+            throw new TrackOrderExpiredException();
+        }
+
+        return mapToResponse(order);
     }
 
     public UpdatedOrderResponse updateOrder(Order order, UpdatedOrderRequest request) {
