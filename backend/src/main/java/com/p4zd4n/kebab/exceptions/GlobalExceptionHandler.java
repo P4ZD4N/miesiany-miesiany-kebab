@@ -656,12 +656,15 @@ public class GlobalExceptionHandler {
     ) {
         log.error("Attempted request to {} with id of not existing order: '{}'", request.getRequestURI(), exception.getId());
 
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("order.notExists", null, locale);
+
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.NOT_FOUND.value())
-                        .message(exception.getMessage())
+                        .message(message)
                         .build());
     }
 
