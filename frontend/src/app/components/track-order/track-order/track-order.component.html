@@ -1,0 +1,18 @@
+<section class="track-order">
+    <h1>{{ 'track-order.headline' | translate }}</h1>
+    <p *ngIf="!orderId && !customerPhone">{{ 'track-order.paragraph_top' | translate }}</p>
+
+    <section *ngIf="!orderId && !customerPhone" class="input-section">
+        <input type="number" min="1" placeholder="ID"  [(ngModel)]="trackOrderRequest.id" />
+        
+        <span *ngIf="errorMessages['customerPhone']" class="error">{{ errorMessages['customerPhone'] }}</span>
+        <input type="text" maxlength="9" placeholder="{{ 'track-order.phone' | translate }}"  [(ngModel)]="trackOrderRequest.customer_phone" />
+        
+        <span *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</span>
+        <button class="btn btn-success" (click)="startTrackingOrder()">{{ 'track-order.buttons.track' | translate }}</button>
+    </section>
+
+    <section *ngIf="orderId && customerPhone" class="tracking-section">
+        tracking
+    </section>
+</section>

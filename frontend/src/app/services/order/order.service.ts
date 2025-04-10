@@ -9,6 +9,7 @@ import { NewOrderRequest } from '../../requests/requests';
 import { OrdersService } from '../orders/orders.service';
 import { OrderType } from '../../enums/order-type.enum';
 import { OrderStatus } from '../../enums/order-status.enum';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,11 @@ export class OrderService {
   addons: AddonResponse[] = [];
   meals: MealResponse[] = [];
   ingredients: IngredientResponse[] = [];
+
+  trackOrderData = {
+    orderId: 0,
+    customerPhone: ''
+  }
 
   order: NewOrderRequest = {
     order_type: null, 
@@ -37,7 +43,8 @@ export class OrderService {
     private translate: TranslateService,
     private langService: LangService,
     private menuService: MenuService,
-    private ordersService: OrdersService
+    private ordersService: OrdersService,
+    private router: Router
   ) { }
 
   loadBeverages(): void {
@@ -84,7 +91,7 @@ export class OrderService {
     );
   }
 
-  async selectNextOrderItem(isNewOrder = false): Promise<void> {
+  selectNextOrderItem(isNewOrder = false): void {
 
     if (!isNewOrder) {
       const order = this.getOrderData();
@@ -97,7 +104,7 @@ export class OrderService {
   
     this.initRequiredData();
 
-    await Swal.fire({
+    Swal.fire({
       allowOutsideClick: false,
       title: this.langService.currentLang === 'pl' ? 
         `<span style="color: red;">Szanowny Kliencie</span>` : 
@@ -130,11 +137,11 @@ export class OrderService {
     });
   }
 
-  async askWhetherReturnToPreviousOrder(): Promise<void> {
+  askWhetherReturnToPreviousOrder(): void {
 
     this.initRequiredData();
 
-    await Swal.fire({
+    Swal.fire({
       allowOutsideClick: false,
       title: this.langService.currentLang === 'pl' ? 
         `<span style="color: red;">Szanowny Kliencie</span>` : 
@@ -988,7 +995,7 @@ export class OrderService {
     }
   } 
 
-  async askWhetherOrderComplete(itemName?: string): Promise<void> {
+  askWhetherOrderComplete(itemName?: string): void {
 
     let orderMealsList = Object.keys(this.order.meals).map(mealNameWithDetails => {
       const parts = mealNameWithDetails.split('_');
@@ -1505,9 +1512,9 @@ export class OrderService {
     if (isMealsEmpty && isAddonsEmpty && isBeveragesEmpty) Swal.close();
   }
 
-  async chooseFormOfOrderReceiving(): Promise<void> {
+  chooseFormOfOrderReceiving(): void {
 
-    await Swal.fire({
+    Swal.fire({
       allowOutsideClick: false,
       title: this.langService.currentLang === 'pl' ? 
         `<span style="color: red;">Szanowny Kliencie</span>` : 
@@ -1892,15 +1899,40 @@ export class OrderService {
     this.ordersService.addOrder(this.order).subscribe({
       next: (response) => {
         Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie zlozono zamowienie!` : `Successfully placed order!`,
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
           background: 'black',
           color: 'white',
           confirmButtonText: 'Ok',
+          html: `
+            <style>
+              ul {
+                list-style: none;
+              }
+            </style>
+
+            <p style="color: white; margin-bottom: 10px;">
+              ${this.langService.currentLang === 'pl' 
+                ? `Pomyslnie zlozono zamowienie! Mozesz teraz sledzic swoje zamowienie przechodzac pod /track-order i wpisujac dane:`
+                : 'Successfully placed order! Now, you can track you order by going to /track-order and entering following details:'}
+            </p>
+            <ul>
+              <li>ID: ${response.id}</li>
+              <li>
+                ${
+                  this.langService.currentLang === 'pl' 
+                  ? `Telefon: ${this.order.customer_phone}`
+                  : `Phone: ${this.order.customer_phone}`
+                }
+              </li>
+            </ul>
+          `,
         });
 
+        this.trackOrderData.orderId = response.id;
+        this.trackOrderData.customerPhone = this.order.customer_phone;
+        
         this.clearOrderData();
         this.order = {
           order_type: null, 
@@ -1912,6 +1944,8 @@ export class OrderService {
           addons: {},
           total_price: 0
         };
+
+        this.router.navigate(['/track-order']);
       }
     });
   }

@@ -269,5 +269,13 @@
         "buttons": {
             "yes": "Yes, sign me out"
         }
+    },
+    "track-order": {
+        "headline": "Track your order",
+        "paragraph_top": "Enter your order ID and phone number to check current status of your order!",
+        "phone": "Phone (9 digits)",
+        "buttons": {
+            "track": "Track"
+        }
     }
 }

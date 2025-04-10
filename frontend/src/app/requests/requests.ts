@@ -204,3 +204,8 @@ export interface NewOrderRequest {
   addons: { [key in string]: number };
   total_price: number;
 }
+
+export interface TrackOrderRequest {
+  id: number | null;
+  customer_phone: string;
+}

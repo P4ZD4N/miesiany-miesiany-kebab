@@ -18,6 +18,8 @@ import { PromotionsLayoutComponent } from './components/promotions/promotions-la
 import { PromotionsComponent } from './components/promotions/promotions/promotions.component';
 import { UnsubscribeLayoutComponent } from './components/unsubscribe/unsubscribe-layout-component';
 import { UnsubscribeComponent } from './components/unsubscribe/unsubscribe/unsubscribe.component';
+import { TrackOrderLayoutComponent } from './components/track-order/track-order-layout-component';
+import { TrackOrderComponent } from './components/track-order/track-order/track-order.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -48,4 +50,7 @@ export const routes: Routes = [
     { path: 'unsubscribe', component: UnsubscribeLayoutComponent, children: [
         { path: '', component: UnsubscribeComponent }
     ]}, 
+    { path: 'track-order', component: TrackOrderLayoutComponent, children: [
+        { path: '', component: TrackOrderComponent }
+    ]},  
 ];

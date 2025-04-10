@@ -269,5 +269,13 @@
         "buttons": {
             "yes": "Tak, wypisz mnie"
         }
+    },
+    "track-order": {
+        "headline": "Sledz swoje zamowienie",
+        "paragraph_top": "Wprowadz ID zamowienia oraz numer telefonu, aby sprawdzic aktualny status swojego zamowienia!",
+        "phone": "Telefon (9 cyfr)",
+        "buttons": {
+            "track": "Sledz"
+        }
     }
 }

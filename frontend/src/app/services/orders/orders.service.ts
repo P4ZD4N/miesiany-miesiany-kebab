@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
 import { NewOrderResponse, OrderResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewOrderRequest } from '../../requests/requests';
+import { NewOrderRequest, TrackOrderRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,18 @@ export class OrdersService {
     });
 
     return this.http.post<NewOrderResponse>(`${this.apiUrl}/add-order`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  trackOrder(request: TrackOrderRequest): Observable<OrderResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.post<OrderResponse>(`${this.apiUrl}/track-order`, request, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

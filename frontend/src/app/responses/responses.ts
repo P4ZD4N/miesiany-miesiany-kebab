@@ -299,9 +299,9 @@ export interface UnsubscribeResponse {
 }
 
 export interface OrderResponse {
-  order_type: OrderType;
-  order_status: OrderStatus
-  customer_phone: string;
+  order_type: OrderType | null;
+  order_status: OrderStatus | null;
+  customer_phone: string; 
   customer_email: string;
   street: string;
   house_number: number;
@@ -316,4 +316,5 @@ export interface OrderResponse {
 export interface NewOrderResponse {
   status_code: number;
   message: string;
+  id: number;
 }
