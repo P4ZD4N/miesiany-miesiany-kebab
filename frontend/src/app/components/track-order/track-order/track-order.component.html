@@ -14,5 +14,7 @@
 
     <section *ngIf="orderId && customerPhone" class="tracking-section">
         tracking
+        <p><strong>Order Type:</strong> {{ order.order_type }}</p>
+        <p><strong>Order Status:</strong> {{ order.order_status }}</p>
     </section>
 </section>

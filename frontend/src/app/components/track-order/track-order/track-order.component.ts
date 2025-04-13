@@ -55,25 +55,18 @@ export class TrackOrderComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    const trackOrderData = this.getTrackOrderData();
-
-    if (trackOrderData?.id != null) {
-      this.orderId = trackOrderData.id;
-      this.customerPhone = trackOrderData.customer_phone ?? null;
-      return;
-    }
-
-    if (this.orderService.trackOrderData.customerPhone !== '' && this.orderService.trackOrderData.orderId !== 0) {
-      this.ordersService.trackOrder(this.trackOrderRequest).subscribe({
-        next: (response) => this.initOrder(response),
-        error: (error) => this.handleError(error)
-      });
-
-      this.orderId = this.orderService.trackOrderData.orderId;
-      this.customerPhone = this.orderService.trackOrderData.customerPhone;
-      this.trackOrderRequest.id = this.orderService.trackOrderData.orderId;
-      this.trackOrderRequest.customer_phone = this.orderService.trackOrderData.customerPhone;
+    const saved = this.getTrackOrderData();
+    const fromService = this.orderService.trackOrderData;
+  
+    const id = saved?.id ?? fromService.orderId;
+    const phone = saved?.customer_phone ?? fromService.customerPhone;
+  
+    if (id && phone) {
+      this.trackOrderRequest = { id, customer_phone: phone };
+      this.orderId = id;
+      this.customerPhone = phone;
       this.setTrackOrderData(this.trackOrderRequest);
+      this.startTrackingOrder();
     }
   }
 
