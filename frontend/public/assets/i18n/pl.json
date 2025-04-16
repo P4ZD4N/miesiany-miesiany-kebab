@@ -299,6 +299,7 @@
             "CANCELED": "Anulowane",
             "RETURNED": "Zwrocone"
         },
+        "delivery_included": "dostawa wliczona",
         "thanks": "Dziekujemy za podanie swojego emaila! Przypominamy, ze co 10 zamowien z podanym emailem otrzymasz kod rabatowy na kolejne zamowienie!",
         "encourage": "Zachecamy do podania swojego emaila przy kolejnym zamowieniu! Przypominamy, ze co 10 zamowien z podanym emailem otrzymujesz kod rabatowy na kolejne zamowienie!"
     }

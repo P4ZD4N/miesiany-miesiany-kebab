@@ -22,7 +22,12 @@
 
             <div class="card">
                 <h4>{{ 'track-order.total_price' | translate }}</h4>
-                <p>{{ order.total_price | number:'1.2-2'}} zl</p>
+                <p>
+                    {{ order.total_price | number:'1.2-2'}} zl
+                    <span *ngIf="order.street && order.house_number && order.postal_code && order.city">
+                         ({{ 'track-order.delivery_included' | translate }})
+                    </span>
+                </p>
             </div>
 
             <div class="card">

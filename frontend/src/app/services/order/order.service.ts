@@ -1594,11 +1594,16 @@ export class OrderService {
           }
         </style>
 
-        <p style="color: white; margin-bottom: 10px;">
+        <span style="color: white; margin-bottom: 10px;">
           ${this.langService.currentLang === 'pl' 
             ? 'Podaj adres, pod ktory mamy dostarczyc Twoje zamowienie!' 
             : 'Enter address, where we can deliver your order!'}
-        </p>
+          <span style="color: red;">
+          ${this.langService.currentLang === 'pl' 
+            ? 'Dostarczamy zamowienia do 20 km od lokalu. Zamowienie z adresem znajdujacym sie dalej zostanie anulowane. Kazda dostawa kosztuje 15 zl!' 
+            : 'We deliver orders up to 20 km from our restaurant. Order with address further away will be canceled. Each delivery costs 15 zl!'}
+          </span>
+        </span>
         
         <div>
           <input type="text" id="street" maxlength=25  placeholder="${streetPlaceholder}">
@@ -1737,11 +1742,11 @@ export class OrderService {
           }
         </style>
 
-        <p style="color: white; margin-bottom: 10px;">
+        <span style="color: white; margin-bottom: 10px;">
           ${this.langService.currentLang === 'pl' 
             ? 'Podanie adresu email nie jest wymagane, ale zachecamy do jego wpisania. Kazde zamowienie to rownowartosc 1 punktu! Po zebraniu 10 punktow otrzymasz kod rabatowy na kolejne zamowienie!' 
             : 'Providing an email address is optional, but we encourage you to enter it. Each order is equality of 1 point. After collecting 10 points you’ll receive a discount code for your next order!'}
-        </p>
+        </span>
         
         <div>
           <input type="email" id="email" maxlength=30  placeholder="${emailPlaceholder}">
@@ -1911,11 +1916,11 @@ export class OrderService {
               }
             </style>
 
-            <p style="color: white; margin-bottom: 10px;">
+            <span style="color: white; margin-bottom: 10px;">
               ${this.langService.currentLang === 'pl' 
                 ? `Pomyslnie zlozono zamowienie! Mozesz teraz sledzic swoje zamowienie przechodzac pod /track-order i wpisujac dane:`
                 : 'Successfully placed order! Now, you can track you order by going to /track-order and entering following details:'}
-            </p>
+            </span>
             <ul>
               <li>ID: ${response.id}</li>
               <li>

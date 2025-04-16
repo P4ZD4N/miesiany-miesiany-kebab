@@ -136,8 +136,11 @@ public class OrdersService {
         }
 
         Order savedOrder = ordersRepository.save(order);
-
         BigDecimal totalPrice = BigDecimal.valueOf(0);
+
+        if (order.getStreet() != null && order.getHouseNumber() != null && order.getPostalCode() != null && order.getCity() != null) {
+            totalPrice = totalPrice.add(BigDecimal.valueOf(15));
+        }
 
         if (request.meals() != null)  {
             Map<MealKey, Map<Size, Integer>> mealQuantities = request.meals().entrySet().stream()

@@ -299,6 +299,7 @@
             "CANCELED": "Canceled",
             "RETURNED": "Returned"
         },
+        "delivery_included": "delivery included",
         "thanks": "Thank you for providing your email! We remind you, that every 10 orders you will receive a discount code for your next order!",
         "encourage": " We encourage you to enter your email next time! We remind, that every 10 orders with entered email you will receive discount code for your next order!"
     }
