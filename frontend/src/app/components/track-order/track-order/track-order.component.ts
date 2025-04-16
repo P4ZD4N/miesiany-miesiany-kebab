@@ -72,26 +72,52 @@ export class TrackOrderComponent implements OnInit{
   startTrackingOrder(): void {
     this.ordersService.trackOrder(this.trackOrderRequest).subscribe({
       next: (response) => {
-        Swal.fire({
-          text: this.langService.currentLang === 'pl' 
-            ? `Pomyslnie rozpoczeto sledzenie zamowienia z id '${this.trackOrderRequest.id}'!` 
-            : `Successfully started tracking order with id '${this.trackOrderRequest.id}'!`,
-          icon: 'success',
-          iconColor: 'green',
-          confirmButtonColor: 'green',
-          background: 'black',
-          color: 'white',
-          confirmButtonText: 'Ok',
-        });
-        console.log(response);
         this.initOrder(response);
         this.setTrackOrderData(this.trackOrderRequest);
       },
       error: (error) => {
         this.handleError(error);
       },
+    }); 
+  }
+
+  stopTrackingOrder(): void {
+
+    Swal.fire({
+      text: this.langService.currentLang === 'pl' 
+        ? `Pomyslnie zaprzestano sledzic zamowienie z id '${this.trackOrderRequest.id}'!` 
+        : `Successfully stopped tracking order with id '${this.trackOrderRequest.id}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: 'black',
+      color: 'white',
+      confirmButtonText: 'Ok',
     });
-    
+
+    this.clearTrackOrderData();
+
+    this.trackOrderRequest = {
+      id: null,
+      customer_phone: ''
+    };
+
+    this.order = {
+      id: 0,
+      order_type: null, 
+      order_status: null,
+      customer_phone: '',
+      customer_email: '',
+      street: '',
+      house_number: 0,
+      postal_code: '',
+      city: '',
+      additional_comments: '',
+      total_price: 0,
+      meals: {},
+      beverages: {},
+      addons: {}
+    };
   }
 
   initOrder(response: OrderResponse): void {

@@ -278,7 +278,8 @@
         "paragraph_thank_you": "Szanowny Kliencie, dziekujemy za twoje zamowienie!",
         "phone": "Telefon (9 cyfr)",
         "buttons": {
-            "track": "Sledz"
+            "track": "Sledz",
+            "stop_tracking": "Przestan sledzic"
         },
         "total_price": "Wartosc zamowienia",
         "delivery_address": "Adres dostawy",

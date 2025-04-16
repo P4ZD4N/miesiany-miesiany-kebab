@@ -18,29 +18,44 @@ p {
     font-size: 24px;
 }
 
+button {
+    font-size: 20px;
+}
+
+.btn-danger {
+    background-color: #ff0000;
+    display: block;
+    margin: 0 auto;
+
+    &:hover {
+        background-color: #b90909;
+    }
+}
+
 input {
-    width: 80%;
-    color: white;
+    font-size: 24px;
     text-align: center;
-    background: inherit;
+    width: 100%;
+    color: white;
+    background: none;
     border: none;
-    border-bottom: 1px solid white;
+    border-bottom: 3px solid white;
     outline: none;
     transition: border-bottom 0.3s ease;
 
     &:focus {
-        border-bottom: 1px solid red;
+        border-bottom: 3px solid red;
     }
     &[type=checkbox] {
         accent-color: red;
     }
 }
 
+
 .tracking-section, .order-status, .email {
     width: 100%;
     margin-top: 2em;
 }
-
 
 .email {
     display: flex;
@@ -168,6 +183,8 @@ input {
 }
 
 .input-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
     width: 40%;
     color: white;
     font-size: 22px;

@@ -278,7 +278,8 @@
         "paragraph_thank_you": "Dear Client, thank you for your order!",
         "phone": "Phone (9 digits)",
         "buttons": {
-            "track": "Track"
+            "track": "Track",
+            "stop_tracking": "Stop tracking"
         },
         "total_price": "Total price",
         "delivery_address": "Delivery address",
