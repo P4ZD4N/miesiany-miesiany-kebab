@@ -283,7 +283,7 @@ public class OrdersService {
             throw new TrackOrderDataDoesNotMatchException(request.id(), request.customerPhone());
         }
 
-        if (order.getUpdatedAt().isBefore(LocalDateTime.now().minusMinutes(40))) {
+        if (order.getUpdatedAt().isBefore(LocalDateTime.now().minusHours(2))) {
             throw new TrackOrderExpiredException();
         }
 
