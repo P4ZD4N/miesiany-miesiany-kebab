@@ -5,6 +5,7 @@
             "opening_hours": "Godziny otwarcia",
             "menu": "Menu",
             "promotions": "Promocje",
+            "track_order": "Sledz zamowienie",
             "contact": "Kontakt",
             "order": "Zamów",
             "employee": "Panel Pracownika",
@@ -16,6 +17,7 @@
             "menu": "Menu",
             "promotions": "Promocje",
             "jobs": "Praca",
+            "track_order": "Sledz zamowienie",
             "contact": "Kontakt"
         }
     },

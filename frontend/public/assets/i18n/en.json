@@ -5,6 +5,7 @@
             "opening_hours": "Opening hours",
             "menu": "Menu",
             "promotions": "Promotions",
+            "track_order": "Track order",
             "contact": "Contact",
             "order": "Order",
             "employee": "Employee Panel",
@@ -16,6 +17,7 @@
             "menu": "Menu",
             "promotions": "Promotions",
             "jobs": "Jobs",
+            "track_order": "Track order",
             "contact": "Contact"
         }
     },

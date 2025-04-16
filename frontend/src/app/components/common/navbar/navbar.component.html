@@ -53,7 +53,19 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/contact']" routerLinkActive="active">{{ 'common.navbar.contact' | translate }}</a>
+            <a class="nav-link" 
+              [routerLink]="['/track-order']"
+               routerLinkActive="active">
+               {{ 'common.navbar.track_order' | translate }}
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" 
+              [routerLink]="['/contact']"
+               routerLinkActive="active">
+               {{ 'common.navbar.contact' | translate }}
+            </a>
           </li>
         </ul>
 
