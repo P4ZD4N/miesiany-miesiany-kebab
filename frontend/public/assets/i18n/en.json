@@ -284,9 +284,9 @@
         "total_price": "Total price",
         "delivery_address": "Delivery address",
         "receive_restaurant": "Pick-up at the restaurant",
-        "contact_data": {
-            "headline": "Contact data",
-            "phone": "Phone"
+        "payment_methods": {
+            "headline": "Payment methods",
+            "methods": "Card / Cash"
         },
         "order_status": {
             "headline": "Order status",

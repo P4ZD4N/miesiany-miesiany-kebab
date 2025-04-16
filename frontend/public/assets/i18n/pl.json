@@ -284,9 +284,9 @@
         "total_price": "Wartosc zamowienia",
         "delivery_address": "Adres dostawy",
         "receive_restaurant": "Odbior w restauracji",
-        "contact_data": {
-            "headline": "Dane kontaktowe",
-            "phone": "Telefon"
+        "payment_methods": {
+            "headline": "Metody platnosci",
+            "methods": "Gotowka / Karta"
         },
         "order_status": {
             "headline": "Status zamowienia",
