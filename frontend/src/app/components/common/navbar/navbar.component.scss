@@ -184,6 +184,28 @@ img {
     }
 }
 
+
+@media (max-width: 1200px) {
+    .navbar-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.1rem;
+
+        .nav-item {
+            padding: 0.2rem;
+            margin-right: 0;
+        }
+
+        &.mx-auto {
+            gap: 0;
+        }
+    }
+
+    .nav-link {
+        text-align: center;
+    }
+}
+
 @media (max-width: 991px) {
     .navbar-nav {
         flex-direction: column;
