@@ -2,7 +2,6 @@ package com.p4zd4n.kebab.services.orders;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.entities.key.MealKey;
-import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidMealKeyFormatException;
@@ -89,14 +88,6 @@ public class OrdersService {
                         .build())
                 .toList();
 
-        List<OrderIngredient> ingredients = order.getOrderIngredients().stream()
-                .map(orderIngredient -> OrderIngredient.builder()
-                        .order(order)
-                        .ingredient(orderIngredient.getIngredient())
-                        .quantity(orderIngredient.getQuantity())
-                        .build())
-                .toList();
-
         return OrderResponse.builder()
                 .id(order.getId())
                 .orderType(order.getOrderType())
@@ -108,6 +99,7 @@ public class OrdersService {
                 .postalCode(order.getPostalCode())
                 .city(order.getCity())
                 .additionalComments(order.getAdditionalComments())
+                .totalPrice(order.getTotalPrice())
                 .meals(meals)
                 .beverages(beverages)
                 .addons(addons)
@@ -145,14 +137,30 @@ public class OrdersService {
 
         Order savedOrder = ordersRepository.save(order);
 
-        if (request.meals() != null) addMeals(order, request.meals().entrySet().stream()
-            .collect(Collectors.toMap(
-                    entry -> parseMealKey(entry.getKey()),
-                    Map.Entry::getValue
-            )));
-        if (request.beverages() != null && !request.beverages().isEmpty()) addBeverages(order, request.beverages());
-        if (request.addons() != null && !request.addons().isEmpty()) addAddons(order, request.addons());
+        BigDecimal totalPrice = BigDecimal.valueOf(0);
 
+        if (request.meals() != null)  {
+            Map<MealKey, Map<Size, Integer>> mealQuantities = request.meals().entrySet().stream()
+                    .collect(Collectors.toMap(
+                            entry -> parseMealKey(entry.getKey()),
+                            Map.Entry::getValue
+                    ));
+
+            addMeals(order, mealQuantities);
+            totalPrice = totalPrice.add(getMealTotalPrice(mealQuantities));
+        }
+
+        if (request.beverages() != null && !request.beverages().isEmpty()) {
+            addBeverages(order, request.beverages());
+            totalPrice = totalPrice.add(getBeverageTotalPrice(request.beverages()));
+        }
+
+        if (request.addons() != null && !request.addons().isEmpty()) {
+            addAddons(order, request.addons());
+            totalPrice = totalPrice.add(getAddonTotalPrice(request.addons()));
+        }
+
+        savedOrder.setTotalPrice(totalPrice);
         savedOrder = ordersRepository.save(savedOrder);
 
         return NewOrderResponse.builder()
@@ -160,6 +168,98 @@ public class OrdersService {
                 .message("Successfully added new order with id '" + savedOrder.getId() + "'")
                 .id(savedOrder.getId())
                 .build();
+    }
+
+    private BigDecimal getMealTotalPrice(Map<MealKey, Map<Size, Integer>> mealQuantities) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        Map<MealKey, Meal> mealMap = mealQuantities.keySet().stream()
+                .map(mealKey -> {
+                    Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
+                    if (optionalMeal.isPresent()) {
+                        Meal existingMeal = optionalMeal.get();
+                        return Map.entry(mealKey, existingMeal);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        for (Map.Entry<MealKey, Map<Size, Integer>> entry : mealQuantities.entrySet()) {
+            MealKey mealKey = entry.getKey();
+            Map<Size, Integer> sizeQuantities = entry.getValue();
+            Meal meal = mealMap.get(mealKey);
+
+            if (meal == null) continue;
+
+            for (Map.Entry<Size, Integer> sizeEntry : sizeQuantities.entrySet()) {
+                Size size = sizeEntry.getKey();
+                Integer quantity = sizeEntry.getValue();
+
+                BigDecimal basePrice = meal.getPrices().get(size);
+                BigDecimal discount = meal.getPromotions().stream()
+                        .filter(promotion -> promotion.getSizes().contains(size))
+                        .map(MealPromotion::getDiscountPercentage)
+                        .findFirst()
+                        .orElse(BigDecimal.ZERO);
+
+                BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
+                BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
+                BigDecimal subtotal = discountedPrice.multiply(BigDecimal.valueOf(quantity));
+
+                totalPrice = totalPrice.add(subtotal);
+            }
+        }
+
+        return totalPrice;
+    }
+
+    private BigDecimal getBeverageTotalPrice(Map<String, Map<BigDecimal, Integer>> beverageQuantities) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+
+        for (Map.Entry<String, Map<BigDecimal, Integer>> entry : beverageQuantities.entrySet()) {
+            String beverageName = entry.getKey();
+            Map<BigDecimal, Integer> capacityQuantities = entry.getValue();
+
+            for (Map.Entry<BigDecimal, Integer> capacityEntry : capacityQuantities.entrySet()) {
+                BigDecimal capacity = capacityEntry.getKey();
+                Integer quantity = capacityEntry.getValue();
+                Beverage beverage = beverageRepository.findByNameAndCapacity(beverageName, capacity).orElse(null);
+
+                if (beverage == null) continue;
+
+                BigDecimal basePrice = beverage.getPrice();
+                BigDecimal discount = beverage.getPromotion() != null
+                        ? beverage.getPromotion().getDiscountPercentage()
+                        : BigDecimal.ZERO;
+                BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
+                BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
+                BigDecimal subtotal = discountedPrice.multiply(BigDecimal.valueOf(quantity));
+
+                totalPrice = totalPrice.add(subtotal);
+            }
+        }
+
+        return totalPrice;
+    }
+
+    private BigDecimal getAddonTotalPrice(Map<String, Integer> addonQuantities) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        List<Addon> addons = addonRepository.findAllByNameIn(addonQuantities.keySet());
+
+        for (Addon addon : addons) {
+            Integer quantity = addonQuantities.get(addon.getName());
+            BigDecimal basePrice = addon.getPrice();
+            BigDecimal discount = addon.getPromotion() != null
+                    ? addon.getPromotion().getDiscountPercentage()
+                    : BigDecimal.ZERO;
+            BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
+            BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
+            BigDecimal subtotal = discountedPrice.multiply(BigDecimal.valueOf(quantity));
+
+            totalPrice = totalPrice.add(subtotal);
+        }
+
+        return totalPrice;
     }
 
     public Order findOrderById(Long id) {
@@ -269,8 +369,6 @@ public class OrdersService {
 
         if (parts.length != 3) throw new InvalidMealKeyFormatException(key);
 
-        System.out.println(ingredientRepository.findAll().size());
-        System.out.println(ingredientRepository.findAll());
         Ingredient meat = ingredientRepository.findByName(parts[1])
                 .orElseThrow(() -> new IngredientNotFoundException(parts[1]));
         Ingredient sauce = ingredientRepository.findByName(parts[2])
@@ -306,16 +404,6 @@ public class OrdersService {
             Integer quantity = addonQuantities.get(addon.getName());
             if (quantity != null && quantity > 0) {
                 order.addAddon(addon, quantity);
-            }
-        }
-    }
-
-    private void addIngredients(Order order, Map<String, Integer> ingredientQuantities) {
-        List<Ingredient> ingredients = ingredientRepository.findAllByNameIn(ingredientQuantities.keySet());
-        for (Ingredient ingredient : ingredients) {
-            Integer quantity = ingredientQuantities.get(ingredient.getName());
-            if (quantity != null && quantity > 0) {
-                order.addIngredient(ingredient, quantity);
             }
         }
     }

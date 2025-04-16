@@ -6,6 +6,7 @@ import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
@@ -21,6 +22,7 @@ public record OrderResponse(
         @JsonProperty("postal_code") String postalCode,
         String city,
         @JsonProperty("additional_comments") String additionalComments,
+        @JsonProperty("total_price") BigDecimal totalPrice,
         List<OrderMeal> meals,
         List<OrderBeverage> beverages,
         List<OrderAddon> addons

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +53,9 @@ public class Order extends WithTimestamp {
 
     @Column(name = "additional_comments")
     private String additionalComments;
+
+    @Column(name = "total_price")
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderMeal> orderMeals = new ArrayList<>();
