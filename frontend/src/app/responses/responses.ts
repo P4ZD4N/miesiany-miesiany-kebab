@@ -299,6 +299,7 @@ export interface UnsubscribeResponse {
 }
 
 export interface OrderResponse {
+  id: number;
   order_type: OrderType | null;
   order_status: OrderStatus | null;
   customer_phone: string; 
@@ -308,6 +309,7 @@ export interface OrderResponse {
   postal_code: string;
   city: string;
   additional_comments: string;
+  total_price: number;
   meals: { [key in string]: { [key in Size]: number } };
   beverages: { [key in string]: { [key in number]: number } };
   addons: { [key in string]: number };

@@ -273,9 +273,30 @@
     "track-order": {
         "headline": "Track your order",
         "paragraph_top": "Enter your order ID and phone number to check current status of your order!",
+        "paragraph_thank_you": "Dear Client, thank you for your order!",
         "phone": "Phone (9 digits)",
         "buttons": {
             "track": "Track"
-        }
+        },
+        "total_price": "Total price",
+        "delivery_address": "Delivery address",
+        "receive_restaurant": "Pick-up at the restaurant",
+        "contact_data": {
+            "headline": "Contact data",
+            "phone": "Phone"
+        },
+        "order_status": {
+            "headline": "Order status",
+            "IN_PREPARATION": "In preparation",
+            "READY1": "Ready to deliver",
+            "READY2": "Ready to pick up",
+            "SHIPPED1": "Shipped",
+            "SHIPPED2": "Waiting for pick up",
+            "RECEIVED": "Received",
+            "CANCELED": "Canceled",
+            "RETURNED": "Returned"
+        },
+        "thanks": "Thank you for providing your email! We remind you, that every 10 orders you will receive a discount code for your next order!",
+        "encourage": " We encourage you to enter your email next time! We remind, that every 10 orders with entered email you will receive discount code for your next order!"
     }
 }

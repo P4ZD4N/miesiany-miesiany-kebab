@@ -1,8 +1,9 @@
 <section class="track-order">
     <h1>{{ 'track-order.headline' | translate }}</h1>
-    <p *ngIf="!orderId && !customerPhone">{{ 'track-order.paragraph_top' | translate }}</p>
+    <p *ngIf="!order.id && !order.customer_phone">{{ 'track-order.paragraph_top' | translate }}</p>
+    <p *ngIf="order.id && order.customer_phone">{{ 'track-order.paragraph_thank_you' | translate }}</p>
 
-    <section *ngIf="!orderId && !customerPhone" class="input-section">
+    <section *ngIf="!order.id && !order.customer_phone" class="input-section">
         <input type="number" min="1" placeholder="ID"  [(ngModel)]="trackOrderRequest.id" />
         
         <span *ngIf="errorMessages['customerPhone']" class="error">{{ errorMessages['customerPhone'] }}</span>
@@ -12,9 +13,163 @@
         <button class="btn btn-success" (click)="startTrackingOrder()">{{ 'track-order.buttons.track' | translate }}</button>
     </section>
 
-    <section *ngIf="orderId && customerPhone" class="tracking-section">
-        tracking
-        <p><strong>Order Type:</strong> {{ order.order_type }}</p>
-        <p><strong>Order Status:</strong> {{ order.order_status }}</p>
+    <section *ngIf="order.id && order.customer_phone" class="tracking-section">
+        <section class="general-details">
+            <div class="card">
+                <h4>ID</h4>
+                <p>{{ order.id }}</p>
+            </div>
+
+            <div class="card">
+                <h4>{{ 'track-order.total_price' | translate }}</h4>
+                <p>{{ order.total_price | number:'1.2-2'}} zl</p>
+            </div>
+
+            <div class="card">
+
+                <h4>
+                    {{ 'track-order.delivery_address' | translate }}
+                </h4>
+
+                <p *ngIf="order.street && order.house_number && order.postal_code && order.city">
+                    ul. {{ order.street }} {{ order.house_number }}<br>
+                    {{ order.postal_code }} {{ order.city }}
+                </p>
+
+                <p *ngIf="!order.street && !order.house_number && !order.postal_code && !order.city">
+                    {{ 'track-order.receive_restaurant' | translate }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h4>{{ 'track-order.contact_data.headline' | translate }}</h4>
+                <p>
+                    <span *ngIf="order.customer_email">Email: {{ order.customer_email }}<br></span>
+                    {{ 'track-order.contact_data.phone' | translate }}: {{ order.customer_phone }}
+                </p>
+            </div>
+        </section>
+
+        <section class="order-status">
+            <p>
+                <strong>{{ 'track-order.order_status.headline' | translate }}: </strong> 
+
+                <span class="order-status-color" *ngIf="order.order_status !== 'READY' && order.order_status !== 'SHIPPED'">
+                    {{ 'track-order.order_status.' + order.order_status | translate }}
+                </span>
+
+                <span class="order-status-color" 
+                *ngIf="order.order_status === 'READY' && 
+                        order.street && 
+                        order.house_number && 
+                        order.postal_code && 
+                        order.city"
+                >
+                    {{ 'track-order.order_status.READY1' | translate }}
+                </span>
+
+                <span class="order-status-color" 
+                    *ngIf="order.order_status === 'READY' && 
+                            !order.street && 
+                            !order.house_number && 
+                            !order.postal_code && 
+                            !order.city"
+                >
+                    {{ 'track-order.order_status.READY2' | translate }}
+                </span>
+
+                <span class="order-status-color" 
+                *ngIf="order.order_status === 'SHIPPED' && 
+                        order.street && 
+                        order.house_number && 
+                        order.postal_code && 
+                        order.city"
+                >
+                    {{ 'track-order.order_status.SHIPPED1' | translate }}
+                </span>
+
+                <span class="order-status-color" 
+                    *ngIf="order.order_status === 'SHIPPED' && 
+                            !order.street && 
+                            !order.house_number && 
+                            !order.postal_code && 
+                            !order.city"
+                >
+                    {{ 'track-order.order_status.SHIPPED2' | translate }}
+                </span>
+            </p>
+
+            <div class="order-timeline-container">
+                <div class="order-timeline">
+                  <div class="timeline-track">
+                    <div class="timeline-progress" 
+                         [ngClass]="{
+                            'progress-in-preparation': order.order_status === 'IN_PREPARATION',
+                            'progress-ready': order.order_status === 'READY',
+                            'progress-shipped': order.order_status === 'SHIPPED',
+                            'progress-received': order.order_status === 'RECEIVED',
+                            'progress-returned': order.order_status === 'RETURNED',
+                            'progress-canceled': order.order_status === 'CANCELED'
+                         }">
+                    </div>
+                  </div>
+                  <div class="timeline-steps">
+                    <div class="timeline-step" 
+                        [ngClass]="{'active': order.order_status === 'IN_PREPARATION' || 
+                            order.order_status === 'READY' || 
+                            order.order_status === 'SHIPPED' || 
+                            order.order_status === 'RECEIVED'}"
+                    >
+                      <div class="step-icon"></div>
+                      <div class="step-label">{{ 'track-order.order_status.IN_PREPARATION' | translate }}</div>
+                    </div>
+                    <div class="timeline-step" 
+                        [ngClass]="{'active': order.order_status === 'READY' || 
+                            order.order_status === 'SHIPPED' || 
+                            order.order_status === 'RECEIVED'}">
+                      <div class="step-icon"></div>
+                      <div class="step-label">
+                        <span *ngIf="order.street && order.house_number && order.postal_code && order.city">
+                            {{ 'track-order.order_status.READY1' | translate }}
+                        </span>
+            
+                        <span *ngIf="!order.street && !order.house_number && !order.postal_code && !order.city">
+                            {{ 'track-order.order_status.READY2' | translate }}
+                        </span>
+                    </div>
+                    </div>
+                    <div class="timeline-step" 
+                        [ngClass]="{'active': order.order_status === 'SHIPPED' || 
+                            order.order_status === 'RECEIVED'}">
+                      <div class="step-icon"></div>
+                      <div class="step-label">
+                        <span *ngIf="order.street && order.house_number && order.postal_code && order.city">
+                            {{ 'track-order.order_status.SHIPPED1' | translate }}
+                        </span>
+            
+                        <span *ngIf="!order.street && !order.house_number && !order.postal_code && !order.city">
+                            {{ 'track-order.order_status.SHIPPED2' | translate }}
+                        </span>
+                    </div>
+                    </div>
+                    <div class="timeline-step" 
+                        [ngClass]="{'active': order.order_status === 'RECEIVED'}">
+                      <div class="step-icon"></div>
+                      <div class="step-label">{{ 'track-order.order_status.RECEIVED' | translate }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </section>
+
+        <section class="email">
+            <p *ngIf="order.customer_email">
+                Dziekujemy za podanie swojego emaila! 
+                Przypominamy, ze co 10 zamowien otrzymasz kod rabatowy na kolejne zamowienie!
+            </p>
+            <p *ngIf="!order.customer_email">
+                {{ 'track-order.encourage' | translate }}
+            </p>
+        </section>
     </section>
 </section>

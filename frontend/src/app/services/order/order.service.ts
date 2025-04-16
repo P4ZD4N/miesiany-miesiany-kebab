@@ -1893,9 +1893,8 @@ export class OrderService {
   placeOrder(): void {
 
     this.order.order_type = OrderType.TAKEAWAY;
-    this.order.order_status = OrderStatus.RECEIVED;
+    this.order.order_status = OrderStatus.IN_PREPARATION;
 
-    console.log(this.order);
     this.ordersService.addOrder(this.order).subscribe({
       next: (response) => {
         Swal.fire({

@@ -13,7 +13,6 @@ h1 {
 }
 
 p {
-    width: 40%;
     text-align: center;
     color: white;
     font-size: 24px;
@@ -37,6 +36,136 @@ input {
     }
 }
 
+.tracking-section, .order-status, .email {
+    width: 100%;
+    margin-top: 2em;
+}
+
+
+.email {
+    display: flex;
+    justify-content: center;
+    
+    p {
+        text-align: center;
+        width: 70%;
+    }
+}
+
+.general-details {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+}
+
+.card {
+    padding: 0.5em;
+    width: 20%;
+    background-color: rgb(20, 20, 20);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    h4 {
+        color: red;
+        text-align: center;
+    }
+}
+
+.order-status-color {
+    color: #4caf50;
+}
+
+.order-timeline-container {
+    margin: 0 auto;
+    width: 80%;
+    padding: 20px 0;
+}
+  
+.order-timeline {
+    position: relative;
+    margin: 30px 0;
+}
+  
+.timeline-track {
+    position: relative;
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+}
+  
+.timeline-progress {
+    position: absolute;
+    height: 100%;
+    background-color: #4caf50;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.progress-in-preparation{ width: 12%};
+.progress-ready { width: 37%; }
+.progress-shipped { width: 62%; }
+.progress-received{ width: 100%; }
+.progress-returned, .progress-canceled { width: 0; }
+  
+.timeline-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-top: -12px;
+}
+  
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex:  1;
+}
+  
+.step-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    border: 2px solid #fff;
+    margin-bottom: 8px;
+    transition: background-color 0.3s ease;
+}
+  
+.step-label {
+    font-size: 14px;
+    color: #757575;
+    text-align: center;
+}
+  
+.timeline-step.active .step-icon {
+    background-color: #4caf50;
+}
+  
+.timeline-step.active .step-label {
+    color: #4caf50;
+    font-weight: 500;
+}
+  
+.special-status {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500;
+}
+  
+.special-status.returned {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+  
+.special-status.canceled {
+    background-color: #ffebee;
+    color: #c62828;
+}
 
 .input-section {
     width: 40%;
@@ -59,6 +188,26 @@ input {
         width: 60%;
     }
 
+    .general-details {
+        flex-direction: column; 
+        align-items: center; 
+        gap: 1em;
+        overflow-x: visible; 
+        white-space: normal; 
+    }
+
+    .card {
+        width: 80%; 
+        max-width: 400px;
+        min-width: auto; 
+    }
+
+    .order-status {
+        p {
+            width: 100%;
+        }
+    }
+
     .input-section {
         width: 60%;
     }
@@ -68,9 +217,31 @@ input {
     .input-section {
         width: 80%;
     }
+
+    .order-timeline-container {
+        overflow-x: auto;
+      }
+    
+    .order-timeline {
+        min-width: 600px;
+    }
+    
+    .timeline-steps {
+        min-width: 600px;
+    }
 }
 
 @media (max-width: 580px) {
+    .order-status {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        p {
+            width: 80%;
+        }
+    }
+
     p {
         width: 80%;
     }

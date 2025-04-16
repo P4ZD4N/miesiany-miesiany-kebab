@@ -20,15 +20,15 @@ import { Subscription } from 'rxjs';
 export class TrackOrderComponent implements OnInit{
 
   storageKey = 'trackOrderData';
-
+  objectKeys = Object.keys;
   errorMessages: { [key: string]: string } = {};
-  orderId: number | null = null;
-  customerPhone: string | null = null;
+  totalPrice: number | null = null;
   trackOrderRequest: TrackOrderRequest = {
     id: null,
     customer_phone: ''
   };
   order: OrderResponse = {
+    id: 0,
     order_type: null, 
     order_status: null,
     customer_phone: '',
@@ -38,6 +38,7 @@ export class TrackOrderComponent implements OnInit{
     postal_code: '',
     city: '',
     additional_comments: '',
+    total_price: 0,
     meals: {},
     beverages: {},
     addons: {}
@@ -56,15 +57,13 @@ export class TrackOrderComponent implements OnInit{
 
   ngOnInit(): void {
     const saved = this.getTrackOrderData();
-    const fromService = this.orderService.trackOrderData;
+    const trackOrderData = this.orderService.trackOrderData;
   
-    const id = saved?.id ?? fromService.orderId;
-    const phone = saved?.customer_phone ?? fromService.customerPhone;
+    const id = saved?.id ?? trackOrderData.orderId;
+    const phone = saved?.customer_phone ?? trackOrderData.customerPhone;
   
     if (id && phone) {
-      this.trackOrderRequest = { id, customer_phone: phone };
-      this.orderId = id;
-      this.customerPhone = phone;
+      this.trackOrderRequest = { id, customer_phone: phone};
       this.setTrackOrderData(this.trackOrderRequest);
       this.startTrackingOrder();
     }
@@ -84,9 +83,7 @@ export class TrackOrderComponent implements OnInit{
           color: 'white',
           confirmButtonText: 'Ok',
         });
-
-        this.orderId = this.trackOrderRequest.id;
-        this.customerPhone = this.trackOrderRequest.customer_phone;
+        console.log(response);
         this.initOrder(response);
         this.setTrackOrderData(this.trackOrderRequest);
       },
@@ -94,10 +91,12 @@ export class TrackOrderComponent implements OnInit{
         this.handleError(error);
       },
     });
+    
   }
 
   initOrder(response: OrderResponse): void {
     this.order = {
+      id: response.id,
       order_type: response.order_type,
       order_status: response.order_status,
       customer_phone: response.customer_phone,
@@ -107,6 +106,7 @@ export class TrackOrderComponent implements OnInit{
       postal_code: response.postal_code,
       city: response.city,
       additional_comments: response.additional_comments,
+      total_price: response.total_price,
       meals: response.meals,
       beverages: response.beverages,
       addons: response.addons

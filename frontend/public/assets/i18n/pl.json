@@ -273,9 +273,30 @@
     "track-order": {
         "headline": "Sledz swoje zamowienie",
         "paragraph_top": "Wprowadz ID zamowienia oraz numer telefonu, aby sprawdzic aktualny status swojego zamowienia!",
+        "paragraph_thank_you": "Szanowny Kliencie, dziekujemy za twoje zamowienie!",
         "phone": "Telefon (9 cyfr)",
         "buttons": {
             "track": "Sledz"
-        }
+        },
+        "total_price": "Wartosc zamowienia",
+        "delivery_address": "Adres dostawy",
+        "receive_restaurant": "Odbior w restauracji",
+        "contact_data": {
+            "headline": "Dane kontaktowe",
+            "phone": "Telefon"
+        },
+        "order_status": {
+            "headline": "Status zamowienia",
+            "IN_PREPARATION": "W przygotowaniu",
+            "READY1": "Gotowe do wyslania",
+            "READY2": "Gotowe do odbioru",
+            "SHIPPED1": "Wyslane",
+            "SHIPPED2": "Oczekiwanie na odbior",
+            "RECEIVED": "Odebrane",
+            "CANCELED": "Anulowane",
+            "RETURNED": "Zwrocone"
+        },
+        "thanks": "Dziekujemy za podanie swojego emaila! Przypominamy, ze co 10 zamowien z podanym emailem otrzymasz kod rabatowy na kolejne zamowienie!",
+        "encourage": "Zachecamy do podania swojego emaila przy kolejnym zamowieniu! Przypominamy, ze co 10 zamowien z podanym emailem otrzymujesz kod rabatowy na kolejne zamowienie!"
     }
 }
