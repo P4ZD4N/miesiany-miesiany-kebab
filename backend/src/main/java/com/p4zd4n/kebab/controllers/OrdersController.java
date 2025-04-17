@@ -11,6 +11,7 @@ import com.p4zd4n.kebab.responses.orders.OrderResponse;
 import com.p4zd4n.kebab.responses.orders.RemovedOrderResponse;
 import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
 import com.p4zd4n.kebab.services.orders.OrdersService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -40,14 +41,14 @@ public class OrdersController {
     public ResponseEntity<NewOrderResponse> addOrder(
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewOrderRequest request
-    ) {
+    ) throws MessagingException {
         if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
             throw new InvalidAcceptLanguageHeaderValue(language);
         }
 
         log.info("Received add order request");
 
-        NewOrderResponse response = ordersService.addOrder(request);
+        NewOrderResponse response = ordersService.addOrder(request, language);
 
         log.info("Successfully added new order");
 

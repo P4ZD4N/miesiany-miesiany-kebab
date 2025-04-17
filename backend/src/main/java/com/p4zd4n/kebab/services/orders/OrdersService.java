@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.services.orders;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.entities.key.MealKey;
+import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidMealKeyFormatException;
@@ -16,6 +17,8 @@ import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
 import com.p4zd4n.kebab.responses.orders.RemovedOrderResponse;
 import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
+import com.p4zd4n.kebab.utils.mails.ThanksForOrderMailUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -37,13 +40,25 @@ public class OrdersService {
     private final BeverageRepository beverageRepository;
     private final AddonRepository addonRepository;
     private final IngredientRepository ingredientRepository;
+    private final CustomerRepository customerRepository;
+    private final ThanksForOrderMailUtil thanksForOrderMailUtil;
 
-    public OrdersService(OrdersRepository ordersRepository, MealRepository mealRepository, BeverageRepository beverageRepository, AddonRepository addonRepository, IngredientRepository ingredientRepository) {
+    public OrdersService(
+            OrdersRepository ordersRepository,
+            MealRepository mealRepository,
+            BeverageRepository beverageRepository,
+            AddonRepository addonRepository,
+            IngredientRepository ingredientRepository,
+            CustomerRepository customerRepository,
+            ThanksForOrderMailUtil thanksForOrderMailUtil
+    ) {
         this.ordersRepository = ordersRepository;
         this.mealRepository = mealRepository;
         this.beverageRepository = beverageRepository;
         this.addonRepository = addonRepository;
         this.ingredientRepository = ingredientRepository;
+        this.customerRepository = customerRepository;
+        this.thanksForOrderMailUtil = thanksForOrderMailUtil;
     }
 
     public List<OrderResponse> getOrders() {
@@ -53,8 +68,8 @@ public class OrdersService {
         List<Order> orders = ordersRepository.findAll();
 
         List<OrderResponse> response = orders.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
 
         log.info("Successfully retrieved orders");
 
@@ -64,56 +79,89 @@ public class OrdersService {
     public OrderResponse mapToResponse(Order order) {
 
         List<OrderMeal> meals = order.getOrderMeals().stream()
-                .map(orderMeal -> OrderMeal.builder()
-                        .order(order)
-                        .meal(orderMeal.getMeal())
-                        .size(orderMeal.getSize())
-                        .quantity(orderMeal.getQuantity())
-                        .build())
-                .toList();
+            .map(orderMeal -> OrderMeal.builder()
+                    .order(order)
+                    .meal(orderMeal.getMeal())
+                    .size(orderMeal.getSize())
+                    .quantity(orderMeal.getQuantity())
+                    .build())
+            .toList();
 
         List<OrderBeverage> beverages = order.getOrderBeverages().stream()
-                .map(orderBeverage -> OrderBeverage.builder()
-                        .order(order)
-                        .beverage(orderBeverage.getBeverage())
-                        .quantity(orderBeverage.getQuantity())
-                        .build())
-                .toList();
+            .map(orderBeverage -> OrderBeverage.builder()
+                    .order(order)
+                    .beverage(orderBeverage.getBeverage())
+                    .quantity(orderBeverage.getQuantity())
+                    .build())
+            .toList();
 
         List<OrderAddon> addons = order.getOrderAddons().stream()
-                .map(orderAddon -> OrderAddon.builder()
-                        .order(order)
-                        .addon(orderAddon.getAddon())
-                        .quantity(orderAddon.getQuantity())
-                        .build())
-                .toList();
+            .map(orderAddon -> OrderAddon.builder()
+                    .order(order)
+                    .addon(orderAddon.getAddon())
+                    .quantity(orderAddon.getQuantity())
+                    .build())
+            .toList();
 
         return OrderResponse.builder()
-                .id(order.getId())
-                .orderType(order.getOrderType())
-                .orderStatus(order.getOrderStatus())
-                .customerPhone(order.getCustomerPhone())
-                .customerEmail(order.getCustomerEmail())
-                .street(order.getStreet())
-                .houseNumber(order.getHouseNumber())
-                .postalCode(order.getPostalCode())
-                .city(order.getCity())
-                .additionalComments(order.getAdditionalComments())
-                .totalPrice(order.getTotalPrice())
-                .meals(meals)
-                .beverages(beverages)
-                .addons(addons)
-                .build();
+            .id(order.getId())
+            .orderType(order.getOrderType())
+            .orderStatus(order.getOrderStatus())
+            .customerPhone(order.getCustomerPhone())
+            .customerEmail(order.getCustomerEmail())
+            .street(order.getStreet())
+            .houseNumber(order.getHouseNumber())
+            .postalCode(order.getPostalCode())
+            .city(order.getCity())
+            .additionalComments(order.getAdditionalComments())
+            .totalPrice(order.getTotalPrice())
+            .meals(meals)
+            .beverages(beverages)
+            .addons(addons)
+            .build();
     }
 
-    public NewOrderResponse addOrder(NewOrderRequest request) {
+    public NewOrderResponse addOrder(NewOrderRequest request, String language) throws MessagingException {
 
         Order order = Order.builder()
-                .orderType(request.orderType())
-                .orderStatus(request.orderStatus())
-                .customerPhone(request.customerPhone())
-                .customerEmail(request.customerEmail())
-                .build();
+            .orderType(request.orderType())
+            .orderStatus(request.orderStatus())
+            .customerPhone(request.customerPhone())
+            .build();
+
+        Order savedOrder = ordersRepository.save(order);
+
+        if (request.customerEmail() != null && !request.customerEmail().isBlank()) {
+            order.setCustomerEmail(request.customerEmail());
+
+            Optional<Customer> optionalCustomer = customerRepository.findCustomerByEmail(request.customerEmail());
+            if (optionalCustomer.isPresent()) {
+                Customer customer = optionalCustomer.get();
+                customer.setOrderCount(customer.getOrderCount() + 1);
+
+                if (language.equals("pl"))
+                    thanksForOrderMailUtil.sendPl(request, customer, savedOrder.getId());
+                else
+                    thanksForOrderMailUtil.sendEng(request, customer, savedOrder.getId());
+
+
+                if (customer.getOrderCount() % 10 == 0) {
+                    // wysylamy maila z kodem rabatowym
+                }
+            } else {
+                Customer newCustomer = Customer.builder()
+                        .email(request.customerEmail())
+                        .build();
+
+                customerRepository.save(newCustomer);
+
+                if (language.equals("pl"))
+                    thanksForOrderMailUtil.sendPl(request, newCustomer, savedOrder.getId());
+                else
+                    thanksForOrderMailUtil.sendEng(request, newCustomer, savedOrder.getId());
+
+            }
+        }
 
         if (request.street() != null && !request.street().isBlank()) {
             order.setStreet(request.street());
@@ -135,7 +183,7 @@ public class OrdersService {
             order.setAdditionalComments(request.additionalComments());
         }
 
-        Order savedOrder = ordersRepository.save(order);
+        savedOrder = ordersRepository.save(order);
         BigDecimal totalPrice = BigDecimal.valueOf(0);
 
         if (order.getStreet() != null && order.getHouseNumber() != null && order.getPostalCode() != null && order.getCity() != null) {
@@ -144,10 +192,10 @@ public class OrdersService {
 
         if (request.meals() != null)  {
             Map<MealKey, Map<Size, Integer>> mealQuantities = request.meals().entrySet().stream()
-                    .collect(Collectors.toMap(
-                            entry -> parseMealKey(entry.getKey()),
-                            Map.Entry::getValue
-                    ));
+                .collect(Collectors.toMap(
+                        entry -> parseMealKey(entry.getKey()),
+                        Map.Entry::getValue
+                ));
 
             addMeals(order, mealQuantities);
             totalPrice = totalPrice.add(getMealTotalPrice(mealQuantities));
@@ -167,25 +215,25 @@ public class OrdersService {
         savedOrder = ordersRepository.save(savedOrder);
 
         return NewOrderResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully added new order with id '" + savedOrder.getId() + "'")
-                .id(savedOrder.getId())
-                .build();
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully added new order with id '" + savedOrder.getId() + "'")
+            .id(savedOrder.getId())
+            .build();
     }
 
     private BigDecimal getMealTotalPrice(Map<MealKey, Map<Size, Integer>> mealQuantities) {
         BigDecimal totalPrice = BigDecimal.ZERO;
         Map<MealKey, Meal> mealMap = mealQuantities.keySet().stream()
-                .map(mealKey -> {
-                    Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
-                    if (optionalMeal.isPresent()) {
-                        Meal existingMeal = optionalMeal.get();
-                        return Map.entry(mealKey, existingMeal);
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .map(mealKey -> {
+                Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
+                if (optionalMeal.isPresent()) {
+                    Meal existingMeal = optionalMeal.get();
+                    return Map.entry(mealKey, existingMeal);
+                }
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         for (Map.Entry<MealKey, Map<Size, Integer>> entry : mealQuantities.entrySet()) {
             MealKey mealKey = entry.getKey();
@@ -200,10 +248,10 @@ public class OrdersService {
 
                 BigDecimal basePrice = meal.getPrices().get(size);
                 BigDecimal discount = meal.getPromotions().stream()
-                        .filter(promotion -> promotion.getSizes().contains(size))
-                        .map(MealPromotion::getDiscountPercentage)
-                        .findFirst()
-                        .orElse(BigDecimal.ZERO);
+                    .filter(promotion -> promotion.getSizes().contains(size))
+                    .map(MealPromotion::getDiscountPercentage)
+                    .findFirst()
+                    .orElse(BigDecimal.ZERO);
 
                 BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
                 BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
@@ -270,7 +318,7 @@ public class OrdersService {
         log.info("Started finding order with id '{}'", id);
 
         Order order = ordersRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException(id));
+            .orElseThrow(() -> new OrderNotFoundException(id));
 
         log.info("Successfully found order with id '{}'", id);
 
@@ -280,7 +328,7 @@ public class OrdersService {
     public OrderResponse trackOrder(TrackOrderRequest request) {
 
         Order order = ordersRepository.findById(request.id())
-                .orElseThrow(() -> new OrderNotFoundException(request.id()));
+            .orElseThrow(() -> new OrderNotFoundException(request.id()));
 
         if (!order.getCustomerPhone().equals(request.customerPhone())) {
             throw new TrackOrderDataDoesNotMatchException(request.id(), request.customerPhone());
@@ -296,9 +344,9 @@ public class OrdersService {
     public UpdatedOrderResponse updateOrder(Order order, UpdatedOrderRequest request) {
 
         UpdatedOrderResponse response = UpdatedOrderResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully updated order with id '" + order.getId() + "'")
-                .build();
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully updated order with id '" + order.getId() + "'")
+            .build();
 
         if (request.orderType() != null) order.setOrderType(request.orderType());
         if (request.orderStatus() != null) order.setOrderStatus(request.orderStatus());
@@ -338,18 +386,18 @@ public class OrdersService {
 
     private void addMeals(Order order, Map<MealKey, Map<Size, Integer>> mealQuantities) {
         Map<MealKey, Meal> mealMap = mealQuantities.keySet().stream()
-                .map(mealKey -> {
-                    Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
-                    if (optionalMeal.isPresent()) {
-                        Meal existingMeal = optionalMeal.get();
-                        existingMeal.addIngredient(mealKey.getMeat());
-                        existingMeal.addIngredient(mealKey.getSauce());
-                        return Map.entry(mealKey, existingMeal);
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .map(mealKey -> {
+                Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
+                if (optionalMeal.isPresent()) {
+                    Meal existingMeal = optionalMeal.get();
+                    existingMeal.addIngredient(mealKey.getMeat());
+                    existingMeal.addIngredient(mealKey.getSauce());
+                    return Map.entry(mealKey, existingMeal);
+                }
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         for (Map.Entry<MealKey, Map<Size, Integer>> entry : mealQuantities.entrySet()) {
             MealKey mealKey = entry.getKey();
@@ -373,15 +421,15 @@ public class OrdersService {
         if (parts.length != 3) throw new InvalidMealKeyFormatException(key);
 
         Ingredient meat = ingredientRepository.findByName(parts[1])
-                .orElseThrow(() -> new IngredientNotFoundException(parts[1]));
+            .orElseThrow(() -> new IngredientNotFoundException(parts[1]));
         Ingredient sauce = ingredientRepository.findByName(parts[2])
-                .orElseThrow(() -> new IngredientNotFoundException(parts[2]));
+            .orElseThrow(() -> new IngredientNotFoundException(parts[2]));
 
         return MealKey.builder()
-                .mealName(parts[0])
-                .meat(meat)
-                .sauce(sauce)
-                .build();
+            .mealName(parts[0])
+            .meat(meat)
+            .sauce(sauce)
+            .build();
     }
 
     private void addBeverages(Order order, Map<String, Map<BigDecimal, Integer>> beverageQuantities) {
@@ -395,7 +443,7 @@ public class OrdersService {
 
                 if (quantity != null && quantity > 0) {
                     beverageRepository.findByNameAndCapacity(beverageName, capacity).ifPresent(
-                            beverage -> order.addBeverage(beverage, quantity));
+                beverage -> order.addBeverage(beverage, quantity));
                 }
             }
         }
@@ -417,9 +465,9 @@ public class OrdersService {
         ordersRepository.delete(order);
 
         RemovedOrderResponse response = RemovedOrderResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully removed order with od '" + order.getId() + "'")
-                .build();
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully removed order with od '" + order.getId() + "'")
+            .build();
 
         log.info("Successfully removed order with id '{}'", order.getId());
 

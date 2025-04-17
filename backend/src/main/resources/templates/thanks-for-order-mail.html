@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanks for Order Mail Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background-color: #000000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo-container {
+            height: 80px;
+            width: 200px;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .content {
+            padding: 20px;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background-color: #e60000;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 20px;
+            font-size: 14px;
+        }
+
+        .social-icons {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .info-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+            align-items: center;
+        }
+
+        .info-box {
+            background-color: #fefefe;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #e60000;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .util {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000000;
+            padding: 10px 15px;
+            background-color: #ffffff;
+            border: 2px dashed #e60000;
+            display: inline-block;
+        }
+        @media screen and (max-width: 600px) {
+            .email-container {
+                width: 100%;
+            }
+            .util {
+                font-size: 24px;
+                letter-spacing: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <div class="logo-container">
+            <img src="https://github.com/P4ZD4N/miesiany-miesiany-kebab/blob/main/images/logo.png?raw=true" alt="Logo" style="max-width: 100%; max-height: 100%;">
+        </div>
+    </div>
+
+    <div class="content">
+        <h2 style="color: #e60000;" th:text="${heading}"></h2>
+        <p th:utext="${paragraph1first + '<a href=&quot;http://localhost:4200/track-order&quot;>link</a> ' + paragraph1second}"></p>
+
+        <div class="info-boxes">
+            <div class="info-box">
+                <p class="info-label" th:text="${paragraph2}"></p>
+                <div class="util" th:text="${orderId}"></div>
+            </div>
+
+            <div class="info-box">
+                <p class="info-label" th:text="${paragraph3}"></p>
+                <div class="util" th:text="${phone}"></div>
+            </div>
+        </div>
+
+        <p th:text="${paragraph4}"></p>
+
+        <p th:text="${paragraph5first + orderRemaining + paragraph5second}" style="color: #e60000; font-weight: bold;"></p>
+    </div>
+
+    <div class="social-icons">
+        <a href="#">Facebook</a> |
+        <a href="#">Instagram</a> |
+        <a href="#">TikTok</a>
+    </div>
+
+    <div class="footer">
+        <p th:text="${paragraph6}"></p>
+        <p>ul. Szkolna 89, 42-274 Kopalnia</p>
+    </div>
+</div>
+</body>
+</html>
