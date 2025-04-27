@@ -31,6 +31,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final AddonPromotionsRepository addonPromotionsRepository;
     private final NewsletterRepository newsletterRepository;
     private final OrdersRepository ordersRepository;
+    private final DiscountCodesRepository discountCodesRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -45,7 +46,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             BeveragePromotionsRepository beveragePromotionsRepository,
             AddonPromotionsRepository addonPromotionsRepository,
             NewsletterRepository newsletterRepository,
-            OrdersRepository ordersRepository
+            OrdersRepository ordersRepository,
+            DiscountCodesRepository discountCodesRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -60,6 +62,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.addonPromotionsRepository = addonPromotionsRepository;
         this.newsletterRepository = newsletterRepository;
         this.ordersRepository = ordersRepository;
+        this.discountCodesRepository = discountCodesRepository;
     }
 
     @Override
@@ -77,6 +80,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initPromotions();
         initNewsletterSubscribers();
         initOrders();
+        initDiscountCodes();
     }
 
     private void initOpeningHours() {
@@ -530,5 +534,13 @@ public class SampleDataInitializer implements CommandLineRunner {
         order.addIngredient(meat, 1);
 
         ordersRepository.save(order);
+    }
+
+    private void initDiscountCodes() {
+        DiscountCode discountCode = DiscountCode.builder()
+                .discountPercentage(BigDecimal.valueOf(50))
+                .build();
+
+        discountCodesRepository.save(discountCode);
     }
 }

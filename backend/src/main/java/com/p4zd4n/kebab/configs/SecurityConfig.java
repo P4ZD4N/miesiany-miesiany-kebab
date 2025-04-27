@@ -65,7 +65,11 @@ public class SecurityConfig {
                                 "/api/v1/promotions/add-addon-promotion",
                                 "/api/v1/promotions/update-addon-promotion",
                                 "/api/v1/promotions/remove-addon-promotion",
-                                "/api/v1/newsletter/subscribers"
+                                "/api/v1/newsletter/subscribers",
+                                "/api/v1/discount-codes/all",
+                                "/api/v1/discount-codes/add-discount-code",
+                                "/api/v1/discount-codes/update-discount-code",
+                                "/api/v1/discount-codes/remove-discount-code"
                         ).hasRole("MANAGER")
                         .requestMatchers(
                                 "api/v1/auth/logout",

@@ -87,7 +87,7 @@ public class OrdersController {
         Order existingOrder = ordersService.findOrderById(request.id());
         UpdatedOrderResponse response = ordersService.updateOrder(existingOrder, request);
 
-        log.info("Successfully updated new order");
+        log.info("Successfully updated order");
 
         return ResponseEntity.ok(response);
     }

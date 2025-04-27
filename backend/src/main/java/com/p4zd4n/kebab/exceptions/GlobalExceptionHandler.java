@@ -741,4 +741,42 @@ public class GlobalExceptionHandler {
                         .message(message)
                         .build());
     }
+
+    @ExceptionHandler(DiscountCodeNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleDiscountCodeNotFoundException(
+            DiscountCodeNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing discount code: '{}'", request.getRequestURI(), exception.getCode());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("discountCode.notExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(DiscountCodeAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleDiscountCodeAlreadyExistsException(
+            DiscountCodeAlreadyExistsException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing discount code: '{}'", request.getRequestURI(), exception.getCode());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("discountCode.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
 }
