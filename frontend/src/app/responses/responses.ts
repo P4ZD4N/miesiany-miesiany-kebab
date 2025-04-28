@@ -320,3 +320,10 @@ export interface NewOrderResponse {
   message: string;
   id: number;
 }
+
+export interface DiscountCodeResponse {
+  id: number;
+  code: string;
+  discount_percentage: number;
+  expiration_date: Date;
+}

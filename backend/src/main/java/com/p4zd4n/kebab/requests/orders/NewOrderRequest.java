@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.requests.orders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.p4zd4n.kebab.entities.DiscountCode;
 import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
 import com.p4zd4n.kebab.enums.Size;
@@ -48,5 +49,8 @@ public record NewOrderRequest(
 
         Map<String, Map<BigDecimal, Integer>> beverages,
 
-        Map<String, Integer> addons
+        Map<String, Integer> addons,
+
+        @JsonProperty("discount_code")
+        String discountCode
 ) {}

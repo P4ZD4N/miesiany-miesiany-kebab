@@ -6,6 +6,7 @@ import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidMealKeyFormatException;
+import com.p4zd4n.kebab.exceptions.notfound.DiscountCodeNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.OrderNotFoundException;
 import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchException;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,7 @@ public class OrdersService {
     private final IngredientRepository ingredientRepository;
     private final CustomerRepository customerRepository;
     private final ThanksForOrderMailUtil thanksForOrderMailUtil;
+    private final DiscountCodesRepository discountCodesRepository;
 
     public OrdersService(
             OrdersRepository ordersRepository,
@@ -50,7 +53,8 @@ public class OrdersService {
             AddonRepository addonRepository,
             IngredientRepository ingredientRepository,
             CustomerRepository customerRepository,
-            ThanksForOrderMailUtil thanksForOrderMailUtil
+            ThanksForOrderMailUtil thanksForOrderMailUtil,
+            DiscountCodesRepository discountCodesRepository
     ) {
         this.ordersRepository = ordersRepository;
         this.mealRepository = mealRepository;
@@ -59,6 +63,7 @@ public class OrdersService {
         this.ingredientRepository = ingredientRepository;
         this.customerRepository = customerRepository;
         this.thanksForOrderMailUtil = thanksForOrderMailUtil;
+        this.discountCodesRepository = discountCodesRepository;
     }
 
     public List<OrderResponse> getOrders() {
@@ -184,11 +189,7 @@ public class OrdersService {
         }
 
         savedOrder = ordersRepository.save(order);
-        BigDecimal totalPrice = BigDecimal.valueOf(0);
-
-        if (order.getStreet() != null && order.getHouseNumber() != null && order.getPostalCode() != null && order.getCity() != null) {
-            totalPrice = totalPrice.add(BigDecimal.valueOf(15));
-        }
+        BigDecimal totalPriceBeforeDelivery = BigDecimal.ZERO;
 
         if (request.meals() != null)  {
             Map<MealKey, Map<Size, Integer>> mealQuantities = request.meals().entrySet().stream()
@@ -198,20 +199,37 @@ public class OrdersService {
                 ));
 
             addMeals(order, mealQuantities);
-            totalPrice = totalPrice.add(getMealTotalPrice(mealQuantities));
+            totalPriceBeforeDelivery = totalPriceBeforeDelivery.add(getMealTotalPrice(mealQuantities));
         }
 
         if (request.beverages() != null && !request.beverages().isEmpty()) {
             addBeverages(order, request.beverages());
-            totalPrice = totalPrice.add(getBeverageTotalPrice(request.beverages()));
+            totalPriceBeforeDelivery = totalPriceBeforeDelivery.add(getBeverageTotalPrice(request.beverages()));
         }
 
         if (request.addons() != null && !request.addons().isEmpty()) {
             addAddons(order, request.addons());
-            totalPrice = totalPrice.add(getAddonTotalPrice(request.addons()));
+            totalPriceBeforeDelivery = totalPriceBeforeDelivery.add(getAddonTotalPrice(request.addons()));
         }
 
-        savedOrder.setTotalPrice(totalPrice);
+        BigDecimal discountedPrice = totalPriceBeforeDelivery;
+
+        if (request.discountCode() != null) {
+            DiscountCode discountCode = discountCodesRepository.findByCode(request.discountCode())
+                    .orElseThrow(() -> new DiscountCodeNotFoundException(request.discountCode()));
+            BigDecimal discountMultiplier = BigDecimal.ONE.subtract(
+                    discountCode.getDiscountPercentage().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
+            discountedPrice = discountedPrice.multiply(discountMultiplier);
+        }
+
+        BigDecimal finalTotalPrice = discountedPrice;
+
+        if (order.getStreet() != null && order.getHouseNumber() != null && order.getPostalCode() != null && order.getCity() != null) {
+            finalTotalPrice = finalTotalPrice.add(BigDecimal.valueOf(15));
+        }
+
+        savedOrder.setTotalPrice(finalTotalPrice);
+
         savedOrder = ordersRepository.save(savedOrder);
 
         return NewOrderResponse.builder()

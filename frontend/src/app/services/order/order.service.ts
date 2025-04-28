@@ -10,6 +10,7 @@ import { OrdersService } from '../orders/orders.service';
 import { OrderType } from '../../enums/order-type.enum';
 import { OrderStatus } from '../../enums/order-status.enum';
 import { Router } from '@angular/router';
+import { DiscountCodesService } from '../discount-codes/discount-codes.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,8 @@ export class OrderService {
     meals: {},
     beverages: {},
     addons: {},
-    total_price: 0
+    total_price: 0,
+    discount_code: ''
   };
 
   constructor(
@@ -44,6 +46,7 @@ export class OrderService {
     private langService: LangService,
     private menuService: MenuService,
     private ordersService: OrdersService,
+    private discountCodesService: DiscountCodesService,
     private router: Router
   ) { }
 
@@ -175,7 +178,8 @@ export class OrderService {
             meals: existingOrder.meals ?? {},
             beverages: existingOrder.beverages ?? {},
             addons: existingOrder.addons ?? {},
-            total_price: existingOrder.total_price ?? 0
+            total_price: existingOrder.total_price ?? 0,
+            discount_code: ''
           };
         }
         
@@ -190,7 +194,8 @@ export class OrderService {
           meals: {},
           beverages: {},
           addons: {},
-          total_price: 0
+          total_price: 0,
+          discount_code: ''
         };
 
         this.selectNextOrderItem(true);
@@ -1816,15 +1821,15 @@ export class OrderService {
   }
 
   startEnteringAdditionalComments(): void {
-    const confirmButtonText = this.langService.currentLang === 'pl' ? 'Zamow' : 'Order';
+    const confirmButtonText = this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
     const additionalCommentsPlaceholder = this.langService.currentLang === 'pl' ? 'Dodatkowe komentarze...' : 'Additional comments...';
     Swal.fire({
       allowOutsideClick: false,
       title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Przed zlozeniem zamowienia...</span>` : 
-        `<span style="color: red;">Before placing order...</span>`,
+        `<span style="color: red;">Jakies uwagi lub specjalne prosby?</span>` : 
+        `<span style="color: red;">Any comments or special requests?</span>`,
       background: '#141414',
       color: 'white',
       html: `
@@ -1858,11 +1863,11 @@ export class OrderService {
           }
         </style>
 
-        <p style="color: white; margin-bottom: 10px;">
+        <span style="color: white; margin-bottom: 10px;">
           ${this.langService.currentLang === 'pl' 
-            ? 'Czy masz jakies uwagi lub specjalne prosby? Umiesc je w polu ponizej.' 
-            : 'Do you have any comments or special requests? Place them in the box below.'}
-        </p>
+            ? 'Umiesc je w polu ponizej.' 
+            : 'Place them in the box below.'}
+        </span>
 
         <div>
           <textarea id="additionalComments" maxlength=100 placeholder="${additionalCommentsPlaceholder}"></textarea>
@@ -1890,8 +1895,114 @@ export class OrderService {
         const additionalComments = (document.getElementById('additionalComments') as HTMLInputElement).value;
         this.order.additional_comments = additionalComments;
         this.setOrderData(this.order);
-        this.placeOrder();
+        this.enterDiscountCode();
       }
+    });
+  }
+
+  enterDiscountCode(): void {
+    const discountCodePlaceholder = this.langService.currentLang === 'pl' ? 'Kod rabatowy' : 'Discount code';
+
+    Swal.fire({
+      allowOutsideClick: false,
+      title: this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Czy posiadasz kod rabatowy?</span>` : 
+        `<span style="color: red;">Do you have discount code?</span>`,
+      background: '#141414',
+      color: 'white',
+      html: `
+        <style>
+          input[type="text"] {
+            color: white;
+            text-align: center;
+            background-color: inherit;
+            width: 100%; 
+            max-width: 400px; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 5px;
+            transition: border 0.3s ease;
+            outline: none;
+          }
+
+          input[type="text"]:focus {
+              border: 1px solid red; 
+          }
+        </style>
+
+        <span style="color: white; margin-bottom: 10px;">
+          ${this.langService.currentLang === 'pl' 
+            ? 'Jesli tak, wpisz go ponizej!' 
+            : 'If yes, enter it below!'}
+        </span>
+        
+        <div>
+          <input type="text" id="discountCode" maxlength=16  placeholder="${discountCodePlaceholder}">
+        </div>
+      `,
+      showDenyButton: true,
+      denyButtonText: this.langService.currentLang === 'pl' ? 'Zamow bez kodu' : 'Order without code',
+      denyButtonColor: '#33acff',
+      showCancelButton: true,
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go back',
+      cancelButtonColor: 'red',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Sprawdz' : 'Check',
+      confirmButtonColor: '#198754',
+      focusConfirm: false,
+      customClass: {
+        validationMessage: 'custom-validation-message',
+        actions: 'swal-actions-vertical',  
+        confirmButton: 'swal-confirm-btn',
+        denyButton: 'swal-deny-btn',
+        cancelButton: 'swal-cancel-btn'
+      },
+      preConfirm: () => {
+        const discountCode = (document.getElementById('discountCode') as HTMLInputElement).value;
+        return this.discountCodesService.getDiscountCode(discountCode)
+          .toPromise()
+          .then(response => {
+            if (response) { 
+              return response; 
+            } else {
+              return null;
+            }
+          })
+          .catch(error => {
+            Swal.showValidationMessage(error.error.message);
+          });
+      }
+    }).then((result) => {
+      if (result.isDenied) {
+        this.placeOrder();
+        return;
+      }
+
+      if (result.isConfirmed) {
+        this.order.discount_code = result.value.code;
+        this.order.total_price *= (1 - result.value.discount_percentage / 100);
+        this.setOrderData(this.order);
+        
+        Swal.fire({
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+          html: `
+            <span style="color: white;">
+              ${this.langService.currentLang === 'pl' 
+                ? `Pomyslnie zastosowano ${result.value.discount_percentage}% kod rabatowy!`
+                : `Successfully applied ${result.value.discount_percentage}% discount code!`}
+            </span>
+          `,
+        }).then(() => this.placeOrder());
+      
+        return;
+      }
+      
+      this.startEnteringAdditionalComments();
     });
   }
 
@@ -1946,7 +2057,8 @@ export class OrderService {
           meals: {},
           beverages: {},
           addons: {},
-          total_price: 0
+          total_price: 0,
+          discount_code: ''
         };
 
         this.router.navigate(['/track-order']);

@@ -61,7 +61,6 @@ export class TrackOrderComponent implements OnInit{
   
     const id = saved?.id ?? trackOrderData.orderId;
     const phone = saved?.customer_phone ?? trackOrderData.customerPhone;
-  
     if (id && phone) {
       this.trackOrderRequest = { id, customer_phone: phone};
       this.setTrackOrderData(this.trackOrderRequest);

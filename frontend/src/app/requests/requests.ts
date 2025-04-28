@@ -203,6 +203,7 @@ export interface NewOrderRequest {
   beverages: { [key in string]: { [key in number]: number } };
   addons: { [key in string]: number };
   total_price: number;
+  discount_code: string;
 }
 
 export interface TrackOrderRequest {
