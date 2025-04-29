@@ -214,7 +214,7 @@ public class OrdersService {
 
         BigDecimal discountedPrice = totalPriceBeforeDelivery;
 
-        if (request.discountCode() != null) {
+        if (request.discountCode() != null && !request.discountCode().isBlank()) {
             DiscountCode discountCode = discountCodesRepository.findByCode(request.discountCode())
                     .orElseThrow(() -> new DiscountCodeNotFoundException(request.discountCode()));
             BigDecimal discountMultiplier = BigDecimal.ONE.subtract(
