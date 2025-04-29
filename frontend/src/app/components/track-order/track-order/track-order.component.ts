@@ -22,7 +22,7 @@ export class TrackOrderComponent implements OnInit{
   storageKey = 'trackOrderData';
   objectKeys = Object.keys;
   errorMessages: { [key: string]: string } = {};
-  totalPrice: number | null = null;
+  discountPercentage: number | null = null;
   trackOrderRequest: TrackOrderRequest = {
     id: null,
     customer_phone: ''
@@ -61,6 +61,11 @@ export class TrackOrderComponent implements OnInit{
   
     const id = saved?.id ?? trackOrderData.orderId;
     const phone = saved?.customer_phone ?? trackOrderData.customerPhone;
+
+    if (this.orderService.trackOrderData.discountPercentage != 0) {
+      this.discountPercentage = this.orderService.trackOrderData.discountPercentage;
+    }
+
     if (id && phone) {
       this.trackOrderRequest = { id, customer_phone: phone};
       this.setTrackOrderData(this.trackOrderRequest);

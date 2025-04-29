@@ -26,7 +26,8 @@ export class OrderService {
 
   trackOrderData = {
     orderId: 0,
-    customerPhone: ''
+    customerPhone: '',
+    discountPercentage: 0
   }
 
   order: NewOrderRequest = {
@@ -1981,6 +1982,7 @@ export class OrderService {
       if (result.isConfirmed) {
         this.order.discount_code = result.value.code;
         this.order.total_price *= (1 - result.value.discount_percentage / 100);
+        this.trackOrderData.discountPercentage = result.value.discount_percentage;
         this.setOrderData(this.order);
         
         Swal.fire({
