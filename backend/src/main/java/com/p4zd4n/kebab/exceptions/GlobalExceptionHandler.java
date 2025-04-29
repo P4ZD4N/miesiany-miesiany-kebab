@@ -1,6 +1,7 @@
 package com.p4zd4n.kebab.exceptions;
 
 import com.p4zd4n.kebab.exceptions.alreadyexists.*;
+import com.p4zd4n.kebab.exceptions.expired.DiscountCodeExpiredException;
 import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
 import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
 import com.p4zd4n.kebab.exceptions.failed.OtpRegenerationFailedException;
@@ -776,6 +777,25 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(DiscountCodeExpiredException.class)
+    public ResponseEntity<ExceptionResponse> handleDiscountCodeExpiredException(
+            HttpServletRequest request,
+            DiscountCodeExpiredException exception
+    ) {
+        log.error("Attempted request to {} with expired discount code: '{}'", request.getRequestURI(), exception.getCode());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("discountCode.expired", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.GONE)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.GONE.value())
                         .message(message)
                         .build());
     }

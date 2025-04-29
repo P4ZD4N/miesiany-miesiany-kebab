@@ -542,5 +542,9 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         discountCodesRepository.save(discountCode);
+
+        DiscountCode discountCodeExpired = new DiscountCode("siema", BigDecimal.valueOf(20), LocalDate.now().minusMonths(1));
+
+        discountCodesRepository.save(discountCodeExpired);
     }
 }

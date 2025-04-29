@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.services.discountcodes;
 
 import com.p4zd4n.kebab.entities.DiscountCode;
 import com.p4zd4n.kebab.exceptions.alreadyexists.DiscountCodeAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.expired.DiscountCodeExpiredException;
 import com.p4zd4n.kebab.exceptions.notfound.DiscountCodeNotFoundException;
 import com.p4zd4n.kebab.repositories.DiscountCodesRepository;
 import com.p4zd4n.kebab.requests.discountcodes.NewDiscountCodeRequest;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,6 +61,10 @@ public class DiscountCodesService {
 
         DiscountCode discountCode = discountCodesRepository.findByCode(code)
                 .orElseThrow(() -> new DiscountCodeNotFoundException(code));
+
+        if (discountCode.getExpirationDate().isBefore(LocalDate.now())) {
+            throw new DiscountCodeExpiredException(discountCode.getCode());
+        }
 
         DiscountCodeResponse response = mapToResponse(discountCode);
 

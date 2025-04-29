@@ -4,6 +4,7 @@ import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.entities.key.MealKey;
 import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.enums.Size;
+import com.p4zd4n.kebab.exceptions.expired.DiscountCodeExpiredException;
 import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidMealKeyFormatException;
 import com.p4zd4n.kebab.exceptions.notfound.DiscountCodeNotFoundException;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -217,6 +219,11 @@ public class OrdersService {
         if (request.discountCode() != null && !request.discountCode().isBlank()) {
             DiscountCode discountCode = discountCodesRepository.findByCode(request.discountCode())
                     .orElseThrow(() -> new DiscountCodeNotFoundException(request.discountCode()));
+
+            if (discountCode.getExpirationDate().isBefore(LocalDate.now())) {
+                throw new DiscountCodeExpiredException(discountCode.getCode());
+            }
+
             BigDecimal discountMultiplier = BigDecimal.ONE.subtract(
                     discountCode.getDiscountPercentage().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
             discountedPrice = discountedPrice.multiply(discountMultiplier);
