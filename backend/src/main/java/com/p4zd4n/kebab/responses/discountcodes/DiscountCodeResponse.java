@@ -11,5 +11,6 @@ public record DiscountCodeResponse(
         Long id,
         String code,
         @JsonProperty("discount_percentage") BigDecimal discountPercentage,
-        @JsonProperty("expiration_date") LocalDate expirationDate
+        @JsonProperty("expiration_date") LocalDate expirationDate,
+        @JsonProperty("remaining_uses") Long remainingUses
 ) {}

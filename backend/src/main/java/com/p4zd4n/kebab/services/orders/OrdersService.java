@@ -2,7 +2,6 @@ package com.p4zd4n.kebab.services.orders;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.entities.key.MealKey;
-import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.expired.DiscountCodeExpiredException;
 import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
@@ -220,13 +219,16 @@ public class OrdersService {
             DiscountCode discountCode = discountCodesRepository.findByCode(request.discountCode())
                     .orElseThrow(() -> new DiscountCodeNotFoundException(request.discountCode()));
 
-            if (discountCode.getExpirationDate().isBefore(LocalDate.now())) {
+            if (discountCode.getExpirationDate().isBefore(LocalDate.now()) || discountCode.getRemainingUses() < 1) {
                 throw new DiscountCodeExpiredException(discountCode.getCode());
             }
 
             BigDecimal discountMultiplier = BigDecimal.ONE.subtract(
                     discountCode.getDiscountPercentage().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
             discountedPrice = discountedPrice.multiply(discountMultiplier);
+
+            discountCode.setRemainingUses(discountCode.getRemainingUses() - 1);
+            discountCodesRepository.save(discountCode);
         }
 
         BigDecimal finalTotalPrice = discountedPrice;

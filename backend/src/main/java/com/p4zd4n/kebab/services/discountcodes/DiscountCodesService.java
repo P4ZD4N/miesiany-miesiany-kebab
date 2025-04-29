@@ -52,6 +52,7 @@ public class DiscountCodesService {
                 .code(discountCode.getCode())
                 .discountPercentage(discountCode.getDiscountPercentage())
                 .expirationDate(discountCode.getExpirationDate())
+                .remainingUses(discountCode.getRemainingUses())
                 .build();
     }
 
@@ -62,7 +63,7 @@ public class DiscountCodesService {
         DiscountCode discountCode = discountCodesRepository.findByCode(code)
                 .orElseThrow(() -> new DiscountCodeNotFoundException(code));
 
-        if (discountCode.getExpirationDate().isBefore(LocalDate.now())) {
+        if (discountCode.getExpirationDate().isBefore(LocalDate.now()) || discountCode.getRemainingUses() < 1) {
             throw new DiscountCodeExpiredException(discountCode.getCode());
         }
 
@@ -93,15 +94,10 @@ public class DiscountCodesService {
     private DiscountCode getDiscountCode(NewDiscountCodeRequest request) {
 
         DiscountCode newDiscountCode;
-        if (request.code() == null && request.expirationDate() == null) {
-            newDiscountCode = new DiscountCode(request.discountPercentage());
-        } else if (request.code() != null && request.expirationDate() == null) {
-            newDiscountCode = new DiscountCode(request.code(), request.discountPercentage());
-        } else if (request.code() == null && request.expirationDate() != null) {
-            newDiscountCode = new DiscountCode(request.discountPercentage(), request.expirationDate());
-        } else {
-            newDiscountCode = new DiscountCode(request.code(), request.discountPercentage(), request.expirationDate());
-        }
+        if (request.code() == null )
+            newDiscountCode = new DiscountCode(request.discountPercentage(), request.expirationDate(), request.remainingUses());
+        else
+            newDiscountCode = new DiscountCode(request.code(), request.discountPercentage(), request.expirationDate(), request.remainingUses());
 
         return newDiscountCode;
     }

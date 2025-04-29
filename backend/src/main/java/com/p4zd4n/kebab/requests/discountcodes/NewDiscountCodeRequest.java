@@ -20,6 +20,12 @@ public record NewDiscountCodeRequest(
         BigDecimal discountPercentage,
 
         @JsonProperty("expiration_date")
+        @NotNull(message = "{expirationDate.notNull}")
         @FutureOrPresent(message = "{expirationDate.future}")
-        LocalDate expirationDate
+        LocalDate expirationDate,
+
+        @JsonProperty("remaining_uses")
+        @NotNull(message = "{remainingUses.notNull}")
+        @Min(value = 1, message = "{remainingUses.greaterThan1}")
+        Long remainingUses
 ) {}

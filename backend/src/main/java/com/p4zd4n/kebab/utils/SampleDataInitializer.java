@@ -537,14 +537,22 @@ public class SampleDataInitializer implements CommandLineRunner {
     }
 
     private void initDiscountCodes() {
-        DiscountCode discountCode = DiscountCode.builder()
-                .discountPercentage(BigDecimal.valueOf(50))
-                .build();
+        DiscountCode discountCode1 = DiscountCode.builder()
+                        .discountPercentage(BigDecimal.valueOf(50))
+                        .expirationDate(LocalDate.now().minusMonths(1))
+                        .remainingUses(1L)
+                        .build();
 
-        discountCodesRepository.save(discountCode);
+        discountCodesRepository.save(discountCode1);
 
-        DiscountCode discountCodeExpired = new DiscountCode("siema", BigDecimal.valueOf(20), LocalDate.now().minusMonths(1));
+        DiscountCode discountCodeExpired = new DiscountCode(
+                "expired", BigDecimal.valueOf(20), LocalDate.now().minusMonths(1), 1L);
 
         discountCodesRepository.save(discountCodeExpired);
+
+        DiscountCode discountCode2 = new DiscountCode(
+                "kodzik", BigDecimal.valueOf(20), LocalDate.now().plusMonths(1), 3L);
+
+        discountCodesRepository.save(discountCode2);
     }
 }

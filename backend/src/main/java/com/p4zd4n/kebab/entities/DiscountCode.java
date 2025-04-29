@@ -31,31 +31,22 @@ public class DiscountCode {
     @Column(name = "expiration_date", nullable = false)
     private LocalDate expirationDate;
 
-    @Builder
-    public DiscountCode(BigDecimal discountPercentage) {
-        this.code = DiscountCodeUtil.generateDiscountCode();
-        this.discountPercentage = discountPercentage;
-        this.expirationDate = LocalDate.now().plusMonths(1);
-    }
+    @Column(name = "remaining_uses", nullable = false)
+    private Long remainingUses;
 
     @Builder
-    public DiscountCode(String code, BigDecimal discountPercentage) {
-        this.code = code;
-        this.discountPercentage = discountPercentage;
-        this.expirationDate = LocalDate.now().plusMonths(1);
-    }
-
-    @Builder
-    public DiscountCode(BigDecimal discountPercentage, LocalDate expirationDate) {
+    public DiscountCode(BigDecimal discountPercentage, LocalDate expirationDate, Long remainingUses) {
         this.code = DiscountCodeUtil.generateDiscountCode();
         this.discountPercentage = discountPercentage;
         this.expirationDate = expirationDate;
+        this.remainingUses = remainingUses;
     }
 
     @Builder
-    public DiscountCode(String code, BigDecimal discountPercentage, LocalDate expirationDate) {
+    public DiscountCode(String code, BigDecimal discountPercentage, LocalDate expirationDate, Long remainingUses) {
         this.code = code;
         this.discountPercentage = discountPercentage;
         this.expirationDate = expirationDate;
+        this.remainingUses = remainingUses;
     }
 }

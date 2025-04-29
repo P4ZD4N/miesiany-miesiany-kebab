@@ -24,5 +24,9 @@ public record UpdatedDiscountCodeRequest(
 
         @JsonProperty("updated_expiration_date")
         @FutureOrPresent(message = "{expirationDate.future}")
-        LocalDate expirationDate
+        LocalDate expirationDate,
+
+        @JsonProperty("updated_remaining_uses")
+        @Min(value = 1, message = "{remainingUses.greaterThan1}")
+        Long remainingUses
 ) {}
