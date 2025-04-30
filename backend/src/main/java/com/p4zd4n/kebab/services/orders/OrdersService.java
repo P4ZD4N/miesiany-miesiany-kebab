@@ -18,6 +18,7 @@ import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
 import com.p4zd4n.kebab.responses.orders.RemovedOrderResponse;
 import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
+import com.p4zd4n.kebab.utils.mails.TenOrdersRewardMailUtil;
 import com.p4zd4n.kebab.utils.mails.ThanksForOrderMailUtil;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +47,7 @@ public class OrdersService {
     private final IngredientRepository ingredientRepository;
     private final CustomerRepository customerRepository;
     private final ThanksForOrderMailUtil thanksForOrderMailUtil;
+    private final TenOrdersRewardMailUtil tenOrdersRewardMailUtil;
     private final DiscountCodesRepository discountCodesRepository;
 
     public OrdersService(
@@ -55,6 +58,7 @@ public class OrdersService {
             IngredientRepository ingredientRepository,
             CustomerRepository customerRepository,
             ThanksForOrderMailUtil thanksForOrderMailUtil,
+            TenOrdersRewardMailUtil tenOrdersRewardMailUtil,
             DiscountCodesRepository discountCodesRepository
     ) {
         this.ordersRepository = ordersRepository;
@@ -64,6 +68,7 @@ public class OrdersService {
         this.ingredientRepository = ingredientRepository;
         this.customerRepository = customerRepository;
         this.thanksForOrderMailUtil = thanksForOrderMailUtil;
+        this.tenOrdersRewardMailUtil = tenOrdersRewardMailUtil;
         this.discountCodesRepository = discountCodesRepository;
     }
 
@@ -150,9 +155,23 @@ public class OrdersService {
                 else
                     thanksForOrderMailUtil.sendEng(request, customer, savedOrder.getId());
 
-
                 if (customer.getOrderCount() % 10 == 0) {
-                    // wysylamy maila z kodem rabatowym
+                    BigDecimal randomPercentage = BigDecimal.valueOf(
+                            ThreadLocalRandom.current().nextInt(10, 21)
+                    ).setScale(2, RoundingMode.HALF_UP);
+
+                    DiscountCode discountCode = DiscountCode.builder()
+                            .remainingUses(1L)
+                            .expirationDate(LocalDate.now().plusMonths(1))
+                            .discountPercentage(randomPercentage)
+                            .build();
+
+                    discountCodesRepository.save(discountCode);
+
+                    if (language.equals("pl"))
+                        tenOrdersRewardMailUtil.sendPl(request, discountCode);
+                    else
+                        tenOrdersRewardMailUtil.sendEng(request, discountCode);
                 }
             } else {
                 Customer newCustomer = Customer.builder()
@@ -165,7 +184,6 @@ public class OrdersService {
                     thanksForOrderMailUtil.sendPl(request, newCustomer, savedOrder.getId());
                 else
                     thanksForOrderMailUtil.sendEng(request, newCustomer, savedOrder.getId());
-
             }
         }
 
