@@ -16,14 +16,14 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @Component
-public class TenOrdersRewardMailUtil implements DiscountCodeSendable {
+public class HighValueOrderRewardMailUtil implements DiscountCodeSendable {
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
     private static final String SUBJECT_ENG = "Claim your discount code!";
     private static final String HEADING_ENG = "Dear Customer,";
-    private static final String PARAGRAPH_1_ENG = "Thank you for your last 10 orders! We would like to give you this little gift and encourage to take advantage of it next time!";
+    private static final String PARAGRAPH_1_ENG = "Thank you for your high value order! We would like to give you this little gift and encourage to take advantage of it next time!";
     private static final String PARAGRAPH_2_FIRST_ENG = "Your ";
     private static final String PARAGRAPH_2_SECOND_ENG = "% discount code:";
     private static final String PARAGRAPH_3_ENG = "This code is valid for one month and can be used once";
@@ -31,13 +31,13 @@ public class TenOrdersRewardMailUtil implements DiscountCodeSendable {
 
     private static final String SUBJECT_PL = "Odbierz swój kod rabatowy!";
     private static final String HEADING_PL = "Szanowny Kliencie,";
-    private static final String PARAGRAPH_1_PL = "Dziękujemy za twoje ostatnie 10 zamówień! Chcielibyśmy podarować Ci ten mały prezent i zachęcić do wykorzystania go następnym razem!";
+    private static final String PARAGRAPH_1_PL = "Dziękujemy za twoje zamówienie o wysokiej wartości! Chcielibyśmy podarować Ci ten mały prezent i zachęcić do wykorzystania go następnym razem!";
     private static final String PARAGRAPH_2_FIRST_PL = "Twój ";
     private static final String PARAGRAPH_2_SECOND_PL = "% kod rabatowy:";
     private static final String PARAGRAPH_3_PL = "Kod jest ważny przez miesiąc i można go użyć tylko raz";
     private static final String PARAGRAPH_4_PL = "© " + LocalDate.now().getYear() + " Miesiany Miesiany Kebab. Wszelkie prawa zastrzeżone.";
 
-    public TenOrdersRewardMailUtil(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
+    public HighValueOrderRewardMailUtil(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
     }
@@ -48,7 +48,7 @@ public class TenOrdersRewardMailUtil implements DiscountCodeSendable {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
         Context context = getContext(discountCode, NewsletterMessagesLanguage.ENGLISH);
-        String htmlContent = templateEngine.process("ten-orders-reward-mail", context);
+        String htmlContent = templateEngine.process("high-value-order-reward-mail", context);
 
         mimeMessageHelper.setTo(request.customerEmail());
         mimeMessageHelper.setSubject(SUBJECT_ENG);
@@ -63,7 +63,7 @@ public class TenOrdersRewardMailUtil implements DiscountCodeSendable {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
         Context context = getContext(discountCode, NewsletterMessagesLanguage.POLISH);
-        String htmlContent = templateEngine.process("ten-orders-reward-mail", context);
+        String htmlContent = templateEngine.process("high-value-order-reward-mail", context);
 
         mimeMessageHelper.setTo(request.customerEmail());
         mimeMessageHelper.setSubject(SUBJECT_PL);

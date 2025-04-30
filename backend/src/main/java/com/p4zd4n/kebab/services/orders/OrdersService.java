@@ -18,6 +18,8 @@ import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
 import com.p4zd4n.kebab.responses.orders.RemovedOrderResponse;
 import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
+import com.p4zd4n.kebab.utils.mails.DiscountCodeSendable;
+import com.p4zd4n.kebab.utils.mails.HighValueOrderRewardMailUtil;
 import com.p4zd4n.kebab.utils.mails.TenOrdersRewardMailUtil;
 import com.p4zd4n.kebab.utils.mails.ThanksForOrderMailUtil;
 import jakarta.mail.MessagingException;
@@ -48,6 +50,7 @@ public class OrdersService {
     private final CustomerRepository customerRepository;
     private final ThanksForOrderMailUtil thanksForOrderMailUtil;
     private final TenOrdersRewardMailUtil tenOrdersRewardMailUtil;
+    private final HighValueOrderRewardMailUtil highValueOrderRewardMailUtil;
     private final DiscountCodesRepository discountCodesRepository;
 
     public OrdersService(
@@ -59,6 +62,7 @@ public class OrdersService {
             CustomerRepository customerRepository,
             ThanksForOrderMailUtil thanksForOrderMailUtil,
             TenOrdersRewardMailUtil tenOrdersRewardMailUtil,
+            HighValueOrderRewardMailUtil highValueOrderRewardMailUtil,
             DiscountCodesRepository discountCodesRepository
     ) {
         this.ordersRepository = ordersRepository;
@@ -70,6 +74,7 @@ public class OrdersService {
         this.thanksForOrderMailUtil = thanksForOrderMailUtil;
         this.tenOrdersRewardMailUtil = tenOrdersRewardMailUtil;
         this.discountCodesRepository = discountCodesRepository;
+        this.highValueOrderRewardMailUtil = highValueOrderRewardMailUtil;
     }
 
     public List<OrderResponse> getOrders() {
@@ -156,22 +161,7 @@ public class OrdersService {
                     thanksForOrderMailUtil.sendEng(request, customer, savedOrder.getId());
 
                 if (customer.getOrderCount() % 10 == 0) {
-                    BigDecimal randomPercentage = BigDecimal.valueOf(
-                            ThreadLocalRandom.current().nextInt(10, 21)
-                    ).setScale(2, RoundingMode.HALF_UP);
-
-                    DiscountCode discountCode = DiscountCode.builder()
-                            .remainingUses(1L)
-                            .expirationDate(LocalDate.now().plusMonths(1))
-                            .discountPercentage(randomPercentage)
-                            .build();
-
-                    discountCodesRepository.save(discountCode);
-
-                    if (language.equals("pl"))
-                        tenOrdersRewardMailUtil.sendPl(request, discountCode);
-                    else
-                        tenOrdersRewardMailUtil.sendEng(request, discountCode);
+                    generateAndSendDiscountCode(tenOrdersRewardMailUtil, language, request);
                 }
             } else {
                 Customer newCustomer = Customer.builder()
@@ -251,6 +241,10 @@ public class OrdersService {
 
         BigDecimal finalTotalPrice = discountedPrice;
 
+        if (finalTotalPrice.compareTo(BigDecimal.valueOf(100)) > 0 && request.customerEmail() != null && !request.customerEmail().isBlank()) {
+            generateAndSendDiscountCode(highValueOrderRewardMailUtil, language, request);
+        }
+
         if (order.getStreet() != null && order.getHouseNumber() != null && order.getPostalCode() != null && order.getCity() != null) {
             finalTotalPrice = finalTotalPrice.add(BigDecimal.valueOf(15));
         }
@@ -264,6 +258,35 @@ public class OrdersService {
             .message("Successfully added new order with id '" + savedOrder.getId() + "'")
             .id(savedOrder.getId())
             .build();
+    }
+
+    private void generateAndSendDiscountCode(
+            DiscountCodeSendable sendable, String language, NewOrderRequest request
+    ) throws MessagingException {
+
+        BigDecimal randomPercentage = BigDecimal.valueOf(
+                ThreadLocalRandom.current().nextInt(10, 21)
+        ).setScale(2, RoundingMode.HALF_UP);
+
+        DiscountCode discountCode = DiscountCode.builder()
+                .remainingUses(1L)
+                .expirationDate(LocalDate.now().plusMonths(1))
+                .discountPercentage(randomPercentage)
+                .build();
+
+        discountCodesRepository.save(discountCode);
+
+        if (sendable instanceof HighValueOrderRewardMailUtil) {
+            if (language.equals("pl"))
+                highValueOrderRewardMailUtil.sendPl(request, discountCode);
+            else
+                highValueOrderRewardMailUtil.sendEng(request, discountCode);
+        } else if (sendable instanceof TenOrdersRewardMailUtil) {
+            if (language.equals("pl"))
+                tenOrdersRewardMailUtil.sendPl(request, discountCode);
+            else
+                tenOrdersRewardMailUtil.sendEng(request, discountCode);
+        }
     }
 
     private BigDecimal getMealTotalPrice(Map<MealKey, Map<Size, Integer>> mealQuantities) {
