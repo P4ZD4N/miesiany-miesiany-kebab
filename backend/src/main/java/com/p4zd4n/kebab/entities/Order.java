@@ -12,6 +12,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -91,12 +92,30 @@ public class Order extends WithTimestamp {
     }
 
     public void addMeal(Meal meal, Size size, Integer quantity) {
+        BigDecimal basePrice = meal.getPriceForSize(size);
+        BigDecimal discount = meal.getPromotions().stream()
+                .filter(promotion -> promotion.getSizes().contains(size))
+                .map(MealPromotion::getDiscountPercentage)
+                .findFirst()
+                .orElse(BigDecimal.ZERO);
+
+        BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
+        BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
+        BigDecimal finalPrice = discountedPrice.multiply(BigDecimal.valueOf(quantity));
+
         OrderMeal orderMeal = OrderMeal.builder()
             .order(this)
-            .meal(meal)
+            .mealName(meal.getName())
+            .finalPrice(finalPrice)
             .size(size)
             .quantity(quantity)
+            .ingredientNames(
+                    meal.getMealIngredients().stream()
+                        .map(mealIngredient -> mealIngredient.getIngredient().getName())
+                        .collect(Collectors.toSet())
+            )
             .build();
+
         orderMeals.add(orderMeal);
     }
 

@@ -1,6 +1,8 @@
 package com.p4zd4n.kebab.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.p4zd4n.kebab.enums.Size;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -11,13 +13,13 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "order_meals")
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class OrderMeal {
 
     @Id
@@ -52,25 +54,19 @@ public class OrderMeal {
     private Set<String> ingredientNames = new HashSet<>();
 
     @Builder
-    public OrderMeal(Order order, Meal meal, Size size, Integer quantity) {
+    public OrderMeal(
+            Order order,
+            String mealName,
+            BigDecimal finalPrice,
+            Size size,
+            Integer quantity,
+            Set<String> ingredientNames
+    ) {
         this.order = order;
-        this.mealName = meal.getName();
-
-        BigDecimal basePrice = meal.getPriceForSize(size);
-        BigDecimal discount = meal.getPromotions().stream()
-                .filter(promotion -> promotion.getSizes().contains(size))
-                .map(MealPromotion::getDiscountPercentage)
-                .findFirst()
-                .orElse(BigDecimal.ZERO);
-
-        BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
-        BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
-
-        this.finalPrice = discountedPrice.multiply(BigDecimal.valueOf(quantity));
+        this.mealName = mealName;
+        this.finalPrice = finalPrice;
         this.size = size;
         this.quantity = quantity;
-        this.ingredientNames = meal.getMealIngredients().stream()
-                .map(mealIngredient -> mealIngredient.getIngredient().getName())
-                .collect(Collectors.toSet());
+        this.ingredientNames = ingredientNames;
     }
 }

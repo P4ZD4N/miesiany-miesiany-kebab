@@ -33,9 +33,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -96,12 +96,13 @@ public class OrdersService {
 
         List<OrderMeal> meals = order.getOrderMeals().stream()
                 .map(orderMeal -> {
-                    Optional<Meal> mealOpt = mealRepository.findByName(orderMeal.getMealName());
                     return OrderMeal.builder()
                             .order(order)
-                            .meal(mealOpt.orElse(null))
+                            .mealName(orderMeal.getMealName())
+                            .finalPrice(orderMeal.getFinalPrice())
                             .size(orderMeal.getSize())
                             .quantity(orderMeal.getQuantity())
+                            .ingredientNames(orderMeal.getIngredientNames())
                             .build();
                 })
             .toList();
@@ -293,46 +294,34 @@ public class OrdersService {
     }
 
     private BigDecimal getMealTotalPrice(Map<MealKey, Map<Size, Integer>> mealQuantities) {
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        Map<MealKey, Meal> mealMap = mealQuantities.keySet().stream()
-            .map(mealKey -> {
-                Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
-                if (optionalMeal.isPresent()) {
-                    Meal existingMeal = optionalMeal.get();
-                    return Map.entry(mealKey, existingMeal);
+
+        AtomicReference<BigDecimal> totalPrice = new AtomicReference<>(BigDecimal.ZERO);
+
+        mealQuantities.forEach((mealKey, sizeQuantities) -> {
+            Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
+
+            if (optionalMeal.isEmpty()) return;
+
+            Meal meal = optionalMeal.get();
+            sizeQuantities.forEach((size, quantity) -> {
+                if (quantity != null && quantity > 0) {
+                    BigDecimal basePrice = meal.getPrices().get(size);
+                    BigDecimal discount = meal.getPromotions().stream()
+                            .filter(promotion -> promotion.getSizes().contains(size))
+                            .map(MealPromotion::getDiscountPercentage)
+                            .findFirst()
+                            .orElse(BigDecimal.ZERO);
+
+                    BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
+                    BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
+                    BigDecimal subtotal = discountedPrice.multiply(BigDecimal.valueOf(quantity));
+
+                    totalPrice.updateAndGet(current -> current.add(subtotal));
                 }
-                return null;
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            });
+        });
 
-        for (Map.Entry<MealKey, Map<Size, Integer>> entry : mealQuantities.entrySet()) {
-            MealKey mealKey = entry.getKey();
-            Map<Size, Integer> sizeQuantities = entry.getValue();
-            Meal meal = mealMap.get(mealKey);
-
-            if (meal == null) continue;
-
-            for (Map.Entry<Size, Integer> sizeEntry : sizeQuantities.entrySet()) {
-                Size size = sizeEntry.getKey();
-                Integer quantity = sizeEntry.getValue();
-
-                BigDecimal basePrice = meal.getPrices().get(size);
-                BigDecimal discount = meal.getPromotions().stream()
-                    .filter(promotion -> promotion.getSizes().contains(size))
-                    .map(MealPromotion::getDiscountPercentage)
-                    .findFirst()
-                    .orElse(BigDecimal.ZERO);
-
-                BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
-                BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
-                BigDecimal subtotal = discountedPrice.multiply(BigDecimal.valueOf(quantity));
-
-                totalPrice = totalPrice.add(subtotal);
-            }
-        }
-
-        return totalPrice;
+        return totalPrice.get();
     }
 
     private BigDecimal getBeverageTotalPrice(Map<String, Map<BigDecimal, Integer>> beverageQuantities) {
