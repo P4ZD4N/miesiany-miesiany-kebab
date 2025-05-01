@@ -47,7 +47,7 @@ public class Meal extends WithTimestamp {
     @Enumerated(EnumType.STRING)
     private Map<Size, BigDecimal> prices = new EnumMap<>(Size.class);
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealIngredient> mealIngredients = new ArrayList<>();
 
     @Builder

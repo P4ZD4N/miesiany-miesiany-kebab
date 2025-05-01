@@ -95,12 +95,15 @@ public class OrdersService {
     public OrderResponse mapToResponse(Order order) {
 
         List<OrderMeal> meals = order.getOrderMeals().stream()
-            .map(orderMeal -> OrderMeal.builder()
-                    .order(order)
-                    .meal(orderMeal.getMeal())
-                    .size(orderMeal.getSize())
-                    .quantity(orderMeal.getQuantity())
-                    .build())
+                .map(orderMeal -> {
+                    Optional<Meal> mealOpt = mealRepository.findByName(orderMeal.getMealName());
+                    return OrderMeal.builder()
+                            .order(order)
+                            .meal(mealOpt.orElse(null))
+                            .size(orderMeal.getSize())
+                            .quantity(orderMeal.getQuantity())
+                            .build();
+                })
             .toList();
 
         List<OrderBeverage> beverages = order.getOrderBeverages().stream()
@@ -453,34 +456,24 @@ public class OrdersService {
     }
 
     private void addMeals(Order order, Map<MealKey, Map<Size, Integer>> mealQuantities) {
-        Map<MealKey, Meal> mealMap = mealQuantities.keySet().stream()
-            .map(mealKey -> {
-                Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
-                if (optionalMeal.isPresent()) {
-                    Meal existingMeal = optionalMeal.get();
-                    existingMeal.addIngredient(mealKey.getMeat());
-                    existingMeal.addIngredient(mealKey.getSauce());
-                    return Map.entry(mealKey, existingMeal);
+        mealQuantities.forEach((mealKey, sizeQuantities) -> {
+            Optional<Meal> optionalMeal = mealRepository.findByName(mealKey.getMealName());
+
+            if (optionalMeal.isEmpty()) return;
+
+            Meal meal = optionalMeal.get();
+            sizeQuantities.forEach((size, quantity) -> {
+                if (quantity != null && quantity > 0) {
+                    order.addMeal(meal, size, quantity);
+                    order.getOrderMeals().stream()
+                            .filter(orderMeal -> orderMeal.getMealName().equals(meal.getName()))
+                            .forEach(orderMeal -> {
+                                orderMeal.getIngredientNames().add(mealKey.getMeat().getName());
+                                orderMeal.getIngredientNames().add(mealKey.getSauce().getName());
+                            });
                 }
-                return null;
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        for (Map.Entry<MealKey, Map<Size, Integer>> entry : mealQuantities.entrySet()) {
-            MealKey mealKey = entry.getKey();
-            Map<Size, Integer> sizeQuantities = entry.getValue();
-            Meal meal = mealMap.get(mealKey);
-
-            if (meal == null) continue;
-
-            for (Map.Entry<Size, Integer> sizeEntry : sizeQuantities.entrySet()) {
-                Size size = sizeEntry.getKey();
-                Integer quantity = sizeEntry.getValue();
-
-                if (quantity != null && quantity > 0) order.addMeal(meal, size, quantity);
-            }
-        }
+            });
+        });
     }
 
     private MealKey parseMealKey(String key) {
