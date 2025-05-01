@@ -110,7 +110,9 @@ public class OrdersService {
         List<OrderBeverage> beverages = order.getOrderBeverages().stream()
             .map(orderBeverage -> OrderBeverage.builder()
                     .order(order)
-                    .beverage(orderBeverage.getBeverage())
+                    .beverageName(orderBeverage.getBeverageName())
+                    .finalPrice(orderBeverage.getFinalPrice())
+                    .capacity(orderBeverage.getCapacity())
                     .quantity(orderBeverage.getQuantity())
                     .build())
             .toList();
@@ -305,18 +307,8 @@ public class OrdersService {
             Meal meal = optionalMeal.get();
             sizeQuantities.forEach((size, quantity) -> {
                 if (quantity != null && quantity > 0) {
-                    BigDecimal basePrice = meal.getPrices().get(size);
-                    BigDecimal discount = meal.getPromotions().stream()
-                            .filter(promotion -> promotion.getSizes().contains(size))
-                            .map(MealPromotion::getDiscountPercentage)
-                            .findFirst()
-                            .orElse(BigDecimal.ZERO);
-
-                    BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
-                    BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
-                    BigDecimal subtotal = discountedPrice.multiply(BigDecimal.valueOf(quantity));
-
-                    totalPrice.updateAndGet(current -> current.add(subtotal));
+                    totalPrice.updateAndGet(current -> current.add(
+                            meal.getPriceForSizeWithDiscountIncluded(size, quantity)));
                 }
             });
         });
@@ -325,32 +317,23 @@ public class OrdersService {
     }
 
     private BigDecimal getBeverageTotalPrice(Map<String, Map<BigDecimal, Integer>> beverageQuantities) {
-        BigDecimal totalPrice = BigDecimal.ZERO;
 
-        for (Map.Entry<String, Map<BigDecimal, Integer>> entry : beverageQuantities.entrySet()) {
-            String beverageName = entry.getKey();
-            Map<BigDecimal, Integer> capacityQuantities = entry.getValue();
+        AtomicReference<BigDecimal> totalPrice = new AtomicReference<>(BigDecimal.ZERO);
 
-            for (Map.Entry<BigDecimal, Integer> capacityEntry : capacityQuantities.entrySet()) {
-                BigDecimal capacity = capacityEntry.getKey();
-                Integer quantity = capacityEntry.getValue();
-                Beverage beverage = beverageRepository.findByNameAndCapacity(beverageName, capacity).orElse(null);
+        beverageQuantities.forEach((beverageName, capacityQuantities) -> {
+            capacityQuantities.forEach((capacity, quantity) -> {
+                Optional<Beverage> optionalBeverage = beverageRepository.findByNameAndCapacity(beverageName, capacity);
 
-                if (beverage == null) continue;
+                if (optionalBeverage.isEmpty()) return;
 
-                BigDecimal basePrice = beverage.getPrice();
-                BigDecimal discount = beverage.getPromotion() != null
-                        ? beverage.getPromotion().getDiscountPercentage()
-                        : BigDecimal.ZERO;
-                BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
-                BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
-                BigDecimal subtotal = discountedPrice.multiply(BigDecimal.valueOf(quantity));
+                if (quantity != null && quantity > 0) {
+                    totalPrice.updateAndGet(current -> current.add(
+                            optionalBeverage.get().getPriceWithDiscountIncluded(quantity)));
+                }
+            });
+        });
 
-                totalPrice = totalPrice.add(subtotal);
-            }
-        }
-
-        return totalPrice;
+        return totalPrice.get();
     }
 
     private BigDecimal getAddonTotalPrice(Map<String, Integer> addonQuantities) {
@@ -483,20 +466,15 @@ public class OrdersService {
     }
 
     private void addBeverages(Order order, Map<String, Map<BigDecimal, Integer>> beverageQuantities) {
-        for (Map.Entry<String, Map<BigDecimal, Integer>> entry : beverageQuantities.entrySet()) {
-            String beverageName = entry.getKey();
-            Map<BigDecimal, Integer> capacityQuantities = entry.getValue();
-
-            for (Map.Entry<BigDecimal, Integer> capacityEntry : capacityQuantities.entrySet()) {
-                BigDecimal capacity = capacityEntry.getKey();
-                Integer quantity = capacityEntry.getValue();
-
+        beverageQuantities.forEach((beverageName, capacityQuantities) -> {
+            capacityQuantities.forEach((capacity, quantity) -> {
                 if (quantity != null && quantity > 0) {
-                    beverageRepository.findByNameAndCapacity(beverageName, capacity).ifPresent(
-                beverage -> order.addBeverage(beverage, quantity));
+                    beverageRepository
+                        .findByNameAndCapacity(beverageName, capacity)
+                        .ifPresent(beverage -> order.addBeverage(beverage, quantity));
                 }
-            }
-        }
+            });
+        });
     }
 
     private void addAddons(Order order, Map<String, Integer> addonQuantities) {

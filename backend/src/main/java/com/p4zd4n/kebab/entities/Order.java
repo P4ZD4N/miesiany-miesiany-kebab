@@ -92,21 +92,10 @@ public class Order extends WithTimestamp {
     }
 
     public void addMeal(Meal meal, Size size, Integer quantity) {
-        BigDecimal basePrice = meal.getPriceForSize(size);
-        BigDecimal discount = meal.getPromotions().stream()
-                .filter(promotion -> promotion.getSizes().contains(size))
-                .map(MealPromotion::getDiscountPercentage)
-                .findFirst()
-                .orElse(BigDecimal.ZERO);
-
-        BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
-        BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
-        BigDecimal finalPrice = discountedPrice.multiply(BigDecimal.valueOf(quantity));
-
         OrderMeal orderMeal = OrderMeal.builder()
             .order(this)
             .mealName(meal.getName())
-            .finalPrice(finalPrice)
+            .finalPrice(meal.getPriceForSizeWithDiscountIncluded(size, quantity))
             .size(size)
             .quantity(quantity)
             .ingredientNames(
@@ -120,11 +109,15 @@ public class Order extends WithTimestamp {
     }
 
     public void addBeverage(Beverage beverage, Integer quantity) {
+
         OrderBeverage orderBeverage = OrderBeverage.builder()
                 .order(this)
-                .beverage(beverage)
+                .beverageName(beverage.getName())
+                .finalPrice(beverage.getPriceWithDiscountIncluded(quantity))
+                .capacity(beverage.getCapacity())
                 .quantity(quantity)
                 .build();
+
         orderBeverages.add(orderBeverage);
     }
 

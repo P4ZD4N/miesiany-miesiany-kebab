@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -85,6 +86,20 @@ public class Meal extends WithTimestamp {
         return mealIngredients.stream()
                 .map(MealIngredient::getIngredient)
                 .anyMatch(i -> i.getIngredientType().equals(IngredientType.BREAD));
+    }
+
+    public BigDecimal getPriceForSizeWithDiscountIncluded(Size size, Integer quantity) {
+        BigDecimal basePrice = getPriceForSize(size);
+        BigDecimal discount = promotions.stream()
+                .filter(promotion -> promotion.getSizes().contains(size))
+                .map(MealPromotion::getDiscountPercentage)
+                .findFirst()
+                .orElse(BigDecimal.ZERO);
+
+        BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
+
+        return discountedPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
     public BigDecimal getPriceForSize(Size size) {
