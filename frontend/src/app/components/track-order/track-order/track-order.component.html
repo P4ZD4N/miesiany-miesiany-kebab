@@ -24,6 +24,10 @@
                 <h4>{{ 'track-order.total_price' | translate }}</h4>
                 <p>
                     {{ order.total_price | number:'1.2-2'}} zl
+                    <span *ngIf="!order.street && !order.house_number && !order.postal_code && !order.city && discountPercentage !== null">
+                        ({{ 'track-order.discount_included' | translate }})
+                   </span>
+
                     <span *ngIf="order.street && order.house_number && order.postal_code && order.city && discountPercentage === null">
                          ({{ 'track-order.delivery_included' | translate }})
                     </span>
