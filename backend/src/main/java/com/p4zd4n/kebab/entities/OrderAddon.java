@@ -1,22 +1,28 @@
 package com.p4zd4n.kebab.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "order_addons")
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class OrderAddon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @JsonIgnore
     private Long id;
 
     @ManyToOne
@@ -24,17 +30,25 @@ public class OrderAddon {
     @JsonIgnore
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "addon_id", nullable = false)
-    private Addon addon;
+    @Column(name = "addon_name", nullable = false)
+    private String addonName;
+
+    @Column(name = "final_price", nullable = false)
+    private BigDecimal finalPrice;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @Builder
-    public OrderAddon(Order order, Addon addon, Integer quantity) {
+    public OrderAddon(
+            Order order,
+            String addonName,
+            BigDecimal finalPrice,
+            Integer quantity
+    ) {
         this.order = order;
-        this.addon = addon;
+        this.addonName = addonName;
+        this.finalPrice = finalPrice;
         this.quantity = quantity;
     }
 }

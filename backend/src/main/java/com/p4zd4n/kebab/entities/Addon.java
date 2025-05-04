@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,5 +39,16 @@ public class Addon extends WithTimestamp {
     public Addon(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
+    }
+
+    public BigDecimal getPriceWithDiscountIncluded(Integer quantity) {
+        BigDecimal basePrice = getPrice();
+        BigDecimal discount = getPromotion() != null
+                ? getPromotion().getDiscountPercentage()
+                : BigDecimal.ZERO;
+        BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
+
+        return discountedPrice.multiply(BigDecimal.valueOf(quantity));
     }
 }

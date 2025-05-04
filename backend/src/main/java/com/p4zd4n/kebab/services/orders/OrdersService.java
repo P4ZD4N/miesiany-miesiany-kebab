@@ -120,7 +120,9 @@ public class OrdersService {
         List<OrderAddon> addons = order.getOrderAddons().stream()
             .map(orderAddon -> OrderAddon.builder()
                     .order(order)
-                    .addon(orderAddon.getAddon())
+                    .addonName(orderAddon.getAddonName())
+                    .finalPrice(orderAddon.getFinalPrice())
+                    .quantity(orderAddon.getQuantity())
                     .quantity(orderAddon.getQuantity())
                     .build())
             .toList();
@@ -325,7 +327,6 @@ public class OrdersService {
                 Optional<Beverage> optionalBeverage = beverageRepository.findByNameAndCapacity(beverageName, capacity);
 
                 if (optionalBeverage.isEmpty()) return;
-
                 if (quantity != null && quantity > 0) {
                     totalPrice.updateAndGet(current -> current.add(
                             optionalBeverage.get().getPriceWithDiscountIncluded(quantity)));
@@ -337,23 +338,20 @@ public class OrdersService {
     }
 
     private BigDecimal getAddonTotalPrice(Map<String, Integer> addonQuantities) {
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        List<Addon> addons = addonRepository.findAllByNameIn(addonQuantities.keySet());
 
-        for (Addon addon : addons) {
-            Integer quantity = addonQuantities.get(addon.getName());
-            BigDecimal basePrice = addon.getPrice();
-            BigDecimal discount = addon.getPromotion() != null
-                    ? addon.getPromotion().getDiscountPercentage()
-                    : BigDecimal.ZERO;
-            BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100));
-            BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
-            BigDecimal subtotal = discountedPrice.multiply(BigDecimal.valueOf(quantity));
+        AtomicReference<BigDecimal> totalPrice = new AtomicReference<>(BigDecimal.ZERO);
 
-            totalPrice = totalPrice.add(subtotal);
-        }
+        addonQuantities.forEach((addonName, quantity) -> {
+                Optional<Addon> optionalAddon = addonRepository.findByName(addonName);
 
-        return totalPrice;
+                if (optionalAddon.isEmpty()) return;
+                if (quantity != null && quantity > 0) {
+                    totalPrice.updateAndGet(current -> current.add(
+                            optionalAddon.get().getPriceWithDiscountIncluded(quantity)));
+            };
+        });
+
+        return totalPrice.get();
     }
 
     public Order findOrderById(Long id) {
@@ -478,13 +476,13 @@ public class OrdersService {
     }
 
     private void addAddons(Order order, Map<String, Integer> addonQuantities) {
-        List<Addon> addons = addonRepository.findAllByNameIn(addonQuantities.keySet());
-        for (Addon addon : addons) {
-            Integer quantity = addonQuantities.get(addon.getName());
+        addonQuantities.forEach((addonName, quantity) -> {
             if (quantity != null && quantity > 0) {
-                order.addAddon(addon, quantity);
+                addonRepository
+                    .findByName(addonName)
+                    .ifPresent(addon -> order.addAddon(addon, quantity));
             }
-        }
+        });
     }
 
     public RemovedOrderResponse removeOrder(Order order) {

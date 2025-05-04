@@ -124,7 +124,8 @@ public class Order extends WithTimestamp {
     public void addAddon(Addon addon, Integer quantity) {
         OrderAddon orderAddon = OrderAddon.builder()
                 .order(this)
-                .addon(addon)
+                .addonName(addon.getName())
+                .finalPrice(addon.getPriceWithDiscountIncluded(quantity))
                 .quantity(quantity)
                 .build();
         orderAddons.add(orderAddon);
