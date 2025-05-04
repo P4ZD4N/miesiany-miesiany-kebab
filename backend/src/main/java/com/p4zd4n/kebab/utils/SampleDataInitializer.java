@@ -165,7 +165,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         Beverage water = Beverage.builder()
-                .name("Water")
+                .name("Cisowianka Niegazowana")
                 .price(BigDecimal.valueOf(5))
                 .capacity(BigDecimal.valueOf(0.5))
                 .build();
@@ -180,30 +180,30 @@ public class SampleDataInitializer implements CommandLineRunner {
 
     private void initAddons() {
 
-        Addon jalapeno = Addon.builder()
-                .name("Jalapeno")
-                .price(BigDecimal.valueOf(1.5))
+        Addon fries140g = Addon.builder()
+                .name("Fries (140g)")
+                .price(BigDecimal.valueOf(12))
                 .build();
 
-        Addon herbs = Addon.builder()
-                .name("Herbs")
-                .price(BigDecimal.valueOf(1.5))
+        Addon fries200g = Addon.builder()
+                .name("Fries (200g)")
+                .price(BigDecimal.valueOf(15))
                 .build();
 
-        Addon olives = Addon.builder()
-                .name("Olives")
-                .price(BigDecimal.valueOf(3.5))
+        Addon nuggets7pcs = Addon.builder()
+                .name("Nuggets (7pcs)")
+                .price(BigDecimal.valueOf(21))
                 .build();
 
-        Addon feta = Addon.builder()
-                .name("Feta")
-                .price(BigDecimal.valueOf(3.5))
+        Addon zapiekanka = Addon.builder()
+                .name("Zapiekanka")
+                .price(BigDecimal.valueOf(15))
                 .build();
 
-        addonRepository.save(jalapeno);
-        addonRepository.save(herbs);
-        addonRepository.save(olives);
-        addonRepository.save(feta);
+        addonRepository.save(fries140g);
+        addonRepository.save(fries200g);
+        addonRepository.save(nuggets7pcs);
+        addonRepository.save(zapiekanka);
     }
 
     private void initIngredients() {
@@ -479,17 +479,17 @@ public class SampleDataInitializer implements CommandLineRunner {
                     beverageRepository.save(beverage);
                 });
 
-        AddonPromotion fetaPromotion = AddonPromotion.builder()
-                .description("Feta -50%!")
+        AddonPromotion friesPromotion = AddonPromotion.builder()
+                .description("All fries -50%!")
                 .discountPercentage(BigDecimal.valueOf(50))
                 .build();
 
-        addonPromotionsRepository.save(fetaPromotion);
+        addonPromotionsRepository.save(friesPromotion);
 
         addonRepository.findAll().stream()
-                .filter(addon -> addon.getName().equalsIgnoreCase("Feta"))
+                .filter(addon -> addon.getName().contains("Fries"))
                 .forEach(addon -> {
-                    addon.setPromotion(fetaPromotion);
+                    addon.setPromotion(friesPromotion);
                     addonRepository.save(addon);
                 });
     }
@@ -509,7 +509,7 @@ public class SampleDataInitializer implements CommandLineRunner {
 
         Meal meal = mealRepository.findByName("Pita Kebab Salads and Fries")
                 .orElseThrow(() -> new RuntimeException("Meal not found"));
-        Addon addon = addonRepository.findByName("Feta")
+        Addon addon = addonRepository.findByName("Zapiekanka")
                 .orElseThrow(() -> new RuntimeException("Addon not found"));
         Beverage beverage = beverageRepository.findByNameAndCapacity("Coca-Cola", BigDecimal.valueOf(0.33))
                 .orElseThrow(() -> new RuntimeException("Beverage not found"));

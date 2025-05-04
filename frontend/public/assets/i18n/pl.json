@@ -87,14 +87,13 @@
     },
     "menu": {
         "addons": {
-            "paragraph_addons": "Dodatki do twojego dania",
+            "paragraph_addons": "Dodatki",
             "button_add": "Dodaj dodatek",
             "addon": "Dodatek",
             "price": "Cena",
-            "Jalapeno": "Jalapeno",
-            "Herbs": "Ziola",
-            "Olives": "Oliwki",
-            "Feta": "Feta"
+            "Fries (140g)": "Frytki (140g)",
+            "Fries (200g)": "Frytki (200g)",
+            "Nuggets (7pcs)": "Nuggetsy (7szt.)"
         },
         "beverages": {
             "paragraph_beverages": "Napoje",
@@ -107,7 +106,7 @@
             "Fanta": "Fanta",
             "Sprite": "Sprite",
             "Ayran": "Ayran",
-            "Water": "Woda"
+            "Cisowianka Niegazowana": "Cisowianka Niegazowana"
         },
         "meals": {
             "paragraph_meals": "Dania",

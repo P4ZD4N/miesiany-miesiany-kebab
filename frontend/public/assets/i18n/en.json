@@ -87,14 +87,13 @@
     },
     "menu": {
         "addons": {
-            "paragraph_addons": "Addons to your meal",
+            "paragraph_addons": "Addons",
             "button_add": "Add addon",
             "addon": "Addon",
             "price": "Price",
-            "Jalapeno": "Jalapeno",
-            "Herbs": "Herbs",
-            "Olives": "Olives",
-            "Feta": "Feta"
+            "Fries (140g)": "Fries (140g)",
+            "Fries (200g)": "Fries (200g)",
+            "Nuggets (7pcs)": "Nuggets (7pcs)"
         },
         "beverages": {
             "paragraph_beverages": "Beverages",
@@ -107,7 +106,7 @@
             "Fanta": "Fanta",
             "Sprite": "Sprite",
             "Ayran": "Ayran",
-            "Water": "Water"
+            "Cisowianka Niegazowana": "Cisowianka Niegazowana"
         },
         "meals": {
             "paragraph_meals": "Meals",
