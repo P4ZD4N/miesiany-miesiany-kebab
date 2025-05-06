@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -514,20 +515,35 @@ public class SampleDataInitializer implements CommandLineRunner {
         Beverage beverage = beverageRepository.findByNameAndCapacity("Coca-Cola", BigDecimal.valueOf(0.33))
                 .orElseThrow(() -> new RuntimeException("Beverage not found"));
 
-        Order order = Order.builder()
+        Order order1 = Order.builder()
+                .orderType(OrderType.ON_SITE)
+                .orderStatus(OrderStatus.IN_PREPARATION)
+                .customerPhone("123456789")
+                .customerEmail("example@example.com")
+                .build();
+
+        order1 = ordersRepository.save(order1);
+
+        order1.addMeal(meal, Size.XL, 1);
+        order1.addAddon(addon, 2);
+        order1.addBeverage(beverage, 1);
+
+        ordersRepository.save(order1);
+
+        Order order2 = Order.builder()
                 .orderType(OrderType.ON_SITE)
                 .orderStatus(OrderStatus.RECEIVED)
                 .customerPhone("123456789")
                 .customerEmail("example@example.com")
                 .build();
 
-        order = ordersRepository.save(order);
+        order2 = ordersRepository.save(order2);
 
-        order.addMeal(meal, Size.XL, 1);
-        order.addAddon(addon, 2);
-        order.addBeverage(beverage, 1);
+        order2.addMeal(meal, Size.XL, 1);
+        order2.addBeverage(beverage, 1);
+        order2.setCreatedAt(LocalDateTime.now().minusMonths(1));
 
-        ordersRepository.save(order);
+        ordersRepository.save(order2);
     }
 
     private void initDiscountCodes() {

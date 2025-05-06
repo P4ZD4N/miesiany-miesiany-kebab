@@ -139,6 +139,7 @@ public class OrdersService {
             .city(order.getCity())
             .additionalComments(order.getAdditionalComments())
             .totalPrice(order.getTotalPrice())
+            .createdAt(order.getCreatedAt())
             .meals(meals)
             .beverages(beverages)
             .addons(addons)
