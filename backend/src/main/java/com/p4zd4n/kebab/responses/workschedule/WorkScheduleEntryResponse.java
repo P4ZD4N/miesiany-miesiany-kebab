@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @Builder
 public record WorkScheduleEntryResponse(
 
+        Long id,
         Employee employee,
         LocalDate date,
         @JsonProperty("start_time") LocalTime startTime,

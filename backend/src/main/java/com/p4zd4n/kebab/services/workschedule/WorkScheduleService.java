@@ -57,6 +57,7 @@ public class WorkScheduleService {
     public WorkScheduleEntryResponse mapToResponse(WorkScheduleEntry workScheduleEntry) {
 
         return WorkScheduleEntryResponse.builder()
+                .id(workScheduleEntry.getId())
                 .employee(workScheduleEntry.getEmployee())
                 .date(workScheduleEntry.getDate())
                 .startTime(workScheduleEntry.getStartTime())
