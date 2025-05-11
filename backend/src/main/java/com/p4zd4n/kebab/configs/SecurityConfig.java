@@ -67,7 +67,8 @@ public class SecurityConfig {
                                 "/api/v1/promotions/remove-addon-promotion",
                                 "/api/v1/newsletter/subscribers",
                                 "/api/v1/work-schedule/all-entries",
-                                "/api/v1/work-schedule/add-entry"
+                                "/api/v1/work-schedule/add-entry",
+                                "/api/v1/work-schedule/remove-entry"
                         ).hasRole("MANAGER")
                         .requestMatchers("api/v1/auth/logout").hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()

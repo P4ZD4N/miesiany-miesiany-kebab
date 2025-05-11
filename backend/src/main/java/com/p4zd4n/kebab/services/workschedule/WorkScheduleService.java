@@ -1,28 +1,26 @@
 package com.p4zd4n.kebab.services.workschedule;
 
+import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Employee;
-import com.p4zd4n.kebab.entities.NewsletterSubscriber;
 import com.p4zd4n.kebab.entities.WorkScheduleEntry;
-import com.p4zd4n.kebab.enums.NewsletterMessagesLanguage;
-import com.p4zd4n.kebab.exceptions.alreadyexists.SubscriberAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.alreadyexists.WorkScheduleEntryAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidTimeRangeException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
+import com.p4zd4n.kebab.exceptions.notfound.WorkScheduleEntryNotFoundException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
 import com.p4zd4n.kebab.repositories.EmployeeRepository;
 import com.p4zd4n.kebab.repositories.WorkScheduleEntryRepository;
 import com.p4zd4n.kebab.requests.workschedule.NewWorkScheduleEntryRequest;
-import com.p4zd4n.kebab.responses.newsletter.NewNewsletterSubscriberResponse;
+import com.p4zd4n.kebab.responses.menu.addons.RemovedAddonResponse;
 import com.p4zd4n.kebab.responses.workschedule.NewWorkScheduleEntryResponse;
+import com.p4zd4n.kebab.responses.workschedule.RemovedWorkScheduleEntryResponse;
 import com.p4zd4n.kebab.responses.workschedule.WorkScheduleEntryResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,5 +106,32 @@ public class WorkScheduleService {
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully added new work schedule entry for employee with email '" + request.employeeEmail() + "'")
                 .build();
+    }
+
+    public WorkScheduleEntry findWorkScheduleEntryById(Long id) {
+
+        log.info("Started finding work schedule entry with id '{}'", id);
+
+        WorkScheduleEntry workScheduleEntry = workScheduleEntryRepository.findById(id)
+                .orElseThrow(() -> new WorkScheduleEntryNotFoundException(id));
+
+        log.info("Successfully found work schedule entry with id '{}'", id);
+
+        return workScheduleEntry;
+    }
+
+    public RemovedWorkScheduleEntryResponse removeWorkScheduleEntry(WorkScheduleEntry workScheduleEntry) {
+        log.info("Started removing work schedule entry with id '{}'", workScheduleEntry.getId());
+
+        workScheduleEntryRepository.delete(workScheduleEntry);
+
+        RemovedWorkScheduleEntryResponse response = RemovedWorkScheduleEntryResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed work schedule entry with id '" + workScheduleEntry.getId() + "'")
+                .build();
+
+        log.info("Successfully removed work schedule entry with id '{}'", workScheduleEntry.getId());
+
+        return response;
     }
 }

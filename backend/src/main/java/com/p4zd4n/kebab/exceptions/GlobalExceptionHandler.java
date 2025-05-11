@@ -701,4 +701,20 @@ public class GlobalExceptionHandler {
                         .message(message)
                         .build());
     }
+
+    @ExceptionHandler(WorkScheduleEntryNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleWorkScheduleEntryNotFoundException(HttpServletRequest request) {
+        log.error("Attempted request to {} with id of not existing work schedule entry", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("workSchedule.notFound", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(message)
+                        .build());
+    }
 }

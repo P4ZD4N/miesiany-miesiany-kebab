@@ -1,8 +1,11 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.entities.WorkScheduleEntry;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.workschedule.NewWorkScheduleEntryRequest;
+import com.p4zd4n.kebab.requests.workschedule.RemovedWorkScheduleEntryRequest;
 import com.p4zd4n.kebab.responses.workschedule.NewWorkScheduleEntryResponse;
+import com.p4zd4n.kebab.responses.workschedule.RemovedWorkScheduleEntryResponse;
 import com.p4zd4n.kebab.responses.workschedule.WorkScheduleEntryResponse;
 import com.p4zd4n.kebab.services.workschedule.WorkScheduleService;
 import jakarta.validation.Valid;
@@ -44,6 +47,18 @@ public class WorkScheduleController {
         NewWorkScheduleEntryResponse response = workScheduleService.addWorkScheduleEntry(request);
 
         log.info("Successfully added new work schedule entry");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-entry")
+    public ResponseEntity<RemovedWorkScheduleEntryResponse> removeWorkScheduleEntry(
+            @Valid @RequestBody RemovedWorkScheduleEntryRequest request
+    ) {
+        log.info("Received remove work schedule entry request");
+
+        WorkScheduleEntry existingWorkScheduleEntry = workScheduleService.findWorkScheduleEntryById(request.id());
+        RemovedWorkScheduleEntryResponse response = workScheduleService.removeWorkScheduleEntry(existingWorkScheduleEntry);
 
         return ResponseEntity.ok(response);
     }
