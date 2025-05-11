@@ -1,11 +1,16 @@
 package com.p4zd4n.kebab.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.p4zd4n.kebab.enums.EmploymentType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "employees")
@@ -14,6 +19,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Employee extends WithTimestamp{
 
     @Id
@@ -31,6 +37,7 @@ public class Employee extends WithTimestamp{
     private String email;
 
     @Column(name = "password", nullable = false)
+    @JsonIgnore
     private String password;
 
     @Column(name = "phone_number", nullable = false)
@@ -50,6 +57,10 @@ public class Employee extends WithTimestamp{
 
     @Column(name = "hired_at", nullable = false)
     private LocalDate hiredAt;
+
+    @OneToMany(mappedBy = "employee")
+    @JsonIgnore
+    private List<WorkScheduleEntry> scheduleEntries = new ArrayList<>();
 
     @Builder
     public Employee(

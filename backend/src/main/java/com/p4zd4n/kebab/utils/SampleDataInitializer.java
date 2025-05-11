@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.utils;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.enums.*;
+import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import org.springframework.boot.CommandLineRunner;
@@ -30,6 +31,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final BeveragePromotionsRepository beveragePromotionsRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
     private final NewsletterRepository newsletterRepository;
+    private final WorkScheduleEntryRepository workScheduleEntryRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -43,7 +45,8 @@ public class SampleDataInitializer implements CommandLineRunner {
             MealPromotionsRepository mealPromotionsRepository,
             BeveragePromotionsRepository beveragePromotionsRepository,
             AddonPromotionsRepository addonPromotionsRepository,
-            NewsletterRepository newsletterRepository
+            NewsletterRepository newsletterRepository,
+            WorkScheduleEntryRepository workScheduleEntryRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -57,6 +60,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.beveragePromotionsRepository = beveragePromotionsRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
         this.newsletterRepository = newsletterRepository;
+        this.workScheduleEntryRepository = workScheduleEntryRepository;
     }
 
     @Override
@@ -73,6 +77,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initJobOffers();
         initPromotions();
         initNewsletterSubscribers();
+        initWorkScheduleEntries();
     }
 
     private void initOpeningHours() {
@@ -495,5 +500,20 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         newsletterRepository.save(newsletterSubscriber);
+    }
+
+    private void initWorkScheduleEntries() {
+
+        Employee employee = employeeRepository.findByEmail("employee@example.com")
+                        .orElseThrow(() -> new EmployeeNotFoundException("employee@example.com"));
+
+        WorkScheduleEntry workScheduleEntry = WorkScheduleEntry.builder()
+                .employee(employee)
+                .date(LocalDate.now())
+                .startTime(LocalTime.of(10, 0))
+                .endTime(LocalTime.of(18, 0))
+                .build();
+
+        workScheduleEntryRepository.save(workScheduleEntry);
     }
 }
