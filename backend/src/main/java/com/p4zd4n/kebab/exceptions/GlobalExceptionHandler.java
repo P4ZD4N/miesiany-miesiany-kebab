@@ -8,6 +8,7 @@ import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
+import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
 import jakarta.mail.MessagingException;
@@ -643,6 +644,60 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(WorkScheduleEntryAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleWorkScheduleEntryAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing work schedule entry", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("workScheduleEntry.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(WorkScheduleTimeOverlapException.class)
+    public ResponseEntity<ExceptionResponse> handleWorkScheduleTimeOverlapException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with work schedule entry, which time overlaps with an existing schedule entry", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("workScheduleEntry.timeOverlap", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidTimeRangeException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidTimeRangeException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid time range", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("workSchedule.invalidTimeRange", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message(message)
                         .build());
     }

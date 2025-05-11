@@ -96,10 +96,10 @@ public class SampleDataInitializer implements CommandLineRunner {
 
     private void initSampleEmployees() {
 
-        Employee employee = Employee.builder()
+        Employee employee1 = Employee.builder()
                 .firstName("John")
                 .lastName("Doe")
-                .email("employee@example.com")
+                .email("employee1@example.com")
                 .password(PasswordEncoder.encodePassword("employee123"))
                 .dateOfBirth(LocalDate.of(1990, 1, 1))
                 .phoneNumber("123456789")
@@ -109,7 +109,21 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .hiredAt(LocalDate.now())
                 .build();
 
-        employeeRepository.save(employee);
+        Employee employee2 = Employee.builder()
+                .firstName("Sue")
+                .lastName("Doe")
+                .email("employee2@example.com")
+                .password(PasswordEncoder.encodePassword("employee123"))
+                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .phoneNumber("123456789")
+                .employmentType(EmploymentType.PERMANENT)
+                .hourlyWage(BigDecimal.valueOf(32))
+                .isActive(true)
+                .hiredAt(LocalDate.now())
+                .build();
+
+        employeeRepository.save(employee1);
+        employeeRepository.save(employee2);
     }
 
     private void initSampleManagers() {
@@ -504,8 +518,8 @@ public class SampleDataInitializer implements CommandLineRunner {
 
     private void initWorkScheduleEntries() {
 
-        Employee employee = employeeRepository.findByEmail("employee@example.com")
-                        .orElseThrow(() -> new EmployeeNotFoundException("employee@example.com"));
+        Employee employee = employeeRepository.findByEmail("employee1@example.com")
+                        .orElseThrow(() -> new EmployeeNotFoundException("employee1@example.com"));
 
         WorkScheduleEntry workScheduleEntry = WorkScheduleEntry.builder()
                 .employee(employee)
