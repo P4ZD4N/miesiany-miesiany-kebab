@@ -216,6 +216,10 @@ export interface UpdatedOrderRequest {
   updated_additional_comments: string | null;
 }
 
+export interface RemovedOrderRequest {
+  id: number;
+}
+
 export interface TrackOrderRequest {
   id: number | null;
   customer_phone: string;

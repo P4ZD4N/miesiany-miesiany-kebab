@@ -308,6 +308,7 @@
         "headline": "Zarzadzanie zamowieniami",
         "paragraph_today": "Dzisiejsze",
         "paragraph_past": "Z przeszlosci",
+        "no_orders": "Brak zamowien z tej kategorii!",
         "order_status": {
             "IN_PREPARATION": "Do przygotowania",
             "READY": "Gotowe",

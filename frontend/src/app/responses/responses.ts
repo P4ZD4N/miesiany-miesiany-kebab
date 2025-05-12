@@ -342,6 +342,12 @@ export interface UpdatedOrderResponse {
   message: string;
 }
 
+export interface RemovedOrderResponse {
+  status_code: number;
+  message: string;
+}
+
+
 export interface DiscountCodeResponse {
   id: number;
   code: string;

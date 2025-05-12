@@ -105,7 +105,8 @@
         </button>
     </section>
 
-    <section class="orders">
+    <p *ngIf="filteredOrders.length === 0">{{ 'order-management.no_orders' | translate }}</p>
+    <section *ngIf="filteredOrders.length !== 0" class="orders">
         <div *ngFor="let order of filteredOrders">
             <div class="card-body">
                 <h4>{{ 'order-management.card.main.headline' | translate }} #{{ order.id }}</h4>
@@ -161,7 +162,9 @@
                 <button (click)="updateOrder(order)">
                     {{ 'order-management.buttons.update' | translate }}
                 </button>
-                <button>{{ 'order-management.buttons.remove' | translate }}</button>
+                <button (click)="removeOrder(order)">
+                    {{ 'order-management.buttons.remove' | translate }}
+                </button>
             </div>
         </div>
     </section>

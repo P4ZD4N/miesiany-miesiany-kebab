@@ -308,6 +308,7 @@
         "headline": "Order management",
         "paragraph_today": "Today",
         "paragraph_past": "Past",
+        "no_orders": "No orders from this category!",
         "order_status": {
             "IN_PREPARATION": "To prepare",
             "READY": "Ready",

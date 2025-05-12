@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { NewOrderResponse, OrderResponse, UpdatedOrderResponse } from '../../responses/responses';
+import { NewOrderResponse, OrderResponse, RemovedOrderResponse, UpdatedOrderResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewOrderRequest, TrackOrderRequest, UpdatedOrderRequest } from '../../requests/requests';
+import { NewOrderRequest, RemovedOrderRequest, TrackOrderRequest, UpdatedOrderRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -45,15 +45,25 @@ export class OrdersService {
 
   updateOrder(order: UpdatedOrderRequest): Observable<UpdatedOrderResponse> {
   
-      const headers = new HttpHeaders({
-        'Accept-Language': this.langService.currentLang
-      });
-  
-      return this.http.put<UpdatedOrderResponse>(`${this.apiUrl}/update-order`, order, { headers, withCredentials: true }).pipe(
-        map(response => response),
-        catchError(this.handleError)
-      )
-    }
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.put<UpdatedOrderResponse>(`${this.apiUrl}/update-order`, order, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  removeOrder(order: RemovedOrderRequest): Observable<RemovedOrderResponse> {
+
+  const requestBody = { id: order.id };
+
+    return this.http.delete<RemovedOrderResponse>(`${this.apiUrl}/remove-order`, { body: requestBody, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
 
   handleError(error: HttpErrorResponse) {
     

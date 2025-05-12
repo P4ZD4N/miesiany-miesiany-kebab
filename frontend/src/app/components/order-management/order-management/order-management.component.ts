@@ -8,7 +8,7 @@ import { OrdersService } from '../../../services/orders/orders.service';
 import { OrderResponse } from '../../../responses/responses';
 import { OrderStatus } from '../../../enums/order-status.enum';
 import Swal from 'sweetalert2';
-import { UpdatedOrderRequest } from '../../../requests/requests';
+import { RemovedOrderRequest, UpdatedOrderRequest } from '../../../requests/requests';
 
 @Component({
   selector: 'app-order-management',
@@ -328,11 +328,56 @@ export class OrderManagementComponent implements OnInit{
             this.loadOrders();
           },
           (err) => {
-            Swal.fire('Błąd', 'Nie udało się zapisać zmian', 'error');
+            Swal.fire({
+              text: this.langService.currentLang === 'pl' ? `Nie udalo sie zaktualizowac zamowienia z id '${order.id}'!` : `Can't update order with id '${order.id}'!`,
+              icon: 'error',
+              iconColor: 'red',
+              confirmButtonColor: 'red',
+              background: '#141414',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
             console.error(err);
           }
         );
       }
     });
   }
+
+  removeOrder(order: OrderResponse): void {
+
+      const confirmationMessage =
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac zamowienie z id '${order.id}'?`
+          : `Are you sure you want to remove order with id '${order.id}'?`;
+
+      Swal.fire({
+        title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+        text: confirmationMessage,
+        icon: 'warning',
+        iconColor: 'red',
+        showCancelButton: true,
+        confirmButtonColor: '#0077ff',
+        cancelButtonColor: 'red',
+        background: '#141414',
+        color: 'white',
+        confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+        cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.ordersService.removeOrder({ id: order.id } as RemovedOrderRequest).subscribe(() => {
+            Swal.fire({
+              text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto zamowienie z id '${order.id}'!` : `Successfully removed order with id '${order.id}'!`,
+              icon: 'success',
+              iconColor: 'green',
+              confirmButtonColor: 'green',
+              background: '#141414',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
+            this.loadOrders();
+          });
+        }
+      });
+    }
 }
