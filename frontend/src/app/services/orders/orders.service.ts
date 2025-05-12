@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { NewOrderResponse, OrderResponse } from '../../responses/responses';
+import { NewOrderResponse, OrderResponse, UpdatedOrderResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewOrderRequest, TrackOrderRequest } from '../../requests/requests';
+import { NewOrderRequest, TrackOrderRequest, UpdatedOrderRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +42,18 @@ export class OrdersService {
       catchError(this.handleError)
     )
   }
+
+  updateOrder(order: UpdatedOrderRequest): Observable<UpdatedOrderResponse> {
+  
+      const headers = new HttpHeaders({
+        'Accept-Language': this.langService.currentLang
+      });
+  
+      return this.http.put<UpdatedOrderResponse>(`${this.apiUrl}/update-order`, order, { headers, withCredentials: true }).pipe(
+        map(response => response),
+        catchError(this.handleError)
+      )
+    }
 
   handleError(error: HttpErrorResponse) {
     

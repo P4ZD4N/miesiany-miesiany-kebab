@@ -310,15 +310,36 @@ export interface OrderResponse {
   city: string;
   additional_comments: string;
   total_price: number;
-  meals: { [key in string]: { [key in Size]: number } };
-  beverages: { [key in string]: { [key in number]: number } };
-  addons: { [key in string]: number };
+  created_at: string;
+  meals: { 
+    meal_name: string;
+    final_price: number;
+    size: Size | null;
+    quantity: number;
+    ingredient_names: string[]
+  }[];
+  beverages: { 
+    beverage_name: string;
+    final_price: number;
+    capacity: number;
+    quantity: number;
+  }[];
+  addons: { 
+    addon_name: string;
+    final_price: number;
+    quantity: number; 
+  }[];
 }
 
 export interface NewOrderResponse {
   status_code: number;
   message: string;
   id: number;
+}
+
+export interface UpdatedOrderResponse {
+  status_code: number;
+  message: string;
 }
 
 export interface DiscountCodeResponse {

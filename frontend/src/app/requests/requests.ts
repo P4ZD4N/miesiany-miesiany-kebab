@@ -206,6 +206,16 @@ export interface NewOrderRequest {
   discount_code: string;
 }
 
+export interface UpdatedOrderRequest {
+  id: number;
+  updated_order_status: OrderStatus | null;
+  updated_street: string | null;
+  updated_house_number: number | null;
+  updated_postal_code: string | null;
+  updated_city: string | null;
+  updated_additional_comments: string | null;
+}
+
 export interface TrackOrderRequest {
   id: number | null;
   customer_phone: string;

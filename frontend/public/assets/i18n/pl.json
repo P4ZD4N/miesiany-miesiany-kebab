@@ -303,5 +303,45 @@
         "delivery_and_discount_included": "dostawa i znizka wliczone",
         "thanks": "Dziekujemy za podanie swojego emaila! Przypominamy, ze co 10 zamowien z podanym emailem otrzymasz kod rabatowy na kolejne zamowienie!",
         "encourage": "Zachecamy do podania swojego emaila przy kolejnym zamowieniu! Przypominamy, ze co 10 zamowien z podanym emailem otrzymujesz kod rabatowy na kolejne zamowienie!"
+    },
+    "order-management": {
+        "headline": "Zarzadzanie zamowieniami",
+        "paragraph_today": "Dzisiejsze",
+        "paragraph_past": "Z przeszlosci",
+        "order_status": {
+            "IN_PREPARATION": "Do przygotowania",
+            "READY": "Gotowe",
+            "SHIPPED": "Wyslane",
+            "RECEIVED": "Odebrane",
+            "CANCELED": "Anulowane",
+            "RETURNED": "Zwrocone",
+            "All": "Wszystkie"
+        },
+        "order_type": {
+            "ON_SITE": "Na miejscu",
+            "TAKEAWAY": "Na wynos"
+        },
+        "card": {
+            "main": {
+                "headline": "Zamowienie",
+                "type": "Typ",
+                "status": "Status",
+                "total_price": "Wartosc zamowienia",
+                "placed_at": "Data zlozenia"
+            },
+            "contact": {
+                "headline": "Kontakt",
+                "phone": "Telefon",
+                "email": "Email"
+            },
+            "meals_headline": "Dania",
+            "beverages_headline": "Napoje",
+            "addons_headline": "Dodatki",
+            "additional_comments_headline": "Dodatkowe komentarze"
+        },
+        "buttons": {
+            "update": "Aktualizuj",
+            "remove": "Usun"
+        }
     }
 }

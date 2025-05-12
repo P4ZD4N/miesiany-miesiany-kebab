@@ -1,0 +1,173 @@
+<section class="order-management" *ngIf="isManager() || isEmployee()">
+    <h1>{{ 'order-management.headline' | translate }}</h1>
+
+    <p>{{ 'order-management.paragraph_today' | translate }}</p>
+    <section class="button-today-section">
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.IN_PREPARATION, true)"
+            (click)="setFilter(OrderStatus.IN_PREPARATION, true)">
+            {{ 'order-management.order_status.IN_PREPARATION' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.READY, true)"
+            (click)="setFilter(OrderStatus.READY, true)">
+            {{ 'order-management.order_status.READY' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.SHIPPED, true)"
+            (click)="setFilter(OrderStatus.SHIPPED, true)">
+            {{ 'order-management.order_status.SHIPPED' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.RECEIVED, true)"
+            (click)="setFilter(OrderStatus.RECEIVED, true)">
+            {{ 'order-management.order_status.RECEIVED' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.RETURNED, true)"
+            (click)="setFilter(OrderStatus.RETURNED, true)">
+            {{ 'order-management.order_status.RETURNED' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.CANCELED, true)"
+            (click)="setFilter(OrderStatus.CANCELED, true)">
+            {{ 'order-management.order_status.CANCELED' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(null, true)"
+            (click)="setFilter(null, true)">
+            {{ 'order-management.order_status.All' | translate }}
+        </button>
+    </section>
+
+    <p>{{ 'order-management.paragraph_past' | translate }}</p>
+    <section class="button-past-section">
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.IN_PREPARATION, false)"
+            (click)="setFilter(OrderStatus.IN_PREPARATION, false)">
+            {{ 'order-management.order_status.IN_PREPARATION' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.READY, false)"
+            (click)="setFilter(OrderStatus.READY, false)">
+            {{ 'order-management.order_status.READY' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.SHIPPED, false)"
+            (click)="setFilter(OrderStatus.SHIPPED, false)">
+            {{ 'order-management.order_status.SHIPPED' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.RECEIVED, false)"
+            (click)="setFilter(OrderStatus.RECEIVED, false)">
+            {{ 'order-management.order_status.RECEIVED' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.RETURNED, false)"
+            (click)="setFilter(OrderStatus.RETURNED, false)">
+            {{ 'order-management.order_status.RETURNED' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(OrderStatus.CANCELED, false)"
+            (click)="setFilter(OrderStatus.CANCELED, false)">
+            {{ 'order-management.order_status.CANCELED' | translate }}
+        </button>
+
+        <button 
+            class="btn"
+            [ngClass]="getButtonClass(null, false)"
+            (click)="setFilter(null, false)">
+            {{ 'order-management.order_status.All' | translate }}
+        </button>
+    </section>
+
+    <section class="orders">
+        <div *ngFor="let order of filteredOrders">
+            <div class="card-body">
+                <h4>{{ 'order-management.card.main.headline' | translate }} #{{ order.id }}</h4>
+                <p>{{ 'order-management.card.main.type' | translate }}: {{ 'order-management.order_type.' + order.order_type | translate }}</p>
+                <p>{{ 'order-management.card.main.status' | translate }}: {{ 'order-management.order_status.' + order.order_status | translate }}</p>
+                <p>{{ 'order-management.card.main.total_price' | translate }}: {{ order.total_price | number:'1.2-2'}} zl</p>
+                <p>{{ 'order-management.card.main.placed_at' | translate }}: {{ order.created_at | date: 'yyyy-MM-dd HH:mm:ss' }}</p>
+
+                <h5>{{ 'order-management.card.contact.headline' | translate }}</h5>
+                <p>{{ 'order-management.card.contact.phone' | translate }}: {{ order.customer_phone }}</p>
+                <p *ngIf="order.customer_email">
+                    {{ 'order-management.card.contact.email' | translate }}: {{ order.customer_email }}
+                </p>
+
+                <h5 *ngIf="order.street && order.house_number && order.postal_code && order.city">Adres</h5>
+                <p *ngIf="order.street && order.house_number && order.postal_code && order.city">
+                    ul. {{ order.street }} {{ order.house_number }}<br>
+                    {{ order.postal_code }} {{ order.city }}
+                </p>
+
+                <h5 *ngIf="order.meals.length !== 0">{{ 'order-management.card.meals_headline' | translate }}</h5>
+                <ul class="meal-ul" *ngFor="let meal of order.meals">
+                    <li>
+                        <i class="fa-solid fa-utensils"></i> 
+                        {{ getTranslatedMealName(meal.meal_name) }} ({{ meal.quantity }})
+                    </li>
+                    <ul *ngFor="let ingredient of meal.ingredient_names">
+                        <li>
+                          {{ getTranslatedIngredientName(ingredient) }}
+                        </li>
+                    </ul>
+                </ul>
+
+                <h5 *ngIf="order.beverages.length !== 0">{{ 'order-management.card.beverages_headline' | translate }}</h5>
+                <ul class="beverage-ul" *ngFor="let beverage of order.beverages">
+                    <li>
+                        <i class="fa-solid fa-martini-glass"></i> 
+                        {{ getTranslatedBeverageName(beverage.beverage_name) }} {{ beverage.capacity }}L ({{ beverage.quantity }})
+                    </li>
+                </ul>
+
+                <h5 *ngIf="order.addons.length !== 0">{{ 'order-management.card.addons_headline' | translate }}</h5>
+                <ul class="addon-ul" *ngFor="let addon of order.addons">
+                    <li>
+                        <i class="fa-solid fa-plus"></i> 
+                        {{ getTranslatedAddonName(addon.addon_name) }} ({{ addon.quantity }})
+                    </li>
+                </ul>
+                  
+                <h5 *ngIf="order.additional_comments">{{ 'order-management.card.additional_comments_headline' | translate }}</h5>
+                <p *ngIf="order.additional_comments">{{ order.additional_comments }}</p>
+
+                <button (click)="updateOrder(order)">
+                    {{ 'order-management.buttons.update' | translate }}
+                </button>
+                <button>{{ 'order-management.buttons.remove' | translate }}</button>
+            </div>
+        </div>
+    </section>
+</section>
+
+<section class="verification-required" *ngIf="!isEmployee() && !isManager()">
+    <h1>You are not able to enter this page!</h1>
+    <p>It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.</p>
+</section>

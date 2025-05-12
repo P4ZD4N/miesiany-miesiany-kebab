@@ -39,9 +39,31 @@ export class TrackOrderComponent implements OnInit{
     city: '',
     additional_comments: '',
     total_price: 0,
-    meals: {},
-    beverages: {},
-    addons: {}
+    created_at: '',
+    meals: [
+      {
+        meal_name: '',
+        final_price: 0,
+        size: null,
+        quantity: 0,
+        ingredient_names: []
+      }
+    ],
+    beverages: [
+      {
+        beverage_name: '',
+        final_price: 0,
+        capacity: 0,
+        quantity: 0
+      }
+    ],
+    addons: [
+      {
+        addon_name: '',
+        final_price: 0,
+        quantity: 0
+      }
+    ]
   };
   languageChangeSubscription: Subscription;
 
@@ -118,9 +140,31 @@ export class TrackOrderComponent implements OnInit{
       city: '',
       additional_comments: '',
       total_price: 0,
-      meals: {},
-      beverages: {},
-      addons: {}
+      created_at: '',
+      meals: [
+        {
+          meal_name: '',
+          final_price: 0,
+          size: null,
+          quantity: 0,
+          ingredient_names: []
+        }
+      ],
+      beverages: [
+        {
+          beverage_name: '',
+          final_price: 0,
+          capacity: 0,
+          quantity: 0
+        }
+      ],
+      addons: [
+        {
+          addon_name: '',
+          final_price: 0,
+          quantity: 0
+        }
+      ]
     };
   }
 
@@ -137,6 +181,7 @@ export class TrackOrderComponent implements OnInit{
       city: response.city,
       additional_comments: response.additional_comments,
       total_price: response.total_price,
+      created_at: response.created_at,
       meals: response.meals,
       beverages: response.beverages,
       addons: response.addons

@@ -20,6 +20,8 @@ import { UnsubscribeLayoutComponent } from './components/unsubscribe/unsubscribe
 import { UnsubscribeComponent } from './components/unsubscribe/unsubscribe/unsubscribe.component';
 import { TrackOrderLayoutComponent } from './components/track-order/track-order-layout-component';
 import { TrackOrderComponent } from './components/track-order/track-order/track-order.component';
+import { OrderManagementLayoutComponent } from './components/order-management/order-management-layout-component';
+import { OrderManagementComponent } from './components/order-management/order-management/order-management.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -53,4 +55,7 @@ export const routes: Routes = [
     { path: 'track-order', component: TrackOrderLayoutComponent, children: [
         { path: '', component: TrackOrderComponent }
     ]},  
+    { path: 'order-management', component: OrderManagementLayoutComponent, children: [
+        { path: '', component: OrderManagementComponent }
+    ]}, 
 ];

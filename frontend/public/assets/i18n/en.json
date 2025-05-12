@@ -303,5 +303,45 @@
         "delivery_and_discount_included": "delivery and discount included",
         "thanks": "Thank you for providing your email! We remind you, that every 10 orders you will receive a discount code for your next order!",
         "encourage": " We encourage you to enter your email next time! We remind, that every 10 orders with entered email you will receive discount code for your next order!"
+    },
+    "order-management": {
+        "headline": "Order management",
+        "paragraph_today": "Today",
+        "paragraph_past": "Past",
+        "order_status": {
+            "IN_PREPARATION": "To prepare",
+            "READY": "Ready",
+            "SHIPPED": "Shipped",
+            "RECEIVED": "Received",
+            "CANCELED": "Canceled",
+            "RETURNED": "Returned",
+            "All": "All"
+        },
+        "order_type": {
+            "ON_SITE": "On site",
+            "TAKEAWAY": "Takeaway"
+        },
+        "card": {
+            "main": {
+                "headline": "Order",
+                "type": "Type",
+                "status": "Status",
+                "total_price": "Total price",
+                "placed_at": "Placed at"
+            },
+            "contact": {
+                "headline": "Contact",
+                "phone": "Phone",
+                "email": "Email"
+            },
+            "meals_headline": "Meals",
+            "beverages_headline": "Beverages",
+            "addons_headline": "Addons",
+            "additional_comments_headline": "Additional comments"
+        },
+        "buttons": {
+            "update": "Update",
+            "remove": "Remove"
+        }
     }
 }
