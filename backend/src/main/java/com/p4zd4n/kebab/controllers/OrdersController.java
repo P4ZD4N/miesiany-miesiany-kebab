@@ -3,6 +3,7 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.entities.Order;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
+import com.p4zd4n.kebab.requests.orders.RemovedOrderRequest;
 import com.p4zd4n.kebab.requests.orders.TrackOrderRequest;
 import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
 import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
@@ -94,7 +95,7 @@ public class OrdersController {
 
     @DeleteMapping("/remove-order")
     public ResponseEntity<RemovedOrderResponse> removeOrder(
-            @Valid @RequestBody RemovedBeveragePromotionRequest request
+            @Valid @RequestBody RemovedOrderRequest request
     ) {
         log.info("Received remove order request");
 
