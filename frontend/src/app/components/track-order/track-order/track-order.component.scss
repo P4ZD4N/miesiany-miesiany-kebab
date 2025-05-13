@@ -52,10 +52,36 @@ input {
     }
 }
 
-
-.tracking-section, .order-status, .email {
+.tracking-section, .order-status, .ordered-items, .email {
     width: 100%;
     margin-top: 2em;
+}
+
+.ordered-items {
+    display: flex;
+    justify-content: center;
+    gap: 5em;
+
+    h5 {
+        font-size: 24px;
+        color: red;
+        text-align: center;
+    }
+
+    ul {
+        font-size: 20px;
+        color: white;
+    }
+
+    .meal-ul, .beverage-ul, .addon-ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.5rem;
+    }
+
+    i {
+        color: red;
+    }
 }
 
 .order-status {
@@ -240,6 +266,24 @@ input {
 
     .input-section {
         width: 60%;
+    }
+}
+
+@media (max-width: 920px) {
+    .ordered-items {
+        flex-direction: column;
+        align-items: center;
+        gap: 2em;
+
+        div {
+            width: 80%;
+        }
+
+        ul {
+            text-align: center;
+            list-style-position: inside;
+            padding-left: 0;
+        }
     }
 }
 

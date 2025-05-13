@@ -62,6 +62,43 @@
             </div>
         </section>
 
+        <section class="ordered-items">
+            <div>
+                <h5 *ngIf="order.meals.length !== 0">{{ 'order-management.card.meals_headline' | translate }}</h5>
+                <ul class="meal-ul" *ngFor="let meal of order.meals">
+                    <li>
+                        <i class="fa-solid fa-utensils"></i> 
+                        {{ getTranslatedMealName(meal.meal_name) }} ({{ meal.quantity }})
+                    </li>
+                    <ul *ngFor="let ingredient of meal.ingredient_names">
+                        <li>
+                            {{ getTranslatedIngredientName(ingredient) }}
+                        </li>
+                    </ul>
+                </ul>
+            </div>
+
+            <div>
+                <h5 *ngIf="order.beverages.length !== 0">{{ 'order-management.card.beverages_headline' | translate }}</h5>
+                <ul class="beverage-ul" *ngFor="let beverage of order.beverages">
+                    <li>
+                        <i class="fa-solid fa-martini-glass"></i> 
+                        {{ getTranslatedBeverageName(beverage.beverage_name) }} {{ beverage.capacity }}L ({{ beverage.quantity }})
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 *ngIf="order.addons.length !== 0">{{ 'order-management.card.addons_headline' | translate }}</h5>
+                <ul class="addon-ul" *ngFor="let addon of order.addons">
+                    <li>
+                        <i class="fa-solid fa-plus"></i> 
+                        {{ getTranslatedAddonName(addon.addon_name) }} ({{ addon.quantity }})
+                    </li>
+                </ul>
+            </div>
+        </section>
+
         <section class="order-status">
             <p>
                 <strong>{{ 'track-order.order_status.headline' | translate }}: </strong> 

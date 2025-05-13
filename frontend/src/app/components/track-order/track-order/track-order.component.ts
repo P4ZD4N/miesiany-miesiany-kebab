@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TrackOrderRequest } from '../../../requests/requests';
 import { OrderService } from '../../../services/order/order.service';
 import { OrdersService } from '../../../services/orders/orders.service';
@@ -70,7 +70,8 @@ export class TrackOrderComponent implements OnInit{
   constructor(
     private orderService: OrderService, 
     private ordersService: OrdersService,
-    private langService: LangService
+    private langService: LangService,
+    private translate: TranslateService
   ) {
     this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
       this.errorMessages = {};
@@ -199,6 +200,46 @@ export class TrackOrderComponent implements OnInit{
 
   clearTrackOrderData(): void {
     sessionStorage.removeItem(this.storageKey);
+  }
+
+  getTranslatedMealName(mealName: string): string {
+    let mealNameTranslated = this.translate.instant('menu.meals.' + mealName);
+
+    if (mealNameTranslated === 'menu.meals.' + mealName) {
+      mealNameTranslated = mealName;
+    }
+    
+    return mealNameTranslated;
+  }
+
+  getTranslatedBeverageName(beverageName: string): string {
+    let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverageName);
+
+    if (beverageNameTranslated === 'menu.addons.' + beverageName) {
+      beverageNameTranslated = beverageName;
+    }
+    
+    return beverageNameTranslated;
+  }
+
+  getTranslatedAddonName(addonName: string): string {
+    let addonNameTranslated = this.translate.instant('menu.addons.' + addonName);
+
+    if (addonNameTranslated === 'menu.addons.' + addonName) {
+      addonNameTranslated = addonName;
+    }
+    
+    return addonNameTranslated;
+  }
+
+  getTranslatedIngredientName(ingredientName: string): string {
+    let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredientName);
+
+    if (ingredientNameTranslated === 'menu.meals.ingredients.' + ingredientName) {
+      ingredientNameTranslated = ingredientName;
+    }
+    
+    return ingredientNameTranslated;
   }
 
   handleError(error: any) {
