@@ -13,6 +13,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -23,6 +24,7 @@ public class ThanksForOrderMailUtil {
 
     private static final String SUBJECT_ENG = "Thanks for your order!";
     private static final String HEADING_ENG = "Dear Customer,";
+    private static final String PARAGRAPH_1_SIMPLE_ENG = "Thank you for placing order!";
     private static final String PARAGRAPH_1_FIRST_ENG =
             "Thank you for placing order! " +
             "Now, you have opportunity to track your order by clicking ";
@@ -36,6 +38,7 @@ public class ThanksForOrderMailUtil {
 
     private static final String SUBJECT_PL = "Dziekujemy za twoje zamowienie!";
     private static final String HEADING_PL = "Szanowny Kliencie,";
+    private static final String PARAGRAPH_1_SIMPLE_PL = "Dziękujemy za złożenie zamówienia!";
     private static final String PARAGRAPH_1_FIRST_PL =
             "Dziękujemy za złożenie zamówienia! " +
             "Masz teraz możliwość śledzić zamówienie klikając ";
@@ -98,6 +101,9 @@ public class ThanksForOrderMailUtil {
                     "paragraph5second", PARAGRAPH_5_SECOND_ENG,
                     "paragraph6", PARAGRAPH_6_ENG
             ));
+            context.setVariables(Map.of(
+                    "paragraph1simple", PARAGRAPH_1_SIMPLE_ENG
+            ));
         } else {
             context.setVariables(Map.of(
                     "heading", HEADING_PL,
@@ -110,13 +116,21 @@ public class ThanksForOrderMailUtil {
                     "paragraph5second", PARAGRAPH_5_SECOND_PL,
                     "paragraph6", PARAGRAPH_6_PL
             ));
+            context.setVariables(Map.of(
+                    "paragraph1simple", PARAGRAPH_1_SIMPLE_PL
+            ));
         }
 
         context.setVariables(Map.of(
-                "phone", phone,
                 "orderId", orderId,
                 "orderRemaining", 10 - (orderCount % 10)
         ));
+
+        if (phone != null) {
+            context.setVariables(Map.of(
+                    "phone", phone
+            ));
+        }
 
         return context;
     }

@@ -115,9 +115,10 @@
 
     <div class="content">
         <h2 style="color: #e60000;" th:text="${heading}"></h2>
-        <p th:utext="${paragraph1first + '<a href=&quot;http://localhost:4200/track-order&quot;>link</a> ' + paragraph1second}"></p>
+        <p th:if="${phone != null}" th:utext="${paragraph1first + '<a href=&quot;http://localhost:4200/track-order&quot;>link</a> ' + paragraph1second}"></p>
+        <p th:if="${phone == null}" th:text="${paragraph1simple}"></p>
 
-        <div class="info-boxes">
+        <div class="info-boxes" th:if="${phone != null}">
             <div class="info-box">
                 <p class="info-label" th:text="${paragraph2}"></p>
                 <div class="util" th:text="${orderId}"></div>
@@ -129,7 +130,7 @@
             </div>
         </div>
 
-        <p th:text="${paragraph4}"></p>
+        <p th:if="${phone != null}" th:text="${paragraph4}"></p>
 
         <p th:text="${paragraph5first + orderRemaining + paragraph5second}" style="color: #e60000; font-weight: bold;"></p>
     </div>
