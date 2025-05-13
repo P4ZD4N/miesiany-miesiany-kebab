@@ -435,8 +435,11 @@ public class OrdersService {
             Meal meal = optionalMeal.get();
             sizeQuantities.forEach((size, quantity) -> {
                 if (quantity != null && quantity > 0) {
+                    int currentOrderMealsSize = order.getOrderMeals().size();
+
                     order.addMeal(meal, size, quantity);
                     order.getOrderMeals().stream()
+                            .skip(currentOrderMealsSize)
                             .filter(orderMeal -> orderMeal.getMealName().equals(meal.getName()))
                             .forEach(orderMeal -> {
                                 orderMeal.getIngredientNames().add(mealKey.getMeat().getName());
