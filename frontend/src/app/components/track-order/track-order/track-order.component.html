@@ -68,7 +68,7 @@
                 <ul class="meal-ul" *ngFor="let meal of order.meals">
                     <li>
                         <i class="fa-solid fa-utensils"></i> 
-                        {{ getTranslatedMealName(meal.meal_name) }} ({{ meal.quantity }})
+                        {{ 'menu.meals.sizes.' + meal.size | translate }} {{ getTranslatedMealName(meal.meal_name) }} ({{ meal.quantity }})
                     </li>
                     <ul *ngFor="let ingredient of meal.ingredient_names">
                         <li>
