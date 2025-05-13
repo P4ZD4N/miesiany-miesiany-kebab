@@ -76,7 +76,7 @@
             </button>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="!isManager() && !isEmployee()">
             <a class="btn" 
                [ngClass]="{ 'btn-danger': !doesOrderExist(), 'btn-warning': doesOrderExist() }" 
                (click)="startPlacingOrder()">

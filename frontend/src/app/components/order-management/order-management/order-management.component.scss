@@ -10,7 +10,14 @@
         color: red;
         text-align: center;
     }
-    
+    .btn-add-order {
+        margin: 0.5em;
+        
+        @media (max-width: 790px) {
+            width: 80%;
+        }
+    }
+
     p {
         text-align: center;
         color: white;

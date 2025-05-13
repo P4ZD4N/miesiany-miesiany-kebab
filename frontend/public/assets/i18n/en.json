@@ -341,6 +341,7 @@
             "additional_comments_headline": "Additional comments"
         },
         "buttons": {
+            "add": "Add order",
             "update": "Update",
             "remove": "Remove"
         }

@@ -11,6 +11,7 @@ import { OrderType } from '../../enums/order-type.enum';
 import { OrderStatus } from '../../enums/order-status.enum';
 import { Router } from '@angular/router';
 import { DiscountCodesService } from '../discount-codes/discount-codes.service';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,7 @@ export class OrderService {
     private menuService: MenuService,
     private ordersService: OrdersService,
     private discountCodesService: DiscountCodesService,
+    private authenticationService: AuthenticationService,
     private router: Router
   ) { }
 
@@ -95,7 +97,23 @@ export class OrderService {
     );
   }
 
+  isManager(): boolean {
+    return this.authenticationService.isManager();
+  }
+
+  isEmployee(): boolean {
+    return this.authenticationService.isEmployee();
+  }
+
   selectNextOrderItem(isNewOrder = false): void {
+
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Co dodac do zamowienia?</span>` : 
+        `<span style="color: red;">What to add to the order?</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Szanowny Kliencie</span>` : 
+        `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers = this.langService.currentLang === 'pl' ? `Co chcesz zamowic?` : `What do you want to order?`;
 
     if (!isNewOrder) {
       const order = this.getOrderData();
@@ -110,10 +128,8 @@ export class OrderService {
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`,
-      text: this.langService.currentLang === 'pl' ? `Co chcesz zamowic?` : `What do you want to order?`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff  : titleForCustomers,
+      text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
       background: '#141414',
       color: 'white',
       showDenyButton: true,
@@ -143,16 +159,22 @@ export class OrderService {
 
   askWhetherReturnToPreviousOrder(): void {
 
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Przywrocic poprzednie zamowienie?</span>` : 
+        `<span style="color: red;">Restore previous order?</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Szanowny Kliencie</span>` : 
+        `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers = this.langService.currentLang === 'pl' 
+        ? `Czy chcesz wrocic do poprzedniego zamowienia?` 
+        : `Do you want to return to your previous order?`;
+
     this.initRequiredData();
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`,
-      text: this.langService.currentLang === 'pl' 
-        ? `Czy chcesz wrocic do poprzedniego zamowienia?` 
-        : `Do you want to return to your previous order?`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
       background: '#141414',
       color: 'white',
       showCancelButton: true,
@@ -213,6 +235,14 @@ export class OrderService {
 
   async startChoosingMeal(): Promise<void> {
 
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Wybierz danie</span>` : 
+        `<span style="color: red;">Choose meal</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Szanowny Kliencie</span>` : 
+        `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers = this.langService.currentLang === 'pl' ? `Wybierz interesujace Cie danie` : `Choose interesting meal`;
+
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
     const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac danie' : 'Please select meal';
     const mealNamesOriginal = this.meals.map(meal => meal.name).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
@@ -224,10 +254,8 @@ export class OrderService {
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`,
-      text: this.langService.currentLang === 'pl' ? `Wybierz interesujace Cie danie` : `Choose interesting meal`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
       input: "radio",
       inputOptions: mealNamesTranslated,
       background: '#141414',
@@ -530,6 +558,15 @@ export class OrderService {
   }
 
   async startChoosingBeverage(): Promise<void> {
+
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Wybierz napoj</span>` : 
+        `<span style="color: red;">Choose beverage</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Szanowny Kliencie</span>` : 
+        `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers = this.langService.currentLang === 'pl' ? `Wybierz interesujacy Cie napoj` : `Choose interesting beverage`;
+
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
     const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac napoj' : 'Please select beverage';
 
@@ -549,10 +586,8 @@ export class OrderService {
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`,
-      text: this.langService.currentLang === 'pl' ? `Wybierz interesujacy Cie napoj` : `Choose interesting beverage`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
       input: "radio",
       inputOptions: beverageNamesTranslated,
       background: '#141414',
@@ -798,6 +833,15 @@ export class OrderService {
   } 
 
   async startChoosingAddonProperties(): Promise<void> {
+
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Wybierz dodatek</span>` : 
+        `<span style="color: red;">Choose addon</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Szanowny Kliencie</span>` : 
+        `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers = this.langService.currentLang === 'pl' ? `Wybierz interesujacy Cie dodatek` : `Choose interesting addon`;
+
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
     const addonNames = this.addons.map(addon => {
@@ -808,14 +852,11 @@ export class OrderService {
         return `<option value="${addon.name}">${addonNameTranslated}</option>`;
       }).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
-    const selectAddonHeading = this.langService.currentLang === 'pl' ? `<h3>Wybierz dodatek</h3>` : `<h3>Select addon</h3>`;
     const howManyHeading = this.langService.currentLang === 'pl' ? `<h3>Jaka ilosc?</h3>` : `<h3>How many?</h3>`;
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
       background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Dodaj do zamowienia' : 'Add to order',
@@ -853,7 +894,7 @@ export class OrderService {
         </style>
 
         <div style="margin-bottom: 20px;">
-          ${selectAddonHeading}
+          <span>${this.isManager() || this.isEmployee() ? '' : textForCustomers}</span>
           <select id="addonSelection" class="swal2-input">
             ${addonNames}
           </select>
@@ -1520,14 +1561,22 @@ export class OrderService {
 
   chooseFormOfOrderReceiving(): void {
 
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Wybierz sposob odbioru zamowienia</span>` : 
+        `<span style="color: red;">Choose form of order receiving</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Szanowny Kliencie</span>` : 
+        `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers = this.langService.currentLang === 'pl' 
+        ? `Jak chcesz odebrac zamowienie? Informujemy, ze zamowienia internetowe sa zawsze traktowane jak na wynos!` 
+        : `How do you want to receive order? Please note that online orders are always treated as takeaway!`;
+    const houseButtomForStaff = this.langService.currentLang === 'pl' ? '🚚 W domu' : '🚚 In house';
+    const houseButtomForCustomers = this.langService.currentLang === 'pl' ? '🚚 W  moim domu' : '🚚 In my house';
+
     Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`,
-      text: this.langService.currentLang === 'pl' 
-        ? `Jak chcesz odebrac zamowienie? Informujemy, ze zamowienia internetowe sa zawsze traktowane jak na wynos!` 
-        : `How do you want to receive order? Please note that online orders are always treated as takeaway!`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
       background: '#141414',
       color: 'white',
       showDenyButton: true,
@@ -1536,7 +1585,7 @@ export class OrderService {
       showCancelButton: true,
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Wroc pozniej' : 'Come back later',
       cancelButtonColor: 'red',
-      confirmButtonText: this.langService.currentLang === 'pl' ? '🚚 W moim domu' : '🚚 In my house',
+      confirmButtonText: this.isManager() || this.isEmployee() ? houseButtomForStaff : houseButtomForCustomers,
       confirmButtonColor: '#198754',
       customClass: {
         actions: 'swal-actions-vertical',  
@@ -1553,7 +1602,21 @@ export class OrderService {
     });
   }
 
-   startEnteringAddress(): void {
+  startEnteringAddress(): void {
+
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Podaj adres klienta</span>` : 
+        `<span style="color: red;">Enter client's address</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Szanowny Kliencie</span>` : 
+        `<span style="color: red;">Dear Customer</span>`;
+    const whiteTextForCustomers = this.langService.currentLang === 'pl' ? 
+        'Podaj adres, pod ktory mamy dostarczyc Twoje zamowienie!' : 
+        'Enter address, where we can deliver your order!';
+    const redTextForCustomers = this.langService.currentLang === 'pl' ? 
+        'Dostarczamy zamowienia do 20 km od lokalu. Zamowienie z adresem znajdujacym sie dalej zostanie anulowane. Kazda dostawa kosztuje 15 zl!' : 
+        'We deliver orders up to 20 km from our restaurant. Order with address further away will be canceled. Each delivery costs 15 zl!';
+
     const confirmButtonText = this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
@@ -1564,9 +1627,7 @@ export class OrderService {
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
       background: '#141414',
       color: 'white',
       html: `
@@ -1601,13 +1662,9 @@ export class OrderService {
         </style>
 
         <span style="color: white; margin-bottom: 10px;">
-          ${this.langService.currentLang === 'pl' 
-            ? 'Podaj adres, pod ktory mamy dostarczyc Twoje zamowienie!' 
-            : 'Enter address, where we can deliver your order!'}
+          ${this.isManager() || this.isEmployee() ? '' : whiteTextForCustomers}
           <span style="color: red;">
-          ${this.langService.currentLang === 'pl' 
-            ? 'Dostarczamy zamowienia do 20 km od lokalu. Zamowienie z adresem znajdujacym sie dalej zostanie anulowane. Kazda dostawa kosztuje 15 zl!' 
-            : 'We deliver orders up to 20 km from our restaurant. Order with address further away will be canceled. Each delivery costs 15 zl!'}
+            ${this.isManager() || this.isEmployee() ? '' : redTextForCustomers}
           </span>
         </span>
         
@@ -1704,6 +1761,17 @@ export class OrderService {
   }
 
   startEnteringContactData(): void {
+
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Podaj dane kontaktowe klienta</span>` : 
+        `<span style="color: red;">Enter client's contact data</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Podaj swoje dane kontaktowe!</span>` : 
+        `<span style="color: red;">Enter your contact data!</span>`;
+    const textForCustomers = this.langService.currentLang === 'pl' ? 
+      'Podanie adresu email nie jest wymagane, ale zachecamy do jego wpisania. Kazde zamowienie to rownowartosc 1 punktu! Po zebraniu 10 punktow otrzymasz kod rabatowy na kolejne zamowienie!' : 
+      'Providing an email address is optional, but we encourage you to enter it. Each order is equality of 1 point. After collecting 10 points you’ll receive a discount code for your next order!';
+
     const confirmButtonText = this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
@@ -1712,9 +1780,7 @@ export class OrderService {
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Podaj swoje dane kontaktowe!</span>` : 
-        `<span style="color: red;">Enter your contact data!</span>`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
       background: '#141414',
       color: 'white',
       html: `
@@ -1749,9 +1815,7 @@ export class OrderService {
         </style>
 
         <span style="color: white; margin-bottom: 10px;">
-          ${this.langService.currentLang === 'pl' 
-            ? 'Podanie adresu email nie jest wymagane, ale zachecamy do jego wpisania. Kazde zamowienie to rownowartosc 1 punktu! Po zebraniu 10 punktow otrzymasz kod rabatowy na kolejne zamowienie!' 
-            : 'Providing an email address is optional, but we encourage you to enter it. Each order is equality of 1 point. After collecting 10 points you’ll receive a discount code for your next order!'}
+          ${this.isManager() || this.isEmployee() ? '' : textForCustomers}
         </span>
         
         <div>
@@ -1775,10 +1839,16 @@ export class OrderService {
         validationMessage: 'custom-validation-message'
       },
       preConfirm: () => {
-        const email = (document.getElementById('email') as HTMLInputElement).value;
-        const phone = (document.getElementById('phone') as HTMLInputElement).value;
+        let email: string | null = (document.getElementById('email') as HTMLInputElement).value.trim();
+        let phone: string | null = (document.getElementById('phone') as HTMLInputElement).value.trim();
 
-        if (!phone ) {
+
+        const isManagerOrEmployee = this.isManager() || this.isEmployee();
+
+        email = email === '' ? null : email;
+        phone = phone === '' ? null : phone;
+
+        if (!isManagerOrEmployee && !phone) {
           Swal.showValidationMessage(
             this.langService.currentLang === 'pl' 
               ? 'Telefon jest wymagany' 
@@ -1788,7 +1858,7 @@ export class OrderService {
         }
 
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-          if (email && !emailRegex.test(email)) {
+        if (email && !emailRegex.test(email)) {
           Swal.showValidationMessage(
             this.langService.currentLang === 'pl' ? 'Niepoprawny email!' : 'Invalid email!'
           );
@@ -1796,14 +1866,14 @@ export class OrderService {
         }
 
         const phoneRegex = /^[0-9]{9}$/;
-          if (!phoneRegex.test(phone)) {
+        if (phone && !phoneRegex.test(phone)) {
           Swal.showValidationMessage(
             this.langService.currentLang === 'pl' ? 'Niepoprawny numer telefonu!' : 'Invalid phone number!'
           );
           return null;
         }
-    
-        return { email, phone};
+
+        return { email, phone };
       }
     }).then((result) => {
 
@@ -1822,6 +1892,7 @@ export class OrderService {
   }
 
   startEnteringAdditionalComments(): void {
+
     const confirmButtonText = this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
@@ -1902,13 +1973,18 @@ export class OrderService {
   }
 
   enterDiscountCode(): void {
+
+    const titleForStaff = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Czy klient posiada kod rabatowy?</span>` : 
+        `<span style="color: red;">Does client have discount code?</span>`;
+    const titleForCustomers = this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Czy posiadasz kod rabatowy?</span>` : 
+        `<span style="color: red;">Do you have discount code?</span>`;
     const discountCodePlaceholder = this.langService.currentLang === 'pl' ? 'Kod rabatowy' : 'Discount code';
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Czy posiadasz kod rabatowy?</span>` : 
-        `<span style="color: red;">Do you have discount code?</span>`,
+      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
       background: '#141414',
       color: 'white',
       html: `
@@ -1975,7 +2051,11 @@ export class OrderService {
       }
     }).then((result) => {
       if (result.isDenied) {
-        this.placeOrder();
+        if (this.isEmployee() || this.isManager()) {
+          this.chooseOrderType();
+        } else {
+          this.placeOrder()
+        }
         return;
       }
 
@@ -1999,7 +2079,13 @@ export class OrderService {
                 : `Successfully applied ${result.value.discount_percentage}% discount code!`}
             </span>
           `,
-        }).then(() => this.placeOrder());
+        }).then(() => {
+          if (this.isEmployee() || this.isManager()) {
+            this.chooseOrderType();
+          } else {
+            this.placeOrder()
+          }
+        });
       
         return;
       }
@@ -2008,13 +2094,91 @@ export class OrderService {
     });
   }
 
+  async chooseOrderType(): Promise<void> {
+
+    const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac typ zamowienia' : 'Please select order type';
+    const orderTypes: OrderType[] = Object.values(OrderType);
+
+    const orderTypesTranslated: { [key: string]: string } = {};
+    orderTypes.forEach((type) => {
+      const translationKey = 'order-management.order_type.' + type; 
+      const translated = this.translate.instant(translationKey);
+      orderTypesTranslated[type] = this.isOrderTypeTranslationAvailable(type) ? translated : type;
+    });
+
+    const { value: choice } = await Swal.fire({
+      allowOutsideClick: false,
+      title: this.langService.currentLang === 'pl' ? 
+        `<span style="color: red;">Wybierz typ zamowienia</span>` : 
+        `<span style="color: red;">Choose order type</span>`,
+      input: "radio",
+      inputOptions: orderTypesTranslated,
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: '#198754',
+      showCancelButton: true,
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      cancelButtonColor: 'red',
+      customClass: {
+        validationMessage: 'custom-validation-message',
+        input: 'swal-radio-container-orders'
+      },
+      inputValidator: (value) => {
+        if (!value) {
+          return errorText;
+        }
+        return null;
+      },
+    });
+
+    this.order.order_type = choice as OrderType;
+
+    if (choice) {
+      this.placeOrder()
+    }
+  }
+
   placeOrder(): void {
 
-    this.order.order_type = OrderType.TAKEAWAY;
+    if (!this.isManager() && !this.isEmployee()) {
+      this.order.order_type = OrderType.TAKEAWAY;
+    }
     this.order.order_status = OrderStatus.IN_PREPARATION;
 
     this.ordersService.addOrder(this.order).subscribe({
+      
       next: (response) => {
+
+        if (this.isManager() || this.isEmployee()) {
+          Swal.fire({
+            text: this.langService.currentLang === 'pl' 
+              ? `Pomyslnie dodano zamowienie! `
+              : 'Successfully added order!',
+            icon: 'success',
+            iconColor: 'green',
+            confirmButtonColor: 'green',
+            background: 'black',
+            color: 'white',
+            confirmButtonText: 'Ok',
+          }).then(() => location.reload());
+
+          this.clearOrderData();
+          this.order = {
+            order_type: null, 
+            order_status: null,
+            customer_phone: '',
+            customer_email: '',
+            meals: {},
+            beverages: {},
+            addons: {},
+            total_price: 0,
+            discount_code: ''
+          };
+
+          return;
+        }
+
         Swal.fire({
           icon: 'success',
           iconColor: 'green',
@@ -2086,6 +2250,11 @@ export class OrderService {
   isAddonTranslationAvailable(addonName: string): boolean {
     const translatedName = this.translate.instant('menu.addons.' + addonName);
     return translatedName !== 'menu.addons.' + addonName;
+  }
+
+  isOrderTypeTranslationAvailable(orderType: string): boolean {
+    const translatedName = this.translate.instant('order-management.order_type.' + orderType);
+    return translatedName !== 'order-management.order_type.' + orderType;
   }
 
   setOrderData(order: NewOrderRequest): void {

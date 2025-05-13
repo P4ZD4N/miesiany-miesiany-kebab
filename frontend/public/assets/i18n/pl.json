@@ -341,6 +341,7 @@
             "additional_comments_headline": "Dodatkowe komentarze"
         },
         "buttons": {
+            "add": "Dodaj zamowienie",
             "update": "Aktualizuj",
             "remove": "Usun"
         }

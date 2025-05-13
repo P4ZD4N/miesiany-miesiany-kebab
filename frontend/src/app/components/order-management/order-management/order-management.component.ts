@@ -9,6 +9,7 @@ import { OrderResponse } from '../../../responses/responses';
 import { OrderStatus } from '../../../enums/order-status.enum';
 import Swal from 'sweetalert2';
 import { RemovedOrderRequest, UpdatedOrderRequest } from '../../../requests/requests';
+import { OrderService } from '../../../services/order/order.service';
 
 @Component({
   selector: 'app-order-management',
@@ -27,6 +28,7 @@ export class OrderManagementComponent implements OnInit{
   constructor(
     private langService: LangService,
     private authenticationService: AuthenticationService,
+    private orderService: OrderService,
     private ordersService: OrdersService,
     private translate: TranslateService
   ) {}
@@ -130,6 +132,10 @@ export class OrderManagementComponent implements OnInit{
     }
     
     return orderStatusTranslated;
+  }
+
+  addOrder(): void {
+    this.orderService.selectNextOrderItem();
   }
 
   updateOrder(order: OrderResponse): void {

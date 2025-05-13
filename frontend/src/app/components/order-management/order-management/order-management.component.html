@@ -1,5 +1,6 @@
 <section class="order-management" *ngIf="isManager() || isEmployee()">
     <h1>{{ 'order-management.headline' | translate }}</h1>
+    <button class="btn btn-success btn-add-order" (click)="addOrder()">{{ 'order-management.buttons.add' | translate }}</button>
 
     <p>{{ 'order-management.paragraph_today' | translate }}</p>
     <section class="button-today-section">
@@ -115,8 +116,10 @@
                 <p>{{ 'order-management.card.main.total_price' | translate }}: {{ order.total_price | number:'1.2-2'}} zl</p>
                 <p>{{ 'order-management.card.main.placed_at' | translate }}: {{ order.created_at | date: 'yyyy-MM-dd HH:mm:ss' }}</p>
 
-                <h5>{{ 'order-management.card.contact.headline' | translate }}</h5>
-                <p>{{ 'order-management.card.contact.phone' | translate }}: {{ order.customer_phone }}</p>
+                <h5 *ngIf="order.customer_email || order.customer_phone">{{ 'order-management.card.contact.headline' | translate }}</h5>
+                <p *ngIf="order.customer_phone">
+                    {{ 'order-management.card.contact.phone' | translate }}: {{ order.customer_phone }}
+                </p>
                 <p *ngIf="order.customer_email">
                     {{ 'order-management.card.contact.email' | translate }}: {{ order.customer_email }}
                 </p>
