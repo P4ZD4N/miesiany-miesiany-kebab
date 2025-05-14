@@ -365,3 +365,8 @@ export interface UpdatedDiscountCodeResponse {
   status_code: number;
   message: string;
 }
+
+export interface RemovedDiscountCodeResponse {
+  status_code: number;
+  message: string;
+}

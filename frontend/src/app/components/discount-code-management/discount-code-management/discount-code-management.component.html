@@ -89,8 +89,8 @@
         <tbody>
             <tr *ngFor="let discountCode of discountCodes">
                 <td>
-                    <button class="button-update" *ngIf="!isEditing && !isAdding" (click)="editDiscountCodeRow(discountCode)">{{ 'promotions.buttons.update' | translate }}</button>
-                    <!-- <button class="button-remove" *ngIf="!isEditing && !isAdding" (click)="removeBeveragePromotion(beveragePromotion)">{{ 'promotions.buttons.remove' | translate }}</button> -->
+                    <button class="button-update" *ngIf="!isEditing && !isAdding" (click)="editDiscountCodeRow(discountCode)">{{ 'discount-code-management.buttons.update' | translate }}</button>
+                    <button class="button-remove" *ngIf="!isEditing && !isAdding" (click)="removeDiscountCode(discountCode)">{{ 'discount-code-management.buttons.remove' | translate }}</button>
                 </td>
                 <td>{{ discountCode.id }}</td>
                 <td>{{ discountCode.code }}</td>

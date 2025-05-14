@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { DiscountCodeResponse, NewDiscountCodeResponse, UpdatedAddonPromotionResponse } from '../../responses/responses';
+import { DiscountCodeResponse, NewDiscountCodeResponse, RemovedDiscountCodeResponse, UpdatedAddonPromotionResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewDiscountCodeRequest, UpdatedDiscountCodeRequest } from '../../requests/requests';
+import { NewDiscountCodeRequest, RemovedDiscountCodeRequest, UpdatedDiscountCodeRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +50,16 @@ export class DiscountCodesService {
       catchError(this.handleError)
     )
   }
+
+  removeDiscountCode(discountCode: RemovedDiscountCodeRequest): Observable<RemovedDiscountCodeResponse> {
+  
+      const requestBody = { code: discountCode.code };
+  
+      return this.http.delete<RemovedDiscountCodeResponse>(`${this.apiUrl}/remove-discount-code`, { body: requestBody, withCredentials: true }).pipe(
+        map(response => response),
+        catchError(this.handleError)
+      )
+    }
 
   handleError(error: HttpErrorResponse) {
 

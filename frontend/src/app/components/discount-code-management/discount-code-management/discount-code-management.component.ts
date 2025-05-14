@@ -5,7 +5,7 @@ import { LangService } from '../../../services/lang/lang.service';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { DiscountCodeResponse } from '../../../responses/responses';
 import { DiscountCodesService } from '../../../services/discount-codes/discount-codes.service';
-import { NewDiscountCodeRequest, UpdatedDiscountCodeRequest } from '../../../requests/requests';
+import { NewDiscountCodeRequest, RemovedDiscountCodeRequest, UpdatedDiscountCodeRequest } from '../../../requests/requests';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
@@ -175,6 +175,42 @@ export class DiscountCodeManagementComponent implements OnInit {
       }
     });
   }
+
+  removeDiscountCode(discountCode: DiscountCodeResponse): void {
+      const confirmationMessage =
+        this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ten kod rabatowy?`
+        : `Are you sure you want to remove this discount code?`;
+  
+      Swal.fire({
+        title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+        text: confirmationMessage,
+        icon: 'warning',
+        iconColor: 'red',
+        showCancelButton: true,
+        confirmButtonColor: '#0077ff',
+        cancelButtonColor: 'red',
+        background: 'black',
+        color: 'white',
+        confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+        cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.discountCodesService.removeDiscountCode({ code: discountCode.code } as RemovedDiscountCodeRequest).subscribe(() => {
+            Swal.fire({
+              text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto kod rabatowy!` : `Successfully removed discount code!`,
+              icon: 'success',
+              iconColor: 'green',
+              confirmButtonColor: 'green',
+              background: 'black',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
+            this.loadDiscountCodes();
+          });
+        }
+      });
+    }
 
   hideUpdateDiscountCodeTable(): void {
     this.isEditing = false;
