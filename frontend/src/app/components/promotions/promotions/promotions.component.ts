@@ -387,7 +387,7 @@ export class PromotionsComponent implements OnInit {
     }
   }
 
-  editMealPromotinRow(mealPromotion: MealPromotionResponse) {
+  editMealPromotionRow(mealPromotion: MealPromotionResponse) {
     if (this.isEditing) {
       return;
     }
@@ -407,7 +407,7 @@ export class PromotionsComponent implements OnInit {
     };
   }
 
-  editBeveragePromotinRow(beveragePromotion: BeveragePromotionResponse) {
+  editBeveragePromotionRow(beveragePromotion: BeveragePromotionResponse) {
     if (this.isEditing) {
       return;
     }
@@ -426,7 +426,7 @@ export class PromotionsComponent implements OnInit {
     };
   }
 
-  editAddonPromotinRow(addonPromotion: AddonPromotionResponse) {
+  editAddonPromotionRow(addonPromotion: AddonPromotionResponse) {
     if (this.isEditing) {
       return;
     }
@@ -470,7 +470,6 @@ export class PromotionsComponent implements OnInit {
   }
 
   updateBeveragePromotion(updatedPromotion: UpdatedBeveragePromotionRequest) {
-    console.log(updatedPromotion);
     if (!updatedPromotion || !this.currentlyEditedPromotion) return;
     
     this.promotionsService.updateBeveragePromotion(updatedPromotion).subscribe({
