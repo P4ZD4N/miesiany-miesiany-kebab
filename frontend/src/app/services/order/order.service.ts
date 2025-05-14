@@ -2052,7 +2052,12 @@ export class OrderService {
     }).then((result) => {
       if (result.isDenied) {
         if (this.isEmployee() || this.isManager()) {
-          this.chooseOrderType();
+          if (!this.order.street && !this.order.house_number && !this.order.postal_code && !this.order.city) {
+            this.chooseOrderType();
+          } else {
+            this.order.order_type = OrderType.TAKEAWAY;
+            this.placeOrder()
+          }
         } else {
           this.placeOrder()
         }
@@ -2081,7 +2086,12 @@ export class OrderService {
           `,
         }).then(() => {
           if (this.isEmployee() || this.isManager()) {
-            this.chooseOrderType();
+            if (!this.order.street && !this.order.house_number && !this.order.postal_code && !this.order.city) {
+              this.chooseOrderType();
+            } else {
+              this.order.order_type = OrderType.TAKEAWAY;
+              this.placeOrder()
+            }
           } else {
             this.placeOrder()
           }

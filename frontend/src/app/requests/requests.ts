@@ -224,3 +224,10 @@ export interface TrackOrderRequest {
   id: number | null;
   customer_phone: string;
 }
+
+export interface NewDiscountCodeRequest {
+  code: string | null;
+  discount_percentage: number;
+  expiration_date: Date | null;
+  remaining_uses: number;
+}

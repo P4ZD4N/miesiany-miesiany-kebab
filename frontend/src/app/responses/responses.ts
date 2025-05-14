@@ -355,3 +355,8 @@ export interface DiscountCodeResponse {
   expiration_date: Date;
   remaining_uses: number;
 }
+
+export interface NewDiscountCodeResponse {
+  status_code: number;
+  message: string;
+}

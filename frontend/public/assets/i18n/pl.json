@@ -349,12 +349,18 @@
     "discount-code-management": {
         "headline": "Zarzadzanie kodami rabatowymi",
         "buttons": {
-            "add": "Dodaj kod rabatowy"
+            "add": "Dodaj kod rabatowy",
+            "cancel": "Anuluj",
+            "update": "Aktualizuj",
+            "remove": "Usun",
+            "accept": "Akceptuj"
         },
         "no_discount_codes": "Brak kodow rabatowych!",
         "code": "Kod",
+        "code_optional": "Kod (opcjonalnie)",
         "discount_percentage": "Procent znizki",
         "expiration_date": "Data wygasniecia",
-        "remaining_uses": "Pozostale uzycia"
+        "remaining_uses": "Pozostale uzycia",
+        "new_discount_code": "Nowy kod rabatowy"
     }
 }

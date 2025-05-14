@@ -349,12 +349,18 @@
     "discount-code-management": {
         "headline": "Discount code management",
         "buttons": {
-            "add": "Add discount code"
+            "add": "Add discount code",
+            "cancel": "Cancel",
+            "update": "Update",
+            "remove": "Remove",
+            "accept": "Accept"
         },
         "no_discount_codes": "No discount codes!",
         "code": "Code",
+        "code_optional": "Code (optional)",
         "discount_percentage": "Discount percentage",
         "expiration_date": "Expiration date",
-        "remaining_uses": "Remaining uses"
+        "remaining_uses": "Remaining uses",
+        "new_discount_code": "New discount code"
     }
 }
