@@ -150,7 +150,7 @@
         <tbody>
             <tr *ngFor="let mealPromotion of mealPromotions">
                 <td *ngIf="isManager()">
-                    <button class="button-update" *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding" (click)="editMealPromotinRow(mealPromotion)">{{ 'promotions.buttons.update' | translate }}</button>
+                    <button class="button-update" *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding" (click)="editMealPromotionRow(mealPromotion)">{{ 'promotions.buttons.update' | translate }}</button>
                     <button class="button-remove" *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding" (click)="removeMealPromotion(mealPromotion)">{{ 'promotions.buttons.remove' | translate }}</button>
                 </td>
                 <td>{{ mealPromotion.description }}</td>
@@ -290,7 +290,7 @@
         <tbody>
             <tr *ngFor="let beveragePromotion of beveragePromotions">
                 <td *ngIf="isManager()">
-                    <button class="button-update" *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding" (click)="editBeveragePromotinRow(beveragePromotion)">{{ 'promotions.buttons.update' | translate }}</button>
+                    <button class="button-update" *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding" (click)="editBeveragePromotionRow(beveragePromotion)">{{ 'promotions.buttons.update' | translate }}</button>
                     <button class="button-remove" *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding" (click)="removeBeveragePromotion(beveragePromotion)">{{ 'promotions.buttons.remove' | translate }}</button>
                 </td>
                 <td>{{ beveragePromotion.description }}</td>
@@ -438,7 +438,7 @@
         <tbody>
             <tr *ngFor="let addonPromotion of addonPromotions">
                 <td *ngIf="isManager()">
-                    <button class="button-update" *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding" (click)="editAddonPromotinRow(addonPromotion)">{{ 'promotions.buttons.update' | translate }}</button>
+                    <button class="button-update" *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding" (click)="editAddonPromotionRow(addonPromotion)">{{ 'promotions.buttons.update' | translate }}</button>
                     <button class="button-remove" *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding" (click)="removeAddonPromotion(addonPromotion)">{{ 'promotions.buttons.remove' | translate }}</button>
                 </td>
                 <td>{{ addonPromotion.description }}</td>
