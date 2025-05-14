@@ -1,0 +1,98 @@
+.discount-code-management {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+
+    h1 {
+        color: red;
+        text-align: center;
+    }
+    .btn-add-discount-code {
+        margin: 0.5em;
+    }
+
+    p {
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        width: 40%;
+        margin-bottom: 0.2em;
+    }
+
+    .no-discount-code {
+        width: 40%;
+        text-align: center;
+        color: red;
+        font-size: 24px;
+    }
+
+    thead {
+        border-bottom: 3px solid red;
+    }
+
+    table {
+        margin-bottom: 2rem;
+        font-size: 24px;
+        text-align: center;
+        width: 70%;
+        scrollbar-color: #ff0000 #f1f1f1; 
+        scrollbar-width: thin; 
+    }
+
+    th {
+        background-color: black;
+        color: red;
+        padding: 1rem;
+    }
+
+    tr {
+        color: white;
+        background: none;
+        border-bottom: 1px solid white;
+    }
+
+    @media (max-width: 875px) {
+        .discount-codes-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+
+    .expired {
+        color: red;
+    }
+
+    .today {
+        color: #cea015;
+    }
+
+    .future {
+        color: rgb(13, 102, 25);
+    }
+}
+
+.verification-required {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+
+    h1 {
+        color: red;
+        text-align: center;
+    }
+    
+    p {
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        width: 80%;
+        margin-bottom: 0.2em;
+    }
+}

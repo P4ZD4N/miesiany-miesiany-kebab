@@ -345,5 +345,16 @@
             "update": "Aktualizuj",
             "remove": "Usun"
         }
+    },
+    "discount-code-management": {
+        "headline": "Zarzadzanie kodami rabatowymi",
+        "buttons": {
+            "add": "Dodaj kod rabatowy"
+        },
+        "no_discount_codes": "Brak kodow rabatowych!",
+        "code": "Kod",
+        "discount_percentage": "Procent znizki",
+        "expiration_date": "Data wygasniecia",
+        "remaining_uses": "Pozostale uzycia"
     }
 }

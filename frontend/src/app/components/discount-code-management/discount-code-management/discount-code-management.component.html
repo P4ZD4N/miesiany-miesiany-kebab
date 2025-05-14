@@ -1,0 +1,34 @@
+<section class="discount-code-management" *ngIf="isManager()">
+    <h1>{{ 'discount-code-management.headline' | translate }}</h1>
+    <button class="btn btn-success btn-add-discount-code" (click)="addDiscountCode()">{{ 'discount-code-management.buttons.add' | translate }}</button>
+
+    <p class="no-discount-code" *ngIf="discountCodes.length === 0">{{ 'discount-code-management.no_discount_codes' | translate }}</p>
+    <table *ngIf="discountCodes.length !== 0" class="discount-codes-table">
+        <thead>
+            <th></th>
+            <th>ID</th>
+            <th>{{ 'discount-code-management.code' | translate }}</th>
+            <th>{{ 'discount-code-management.discount_percentage' | translate }}</th>
+            <th>{{ 'discount-code-management.expiration_date' | translate }}</th>
+            <th>{{ 'discount-code-management.remaining_uses' | translate }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let discountCode of discountCodes">
+                <td>
+                    <!-- <button class="button-update" *ngIf="!discountCode.isEditing && !isEditing && !isAdding" (click)="editBeveragePromotinRow(beveragePromotion)">{{ 'promotions.buttons.update' | translate }}</button>
+                    <button class="button-remove" *ngIf="!discountCode.isEditing && !isEditing && !isAdding" (click)="removeBeveragePromotion(beveragePromotion)">{{ 'promotions.buttons.remove' | translate }}</button> -->
+                </td>
+                <td>{{ discountCode.id }}</td>
+                <td>{{ discountCode.code }}</td>
+                <td>{{ discountCode.discount_percentage }}%</td>
+                <td [ngClass]="getDateClass(discountCode.expiration_date)">{{ discountCode.expiration_date }}</td>
+                <td>{{ discountCode.remaining_uses }}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="verification-required" *ngIf="isEmployee() && !isManager() || (!isEmployee() && !isManager())">
+    <h1>You are not able to enter this page!</h1>
+    <p>It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.</p>
+</section>

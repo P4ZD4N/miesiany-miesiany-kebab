@@ -353,4 +353,5 @@ export interface DiscountCodeResponse {
   code: string;
   discount_percentage: number;
   expiration_date: Date;
+  remaining_uses: number;
 }

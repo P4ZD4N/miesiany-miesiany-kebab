@@ -22,6 +22,8 @@ import { TrackOrderLayoutComponent } from './components/track-order/track-order-
 import { TrackOrderComponent } from './components/track-order/track-order/track-order.component';
 import { OrderManagementLayoutComponent } from './components/order-management/order-management-layout-component';
 import { OrderManagementComponent } from './components/order-management/order-management/order-management.component';
+import { DiscountCodeManagementLayoutComponent } from './components/discount-code-management/discount-code-management-layout.component';
+import { DiscountCodeManagementComponent } from './components/discount-code-management/discount-code-management/discount-code-management.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -58,4 +60,7 @@ export const routes: Routes = [
     { path: 'order-management', component: OrderManagementLayoutComponent, children: [
         { path: '', component: OrderManagementComponent }
     ]}, 
+    { path: 'discount-code-management', component: DiscountCodeManagementLayoutComponent, children: [
+        { path: '', component: DiscountCodeManagementComponent }
+    ]}
 ];

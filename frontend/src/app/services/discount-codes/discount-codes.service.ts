@@ -13,12 +13,16 @@ export class DiscountCodesService {
 
   constructor(private http: HttpClient, private langService: LangService) { }
 
-  getDiscountCode(code: string): Observable<DiscountCodeResponse[]> {
+  getDiscountCode(code: string): Observable<DiscountCodeResponse> {
     
     const headers = new HttpHeaders({
       'Accept-Language': this.langService.currentLang
     });
     
-    return this.http.get<DiscountCodeResponse[]>(`${this.apiUrl}/${code}`, { headers, withCredentials: true });
+    return this.http.get<DiscountCodeResponse>(`${this.apiUrl}/${code}`, { headers, withCredentials: true });
+  }
+
+  getDiscountCodes(): Observable<DiscountCodeResponse[]> {
+    return this.http.get<DiscountCodeResponse[]>(`${this.apiUrl}/all`, { withCredentials: true });
   }
 }

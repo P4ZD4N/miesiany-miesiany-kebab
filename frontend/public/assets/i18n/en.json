@@ -345,5 +345,16 @@
             "update": "Update",
             "remove": "Remove"
         }
+    },
+    "discount-code-management": {
+        "headline": "Discount code management",
+        "buttons": {
+            "add": "Add discount code"
+        },
+        "no_discount_codes": "No discount codes!",
+        "code": "Code",
+        "discount_percentage": "Discount percentage",
+        "expiration_date": "Expiration date",
+        "remaining_uses": "Remaining uses"
     }
 }
