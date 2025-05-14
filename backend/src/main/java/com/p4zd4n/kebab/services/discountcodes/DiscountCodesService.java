@@ -124,6 +124,8 @@ public class DiscountCodesService {
         if (request.newCode() != null) discountCode.setCode(request.newCode());
         if (request.discountPercentage() != null) discountCode.setDiscountPercentage(request.discountPercentage());
         if (request.expirationDate() != null) discountCode.setExpirationDate(request.expirationDate());
+        if (request.remainingUses() != null) discountCode.setRemainingUses(request.remainingUses());
+
 
         discountCodesRepository.save(discountCode);
 
