@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { DiscountCodeResponse, NewDiscountCodeResponse } from '../../responses/responses';
+import { DiscountCodeResponse, NewDiscountCodeResponse, UpdatedAddonPromotionResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewDiscountCodeRequest } from '../../requests/requests';
+import { NewDiscountCodeRequest, UpdatedDiscountCodeRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +34,18 @@ export class DiscountCodesService {
     });
     
     return this.http.post<NewDiscountCodeResponse>(`${this.apiUrl}/add-discount-code`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  updateDiscountCode(request: UpdatedDiscountCodeRequest): Observable<UpdatedAddonPromotionResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+    
+    return this.http.put<UpdatedAddonPromotionResponse>(`${this.apiUrl}/update-discount-code`, request, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

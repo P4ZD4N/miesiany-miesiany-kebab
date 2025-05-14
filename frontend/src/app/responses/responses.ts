@@ -360,3 +360,8 @@ export interface NewDiscountCodeResponse {
   status_code: number;
   message: string;
 }
+
+export interface UpdatedDiscountCodeResponse {
+  status_code: number;
+  message: string;
+}

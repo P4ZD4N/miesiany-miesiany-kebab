@@ -361,6 +361,7 @@
         "discount_percentage": "Procent znizki",
         "expiration_date": "Data wygasniecia",
         "remaining_uses": "Pozostale uzycia",
-        "new_discount_code": "Nowy kod rabatowy"
+        "new_discount_code": "Nowy kod rabatowy",
+        "update_discount_code": "Aktualizowany kod rabatowy"
     }
 }

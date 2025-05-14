@@ -231,3 +231,11 @@ export interface NewDiscountCodeRequest {
   expiration_date: Date | null;
   remaining_uses: number;
 }
+
+export interface UpdatedDiscountCodeRequest {
+  code: string;
+  updated_code: string;
+  updated_discount_percentage: number | null;
+  updated_expiration_date: Date | null;
+  updated_remaining_uses: number | null;
+}

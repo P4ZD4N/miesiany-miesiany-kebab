@@ -5,7 +5,7 @@ import { LangService } from '../../../services/lang/lang.service';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { DiscountCodeResponse } from '../../../responses/responses';
 import { DiscountCodesService } from '../../../services/discount-codes/discount-codes.service';
-import { NewDiscountCodeRequest } from '../../../requests/requests';
+import { NewDiscountCodeRequest, UpdatedDiscountCodeRequest } from '../../../requests/requests';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
@@ -25,6 +25,7 @@ export class DiscountCodeManagementComponent implements OnInit {
     expiration_date: null,
     remaining_uses: 0
   };
+  updatedDiscountCode: UpdatedDiscountCodeRequest | null = null;
 
   errorMessages: { [key: string]: string } = {};
   languageChangeSubscription: Subscription;
@@ -133,6 +134,51 @@ export class DiscountCodeManagementComponent implements OnInit {
         this.handleError(error);
       },
     });
+  }
+
+  editDiscountCodeRow(discountCode: DiscountCodeResponse) {
+    if (this.isEditing) {
+      return;
+    }
+
+    this.hideErrorMessages();
+    this.isEditing = true;
+
+    this.updatedDiscountCode = {
+      code: discountCode.code,
+      updated_code: discountCode.code,
+      updated_discount_percentage: discountCode.discount_percentage,
+      updated_expiration_date: discountCode.expiration_date,
+      updated_remaining_uses: discountCode.remaining_uses
+    };
+  }
+
+  updateDiscountCode(discountCode: UpdatedDiscountCodeRequest) {
+
+    this.discountCodesService.updateDiscountCode(discountCode).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? 'Pomyslnie zaktualizowano kod rabatowy!' : 'Successfully updated discount code!',
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: 'black',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+  
+        this.loadDiscountCodes();
+        this.hideUpdateDiscountCodeTable();
+      },
+      error: (error) => {
+        this.handleError(error);
+      }
+    });
+  }
+
+  hideUpdateDiscountCodeTable(): void {
+    this.isEditing = false;
+    this.hideErrorMessages();
   }
 
   hideErrorMessages(): void {

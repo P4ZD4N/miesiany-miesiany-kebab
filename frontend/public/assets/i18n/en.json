@@ -361,6 +361,7 @@
         "discount_percentage": "Discount percentage",
         "expiration_date": "Expiration date",
         "remaining_uses": "Remaining uses",
-        "new_discount_code": "New discount code"
+        "new_discount_code": "New discount code",
+        "update_discount_code": "Updated discount code"
     }
 }
