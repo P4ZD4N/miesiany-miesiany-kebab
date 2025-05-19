@@ -22,7 +22,7 @@
 </section>
 
 <section class="verification-required" *ngIf="!isEmployee() && !isManager()">
-    <h1>You are not able to enter this page!</h1>
-    <p>It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.</p>
-    <button class="btn btn-success" [routerLink]="['/']">Go back</button>
+    <h1>{{ 'verification_required.headline' | translate }}</h1>
+    <p>{{ 'verification_required.paragraph' | translate }}</p>
+    <button class="btn btn-success" [routerLink]="['/']">{{ 'verification_required.button' | translate }}</button>
 </section>

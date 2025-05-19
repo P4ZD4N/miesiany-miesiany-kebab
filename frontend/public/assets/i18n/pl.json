@@ -363,5 +363,10 @@
         "remaining_uses": "Pozostale uzycia",
         "new_discount_code": "Nowy kod rabatowy",
         "update_discount_code": "Aktualizowany kod rabatowy"
+    },
+    "verification_required": {
+        "headline": "Nie jestes upowazniony do przejscia na ta strone!",
+        "paragraph": "Wydaje sie, ze nie posiadasz uprawnien wymaganych do uzyskania dostepu do tej sekcji. Jesli wierzysz, ze to blad, prosze skontaktowac sie z administratorem.",
+        "button": "Wroc"
     }
 }
