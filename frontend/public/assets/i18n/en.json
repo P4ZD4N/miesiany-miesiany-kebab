@@ -259,10 +259,7 @@
         "new_addon_promotion": "New addon promotion",
         "update_meal_promotion": "Updated meal promotion",
         "update_beverage_promotion": "Updated beverage promotion",
-        "update_addon_promotion": "Updated addon promotion",
-        "no_meal_promotions": "Currently no meal promotions! Sign up for our newsletter to don't miss occasions!",
-        "no_beverage_promotions": "Currently no beverage promotions! Sign up for our newsletter to don't miss occasions!",
-        "no_addon_promotions": "Currently no addon promotions! Sign up for our newsletter to don't miss occasions!"
+        "update_addon_promotion": "Updated addon promotion"
     },
     "unsubscribe": {
         "headline": "Dear Customer",
