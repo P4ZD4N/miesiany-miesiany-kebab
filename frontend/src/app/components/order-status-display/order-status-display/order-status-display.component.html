@@ -1,0 +1,28 @@
+<section class="order-status-display" *ngIf="isEmployee() || isManager()">
+    <section class="status-section">
+        <section class="in-preparation-section">
+            <h1>W przygotowaniu</h1>
+
+            <div *ngFor="let order of ordersInPreparation.slice(0, 9)">
+                <p>{{ order.id % 100 }}</p>
+            </div>
+        </section>
+
+        <section class="ready-section">
+            <h1>Gotowe</h1>
+            <div *ngFor="let order of ordersReady.slice(0, 9)">
+                <p>{{ order.id % 100 }}</p>
+            </div>
+        </section>
+    </section>
+
+    <section class="logo-section">
+            <img src="assets/images/logo.png" alt="Logo">
+    </section>
+</section>
+
+<section class="verification-required" *ngIf="!isEmployee() && !isManager()">
+    <h1>You are not able to enter this page!</h1>
+    <p>It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.</p>
+    <button class="btn btn-success" [routerLink]="['/']">Go back</button>
+</section>

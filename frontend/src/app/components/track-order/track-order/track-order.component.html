@@ -17,7 +17,12 @@
         <section class="general-details">
             <div class="card">
                 <h4>ID</h4>
-                <p>{{ order.id }}</p>
+                <p>
+                    {{ order.id }}
+                    <span *ngIf="!order.street && !order.house_number && !order.postal_code && !order.city">
+                        ({{ order.id % 100 }})
+                   </span>
+                </p>
             </div>
 
             <div class="card">

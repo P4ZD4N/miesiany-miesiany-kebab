@@ -24,6 +24,8 @@ import { OrderManagementLayoutComponent } from './components/order-management/or
 import { OrderManagementComponent } from './components/order-management/order-management/order-management.component';
 import { DiscountCodeManagementLayoutComponent } from './components/discount-code-management/discount-code-management-layout.component';
 import { DiscountCodeManagementComponent } from './components/discount-code-management/discount-code-management/discount-code-management.component';
+import { OrderStatusDisplayComponent } from './components/order-status-display/order-status-display/order-status-display.component';
+import { OrderStatusDisplayLayoutComponent } from './components/order-status-display/order-status-display-layout.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -62,5 +64,8 @@ export const routes: Routes = [
     ]}, 
     { path: 'discount-code-management', component: DiscountCodeManagementLayoutComponent, children: [
         { path: '', component: DiscountCodeManagementComponent }
+    ]},
+    { path: 'order-status-display', component: OrderStatusDisplayLayoutComponent, children: [
+        { path: '', component: OrderStatusDisplayComponent }
     ]}
 ];

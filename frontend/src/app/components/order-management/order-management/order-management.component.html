@@ -110,7 +110,7 @@
     <section *ngIf="filteredOrders.length !== 0" class="orders">
         <div *ngFor="let order of filteredOrders">
             <div class="card-body">
-                <h4>{{ 'order-management.card.main.headline' | translate }} #{{ order.id }}</h4>
+                <h4>{{ 'order-management.card.main.headline' | translate }} #{{ order.id }} ({{ order.id % 100 }})</h4>
                 <p>{{ 'order-management.card.main.type' | translate }}: {{ 'order-management.order_type.' + order.order_type | translate }}</p>
                 <p>{{ 'order-management.card.main.status' | translate }}: {{ 'order-management.order_status.' + order.order_status | translate }}</p>
                 <p>{{ 'order-management.card.main.total_price' | translate }}: {{ order.total_price | number:'1.2-2'}} zl</p>
