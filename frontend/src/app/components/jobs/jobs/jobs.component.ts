@@ -170,9 +170,7 @@ export class JobsComponent implements OnInit {
   }
 
   updateJob(): void {
-    let positionTranslated = this.translate.instant('jobs.offers.' + this.currentlyUpdatedJobOfferPositionName);
-
-    if (!this.isPositionTranslationAvailable(this.currentlyUpdatedJobOfferPositionName)) positionTranslated = this.currentlyUpdatedJobOfferPositionName
+    let positionTranslated = this.getTranslatedPosition(this.currentlyUpdatedJobOfferPositionName);
     
     const updatedJobOffer: UpdatedJobOfferRequest = {
       position_name: this.currentlyUpdatedJobOfferPositionName,
@@ -207,11 +205,7 @@ export class JobsComponent implements OnInit {
   }
 
   removeJobOffer(jobOffer: JobOfferGeneralResponse): void {
-    let positionNameTranslated = this.translate.instant('jobs.offers.' + jobOffer.position_name);
-
-    if (!this.isPositionTranslationAvailable(jobOffer.position_name)) {
-      positionNameTranslated = jobOffer.position_name;
-    }
+    let positionNameTranslated = this.getTranslatedPosition(jobOffer.position_name);
 
     const confirmationMessage =
       this.langService.currentLang === 'pl'
@@ -321,9 +315,14 @@ export class JobsComponent implements OnInit {
     this.errorMessages = {};
   }
 
-  isPositionTranslationAvailable(position: string): boolean {
-    const translatedName = this.translate.instant('jobs.offers.' + position);
-    return translatedName !== 'jobs.offers.' + position;
+  getTranslatedPosition(position: string): string {
+    let positionTranslated = this.translate.instant('jobs.offers.' + position);
+
+    if (positionTranslated === 'jobs.offers.' + position) {
+      positionTranslated = position;
+    }
+    
+    return positionTranslated;
   }
 
   handleError(error: any) {
@@ -335,17 +334,8 @@ export class JobsComponent implements OnInit {
 
   sortJobOffersByPosition(jobOffers: JobOfferGeneralResponse[]): JobOfferGeneralResponse[] {
     return jobOffers.sort((a, b) => {
-      
-      let firstPositionNameTranslated = this.translate.instant('jobs.offers.' + a.position_name);
-      let secondPositionNameTranslated = this.translate.instant('jobs.offers.' + b.position_name);
-
-      if (!this.isPositionTranslationAvailable(a.position_name)) {
-        firstPositionNameTranslated = a.position_name;
-      }
-  
-      if (!this.isPositionTranslationAvailable(b.position_name)) {
-        secondPositionNameTranslated = b.position_name; 
-      }
+      let firstPositionNameTranslated = this.getTranslatedPosition(a.position_name);
+      let secondPositionNameTranslated = this.getTranslatedPosition(b.position_name);
   
       return firstPositionNameTranslated.localeCompare(secondPositionNameTranslated);
     });
@@ -353,11 +343,7 @@ export class JobsComponent implements OnInit {
 
   startApplying(jobOffer: JobOfferGeneralResponse): void {
 
-    let positionNameTranslated = this.translate.instant('jobs.offers.' + jobOffer.position_name);
-
-    if (!this.isPositionTranslationAvailable(jobOffer.position_name)) {
-      positionNameTranslated = jobOffer.position_name;
-    }
+    let positionNameTranslated = this.getTranslatedPosition(jobOffer.position_name);
 
     const title = this.langService.currentLang === 'pl' ? 'Aplikuj na stanowisko ' + positionNameTranslated : 'Apply for ' + jobOffer.position_name + ' position';
     const confirmButtonText = this.langService.currentLang === 'pl' ? 'Aplikuj' : 'Apply';
@@ -540,9 +526,7 @@ export class JobsComponent implements OnInit {
   }
 
   removeJobApplication(positionName: string | undefined, applicationId: number): void {
-    let positionTranslated = this.translate.instant('jobs.offers.' + positionName);
-
-    if (!this.isPositionTranslationAvailable(positionName || '')) positionTranslated = positionName;
+    let positionTranslated = this.getTranslatedPosition(positionName || '');
     
     const confirmationMessage =
       this.langService.currentLang === 'pl'

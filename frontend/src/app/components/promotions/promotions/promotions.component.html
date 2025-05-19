@@ -18,25 +18,14 @@
         </tr>
         <tr>
             <div *ngFor="let mealName of mealNames">
-                <label *ngIf="isMealTranslationAvailable(mealName); else defaultName">
+                <label>
                     <input 
                         type="checkbox" 
                         [value]="mealName" 
                         (change)="toggleMealNameAdd(mealName, $event)" 
                         [checked]="newMealPromotion.meal_names.includes(mealName)" />
-                    {{ 'menu.meals.' + mealName | translate }}
+                    {{ getTranslatedMealName(mealName) }}
                 </label>
-
-                <ng-template #defaultName>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            [value]="mealName" 
-                            (change)="toggleMealNameAdd(mealName, $event)" 
-                            [checked]="newMealPromotion.meal_names.includes(mealName)" />
-                        {{ mealName }}
-                    </label>
-                </ng-template>
             </div>
         </tr>
         <tr>
@@ -86,25 +75,14 @@
         </tr>
         <tr>
             <div *ngFor="let mealName of mealNames">
-                <label *ngIf="isMealTranslationAvailable(mealName); else defaultName">
+                <label>
                     <input 
                         type="checkbox" 
                         [value]="mealName" 
                         (change)="toggleMealNameEdit(mealName, $event)" 
                         [checked]="updatedMealPromotion!.updated_meal_names.includes(mealName)" />
-                    {{ 'menu.meals.' + mealName | translate }}
+                    {{ getTranslatedMealName(mealName) }}
                 </label>
-
-                <ng-template #defaultName>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            [value]="mealName" 
-                            (change)="toggleMealNameEdit(mealName, $event)" 
-                            [checked]="updatedMealPromotion!.updated_meal_names.includes(mealName)" />
-                        {{ mealName }}
-                    </label>
-                </ng-template>
             </div>
         </tr>
         <tr>
@@ -156,15 +134,9 @@
                 <td>{{ mealPromotion.discount_percentage }}%</td>
                 <td>
                     <ul *ngFor="let mealName of mealPromotion.meal_names">
-                        <li *ngIf="isMealTranslationAvailable(mealName); else defaultName">
-                            <i class="fa-solid fa-utensils"></i> {{ 'menu.meals.' + mealName | translate }}
+                        <li>
+                            <i class="fa-solid fa-utensils"></i> {{ getTranslatedMealName(mealName) }}
                         </li>
-                        
-                        <ng-template #defaultName>
-                            <li>
-                                <i class="fa-solid fa-utensils"></i> {{ mealName }}
-                            </li>
-                        </ng-template>
                     </ul>
                 </td>
                 <td>
@@ -191,15 +163,9 @@
             {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="newBeveragePromotion.discount_percentage" />%
         </tr>
         <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
-            <span *ngIf="isBeverageTranslationAvailable(beverage[0]); else defaultName">
-                <i class="fa-solid fa-martini-glass"></i> {{ 'menu.beverages.' + beverage[0] | translate }}
+            <span>
+                <i class="fa-solid fa-martini-glass"></i> {{ getTranslatedBeverageName(beverage[0]) }}
             </span>
-            
-            <ng-template #defaultName>
-                <span>
-                    <i class="fa-solid fa-martini-glass"></i> {{ beverage[0] }}
-                </span>
-            </ng-template>
 
             <ul *ngFor="let capacity of beverage[1]">
                 <li>
@@ -240,8 +206,8 @@
             {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="updatedBeveragePromotion!.updated_discount_percentage" />%
         </tr>
         <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
-            <span *ngIf="isBeverageTranslationAvailable(beverage[0]); else defaultName">
-                <i class="fa-solid fa-martini-glass"></i> {{ 'menu.beverages.' + beverage[0] | translate }}
+            <span>
+                <i class="fa-solid fa-martini-glass"></i> {{ getTranslatedBeverageName(beverage[0]) }}
             </span>
             
             <ng-template #defaultName>
@@ -295,8 +261,8 @@
                 <td>{{ beveragePromotion.discount_percentage }}%</td>
                 <td>
                     <ul *ngFor="let beverageWithCapacities of beveragePromotion.beverages_with_capacities | keyvalue">
-                        <li style="white-space: nowrap;" *ngIf="isBeverageTranslationAvailable(beverageWithCapacities.key); else defaultName">
-                            <i class="fa-solid fa-martini-glass"></i> {{ 'menu.beverages.' + beverageWithCapacities.key | translate }}
+                        <li style="white-space: nowrap;" >
+                            <i class="fa-solid fa-martini-glass"></i> {{ getTranslatedBeverageName(beverageWithCapacities.key) }}
                             <ul *ngFor="let capacity of beverageWithCapacities.value">
                                 <li>• {{ capacity }} L</li>
                             </ul>
@@ -329,25 +295,14 @@
         </tr>
         <tr>
             <div *ngFor="let addonName of addonNames">
-                <label *ngIf="isAddonTranslationAvailable(addonName); else defaultName">
+                <label>
                     <input 
                         type="checkbox" 
                         [value]="addonName" 
                         (change)="toggleAddonNameAdd(addonName, $event)" 
                         [checked]="newAddonPromotion.addon_names.includes(addonName)" />
-                    {{ 'menu.addons.' + addonName | translate }}
+                    {{ getTranslatedAddonName(addonName) }}
                 </label>
-
-                <ng-template #defaultName>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            [value]="addonName" 
-                            (change)="toggleAddonNameAdd(addonName, $event)" 
-                            [checked]="newAddonPromotion.addon_names.includes(addonName)" />
-                        {{ addonName }}
-                    </label>
-                </ng-template>
             </div>
         </tr>
         <tr>
@@ -385,13 +340,13 @@
         </tr>
         <tr>
             <div *ngFor="let addonName of addonNames">
-                <label *ngIf="isAddonTranslationAvailable(addonName); else defaultName">
+                <label>
                     <input 
                         type="checkbox" 
                         [value]="addonName" 
                         (change)="toggleAddonNameEdit(addonName, $event)" 
                         [checked]="updatedAddonPromotion!.updated_addon_names.includes(addonName)" />
-                    {{ 'menu.addons.' + addonName | translate }}
+                    {{ getTranslatedAddonName(addonName) }}
                 </label>
 
                 <ng-template #defaultName>
@@ -442,8 +397,8 @@
                 <td>{{ addonPromotion.discount_percentage }}%</td>
                 <td>
                     <ul *ngFor="let addonName of addonPromotion.addon_names">
-                        <li *ngIf="isAddonTranslationAvailable(addonName); else defaultName">
-                            <i class="fa-solid fa-plus"></i> {{ 'menu.addons.' + addonName | translate }}
+                        <li>
+                            <i class="fa-solid fa-plus"></i> {{ getTranslatedAddonName(addonName) }}
                         </li>
 
                         <ng-template #defaultName>
