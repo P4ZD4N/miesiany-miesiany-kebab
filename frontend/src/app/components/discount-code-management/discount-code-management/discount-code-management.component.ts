@@ -120,7 +120,7 @@ export class DiscountCodeManagementComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -162,7 +162,7 @@ export class DiscountCodeManagementComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -190,7 +190,7 @@ export class DiscountCodeManagementComponent implements OnInit {
         showCancelButton: true,
         confirmButtonColor: '#0077ff',
         cancelButtonColor: 'red',
-        background: 'black',
+        background: '#141414',
         color: 'white',
         confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
         cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -202,7 +202,7 @@ export class DiscountCodeManagementComponent implements OnInit {
               icon: 'success',
               iconColor: 'green',
               confirmButtonColor: 'green',
-              background: 'black',
+              background: '#141414',
               color: 'white',
               confirmButtonText: 'Ok',
             });

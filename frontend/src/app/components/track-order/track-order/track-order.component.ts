@@ -117,7 +117,7 @@ export class TrackOrderComponent implements OnInit{
       icon: 'success',
       iconColor: 'green',
       confirmButtonColor: 'green',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: 'Ok',
     });

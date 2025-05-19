@@ -3,7 +3,7 @@ import tt from '@tomtom-international/web-sdk-maps';
 import { environment } from '../../../../environments/environment.development';
 import { ContactResponse } from '../../../responses/responses';
 import { ContactService } from '../../../services/contact/contact.service';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,6 @@ import { UpdatedContactRequest } from '../../../requests/requests';
 import { ContactType } from '../../../enums/contact-type.enum';
 import { LangService } from '../../../services/lang/lang.service';
 import Swal from 'sweetalert2';
-import { fakeAsync } from '@angular/core/testing';
 
 @Component({
   selector: 'app-contact',
@@ -105,7 +104,7 @@ export class ContactComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -150,7 +149,7 @@ export class ContactComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });

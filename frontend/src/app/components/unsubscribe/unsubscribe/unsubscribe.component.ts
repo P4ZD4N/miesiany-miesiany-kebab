@@ -48,7 +48,7 @@ export class UnsubscribeComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -60,7 +60,7 @@ export class UnsubscribeComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });

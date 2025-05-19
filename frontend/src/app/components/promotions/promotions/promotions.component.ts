@@ -163,8 +163,6 @@ export class PromotionsComponent implements OnInit {
         this.handleError(error);
       },
     );
-
-    console.log(this.addonNames)
   }
 
   showAddMealPromotionTable(): void {
@@ -193,7 +191,7 @@ export class PromotionsComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -217,7 +215,7 @@ export class PromotionsComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -241,7 +239,7 @@ export class PromotionsComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -455,7 +453,7 @@ export class PromotionsComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -479,7 +477,7 @@ export class PromotionsComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -503,7 +501,7 @@ export class PromotionsComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -548,7 +546,7 @@ export class PromotionsComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -560,7 +558,7 @@ export class PromotionsComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });
@@ -584,7 +582,7 @@ export class PromotionsComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -596,7 +594,7 @@ export class PromotionsComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });
@@ -620,7 +618,7 @@ export class PromotionsComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -632,7 +630,7 @@ export class PromotionsComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });

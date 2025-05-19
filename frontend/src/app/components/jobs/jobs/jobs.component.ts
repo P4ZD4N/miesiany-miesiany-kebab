@@ -148,7 +148,7 @@ export class JobsComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -191,7 +191,7 @@ export class JobsComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -226,7 +226,7 @@ export class JobsComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -238,7 +238,7 @@ export class JobsComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });
@@ -447,6 +447,9 @@ export class JobsComponent implements OnInit {
       cancelButtonColor: 'red',
       showCancelButton: true,
       focusConfirm: false,
+      customClass: {
+        validationMessage: 'custom-validation-message'
+      },
       preConfirm: () => {
         const firstName = (document.getElementById('firstName') as HTMLInputElement).value;
         const lastName = (document.getElementById('lastName') as HTMLInputElement).value;
@@ -509,7 +512,7 @@ export class JobsComponent implements OnInit {
               icon: 'success',
               iconColor: 'green',
               confirmButtonColor: 'green',
-              background: 'black',
+              background: '#141414',
               color: 'white',
               confirmButtonText: 'Ok',
             });
@@ -554,7 +557,7 @@ export class JobsComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -571,7 +574,7 @@ export class JobsComponent implements OnInit {
               icon: 'success',
               iconColor: 'green',
               confirmButtonColor: 'green',
-              background: 'black',
+              background: '#141414',
               color: 'white',
               confirmButtonText: 'Ok',
             });
