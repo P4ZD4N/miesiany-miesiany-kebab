@@ -68,8 +68,8 @@
         </section>
 
         <section class="ordered-items">
-            <div>
-                <h5 *ngIf="order.meals.length !== 0">{{ 'order-management.card.meals_headline' | translate }}</h5>
+            <div *ngIf="order.meals.length !== 0">
+                <h5>{{ 'order-management.card.meals_headline' | translate }}</h5>
                 <ul class="meal-ul" *ngFor="let meal of order.meals">
                     <li>
                         <i class="fa-solid fa-utensils"></i> 
@@ -83,8 +83,8 @@
                 </ul>
             </div>
 
-            <div>
-                <h5 *ngIf="order.beverages.length !== 0">{{ 'order-management.card.beverages_headline' | translate }}</h5>
+            <div *ngIf="order.beverages.length !== 0">
+                <h5>{{ 'order-management.card.beverages_headline' | translate }}</h5>
                 <ul class="beverage-ul" *ngFor="let beverage of order.beverages">
                     <li>
                         <i class="fa-solid fa-martini-glass"></i> 
@@ -93,8 +93,8 @@
                 </ul>
             </div>
 
-            <div>
-                <h5 *ngIf="order.addons.length !== 0">{{ 'order-management.card.addons_headline' | translate }}</h5>
+            <div *ngIf="order.addons.length !== 0">
+                <h5>{{ 'order-management.card.addons_headline' | translate }}</h5>
                 <ul class="addon-ul" *ngFor="let addon of order.addons">
                     <li>
                         <i class="fa-solid fa-plus"></i> 
