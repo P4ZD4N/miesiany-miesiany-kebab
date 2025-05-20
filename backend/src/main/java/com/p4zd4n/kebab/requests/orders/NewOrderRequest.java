@@ -38,6 +38,7 @@ public record NewOrderRequest(
         Integer houseNumber,
 
         @JsonProperty("postal_code")
+        @Pattern(regexp = "\\d{2}-\\d{3}", message = "{postalCode.invalidFormat}")
         String postalCode,
 
         String city,

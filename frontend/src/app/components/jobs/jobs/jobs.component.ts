@@ -508,6 +508,15 @@ export class JobsComponent implements OnInit {
           },
           error: (error) => {
             this.handleError(error);
+            Swal.fire({
+              text: this.errorMessages['message'],
+              icon: 'error',
+              iconColor: 'red',
+              confirmButtonColor: 'red',
+              background: '#141414',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
           },
         });
       }

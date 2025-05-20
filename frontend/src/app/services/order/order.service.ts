@@ -2238,6 +2238,17 @@ export class OrderService {
         };
 
         this.router.navigate(['/track-order']);
+      },
+      error: async (error) => {
+        await Swal.fire({
+          text: error.errorMessages.message,
+          icon: 'error',
+          iconColor: 'red',
+          confirmButtonColor: 'red',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
       }
     });
   }
