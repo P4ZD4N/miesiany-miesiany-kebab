@@ -96,15 +96,11 @@ public class RateLimitFilter implements Filter {
     }
 
     private String getMessageKeyForEndpoint(String uri) {
-
-        if (uri.equals("/api/v1/orders/add-order")) {
-            return "addOrder.rateLimitExceeded";
-        }
-
-        if (uri.equals("/api/v1/jobs/add-job-offer-application")) {
-            return "addJobOfferApplication.rateLimitExceeded";
-        }
-
-        return "";
+        return switch (uri) {
+            case "/api/v1/orders/add-order" -> "addOrder.rateLimitExceeded";
+            case "/api/v1/jobs/add-job-offer-application" -> "addJobOfferApplication.rateLimitExceeded";
+            case "/api/v1/newsletter/subscribe" -> "subscribe.rateLimitExceeded";
+            default -> "";
+        };
     }
 }

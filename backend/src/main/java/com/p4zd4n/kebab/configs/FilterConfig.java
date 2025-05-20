@@ -15,7 +15,8 @@ public class FilterConfig {
         bean.setFilter(new RateLimitFilter(messageSource));
         bean.addUrlPatterns(
                 "/api/v1/orders/add-order",
-                "/api/v1/jobs/add-job-offer-application"
+                "/api/v1/jobs/add-job-offer-application",
+                "/api/v1/newsletter/subscribe"
         );
 
         return bean;
