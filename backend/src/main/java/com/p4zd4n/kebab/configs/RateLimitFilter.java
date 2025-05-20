@@ -8,6 +8,7 @@ import io.github.bucket4j.Bucket;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class RateLimitFilter implements Filter {
 
     private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
@@ -54,6 +56,8 @@ public class RateLimitFilter implements Filter {
             Locale locale = getLocaleFromRequest(request);
             String messageKey = getMessageKeyForEndpoint(request.getRequestURI());
             String message = messageSource.getMessage(messageKey, null, locale);
+
+            log.info("Received request to {} from IP {} with rate limit exceeded", request.getRequestURI(), ip);
 
             response.setContentType("application/json");
             response.setStatus(429);
