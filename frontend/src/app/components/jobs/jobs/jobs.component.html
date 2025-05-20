@@ -253,7 +253,7 @@
           </ng-template>
         </td>
         <td>{{ application.additional_message }}</td>
-        <td>
+        <td *ngIf="application.id_cv">
           <button class="button-cancel" (click)="getCv(application.id_cv)"><i class="fa-solid fa-download"></i></button>
         </td>
       </tr>
