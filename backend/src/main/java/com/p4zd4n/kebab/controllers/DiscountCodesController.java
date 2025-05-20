@@ -1,7 +1,6 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.DiscountCode;
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.discountcodes.NewDiscountCodeRequest;
 import com.p4zd4n.kebab.requests.discountcodes.RemovedDiscountCodeRequest;
 import com.p4zd4n.kebab.requests.discountcodes.UpdatedDiscountCodeRequest;
@@ -10,6 +9,7 @@ import com.p4zd4n.kebab.responses.discountcodes.NewDiscountCodeResponse;
 import com.p4zd4n.kebab.responses.discountcodes.RemovedDiscountCodeResponse;
 import com.p4zd4n.kebab.responses.discountcodes.UpdatedDiscountCodeResponse;
 import com.p4zd4n.kebab.services.discountcodes.DiscountCodesService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -46,9 +46,7 @@ public class DiscountCodesController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewDiscountCodeRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add discount code request");
 
@@ -64,9 +62,7 @@ public class DiscountCodesController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedDiscountCodeRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update discount code request");
 

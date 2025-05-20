@@ -3,6 +3,7 @@ package com.p4zd4n.kebab.configs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.*;
@@ -89,12 +90,14 @@ public class RateLimitFilter implements Filter {
 
     private Locale getLocaleFromRequest(HttpServletRequest request) {
         String langHeader = request.getHeader("Accept-Language");
-        Locale locale = Locale.forLanguageTag(langHeader);
-        String language = locale.getLanguage();
 
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(langHeader);
+        if (langHeader == null || langHeader.isBlank()) {
+            return Locale.forLanguageTag("en");
         }
+
+        Locale locale = Locale.forLanguageTag(langHeader);
+
+        LanguageValidator.validateLanguage(locale.getLanguage());
 
         return locale;
     }

@@ -1,17 +1,16 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.Order;
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.orders.NewOrderRequest;
 import com.p4zd4n.kebab.requests.orders.RemovedOrderRequest;
 import com.p4zd4n.kebab.requests.orders.TrackOrderRequest;
 import com.p4zd4n.kebab.requests.orders.UpdatedOrderRequest;
-import com.p4zd4n.kebab.requests.promotions.beveragepromotions.RemovedBeveragePromotionRequest;
 import com.p4zd4n.kebab.responses.orders.NewOrderResponse;
 import com.p4zd4n.kebab.responses.orders.OrderResponse;
 import com.p4zd4n.kebab.responses.orders.RemovedOrderResponse;
 import com.p4zd4n.kebab.responses.orders.UpdatedOrderResponse;
 import com.p4zd4n.kebab.services.orders.OrdersService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +42,7 @@ public class OrdersController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewOrderRequest request
     ) throws MessagingException {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add order request");
 
@@ -61,9 +58,7 @@ public class OrdersController {
         @RequestHeader(value = "Accept-Language") String language,
         @Valid @RequestBody TrackOrderRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received track order request");
 
@@ -79,9 +74,7 @@ public class OrdersController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedOrderRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update order request");
 
