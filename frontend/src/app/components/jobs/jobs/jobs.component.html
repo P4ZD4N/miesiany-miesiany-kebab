@@ -4,13 +4,13 @@
 
     <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showAddJobOfferTable()">{{ 'jobs.button_add' | translate }}</button>
 
-    <p *ngIf="errorMessages['message'] && !isEditing" class="error">{{ errorMessages['message'] }}</p>
-    <p *ngIf="errorMessages['positionName'] && !isEditing" class="error">{{ errorMessages['positionName'] }}</p>
-    <p *ngIf="errorMessages['description'] && !isEditing" class="error">{{ errorMessages['description'] }}</p>
-    <p *ngIf="errorMessages['hourlyWage'] && !isEditing" class="error">{{ errorMessages['hourlyWage'] }}</p>
-    <p *ngIf="errorMessages['requirementType'] && !isEditing" class="error">{{ errorMessages['requirementType'] }}</p>
-    <p *ngIf="errorMessages['requirementDescription'] && !isEditing" class="error">{{ errorMessages['requirementDescription'] }}</p>
-    <p *ngIf="errorMessages['employmentType'] && !isEditing" class="error">{{ errorMessages['employmentType'] }}</p>
+    <p *ngIf="errorMessages['message'] && isManager() && !isEditing" class="error">{{ errorMessages['message'] }}</p>
+    <p *ngIf="errorMessages['positionName'] && isManager() && !isEditing" class="error">{{ errorMessages['positionName'] }}</p>
+    <p *ngIf="errorMessages['description'] && isManager() && !isEditing" class="error">{{ errorMessages['description'] }}</p>
+    <p *ngIf="errorMessages['hourlyWage'] && isManager() && !isEditing" class="error">{{ errorMessages['hourlyWage'] }}</p>
+    <p *ngIf="errorMessages['requirementType'] && isManager() && !isEditing" class="error">{{ errorMessages['requirementType'] }}</p>
+    <p *ngIf="errorMessages['requirementDescription'] && isManager() && !isEditing" class="error">{{ errorMessages['requirementDescription'] }}</p>
+    <p *ngIf="errorMessages['employmentType'] && isManager() && !isEditing" class="error">{{ errorMessages['employmentType'] }}</p>
 
     <table class="add-job-offer-table" *ngIf="isAdding">
       <tr>
@@ -93,7 +93,7 @@
 
             <br *ngIf="isEditing"><br *ngIf="isEditing">
 
-            <p *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</p>
+            <p *ngIf="errorMessages['message'] && isManager()" class="error">{{ errorMessages['message'] }}</p>
             <p *ngIf="errorMessages['updatedPositionName']" class="error">{{ errorMessages['updatedPositionName'] }}</p>
 
             <ng-container *ngIf="isEditing && currentlyUpdatedJobOffer">
@@ -253,7 +253,7 @@
           </ng-template>
         </td>
         <td>{{ application.additional_message }}</td>
-        <td>
+        <td *ngIf="application.id_cv">
           <button class="button-cancel" (click)="getCv(application.id_cv)"><i class="fa-solid fa-download"></i></button>
         </td>
       </tr>

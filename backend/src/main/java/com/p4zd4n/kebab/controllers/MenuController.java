@@ -4,7 +4,6 @@ import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Beverage;
 import com.p4zd4n.kebab.entities.Ingredient;
 import com.p4zd4n.kebab.entities.Meal;
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.menu.addons.NewAddonRequest;
 import com.p4zd4n.kebab.requests.menu.addons.RemovedAddonRequest;
 import com.p4zd4n.kebab.requests.menu.addons.UpdatedAddonRequest;
@@ -35,6 +34,7 @@ import com.p4zd4n.kebab.services.menu.AddonService;
 import com.p4zd4n.kebab.services.menu.BeverageService;
 import com.p4zd4n.kebab.services.menu.IngredientService;
 import com.p4zd4n.kebab.services.menu.MealService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -76,9 +76,7 @@ public class MenuController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewBeverageRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add beverage request");
 
@@ -94,9 +92,7 @@ public class MenuController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedBeverageRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update beverage request");
 
@@ -133,9 +129,7 @@ public class MenuController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewAddonRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add addon request");
 
@@ -151,9 +145,7 @@ public class MenuController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedAddonRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update addon request");
 
@@ -189,9 +181,7 @@ public class MenuController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewMealRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add meal request");
 
@@ -207,9 +197,7 @@ public class MenuController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedMealRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update meal request");
 
@@ -245,9 +233,7 @@ public class MenuController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewIngredientRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add ingredient request");
 

@@ -18,6 +18,14 @@ import { PromotionsLayoutComponent } from './components/promotions/promotions-la
 import { PromotionsComponent } from './components/promotions/promotions/promotions.component';
 import { UnsubscribeLayoutComponent } from './components/unsubscribe/unsubscribe-layout-component';
 import { UnsubscribeComponent } from './components/unsubscribe/unsubscribe/unsubscribe.component';
+import { TrackOrderLayoutComponent } from './components/track-order/track-order-layout-component';
+import { TrackOrderComponent } from './components/track-order/track-order/track-order.component';
+import { OrderManagementLayoutComponent } from './components/order-management/order-management-layout-component';
+import { OrderManagementComponent } from './components/order-management/order-management/order-management.component';
+import { DiscountCodeManagementLayoutComponent } from './components/discount-code-management/discount-code-management-layout.component';
+import { DiscountCodeManagementComponent } from './components/discount-code-management/discount-code-management/discount-code-management.component';
+import { OrderStatusDisplayComponent } from './components/order-status-display/order-status-display/order-status-display.component';
+import { OrderStatusDisplayLayoutComponent } from './components/order-status-display/order-status-display-layout.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -48,4 +56,16 @@ export const routes: Routes = [
     { path: 'unsubscribe', component: UnsubscribeLayoutComponent, children: [
         { path: '', component: UnsubscribeComponent }
     ]}, 
+    { path: 'track-order', component: TrackOrderLayoutComponent, children: [
+        { path: '', component: TrackOrderComponent }
+    ]},  
+    { path: 'order-management', component: OrderManagementLayoutComponent, children: [
+        { path: '', component: OrderManagementComponent }
+    ]}, 
+    { path: 'discount-code-management', component: DiscountCodeManagementLayoutComponent, children: [
+        { path: '', component: DiscountCodeManagementComponent }
+    ]},
+    { path: 'order-status-display', component: OrderStatusDisplayLayoutComponent, children: [
+        { path: '', component: OrderStatusDisplayComponent }
+    ]}
 ];

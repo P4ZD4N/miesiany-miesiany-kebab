@@ -1,5 +1,7 @@
 package com.p4zd4n.kebab.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.p4zd4n.kebab.enums.IngredientType;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -26,10 +29,6 @@ public class Meal extends WithTimestamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -49,7 +48,7 @@ public class Meal extends WithTimestamp {
     @Enumerated(EnumType.STRING)
     private Map<Size, BigDecimal> prices = new EnumMap<>(Size.class);
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealIngredient> mealIngredients = new ArrayList<>();
 
     @Builder
@@ -87,6 +86,20 @@ public class Meal extends WithTimestamp {
         return mealIngredients.stream()
                 .map(MealIngredient::getIngredient)
                 .anyMatch(i -> i.getIngredientType().equals(IngredientType.BREAD));
+    }
+
+    public BigDecimal getPriceForSizeWithDiscountIncluded(Size size, Integer quantity) {
+        BigDecimal basePrice = getPriceForSize(size);
+        BigDecimal discount = promotions.stream()
+                .filter(promotion -> promotion.getSizes().contains(size))
+                .map(MealPromotion::getDiscountPercentage)
+                .findFirst()
+                .orElse(BigDecimal.ZERO);
+
+        BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal discountedPrice = basePrice.subtract(basePrice.multiply(discountFraction));
+
+        return discountedPrice.multiply(BigDecimal.valueOf(quantity));
     }
 
     public BigDecimal getPriceForSize(Size size) {

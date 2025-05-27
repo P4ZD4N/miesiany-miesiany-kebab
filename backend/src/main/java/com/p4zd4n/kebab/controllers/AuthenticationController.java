@@ -1,10 +1,10 @@
 package com.p4zd4n.kebab.controllers;
 
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
 import com.p4zd4n.kebab.responses.auth.LogoutResponse;
 import com.p4zd4n.kebab.services.auth.AuthenticationService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +29,7 @@ public class AuthenticationController {
             @Valid @RequestBody AuthenticationRequest request,
             HttpSession session
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received login request for email '{}'", request.email());
         AuthenticationResponse response = authenticationService.authenticate(request, session);

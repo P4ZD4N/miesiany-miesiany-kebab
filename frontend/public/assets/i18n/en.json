@@ -5,6 +5,7 @@
             "opening_hours": "Opening hours",
             "menu": "Menu",
             "promotions": "Promotions",
+            "track_order": "Track order",
             "contact": "Contact",
             "order": "Order",
             "employee": "Employee Panel",
@@ -16,6 +17,7 @@
             "menu": "Menu",
             "promotions": "Promotions",
             "jobs": "Jobs",
+            "track_order": "Track order",
             "contact": "Contact"
         }
     },
@@ -85,14 +87,13 @@
     },
     "menu": {
         "addons": {
-            "paragraph_addons": "Addons to your meal",
+            "paragraph_addons": "Addons",
             "button_add": "Add addon",
             "addon": "Addon",
             "price": "Price",
-            "Jalapeno": "Jalapeno",
-            "Herbs": "Herbs",
-            "Olives": "Olives",
-            "Feta": "Feta"
+            "Fries (140g)": "Fries (140g)",
+            "Fries (200g)": "Fries (200g)",
+            "Nuggets (7pcs)": "Nuggets (7pcs)"
         },
         "beverages": {
             "paragraph_beverages": "Beverages",
@@ -105,7 +106,7 @@
             "Fanta": "Fanta",
             "Sprite": "Sprite",
             "Ayran": "Ayran",
-            "Water": "Water"
+            "Cisowianka Niegazowana": "Cisowianka Niegazowana"
         },
         "meals": {
             "paragraph_meals": "Meals",
@@ -258,10 +259,7 @@
         "new_addon_promotion": "New addon promotion",
         "update_meal_promotion": "Updated meal promotion",
         "update_beverage_promotion": "Updated beverage promotion",
-        "update_addon_promotion": "Updated addon promotion",
-        "no_meal_promotions": "Currently no meal promotions! Sign up for our newsletter to don't miss occasions!",
-        "no_beverage_promotions": "Currently no beverage promotions! Sign up for our newsletter to don't miss occasions!",
-        "no_addon_promotions": "Currently no addon promotions! Sign up for our newsletter to don't miss occasions!"
+        "update_addon_promotion": "Updated addon promotion"
     },
     "unsubscribe": {
         "headline": "Dear Customer",
@@ -269,5 +267,103 @@
         "buttons": {
             "yes": "Yes, sign me out"
         }
+    },
+    "track-order": {
+        "headline": "Track your order",
+        "paragraph_top": "Enter your order ID and phone number to check current status of your order!",
+        "paragraph_thank_you": "Dear Client, thank you for your order!",
+        "phone": "Phone (9 digits)",
+        "buttons": {
+            "track": "Track",
+            "stop_tracking": "Stop tracking"
+        },
+        "total_price": "Total price",
+        "delivery_address": "Delivery address",
+        "receive_restaurant": "Pick-up at the restaurant",
+        "payment_methods": {
+            "headline": "Payment methods",
+            "methods": "Card / Cash"
+        },
+        "order_status": {
+            "headline": "Order status",
+            "IN_PREPARATION": "In preparation",
+            "READY1": "Ready to deliver",
+            "READY2": "Ready to pick up",
+            "SHIPPED1": "Shipped",
+            "SHIPPED2": "Waiting for pick up",
+            "RECEIVED": "Received",
+            "CANCELED": "Canceled",
+            "RETURNED": "Returned"
+        },
+        "discount_included": "discount included",
+        "delivery_included": "delivery included",
+        "delivery_and_discount_included": "delivery and discount included",
+        "thanks": "Thank you for providing your email! We remind you, that every 10 orders you will receive a discount code for your next order!",
+        "encourage": " We encourage you to enter your email next time! We remind, that every 10 orders with entered email you will receive discount code for your next order!"
+    },
+    "order-management": {
+        "headline": "Order management",
+        "paragraph_today": "Today",
+        "paragraph_past": "Past",
+        "no_orders": "No orders from this category!",
+        "order_status": {
+            "IN_PREPARATION": "To prepare",
+            "READY": "Ready",
+            "SHIPPED": "Shipped",
+            "RECEIVED": "Received",
+            "CANCELED": "Canceled",
+            "RETURNED": "Returned",
+            "All": "All"
+        },
+        "order_type": {
+            "ON_SITE": "On site",
+            "TAKEAWAY": "Takeaway"
+        },
+        "card": {
+            "main": {
+                "headline": "Order",
+                "type": "Type",
+                "status": "Status",
+                "total_price": "Total price",
+                "placed_at": "Placed at"
+            },
+            "contact": {
+                "headline": "Contact",
+                "phone": "Phone",
+                "email": "Email"
+            },
+            "meals_headline": "Meals",
+            "beverages_headline": "Beverages",
+            "addons_headline": "Addons",
+            "additional_comments_headline": "Additional comments"
+        },
+        "buttons": {
+            "add": "Add order",
+            "update": "Update",
+            "remove": "Remove"
+        }
+    },
+    "discount-code-management": {
+        "headline": "Discount code management",
+        "buttons": {
+            "add": "Add discount code",
+            "cancel": "Cancel",
+            "update": "Update",
+            "remove": "Remove",
+            "accept": "Accept"
+        },
+        "no_discount_codes": "No discount codes!",
+        "code": "Code",
+        "code_optional": "Code (optional)",
+        "discount_percentage": "Discount percentage",
+        "expiration_date": "Expiration date",
+        "remaining_uses": "Remaining uses",
+        "new_discount_code": "New discount code",
+        "update_discount_code": "Updated discount code"
+    },
+    "verification_required": {
+        "headline": "You are not able to enter this page!",
+        "paragraph": "It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.",
+        "button": "Go back"
     }
 }

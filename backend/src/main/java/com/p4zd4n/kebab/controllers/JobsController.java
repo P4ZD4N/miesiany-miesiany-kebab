@@ -1,11 +1,11 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.JobOffer;
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.jobs.*;
 import com.p4zd4n.kebab.responses.jobs.*;
 import com.p4zd4n.kebab.services.jobs.JobApplicationService;
 import com.p4zd4n.kebab.services.jobs.JobOfferService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +48,7 @@ public class JobsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewJobOfferRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add job offer request");
 
@@ -66,9 +64,7 @@ public class JobsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedJobOfferRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update job offer request");
 
@@ -97,9 +93,7 @@ public class JobsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody JobOfferApplicationRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add job offer application request");
 
@@ -122,7 +116,6 @@ public class JobsController {
 
     @GetMapping("/download-cv/{id}")
     public ResponseEntity<byte[]> downloadCv(@PathVariable Long id) {
-
         log.info("Received download cv request");
 
         ResponseEntity<byte[]> response = jobApplicationService.getCv(id);

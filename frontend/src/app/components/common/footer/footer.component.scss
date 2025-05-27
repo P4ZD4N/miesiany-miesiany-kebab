@@ -35,6 +35,7 @@ i {
     gap: 2rem;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .bottom {
@@ -93,10 +94,10 @@ a:not(.logo) {
         }
     }
 }
-
 @media (max-width: 1200px) {
     .top {
         gap: 1rem;
+        padding: 1rem;
     }
     .icons {
         justify-content: center;
@@ -104,7 +105,7 @@ a:not(.logo) {
     }
 }
 
-@media (max-width: 950px) {
+@media (max-width: 1030px) {
     .top {
         flex-direction: column;
     }

@@ -5,6 +5,8 @@ import { LangService } from '../../../services/lang/lang.service';
 import { RouterModule } from '@angular/router';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { CommonModule } from '@angular/common';
+import { AddonResponse, BeverageResponse, IngredientResponse, MealResponse } from '../../../responses/responses';
+import { OrderService } from '../../../services/order/order.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,11 +18,16 @@ import { CommonModule } from '@angular/common';
 
 export class NavbarComponent implements OnInit {
   currentFlag: string = '🇺🇸';
+  beverages: BeverageResponse[] = [];
+  addons: AddonResponse[] = [];
+  meals: MealResponse[] = [];
+  ingredients: IngredientResponse[] = [];
 
   constructor(
     private translate: TranslateService,
     private langService: LangService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
@@ -62,5 +69,14 @@ export class NavbarComponent implements OnInit {
 
   getCurrentFlag(): string {
     return this.currentFlag;
+  }
+
+  doesOrderExist(): boolean {
+    const orderData = this.orderService.getOrderData();
+    return orderData?.total_price !== undefined && orderData?.total_price > 0;
+  }
+ 
+  async startPlacingOrder(): Promise<void> {
+    this.orderService.selectNextOrderItem();
   }
 }

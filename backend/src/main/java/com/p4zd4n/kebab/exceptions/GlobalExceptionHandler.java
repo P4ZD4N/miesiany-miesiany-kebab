@@ -1,12 +1,15 @@
 package com.p4zd4n.kebab.exceptions;
 
 import com.p4zd4n.kebab.exceptions.alreadyexists.*;
+import com.p4zd4n.kebab.exceptions.expired.DiscountCodeExpiredException;
 import com.p4zd4n.kebab.exceptions.expired.OtpExpiredException;
+import com.p4zd4n.kebab.exceptions.expired.TrackOrderExpiredException;
 import com.p4zd4n.kebab.exceptions.failed.OtpRegenerationFailedException;
 import com.p4zd4n.kebab.exceptions.invalid.*;
 import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
+import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchException;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
@@ -648,6 +651,7 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+<<<<<<< HEAD
     @ExceptionHandler(WorkScheduleEntryAlreadyExistsException.class)
     public ResponseEntity<ExceptionResponse> handleWorkScheduleEntryAlreadyExistsException(
             HttpServletRequest request
@@ -708,6 +712,17 @@ public class GlobalExceptionHandler {
 
         Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
         String message = messageSource.getMessage("workSchedule.notFound", null, locale);
+=======
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleOrderNotFoundException(
+            OrderNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with id of not existing order: '{}'", request.getRequestURI(), exception.getId());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("order.notExists", null, locale);
+>>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -717,4 +732,138 @@ public class GlobalExceptionHandler {
                         .message(message)
                         .build());
     }
+<<<<<<< HEAD
+=======
+
+    @ExceptionHandler(InvalidIngredientException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidIngredientException(
+            InvalidIngredientException exception,
+            HttpServletRequest request
+    ) {
+        log.error(
+            "Attempted request to {} with invalid ingredient type '{}' where valid ingredient type was '{}' ",
+            request.getRequestURI(),
+            exception.getInvalidIngredientType(),
+            exception.getValidIngredientType()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidMealKeyFormatException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidMealKeyFormatException(
+            InvalidMealKeyFormatException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid meal key '{}'", request.getRequestURI(), exception.getMealKey());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(exception.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(TrackOrderDataDoesNotMatchException.class)
+    public ResponseEntity<ExceptionResponse> handleTrackOrderDataDoesNotMatchException(
+            HttpServletRequest request,
+            TrackOrderDataDoesNotMatchException exception
+    ) {
+        log.error(
+            "Attempted request to {} with ID ({}) and customer phone number ({}) which do not match any existing order",
+            request.getRequestURI(), exception.getId(), exception.getCustomerPhone());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("orderData.notMatching", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(TrackOrderExpiredException.class)
+    public ResponseEntity<ExceptionResponse> handleTrackOrderExpiredException(HttpServletRequest request) {
+        log.error("Attempted request to {}, but tracking for this order is no longer available, because last update was over 40 minutes ago", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("trackOrder.expired", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.GONE)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.GONE.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(DiscountCodeNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleDiscountCodeNotFoundException(
+            DiscountCodeNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not existing discount code: '{}'", request.getRequestURI(), exception.getCode());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("discountCode.notExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(DiscountCodeAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleDiscountCodeAlreadyExistsException(
+            DiscountCodeAlreadyExistsException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing discount code: '{}'", request.getRequestURI(), exception.getCode());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("discountCode.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(DiscountCodeExpiredException.class)
+    public ResponseEntity<ExceptionResponse> handleDiscountCodeExpiredException(
+            HttpServletRequest request,
+            DiscountCodeExpiredException exception
+    ) {
+        log.error("Attempted request to {} with expired discount code: '{}'", request.getRequestURI(), exception.getCode());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("discountCode.expired", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.GONE)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.GONE.value())
+                        .message(message)
+                        .build());
+    }
+>>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
 }

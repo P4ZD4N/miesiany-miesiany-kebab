@@ -1,0 +1,108 @@
+<section class="discount-code-management" *ngIf="isManager()">
+    <h1>{{ 'discount-code-management.headline' | translate }}</h1>
+    <button class="btn btn-success btn-add-discount-code" *ngIf="!isAdding && !isEditing" (click)="showAddDiscountCodeTable()">{{ 'discount-code-management.buttons.add' | translate }}</button>
+
+    <table class="add-discount-code-table" *ngIf="isAdding">
+        <tr>
+            <h1>{{ 'discount-code-management.new_discount_code' | translate }}</h1>
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'discount-code-management.code_optional' | translate }}" maxlength="16" [(ngModel)]="newDiscountCode.code" />
+        </tr>
+        <tr>
+            {{ 'discount-code-management.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="newDiscountCode.discount_percentage" />%
+        </tr>
+        <tr>
+            {{ 'discount-code-management.expiration_date' | translate }}: <input type="date" [(ngModel)]="newDiscountCode.expiration_date" />
+        </tr>
+        <tr>
+            {{ 'discount-code-management.remaining_uses' | translate }}: <input type="number" min="1" [(ngModel)]="newDiscountCode.remaining_uses" />
+        </tr>
+        <tr>
+            <button class="button-accept" (click)="addDiscountCode()">{{ 'discount-code-management.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideAddDiscountCodeTable()">{{ 'discount-code-management.buttons.cancel' | translate }}</button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
+        </tr>
+        <tr *ngIf="errorMessages['code']" class="error">
+            {{ errorMessages['code'] }}
+        </tr>
+        <tr *ngIf="errorMessages['discountPercentage']" class="error">
+            {{ errorMessages['discountPercentage'] }}
+        </tr>
+        <tr *ngIf="errorMessages['expirationDate']" class="error">
+            {{ errorMessages['expirationDate'] }}
+        </tr>
+        <tr *ngIf="errorMessages['remainingUses']" class="error">
+            {{ errorMessages['remainingUses'] }}
+        </tr>
+    </table>
+
+    <table class="update-discount-code-table" *ngIf="isEditing">
+        <tr>
+            <h1>{{ 'discount-code-management.update_discount_code' | translate }}</h1>
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'discount-code-management.code' | translate }}" maxlength="16"  [(ngModel)]="updatedDiscountCode!.updated_code" />
+        </tr>
+        <tr>
+            {{ 'discount-code-management.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="updatedDiscountCode!.updated_discount_percentage" />%
+        </tr>
+        <tr>
+            {{ 'discount-code-management.expiration_date' | translate }}: <input type="date" [(ngModel)]="updatedDiscountCode!.updated_expiration_date" />
+        </tr>
+        <tr>
+            {{ 'discount-code-management.remaining_uses' | translate }}: <input type="number" min="1" [(ngModel)]="updatedDiscountCode!.updated_remaining_uses" />
+        </tr>
+        <tr>
+            <button class="button-accept" *ngIf="updatedDiscountCode" (click)="updateDiscountCode(updatedDiscountCode)">{{ 'discount-code-management.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideUpdateDiscountCodeTable()">{{ 'discount-code-management.buttons.cancel' | translate }}</button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
+        </tr>
+        <tr *ngIf="errorMessages['newCode']" class="error">
+            {{ errorMessages['newCode'] }}
+        </tr>
+        <tr *ngIf="errorMessages['discountPercentage']" class="error">
+            {{ errorMessages['discountPercentage'] }}
+        </tr>
+        <tr *ngIf="errorMessages['expirationDate']" class="error">
+            {{ errorMessages['expirationDate'] }}
+        </tr>
+        <tr *ngIf="errorMessages['remainingUses']" class="error">
+            {{ errorMessages['remainingUses'] }}
+        </tr>
+    </table>
+
+    <p class="no-discount-code" *ngIf="discountCodes.length === 0">{{ 'discount-code-management.no_discount_codes' | translate }}</p>
+    <table *ngIf="discountCodes.length !== 0" class="discount-codes-table">
+        <thead>
+            <th></th>
+            <th>ID</th>
+            <th>{{ 'discount-code-management.code' | translate }}</th>
+            <th>{{ 'discount-code-management.discount_percentage' | translate }}</th>
+            <th>{{ 'discount-code-management.expiration_date' | translate }}</th>
+            <th>{{ 'discount-code-management.remaining_uses' | translate }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let discountCode of discountCodes">
+                <td>
+                    <button class="button-update" *ngIf="!isEditing && !isAdding" (click)="editDiscountCodeRow(discountCode)">{{ 'discount-code-management.buttons.update' | translate }}</button>
+                    <button class="button-remove" *ngIf="!isEditing && !isAdding" (click)="removeDiscountCode(discountCode)">{{ 'discount-code-management.buttons.remove' | translate }}</button>
+                </td>
+                <td>{{ discountCode.id }}</td>
+                <td>{{ discountCode.code }}</td>
+                <td>{{ discountCode.discount_percentage }}%</td>
+                <td [ngClass]="getDateClass(discountCode.expiration_date)">{{ discountCode.expiration_date }}</td>
+                <td>{{ discountCode.remaining_uses }}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="verification-required" *ngIf="isEmployee() && !isManager() || (!isEmployee() && !isManager())">
+    <h1>{{ 'verification_required.headline' | translate }}</h1>
+    <p>{{ 'verification_required.paragraph' | translate }}</p>
+</section>

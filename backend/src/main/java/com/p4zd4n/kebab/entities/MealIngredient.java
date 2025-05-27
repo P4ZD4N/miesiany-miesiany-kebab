@@ -1,5 +1,6 @@
 package com.p4zd4n.kebab.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class MealIngredient extends WithTimestamp {
 
     @ManyToOne
     @JoinColumn(name = "meal_id")
+    @JsonIgnore
     private Meal meal;
 
     @ManyToOne

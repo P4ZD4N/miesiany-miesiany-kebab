@@ -229,11 +229,7 @@ export class MenuComponent implements OnInit {
   }
 
   saveBeverageRow(beverage: BeverageResponse): void {
-    let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
-
-    if (!this.isBeverageTranslationAvailable(beverage.name)) {
-      beverageNameTranslated = beverage.name;
-    }
+    let beverageNameTranslated = this.getTranslatedBeverageName(beverage.name);
 
     const formGroup = this.beverageForms[beverage.name];
     const newCapacity = formGroup.get('capacity')!.value;
@@ -253,7 +249,7 @@ export class MenuComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -270,11 +266,7 @@ export class MenuComponent implements OnInit {
   }
 
   saveAddonRow(addon: AddonResponse): void {
-    let addonNameTranslated = this.translate.instant('menu.addons.' + addon.name);
-
-    if (!this.isAddonTranslationAvailable(addon.name)) {
-      addonNameTranslated = addon.name;
-    }
+    let addonNameTranslated = this.getTranslatedAddonName(addon.name);
 
     const formGroup = this.addonForms[addon.name];
     const newPrice = formGroup.get('price')!.value;
@@ -290,7 +282,7 @@ export class MenuComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -307,11 +299,7 @@ export class MenuComponent implements OnInit {
   }
 
   saveMealRow(meal: MealResponse): void {
-    let mealNameTranslated = this.translate.instant('menu.meals.' + meal.name);
-
-    if (!this.isMealTranslationAvailable(meal.name)) {
-      mealNameTranslated = meal.name;
-    }
+    let mealNameTranslated = this.getTranslatedMealName(meal.name);
     
     const formGroup = this.mealForms[meal.name];
     const newPrices = formGroup.get('prices')!.value;
@@ -343,7 +331,7 @@ export class MenuComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -360,11 +348,7 @@ export class MenuComponent implements OnInit {
   }
 
   removeBeverage(beverage: BeverageResponse): void {
-    let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
-
-    if (!this.isBeverageTranslationAvailable(beverage.name)) {
-      beverageNameTranslated = beverage.name;
-    }
+    let beverageNameTranslated = this.getTranslatedBeverageName(beverage.name);
 
     const confirmationMessage =
       this.langService.currentLang === 'pl'
@@ -379,7 +363,7 @@ export class MenuComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -391,7 +375,7 @@ export class MenuComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });
@@ -402,11 +386,7 @@ export class MenuComponent implements OnInit {
   }
 
   removeAddon(addon: AddonResponse): void {
-    let addonNameTranslated = this.translate.instant('menu.addons.' + addon.name);
-
-    if (!this.isAddonTranslationAvailable(addon.name)) {
-      addonNameTranslated = addon.name;
-    }
+    let addonNameTranslated = this.getTranslatedAddonName(addon.name);
 
     const confirmationMessage =
       this.langService.currentLang === 'pl'
@@ -421,7 +401,7 @@ export class MenuComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -433,7 +413,7 @@ export class MenuComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });
@@ -444,11 +424,7 @@ export class MenuComponent implements OnInit {
   }
 
   removeMeal(meal: MealResponse): void {
-    let mealNameTranslated = this.translate.instant('menu.meals.' + meal.name);
-
-    if (!this.isMealTranslationAvailable(meal.name)) {
-      mealNameTranslated = meal.name;
-    }
+    let mealNameTranslated = this.getTranslatedMealName(meal.name);
 
     const confirmationMessage =
       this.langService.currentLang === 'pl'
@@ -463,7 +439,7 @@ export class MenuComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -475,7 +451,7 @@ export class MenuComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });
@@ -486,23 +462,11 @@ export class MenuComponent implements OnInit {
   }
 
   removeIngredient(ingredient: IngredientResponse): void {
-    let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
-
-    if (!this.isIngredientTranslationAvailable(ingredient.name)) {
-      ingredientNameTranslated = ingredient.name;
-    }
+    let ingredientNameTranslated = this.getTranslatedIngredientName(ingredient.name);
 
     let mealsWithThisIngredient = this.meals
         .filter(meal => meal.ingredients.some(i => i.name === ingredient.name))
-        .map(meal => {
-            let mealNameTranslated = this.translate.instant('menu.meals.' + meal.name);
-    
-            if (!this.isMealTranslationAvailable(meal.name)) {
-                mealNameTranslated = meal.name;
-            }
-    
-            return mealNameTranslated;
-        })
+        .map(meal => this.getTranslatedMealName(meal.name))
         .join(', ');
 
     const confirmationMessage =
@@ -518,7 +482,7 @@ export class MenuComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#0077ff',
       cancelButtonColor: 'red',
-      background: 'black',
+      background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
@@ -530,7 +494,7 @@ export class MenuComponent implements OnInit {
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
-            background: 'black',
+            background: '#141414',
             color: 'white',
             confirmButtonText: 'Ok',
           });
@@ -549,7 +513,7 @@ export class MenuComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -573,7 +537,7 @@ export class MenuComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -606,7 +570,7 @@ export class MenuComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -630,7 +594,7 @@ export class MenuComponent implements OnInit {
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
-          background: 'black',
+          background: '#141414',
           color: 'white',
           confirmButtonText: 'Ok',
         });
@@ -790,24 +754,44 @@ export class MenuComponent implements OnInit {
     return this.authenticationService.isManager();
   }
 
-  isBeverageTranslationAvailable(beverageName: string): boolean {
-    const translatedName = this.translate.instant('menu.beverages.' + beverageName);
-    return translatedName !== 'menu.beverages.' + beverageName;
+  getTranslatedMealName(mealName: string): string {
+    let mealNameTranslated = this.translate.instant('menu.meals.' + mealName);
+
+    if (mealNameTranslated === 'menu.meals.' + mealName) {
+      mealNameTranslated = mealName;
+    }
+    
+    return mealNameTranslated;
   }
 
-  isAddonTranslationAvailable(addonName: string): boolean {
-    const translatedName = this.translate.instant('menu.addons.' + addonName);
-    return translatedName !== 'menu.addons.' + addonName;
+  getTranslatedBeverageName(beverageName: string): string {
+    let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverageName);
+
+    if (beverageNameTranslated === 'menu.addons.' + beverageName) {
+      beverageNameTranslated = beverageName;
+    }
+    
+    return beverageNameTranslated;
   }
 
-  isIngredientTranslationAvailable(ingredientName: string): boolean {
-    const translatedName = this.translate.instant('menu.meals.ingredients.' + ingredientName);
-    return translatedName !== 'menu.meals.ingredients.' + ingredientName;
+  getTranslatedAddonName(addonName: string): string {
+    let addonNameTranslated = this.translate.instant('menu.addons.' + addonName);
+
+    if (addonNameTranslated === 'menu.addons.' + addonName) {
+      addonNameTranslated = addonName;
+    }
+    
+    return addonNameTranslated;
   }
 
-  isMealTranslationAvailable(mealName: string): boolean {
-    const translatedName = this.translate.instant('menu.meals.' + mealName);
-    return translatedName !== 'menu.meals.' + mealName;
+  getTranslatedIngredientName(ingredientName: string): string {
+    let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredientName);
+
+    if (ingredientNameTranslated === 'menu.meals.ingredients.' + ingredientName) {
+      ingredientNameTranslated = ingredientName;
+    }
+    
+    return ingredientNameTranslated;
   }
 
   onIngredientCheckboxChange(ingredient: any): void {
@@ -896,30 +880,14 @@ export class MenuComponent implements OnInit {
   
     return this.ingredients
         .filter(ingredient => ingredient.ingredient_type === 'SAUCE')
-        .map(ingredient => {
-          let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
-
-          if (!this.isIngredientTranslationAvailable(ingredient.name)) {
-            ingredientNameTranslated = ingredient.name;
-          }
-
-          return ingredientNameTranslated;
-        })
+        .map(ingredient => this.getTranslatedIngredientName(ingredient.name))
         .join(', ');
   }
 
   getMeats(): string {
       return this.ingredients
           .filter(ingredient => ingredient.ingredient_type === 'MEAT')
-          .map(ingredient => {
-            let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
-
-            if (!this.isIngredientTranslationAvailable(ingredient.name)) {
-              ingredientNameTranslated = ingredient.name;
-            }
-
-            return ingredientNameTranslated;
-          })
+          .map(ingredient => this.getTranslatedIngredientName(ingredient.name))
           .join(', ');
   }
 
@@ -936,53 +904,26 @@ export class MenuComponent implements OnInit {
 
   sortIngredientsByName(ingredients: IngredientResponse[]): IngredientResponse[] {
     return ingredients.sort((a, b) => {
+      let firstIngredientNameTranslated = this.getTranslatedIngredientName(a.name);
+      let secondIngredientNameTranslated = this.getTranslatedIngredientName(b.name);
 
-      let firstIngredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + a.name);
-      let secondIngredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + b.name);
-
-      if (!this.isIngredientTranslationAvailable(a.name)) {
-        firstIngredientNameTranslated = a.name;
-      }
-  
-      if (!this.isIngredientTranslationAvailable(b.name)) {
-        secondIngredientNameTranslated = b.name; 
-      }
-  
       return firstIngredientNameTranslated.localeCompare(secondIngredientNameTranslated);
     });
   }
 
   sortMealsByName(meals: MealResponse[]): MealResponse[] {
     return meals.sort((a, b) => {
-      
-      let firstMealNameTranslated = this.translate.instant('menu.meals.' + a.name);
-      let secondMealNameTranslated = this.translate.instant('menu.meals.' + b.name);
+      let firstMealNameTranslated = this.getTranslatedMealName(a.name);
+      let secondMealNameTranslated = this.getTranslatedMealName(b.name);
 
-      if (!this.isMealTranslationAvailable(a.name)) {
-        firstMealNameTranslated = a.name;
-      }
-  
-      if (!this.isMealTranslationAvailable(b.name)) {
-        secondMealNameTranslated = b.name; 
-      }
-  
       return firstMealNameTranslated.localeCompare(secondMealNameTranslated);
     });
   }
 
   sortAddonsByName(addons: AddonResponse[]): AddonResponse[] {
     return addons.sort((a, b) => {
-      
-      let firstAddonNameTranslated = this.translate.instant('menu.addons.' + a.name);
-      let secondAddonNameTranslated = this.translate.instant('menu.addons.' + b.name);
-
-      if (!this.isAddonTranslationAvailable(a.name)) {
-        firstAddonNameTranslated = a.name;
-      }
-  
-      if (!this.isAddonTranslationAvailable(b.name)) {
-        secondAddonNameTranslated = b.name; 
-      }
+      let firstAddonNameTranslated = this.getTranslatedAddonName(a.name);
+      let secondAddonNameTranslated = this.getTranslatedAddonName(b.name);
   
       return firstAddonNameTranslated.localeCompare(secondAddonNameTranslated);
     });
@@ -990,17 +931,8 @@ export class MenuComponent implements OnInit {
 
   sortBeveragesByName(beverages: BeverageResponse[]): BeverageResponse[] {
     return beverages.sort((a, b) => {
-      
-      let firstBeverageNameTranslated = this.translate.instant('menu.beverages.' + a.name);
-      let secondBeverageNameTranslated = this.translate.instant('menu.beverages.' + b.name);
-
-      if (!this.isBeverageTranslationAvailable(a.name)) {
-        firstBeverageNameTranslated = a.name;
-      }
-  
-      if (!this.isBeverageTranslationAvailable(b.name)) {
-        secondBeverageNameTranslated = b.name; 
-      }
+      let firstBeverageNameTranslated = this.getTranslatedBeverageName(a.name);
+      let secondBeverageNameTranslated = this.getTranslatedBeverageName(b.name);
   
       return firstBeverageNameTranslated.localeCompare(secondBeverageNameTranslated);
     });

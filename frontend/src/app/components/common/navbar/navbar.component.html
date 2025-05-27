@@ -53,7 +53,19 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/contact']" routerLinkActive="active">{{ 'common.navbar.contact' | translate }}</a>
+            <a class="nav-link" 
+              [routerLink]="['/track-order']"
+               routerLinkActive="active">
+               {{ 'common.navbar.track_order' | translate }}
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" 
+              [routerLink]="['/contact']"
+               routerLinkActive="active">
+               {{ 'common.navbar.contact' | translate }}
+            </a>
           </li>
         </ul>
 
@@ -64,8 +76,15 @@
             </button>
           </li>
 
-          <li class="nav-item">
-              <a class="btn btn-danger" href="#">{{ 'common.navbar.order' | translate }}</a>
+          <li class="nav-item" *ngIf="!isManager() && !isEmployee()">
+            <a class="btn" 
+               [ngClass]="{ 'btn-danger': !doesOrderExist(), 'btn-warning': doesOrderExist() }" 
+               (click)="startPlacingOrder()">
+              {{ 'common.navbar.order' | translate }}
+              <span *ngIf="doesOrderExist()">
+                <i class="fas fa-shopping-cart" [ngClass]="{ 'icon-active': doesOrderExist() }"></i> 
+              </span>
+            </a>
           </li>
 
           <li class="nav-item" *ngIf="isManager()">

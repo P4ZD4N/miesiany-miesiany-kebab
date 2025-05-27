@@ -66,7 +66,7 @@ public class JobOfferService {
                                     .applicantTelephone(jobApplication.getApplicantTelephone())
                                     .additionalMessage(jobApplication.getAdditionalMessage())
                                     .isStudent(jobApplication.isStudent())
-                                    .idCv(jobApplication.getCv().getId())
+                                    .idCv(jobApplication.getCv() != null ? jobApplication.getCv().getId() : null)
                                     .build())
                             .toList();
 

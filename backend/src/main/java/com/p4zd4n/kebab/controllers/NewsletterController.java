@@ -1,12 +1,12 @@
 package com.p4zd4n.kebab.controllers;
 
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.newsletter.NewNewsletterSubscriberRequest;
 import com.p4zd4n.kebab.requests.newsletter.RegenerateOtpRequest;
 import com.p4zd4n.kebab.requests.newsletter.UnsubscribeRequest;
 import com.p4zd4n.kebab.requests.newsletter.VerifyNewsletterSubscriptionRequest;
 import com.p4zd4n.kebab.responses.newsletter.*;
 import com.p4zd4n.kebab.services.newsletter.NewsletterService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +38,7 @@ public class NewsletterController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewNewsletterSubscriberRequest request
     ) throws MessagingException {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received subscribe newsletter request");
 
@@ -56,9 +54,7 @@ public class NewsletterController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody VerifyNewsletterSubscriptionRequest request
     ) throws MessagingException {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received verify subscription request");
 
@@ -74,9 +70,7 @@ public class NewsletterController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody RegenerateOtpRequest request
     ) throws MessagingException {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received regenerate otp request");
 
@@ -92,9 +86,7 @@ public class NewsletterController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UnsubscribeRequest request
     ) throws MessagingException {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received unsubscribe request from user with email '{}'", request.email());
 

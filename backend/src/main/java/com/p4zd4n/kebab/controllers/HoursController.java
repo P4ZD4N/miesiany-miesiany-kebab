@@ -1,11 +1,11 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.OpeningHour;
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
 import com.p4zd4n.kebab.responses.hours.UpdatedHourResponse;
 import com.p4zd4n.kebab.services.hours.HoursService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +37,7 @@ public class HoursController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedHourRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update opening hour request");
 

@@ -2,6 +2,8 @@ import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
 import { IngredientType } from "../enums/ingredient-type.enum";
 import { NewsletterMessagesLanguage } from "../enums/newsletter-messages-language.enum";
+import { OrderStatus } from "../enums/order-status.enum";
+import { OrderType } from "../enums/order-type.enum";
 import { Size } from "../enums/size.enum";
 import { JobEmploymentType, JobRequirement, SimpleMealIngredient } from "../responses/responses";
 
@@ -185,4 +187,59 @@ export interface RegenerateOtpRequest {
 
 export interface UnsubscribeRequest {
   email: string;
+}
+
+export interface NewOrderRequest {
+  order_type: OrderType | null;
+  order_status: OrderStatus | null;
+  customer_phone: string;
+  customer_email: string;
+  street?: string;
+  house_number?: number;
+  postal_code?: string;
+  city?: string;
+  additional_comments?: string;
+  meals: { [key in string]: { [key in Size]: number } };
+  beverages: { [key in string]: { [key in number]: number } };
+  addons: { [key in string]: number };
+  total_price: number;
+  discount_code: string;
+}
+
+export interface UpdatedOrderRequest {
+  id: number;
+  updated_order_status: OrderStatus | null;
+  updated_street: string | null;
+  updated_house_number: number | null;
+  updated_postal_code: string | null;
+  updated_city: string | null;
+  updated_additional_comments: string | null;
+}
+
+export interface RemovedOrderRequest {
+  id: number;
+}
+
+export interface TrackOrderRequest {
+  id: number | null;
+  customer_phone: string;
+}
+
+export interface NewDiscountCodeRequest {
+  code: string | null;
+  discount_percentage: number;
+  expiration_date: Date | null;
+  remaining_uses: number;
+}
+
+export interface UpdatedDiscountCodeRequest {
+  code: string;
+  updated_code: string;
+  updated_discount_percentage: number | null;
+  updated_expiration_date: Date | null;
+  updated_remaining_uses: number | null;
+}
+
+export interface RemovedDiscountCodeRequest {
+  code: string;
 }

@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.entities;
 
 import com.p4zd4n.kebab.enums.OrderStatus;
 import com.p4zd4n.kebab.enums.OrderType;
+import com.p4zd4n.kebab.enums.Size;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,8 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -32,54 +34,97 @@ public class Order extends WithTimestamp {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @Column(name = "customer_phone", nullable = false)
+    @Column(name = "customer_phone")
     private String customerPhone;
 
-    @Column(name = "street", nullable = false)
+    @Column(name = "customer_email")
+    private String customerEmail;
+
+    @Column(name = "street")
     private String street;
 
-    @Column(name = "house_number", nullable = false)
-    private String houseNumber;
+    @Column(name = "house_number")
+    private Integer houseNumber;
 
-    @Column(name = "postal_code", nullable = false)
+    @Column(name = "postal_code")
     private String postalCode;
 
-    @Column(name = "city", nullable = false)
+    @Column(name = "city")
     private String city;
 
-    @Column(name = "total_amount", nullable = false)
-    private BigDecimal totalAmount;
+    @Column(name = "additional_comments")
+    private String additionalComments;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    @Column(name = "total_price")
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "order")
-    private List<Meal> meals;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderMeal> orderMeals = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    private List<Beverage> beverages;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderBeverage> orderBeverages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    private List<Addon> addons;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderAddon> orderAddons = new ArrayList<>();
 
     @Builder
     public Order(OrderType orderType,
                  OrderStatus orderStatus,
                  String customerPhone,
+                 String customerEmail,
                  String street,
-                 String houseNumber,
+                 Integer houseNumber,
                  String postalCode,
                  String city,
-                 BigDecimal totalAmount,
-                 boolean isActive) {
+                 String additionalComments) {
         this.orderType = orderType;
         this.orderStatus = orderStatus;
         this.customerPhone = customerPhone;
+        this.customerEmail = customerEmail;
         this.street = street;
         this.houseNumber = houseNumber;
         this.postalCode = postalCode;
         this.city = city;
-        this.totalAmount = totalAmount;
-        this.isActive = isActive;
+        this.additionalComments = additionalComments;
+    }
+
+    public void addMeal(Meal meal, Size size, Integer quantity) {
+        OrderMeal orderMeal = OrderMeal.builder()
+            .order(this)
+            .mealName(meal.getName())
+            .finalPrice(meal.getPriceForSizeWithDiscountIncluded(size, quantity))
+            .size(size)
+            .quantity(quantity)
+            .ingredientNames(
+                    meal.getMealIngredients().stream()
+                        .map(mealIngredient -> mealIngredient.getIngredient().getName())
+                        .collect(Collectors.toSet())
+            )
+            .build();
+
+        orderMeals.add(orderMeal);
+    }
+
+    public void addBeverage(Beverage beverage, Integer quantity) {
+
+        OrderBeverage orderBeverage = OrderBeverage.builder()
+                .order(this)
+                .beverageName(beverage.getName())
+                .finalPrice(beverage.getPriceWithDiscountIncluded(quantity))
+                .capacity(beverage.getCapacity())
+                .quantity(quantity)
+                .build();
+
+        orderBeverages.add(orderBeverage);
+    }
+
+    public void addAddon(Addon addon, Integer quantity) {
+        OrderAddon orderAddon = OrderAddon.builder()
+                .order(this)
+                .addonName(addon.getName())
+                .finalPrice(addon.getPriceWithDiscountIncluded(quantity))
+                .quantity(quantity)
+                .build();
+        orderAddons.add(orderAddon);
     }
 }

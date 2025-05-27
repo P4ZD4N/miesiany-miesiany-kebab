@@ -15,7 +15,7 @@
 
 ## 👀 About
 
-Gastronomic industry plays an important role in the economy. Nowadays many gastronomic businesses, which exists in both big cities and small villages are often visited by people. For this reason, I decided to create full-stack application, which can solve problems typical for this industry. Based on my own preferences, I chose a kebab restaurant, but all functionalities, which I implemented can be also applied to other types of restaurants. Application is intended to serve as a business card, to reach more customers and to encourage them to stay longer, but also to enable order accomplishment and tracking. It take care of availability of all valuable for customer information in a convenient way. System is also convenient for employees of restaurant. It enable to manage restaurant, handle orders and customers in more efficient way. Majority of components visible on website is easy to customize and update by manager.
+Gastronomic industry plays an important role in the economy. Nowadays many gastronomic businesses, which exists in both big cities and small villages are often visited by people. For this reason, I decided to create full-stack application, which can solve problems typical for this industry. Based on my own preferences, I chose a kebab restaurant, but all functionalities, which I implemented can be also applied to other types of restaurants. Application is intended to serve as a business card, to reach more customers and to encourage them to stay longer, but also to enable order accomplishment and tracking. It take care of availability of all valuable for customer information in a convenient way. System is also convenient for employees of restaurant. It enable to manage restaurant, handle orders and customers in more efficient way. Majority of components visible on website are easy to customize and update by manager.
 
 ## 🔧 Tech Stack
 
@@ -50,6 +50,10 @@ Gastronomic industry plays an important role in the economy. Nowadays many gastr
 - Job board, which enable to publish dateiled job offers by manager. Manager can add job offer with information such as position name, description, list of mandatory requirements, list of nice to have requirements, list of employment types and hourly wage gross. Once added, each job offer is fully customizable. Website guests can apply to each job offer by fulfilling form (with attaching a CV in PDF/DOC format). Manager has possibility to display all candidates, which applied to job offer, remove those who do not fit the position or peek/download attached CV of desired candidate.
 - Promotions for meals, beverages and addons. It is possible to display promotions details in proper section on website by all users. If some menu position is already added to certain promotion, users can see price change in menu section on website. All promotions are editable and easy to maintain by manager. Manager can add, update and delete promotions.
 - Multilingual newsletter with email verification implemented with usage of Observer design pattern. Each customer has possibility to sign up to newsletter focused on promotions and choose preffered language of email messages (Polish or English). When manager adds some promotion, then email is sent to all verified subscribers. Some methods were created as asynchronous to enhance application preformance. It is also possibility to unsubscribe newsletter at any time.
+- Discount codes with which customers can reduct price of order. Each discount code has its expiration date and number of remaining uses. Such codes are automatically generated and sending to customers, who provide their email adresse during ordering process - either after every 10 orders or when the order total price exceeds 100 PLN. Manager can add, update and delete discount codes (allowing for manual distribution as well). 
+- Possibility to place order by customers in easy and concise way. Each menu position can be selected and added to such order and partially customized (by choosing size, meat, sauce, quantity or capacity). After adding item, customer may continue adding more items, proceed to the next step, or come back later - all order details are saved in local storage. Next step is choosing preferred delivery method: pickup at the restaurant or home delivery. Depending on the choice, a dedicated panel is shown to collect the necessary information. Finally, the customer has the option to leave additional comments and enter a discount code, if available, to receive a price reduction. Managers and employees can add, update and delete orders.
+- Track order panel, where customers can easily monitor status of their order in real time. Here they can find information such as order id (number of order displayed on the screen in restaurant), total price, delivery address (if home delivery method was selected), payment methods, ordered items details and current order status. Customers can access this panel for up to two hours after the last update to their order.
+- Order status display for in-restaurant screen, which shows numbers of orders currently being prepared (in gray color) and those, that are ready (in green color). This provides clear information to customers waiting in the restaurant, improving communication and overall experience.
 
 ## 🔗 API
 
@@ -179,7 +183,7 @@ Retrieves all addons, that are currently stored in the database.
 #### POST /api/v1/menu/add-addon
 
 **Description:**  
-Add new addon. It is not possible to add addon with the same name of existing. For example, if db already stores Jalapeno, you can't add Jalapeno second time.
+Add new addon. It is not possible to add addon with the same name of existing. For example, if db already stores Zapiekanka, you can't add Zapiekanka second time.
 
 **Authorization Requirements:**
 - Role: `MANAGER`
@@ -190,8 +194,8 @@ Add new addon. It is not possible to add addon with the same name of existing. F
 **Request Body:**
 ```json
 {
-  "new_addon_name":  "Jalapeno",
-  "new_addon_price":  3
+  "new_addon_name":  "Zapiekanka",
+  "new_addon_price":  12
 }
 ```
 
@@ -209,8 +213,8 @@ Updates existing addon.
 **Request Body:**
 ```json
 {
-  "updated_addon_name":  "Jalapeno",
-  "updated_addon_price":  2.5
+  "updated_addon_name":  "Zapiekanka",
+  "updated_addon_price":  12
 }
 ```
 
@@ -225,7 +229,7 @@ Removes existing addon.
 **Request Body:**
 ```json
 {
-  "name":  "Jalapeno"
+  "name":  "Zapiekanka"
 }
 ```
 
@@ -492,6 +496,9 @@ Add new job offer application. You can add job offer application without adding 
 **Request Headers:**
 - `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
 
+**Rate Limit without appropriate roles**
+1 request / 5 minutes
+
 **Request Body:**
 ```json
 {
@@ -703,11 +710,10 @@ Add new addon promotion. You can add addon promotion without specifying addon na
 **Request Body:**
 ```json
 {
-  "description": "Jalapeno and Feta -60%!",
+  "description": "Zapiekanka -60%!",
   "discount_percentage": 60,
   "addon_names": [
-    "Jalapeno",
-    "Feta"
+    "Zapiekanka"
   ]
 }
 ```
@@ -727,10 +733,10 @@ Update existing addon promotion. You can update addon promotion without specifyi
 ```json
 {
   "id": 1,
-  "updated_description": "Herbs -10%!",
+  "updated_description": "Zapiekanka -10%!",
   "updated_discount_percentage": 10,
   "updated_addon_names": [
-    "Herbs"
+    "Zapiekanka"
   ]
 }
 ```
@@ -767,6 +773,9 @@ Subscribe newsletter. Customer must specify first name, email and newsletter mes
 
 **Request Headers:**
 - `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Rate Limit without appropriate roles**
+1 request / 5 minutes
 
 **Request Body:**
 ```json
@@ -821,6 +830,207 @@ Unsubscribe newsletter. Customer can sign out from newsletter at any time.
 ```json
 {
   "email": "example@example.com"
+}
+```
+
+### DiscountCodesController
+ 
+#### GET /api/v1/discount-codes/all
+
+**Description:**  
+Retrieves all discount codes.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+#### GET /api/v1/discount-codes/{code}
+
+**Description:**  
+Retrieves specific discount code based on the code provided in the URL path.
+
+#### POST /api/v1/discount-codes/add-discount-code
+
+**Description:**
+Add new discount code. It is not possible to add discount code with the same code as existing. For example, if db already stores discount code with code '123', you can't add 123 second time.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "code": "kodzik",
+  "discount_percentage": 20.00,
+  "expiration_date": "2025-12-01",
+  "remaining_uses": 2
+}
+```
+
+#### PUT /api/v1/discount-codes/update-discount-code
+
+**Description:**  
+Updates existing discount code. You can specify updated code, discount percentage, expiration date or remaining uses as you want, but it is necessary to enter name of existing code to identify it.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "code": "kodzik",
+  "updated_code": "kodzik1"
+  "updated_discount_percentage": 20.00,
+  "updated_expiration_date": "2025-12-01",
+  "updated_remaining_uses": 2
+}
+```
+
+#### DELETE /api/v1/discount-codes/remove-discount-code
+
+**Description:**  
+Removes existing discount code.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Body:**
+```json
+{
+  "code": "kodzik"
+}
+```
+
+### OrdersController
+ 
+#### GET /api/v1/orders/all
+
+**Description:**  
+Retrieves all orders stored in database.
+
+**Authorization Requirements:**
+- Role: `MANAGER` or `EMPLOYEE`
+
+#### POST /api/v1/orders/add-order
+
+**Description:**
+Add new order. Necessary fields are order type and order stastus, the rest is optional.
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Rate Limit without appropriate roles**
+1 request / 5 minutes
+
+**Request Body:**
+```json
+{
+  "order_type": "ON_SITE",
+  "order_status": "IN_PREPARATION",
+  "customer_phone": "123456789",
+  "customer_email": "example@example.com",
+  "street": "Szkolna",
+  "house_number": 1,
+  "postal_code": "00-000",
+  "city": "Warszawa",
+  "additional_comments": "...",
+  "meals": {
+    "Pita Kebab Salads and Fries_Chicken_BBQ Sauce": {
+      "SMALL": 2,
+      "LARGE": 1
+    }
+  },
+  "beverages": {
+    "Coca-Cola": {
+        "0.33": 1
+    },
+    "Fanta": {
+        "0.33": 2
+    }
+  },
+  "addons": {
+    "Zapiekanka": 1
+  }
+}
+```
+
+#### POST /api/v1/orders/track-order
+
+**Description:**
+Returns information about order. Both id and customer phone fields are necessary to get access to these information.
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+    "id": 4,
+    "customer_phone": "123456789"
+}
+```
+
+#### PUT /api/v1/orders/update-order
+
+**Description:**  
+Updates existing order. You can specify all fields as you want, but it is necessary to enter id of existing order to identify it.
+
+**Authorization Requirements:**
+- Role: `MANAGER` or `EMPLOYEE`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+    "id": 4,
+    "updated_order_type": "ON_SITE",
+    "updated_order_status": "IN_PREPARATION",
+    "updated_customer_phone": "123456789",
+    "updated_customer_email": "example@example.com",
+    "updated_street": "Szkolna",
+    "updated_house_number": 1,
+    "updated_postal_code": "00-000",
+    "updated_city": "Warszawa",
+    "updated_additional_comments": "...",
+    "updated_meals": {
+        "Pita Kebab Salads and Fries_Chicken_BBQ Sauce": {
+        "SMALL": 2,
+        "LARGE": 1
+        }
+    },
+    "updated_beverages": {
+        "Coca-Cola": {
+            "0.33": 1
+        },
+        "Fanta": {
+            "0.33": 2
+        }
+    },
+    "updated_addons": {
+        "Zapiekanka": 5
+    }
+}
+```
+
+#### DELETE /api/v1/orders/remove-order
+
+**Description:**  
+Removes existing order.
+
+**Authorization Requirements:**
+- Role: `MANAGER` or `EMPLOYEE`
+
+**Request Body:**
+```json
+{
+  "id": 4
 }
 ```
 
