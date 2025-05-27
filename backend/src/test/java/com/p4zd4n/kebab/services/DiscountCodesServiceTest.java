@@ -1,14 +1,21 @@
 package com.p4zd4n.kebab.services;
 
 import com.p4zd4n.kebab.entities.DiscountCode;
+import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.alreadyexists.DiscountCodeAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.JobOfferAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.expired.DiscountCodeExpiredException;
 import com.p4zd4n.kebab.exceptions.notfound.DiscountCodeNotFoundException;
-import com.p4zd4n.kebab.exceptions.notfound.JobOfferNotFoundException;
 import com.p4zd4n.kebab.repositories.DiscountCodesRepository;
 import com.p4zd4n.kebab.requests.discountcodes.NewDiscountCodeRequest;
+import com.p4zd4n.kebab.requests.discountcodes.UpdatedDiscountCodeRequest;
+import com.p4zd4n.kebab.requests.jobs.UpdatedJobOfferRequest;
 import com.p4zd4n.kebab.responses.discountcodes.DiscountCodeResponse;
 import com.p4zd4n.kebab.responses.discountcodes.NewDiscountCodeResponse;
+import com.p4zd4n.kebab.responses.discountcodes.RemovedDiscountCodeResponse;
+import com.p4zd4n.kebab.responses.discountcodes.UpdatedDiscountCodeResponse;
+import com.p4zd4n.kebab.responses.jobs.RemovedJobOfferResponse;
+import com.p4zd4n.kebab.responses.jobs.UpdatedJobOfferResponse;
 import com.p4zd4n.kebab.services.discountcodes.DiscountCodesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -183,5 +190,69 @@ public class DiscountCodesServiceTest {
         assertEquals("Discount code '" + exampleCode1 + "' not found!", exception.getMessage());
 
         verify(discountCodesRepository, times(1)).findByCode(exampleCode1);
+    }
+
+    @Test
+    public void updateDiscountCode_ShouldUpdateDiscountCode_WhenCalled() {
+
+        DiscountCode discountCode = new DiscountCode(exampleCode1, BigDecimal.valueOf(20), LocalDate.now().plusMonths(1), 3L);
+        discountCode.setId(1L);
+
+        UpdatedDiscountCodeRequest request = UpdatedDiscountCodeRequest.builder()
+                .code(exampleCode1)
+                .newCode(exampleCode2)
+                .build();
+
+        when(discountCodesRepository.findByCode(request.newCode())).thenReturn(Optional.of(discountCode));
+        when(discountCodesRepository.save(any(DiscountCode.class))).thenReturn(discountCode);
+
+        UpdatedDiscountCodeResponse response = discountCodesService.updateDiscountCode(discountCode, request);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully updated discount code 'kodzik1'", response.message());
+        assertEquals("kodzik2", discountCode.getCode());
+
+        verify(discountCodesRepository, times(1)).findByCode(discountCode.getCode());
+        verify(discountCodesRepository, times(1)).save(discountCode);
+    }
+
+    @Test
+    public void updateDiscountCode_ShouldThrowDiscountCodeAlreadyExistsException_WhenDiscountCodeExists() {
+
+        DiscountCode discountCode1 = new DiscountCode(exampleCode1, BigDecimal.valueOf(20), LocalDate.now().plusMonths(1), 3L);
+        discountCode1.setId(1L);
+
+        DiscountCode discountCode2 = new DiscountCode(exampleCode2, BigDecimal.valueOf(20), LocalDate.now().plusMonths(1), 3L);
+        discountCode2.setId(2L);
+
+        UpdatedDiscountCodeRequest request = UpdatedDiscountCodeRequest.builder()
+                .code(exampleCode2)
+                .newCode(exampleCode1)
+                .build();
+
+        when(discountCodesRepository.findByCode(request.newCode())).thenReturn(Optional.of(discountCode1));
+
+        assertThrows(DiscountCodeAlreadyExistsException.class, () -> {
+            discountCodesService.updateDiscountCode(discountCode2, request);
+        });
+
+        verify(discountCodesRepository, times(1)).findByCode(request.newCode());
+    }
+
+    @Test
+    public void removeDiscountCode_ShouldRemoveDiscountCode_WhenCalled() {
+
+        DiscountCode discountCode = new DiscountCode(exampleCode1, BigDecimal.valueOf(20), LocalDate.now().plusMonths(1), 3L);
+
+        doNothing().when(discountCodesRepository).delete(discountCode);
+
+        RemovedDiscountCodeResponse response = discountCodesService.removeDiscountCode(discountCode);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertEquals("Successfully removed discount code 'kodzik1'", response.message());
+
+        verify(discountCodesRepository, times(1)).delete(discountCode);
     }
 }
