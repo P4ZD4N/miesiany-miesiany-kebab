@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -30,6 +31,8 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final BeveragePromotionsRepository beveragePromotionsRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
     private final NewsletterRepository newsletterRepository;
+    private final OrdersRepository ordersRepository;
+    private final DiscountCodesRepository discountCodesRepository;
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -43,7 +46,9 @@ public class SampleDataInitializer implements CommandLineRunner {
             MealPromotionsRepository mealPromotionsRepository,
             BeveragePromotionsRepository beveragePromotionsRepository,
             AddonPromotionsRepository addonPromotionsRepository,
-            NewsletterRepository newsletterRepository
+            NewsletterRepository newsletterRepository,
+            OrdersRepository ordersRepository,
+            DiscountCodesRepository discountCodesRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -57,6 +62,8 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.beveragePromotionsRepository = beveragePromotionsRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
         this.newsletterRepository = newsletterRepository;
+        this.ordersRepository = ordersRepository;
+        this.discountCodesRepository = discountCodesRepository;
     }
 
     @Override
@@ -73,6 +80,8 @@ public class SampleDataInitializer implements CommandLineRunner {
         initJobOffers();
         initPromotions();
         initNewsletterSubscribers();
+        initOrders();
+        initDiscountCodes();
     }
 
     private void initOpeningHours() {
@@ -157,7 +166,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         Beverage water = Beverage.builder()
-                .name("Water")
+                .name("Cisowianka Niegazowana")
                 .price(BigDecimal.valueOf(5))
                 .capacity(BigDecimal.valueOf(0.5))
                 .build();
@@ -172,30 +181,30 @@ public class SampleDataInitializer implements CommandLineRunner {
 
     private void initAddons() {
 
-        Addon jalapeno = Addon.builder()
-                .name("Jalapeno")
-                .price(BigDecimal.valueOf(1.5))
+        Addon fries140g = Addon.builder()
+                .name("Fries (140g)")
+                .price(BigDecimal.valueOf(12))
                 .build();
 
-        Addon herbs = Addon.builder()
-                .name("Herbs")
-                .price(BigDecimal.valueOf(1.5))
+        Addon fries200g = Addon.builder()
+                .name("Fries (200g)")
+                .price(BigDecimal.valueOf(15))
                 .build();
 
-        Addon olives = Addon.builder()
-                .name("Olives")
-                .price(BigDecimal.valueOf(3.5))
+        Addon nuggets7pcs = Addon.builder()
+                .name("Nuggets (7pcs)")
+                .price(BigDecimal.valueOf(21))
                 .build();
 
-        Addon feta = Addon.builder()
-                .name("Feta")
-                .price(BigDecimal.valueOf(3.5))
+        Addon zapiekanka = Addon.builder()
+                .name("Zapiekanka")
+                .price(BigDecimal.valueOf(15))
                 .build();
 
-        addonRepository.save(jalapeno);
-        addonRepository.save(herbs);
-        addonRepository.save(olives);
-        addonRepository.save(feta);
+        addonRepository.save(fries140g);
+        addonRepository.save(fries200g);
+        addonRepository.save(nuggets7pcs);
+        addonRepository.save(zapiekanka);
     }
 
     private void initIngredients() {
@@ -471,17 +480,17 @@ public class SampleDataInitializer implements CommandLineRunner {
                     beverageRepository.save(beverage);
                 });
 
-        AddonPromotion fetaPromotion = AddonPromotion.builder()
-                .description("Feta -50%!")
+        AddonPromotion friesPromotion = AddonPromotion.builder()
+                .description("All fries -50%!")
                 .discountPercentage(BigDecimal.valueOf(50))
                 .build();
 
-        addonPromotionsRepository.save(fetaPromotion);
+        addonPromotionsRepository.save(friesPromotion);
 
         addonRepository.findAll().stream()
-                .filter(addon -> addon.getName().equalsIgnoreCase("Feta"))
+                .filter(addon -> addon.getName().contains("Fries"))
                 .forEach(addon -> {
-                    addon.setPromotion(fetaPromotion);
+                    addon.setPromotion(friesPromotion);
                     addonRepository.save(addon);
                 });
     }
@@ -495,5 +504,65 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         newsletterRepository.save(newsletterSubscriber);
+    }
+
+    private void initOrders() {
+
+        Meal meal = mealRepository.findByName("Pita Kebab Salads and Fries")
+                .orElseThrow(() -> new RuntimeException("Meal not found"));
+        Addon addon = addonRepository.findByName("Zapiekanka")
+                .orElseThrow(() -> new RuntimeException("Addon not found"));
+        Beverage beverage = beverageRepository.findByNameAndCapacity("Coca-Cola", BigDecimal.valueOf(0.33))
+                .orElseThrow(() -> new RuntimeException("Beverage not found"));
+
+        Order order1 = Order.builder()
+                .orderType(OrderType.ON_SITE)
+                .orderStatus(OrderStatus.IN_PREPARATION)
+                .customerPhone("123456789")
+                .customerEmail("example@example.com")
+                .build();
+
+        order1 = ordersRepository.save(order1);
+
+        order1.addMeal(meal, Size.XL, 1);
+        order1.addAddon(addon, 2);
+        order1.addBeverage(beverage, 1);
+
+        ordersRepository.save(order1);
+
+        Order order2 = Order.builder()
+                .orderType(OrderType.ON_SITE)
+                .orderStatus(OrderStatus.RECEIVED)
+                .customerPhone("123456789")
+                .customerEmail("example@example.com")
+                .build();
+
+        order2 = ordersRepository.save(order2);
+
+        order2.addMeal(meal, Size.XL, 1);
+        order2.addBeverage(beverage, 1);
+        order2.setCreatedAt(LocalDateTime.now().minusMonths(1));
+
+        ordersRepository.save(order2);
+    }
+
+    private void initDiscountCodes() {
+        DiscountCode discountCode1 = DiscountCode.builder()
+                        .discountPercentage(BigDecimal.valueOf(50))
+                        .expirationDate(LocalDate.now().minusMonths(1))
+                        .remainingUses(1L)
+                        .build();
+
+        discountCodesRepository.save(discountCode1);
+
+        DiscountCode discountCodeExpired = new DiscountCode(
+                "expired", BigDecimal.valueOf(20), LocalDate.now().minusMonths(1), 1L);
+
+        discountCodesRepository.save(discountCodeExpired);
+
+        DiscountCode discountCode2 = new DiscountCode(
+                "kodzik", BigDecimal.valueOf(20), LocalDate.now().plusMonths(1), 3L);
+
+        discountCodesRepository.save(discountCode2);
     }
 }

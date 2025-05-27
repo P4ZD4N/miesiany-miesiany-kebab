@@ -1,6 +1,8 @@
 import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
 import { EmploymentType } from "../enums/employment-type.enum";
+import { OrderStatus } from "../enums/order-status.enum";
+import { OrderType } from "../enums/order-type.enum";
 import { RequirementType } from "../enums/requirement-type.enum";
 import { Role } from "../enums/role.enum";
 import { Size } from "../enums/size.enum";
@@ -292,6 +294,79 @@ export interface RegenerateOtpResponse {
 }
 
 export interface UnsubscribeResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface OrderResponse {
+  id: number;
+  order_type: OrderType | null;
+  order_status: OrderStatus | null;
+  customer_phone: string; 
+  customer_email: string;
+  street: string;
+  house_number: number;
+  postal_code: string;
+  city: string;
+  additional_comments: string;
+  total_price: number;
+  created_at: string;
+  meals: { 
+    meal_name: string;
+    final_price: number;
+    size: Size | null;
+    quantity: number;
+    ingredient_names: string[]
+  }[];
+  beverages: { 
+    beverage_name: string;
+    final_price: number;
+    capacity: number;
+    quantity: number;
+  }[];
+  addons: { 
+    addon_name: string;
+    final_price: number;
+    quantity: number; 
+  }[];
+}
+
+export interface NewOrderResponse {
+  status_code: number;
+  message: string;
+  id: number;
+}
+
+export interface UpdatedOrderResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedOrderResponse {
+  status_code: number;
+  message: string;
+}
+
+
+export interface DiscountCodeResponse {
+  id: number;
+  code: string;
+  discount_percentage: number;
+  expiration_date: Date;
+  remaining_uses: number;
+}
+
+export interface NewDiscountCodeResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedDiscountCodeResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedDiscountCodeResponse {
   status_code: number;
   message: string;
 }

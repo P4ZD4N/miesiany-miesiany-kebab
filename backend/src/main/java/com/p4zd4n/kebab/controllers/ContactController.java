@@ -1,11 +1,11 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.Contact;
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.contact.UpdatedContactRequest;
 import com.p4zd4n.kebab.responses.contact.ContactResponse;
 import com.p4zd4n.kebab.responses.contact.UpdatedContactResponse;
 import com.p4zd4n.kebab.services.contact.ContactService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +37,7 @@ public class ContactController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedContactRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update contact request");
 

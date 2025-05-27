@@ -1,0 +1,128 @@
+.order-status-display {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+    height: 100%;
+    
+    .status-section {
+        padding: 2em;
+        width: 60%;
+        display: flex;
+        justify-content: space-between;
+
+        .in-preparation-section {
+            padding: 1em;
+            width: 50%;
+
+            h1 {
+                background-color: rgb(56, 56, 56);
+                text-align: center;
+                color: white;
+
+                @media (max-width: 1385px) {
+                    font-size: 32px;
+                }
+
+                @media (max-width: 1165px) {
+                    font-size: 25px;
+                }
+
+                @media (max-width: 630px) {
+                    word-wrap: break-word;
+                }
+            }
+
+            p {
+                text-align: center;
+                color: white;
+                font-size: 50px;
+                font-weight: 900;
+            }
+
+            @media (max-width: 480px) {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .ready-section {
+            padding: 1em;
+            width: 50%;
+
+            h1 {
+                background-color: rgb(13, 102, 25);
+                text-align: center;
+                color: rgb(255, 254, 254);
+
+                @media (max-width: 1165px) {
+                    font-size: 32px;
+                }
+            }
+
+            p {
+                text-align: center;
+                color: rgb(13, 102, 25);
+                font-size: 50px;
+                font-weight: 900;
+            }
+
+            @media (max-width: 480px) {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 950px) {
+            width: 100%;
+        }
+
+        @media (max-width: 480px) {
+            flex-direction: column;
+        }
+    }
+
+    .logo-section {
+        width: 40%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 2em;
+
+        img {
+            width: 100%;
+        }
+
+        @media (max-width: 950px) {
+            padding: 0;
+            width: 0%;
+            visibility: hidden;
+        }
+    }
+
+    @media (max-width: 480px) {
+        height: auto;
+    }
+}
+
+.verification-required {
+    height: 100%;
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+
+    h1 {
+        color: red;
+        text-align: center;
+    }
+    
+    p {
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        width: 80%;
+        margin-bottom: 0.2em;
+    }
+}

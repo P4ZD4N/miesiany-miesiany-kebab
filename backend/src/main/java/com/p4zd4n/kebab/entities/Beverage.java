@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Table(name = "beverages")
@@ -30,10 +31,6 @@ public class Beverage extends WithTimestamp {
     private BigDecimal capacity;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    @ManyToOne
     @JoinColumn(name = "promotion_id")
     private BeveragePromotion promotion;
 
@@ -42,5 +39,15 @@ public class Beverage extends WithTimestamp {
         this.name = name;
         this.price = price;
         this.capacity = capacity;
+    }
+
+    public BigDecimal getPriceWithDiscountIncluded(Integer quantity) {
+        BigDecimal discount = promotion != null
+                ? promotion.getDiscountPercentage()
+                : BigDecimal.ZERO;
+        BigDecimal discountFraction = discount.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal discountedPrice = price.subtract(price.multiply(discountFraction));
+
+        return discountedPrice.multiply(BigDecimal.valueOf(quantity));
     }
 }

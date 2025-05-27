@@ -1,0 +1,156 @@
+.discount-code-management {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+
+    h1 {
+        color: red;
+        text-align: center;
+    }
+    .btn-add-discount-code {
+        margin: 0.5em;
+    }
+
+    p {
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        width: 40%;
+        margin-bottom: 0.2em;
+    }
+
+    .no-discount-code {
+        width: 40%;
+        text-align: center;
+        color: red;
+        font-size: 24px;
+    }
+
+    thead {
+        border-bottom: 3px solid red;
+    }
+
+    table {
+        margin-bottom: 2rem;
+        font-size: 24px;
+        text-align: center;
+        width: 70%;
+        scrollbar-color: #ff0000 #f1f1f1; 
+        scrollbar-width: thin; 
+    }
+
+    th {
+        background-color: black;
+        color: red;
+        padding: 1rem;
+    }
+
+    tr {
+        color: white;
+        background: none;
+        border-bottom: 1px solid white;
+    }
+
+    input {
+        color: white;
+        text-align: center;
+        background: inherit;
+        border: none;
+        border-bottom: 1px solid white;
+        outline: none;
+        transition: border-bottom 0.3s ease;
+
+        &:focus {
+            border-bottom: 1px solid red;
+        }
+
+        &[type=text] {
+            width: 100%;
+        }
+
+        &[type=number] {
+            max-width: 70px;
+        }
+    }
+
+    .button-update,.button-cancel, .button-accept, .button-remove {
+        background: none;
+        border: none;
+        transition: color 0.3s ease;
+    }
+
+    .button-update {
+        color: rgb(0, 119, 255);
+
+        &:hover {
+            color: rgb(0, 59, 126);
+        }
+    }
+
+    .button-accept {
+        color: rgb(0, 255, 85);
+
+        &:hover {
+            color: rgb(0, 102, 34);
+        }
+    }
+
+    .button-remove, .button-cancel {
+        color: rgb(255, 0, 0);
+
+        &:hover {
+            color: #b90909;
+        }
+    }
+
+    .expired {
+        color: red;
+    }
+
+    .today {
+        color: #cea015;
+    }
+
+    .future {
+        color: rgb(13, 102, 25);
+    }
+
+    .error {
+        font-size: 24px;
+        margin-top: 1rem;
+        color: rgb(126, 15, 15);
+    }
+
+    @media (max-width: 875px) {
+        .discount-codes-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+}
+
+.verification-required {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+
+    h1 {
+        color: red;
+        text-align: center;
+    }
+    
+    p {
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        width: 80%;
+        margin-bottom: 0.2em;
+    }
+}

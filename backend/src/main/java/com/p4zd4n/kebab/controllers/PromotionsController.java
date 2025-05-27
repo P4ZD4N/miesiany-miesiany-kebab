@@ -3,7 +3,6 @@ package com.p4zd4n.kebab.controllers;
 import com.p4zd4n.kebab.entities.AddonPromotion;
 import com.p4zd4n.kebab.entities.BeveragePromotion;
 import com.p4zd4n.kebab.entities.MealPromotion;
-import com.p4zd4n.kebab.exceptions.invalid.InvalidAcceptLanguageHeaderValue;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.NewAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.RemovedAddonPromotionRequest;
 import com.p4zd4n.kebab.requests.promotions.addonpromotions.UpdatedAddonPromotionRequest;
@@ -28,6 +27,7 @@ import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotion
 import com.p4zd4n.kebab.services.promotions.AddonPromotionsService;
 import com.p4zd4n.kebab.services.promotions.BeveragePromotionsService;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
+import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -67,9 +67,7 @@ public class PromotionsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewMealPromotionRequest request
     ) throws MessagingException {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add meal promotion request");
 
@@ -85,9 +83,7 @@ public class PromotionsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedMealPromotionRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update meal promotion request");
 
@@ -122,9 +118,7 @@ public class PromotionsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewBeveragePromotionRequest request
     ) throws MessagingException {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add beverage promotion request");
 
@@ -140,9 +134,7 @@ public class PromotionsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedBeveragePromotionRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update beverage promotion request");
 
@@ -178,9 +170,7 @@ public class PromotionsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody NewAddonPromotionRequest request
     ) throws MessagingException {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received add addon promotion request");
 
@@ -196,9 +186,7 @@ public class PromotionsController {
             @RequestHeader(value = "Accept-Language") String language,
             @Valid @RequestBody UpdatedAddonPromotionRequest request
     ) {
-        if (!language.equalsIgnoreCase("en") && !language.equalsIgnoreCase("pl")) {
-            throw new InvalidAcceptLanguageHeaderValue(language);
-        }
+        LanguageValidator.validateLanguage(language);
 
         log.info("Received update addon promotion request");
 

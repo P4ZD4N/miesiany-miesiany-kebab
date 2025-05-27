@@ -5,6 +5,7 @@
             "opening_hours": "Godziny otwarcia",
             "menu": "Menu",
             "promotions": "Promocje",
+            "track_order": "Sledz zamowienie",
             "contact": "Kontakt",
             "order": "Zamów",
             "employee": "Panel Pracownika",
@@ -16,6 +17,7 @@
             "menu": "Menu",
             "promotions": "Promocje",
             "jobs": "Praca",
+            "track_order": "Sledz zamowienie",
             "contact": "Kontakt"
         }
     },
@@ -85,14 +87,13 @@
     },
     "menu": {
         "addons": {
-            "paragraph_addons": "Dodatki do twojego dania",
+            "paragraph_addons": "Dodatki",
             "button_add": "Dodaj dodatek",
             "addon": "Dodatek",
             "price": "Cena",
-            "Jalapeno": "Jalapeno",
-            "Herbs": "Ziola",
-            "Olives": "Oliwki",
-            "Feta": "Feta"
+            "Fries (140g)": "Frytki (140g)",
+            "Fries (200g)": "Frytki (200g)",
+            "Nuggets (7pcs)": "Nuggetsy (7szt.)"
         },
         "beverages": {
             "paragraph_beverages": "Napoje",
@@ -105,7 +106,7 @@
             "Fanta": "Fanta",
             "Sprite": "Sprite",
             "Ayran": "Ayran",
-            "Water": "Woda"
+            "Cisowianka Niegazowana": "Cisowianka Niegazowana"
         },
         "meals": {
             "paragraph_meals": "Dania",
@@ -269,5 +270,103 @@
         "buttons": {
             "yes": "Tak, wypisz mnie"
         }
+    },
+    "track-order": {
+        "headline": "Sledz swoje zamowienie",
+        "paragraph_top": "Wprowadz ID zamowienia oraz numer telefonu, aby sprawdzic aktualny status swojego zamowienia!",
+        "paragraph_thank_you": "Szanowny Kliencie, dziekujemy za twoje zamowienie!",
+        "phone": "Telefon (9 cyfr)",
+        "buttons": {
+            "track": "Sledz",
+            "stop_tracking": "Przestan sledzic"
+        },
+        "total_price": "Wartosc zamowienia",
+        "delivery_address": "Adres dostawy",
+        "receive_restaurant": "Odbior w restauracji",
+        "payment_methods": {
+            "headline": "Metody platnosci",
+            "methods": "Gotowka / Karta"
+        },
+        "order_status": {
+            "headline": "Status zamowienia",
+            "IN_PREPARATION": "W przygotowaniu",
+            "READY1": "Gotowe do wyslania",
+            "READY2": "Gotowe do odbioru",
+            "SHIPPED1": "Wyslane",
+            "SHIPPED2": "Oczekiwanie na odbior",
+            "RECEIVED": "Odebrane",
+            "CANCELED": "Anulowane",
+            "RETURNED": "Zwrocone"
+        },
+        "discount_included": "znizka wliczona",
+        "delivery_included": "dostawa wliczona",
+        "delivery_and_discount_included": "dostawa i znizka wliczone",
+        "thanks": "Dziekujemy za podanie swojego emaila! Przypominamy, ze co 10 zamowien z podanym emailem otrzymasz kod rabatowy na kolejne zamowienie!",
+        "encourage": "Zachecamy do podania swojego emaila przy kolejnym zamowieniu! Przypominamy, ze co 10 zamowien z podanym emailem otrzymujesz kod rabatowy na kolejne zamowienie!"
+    },
+    "order-management": {
+        "headline": "Zarzadzanie zamowieniami",
+        "paragraph_today": "Dzisiejsze",
+        "paragraph_past": "Z przeszlosci",
+        "no_orders": "Brak zamowien z tej kategorii!",
+        "order_status": {
+            "IN_PREPARATION": "Do przygotowania",
+            "READY": "Gotowe",
+            "SHIPPED": "Wyslane",
+            "RECEIVED": "Odebrane",
+            "CANCELED": "Anulowane",
+            "RETURNED": "Zwrocone",
+            "All": "Wszystkie"
+        },
+        "order_type": {
+            "ON_SITE": "Na miejscu",
+            "TAKEAWAY": "Na wynos"
+        },
+        "card": {
+            "main": {
+                "headline": "Zamowienie",
+                "type": "Typ",
+                "status": "Status",
+                "total_price": "Wartosc zamowienia",
+                "placed_at": "Data zlozenia"
+            },
+            "contact": {
+                "headline": "Kontakt",
+                "phone": "Telefon",
+                "email": "Email"
+            },
+            "meals_headline": "Dania",
+            "beverages_headline": "Napoje",
+            "addons_headline": "Dodatki",
+            "additional_comments_headline": "Dodatkowe komentarze"
+        },
+        "buttons": {
+            "add": "Dodaj zamowienie",
+            "update": "Aktualizuj",
+            "remove": "Usun"
+        }
+    },
+    "discount-code-management": {
+        "headline": "Zarzadzanie kodami rabatowymi",
+        "buttons": {
+            "add": "Dodaj kod rabatowy",
+            "cancel": "Anuluj",
+            "update": "Aktualizuj",
+            "remove": "Usun",
+            "accept": "Akceptuj"
+        },
+        "no_discount_codes": "Brak kodow rabatowych!",
+        "code": "Kod",
+        "code_optional": "Kod (opcjonalnie)",
+        "discount_percentage": "Procent znizki",
+        "expiration_date": "Data wygasniecia",
+        "remaining_uses": "Pozostale uzycia",
+        "new_discount_code": "Nowy kod rabatowy",
+        "update_discount_code": "Aktualizowany kod rabatowy"
+    },
+    "verification_required": {
+        "headline": "Nie jestes upowazniony do przejscia na ta strone!",
+        "paragraph": "Wydaje sie, ze nie posiadasz uprawnien wymaganych do uzyskania dostepu do tej sekcji. Jesli wierzysz, ze to blad, prosze skontaktowac sie z administratorem.",
+        "button": "Wroc"
     }
 }
