@@ -6,7 +6,7 @@ import com.p4zd4n.kebab.enums.Role;
 import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidCredentialsException;
-import com.p4zd4n.kebab.repositories.EmployeeRepository;
+import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
 import com.p4zd4n.kebab.responses.auth.LogoutResponse;
@@ -24,19 +24,19 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuthenticationService {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeesRepository employeesRepository;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationService(AuthenticationManager authenticationManager, EmployeeRepository employeeRepository) {
+    public AuthenticationService(AuthenticationManager authenticationManager, EmployeesRepository employeesRepository) {
         this.authenticationManager = authenticationManager;
-        this.employeeRepository = employeeRepository;
+        this.employeesRepository = employeesRepository;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request, HttpSession session) {
 
         log.info("Attempting authentication for email '{}'", request.email());
 
-        Employee employee = employeeRepository.findByEmail(request.email())
+        Employee employee = employeesRepository.findByEmail(request.email())
                 .orElseThrow(() -> new EmployeeNotFoundException(request.email()));
 
         if (!PasswordEncoder.matches(request.password(), employee.getPassword())) {

@@ -3,7 +3,7 @@ package com.p4zd4n.kebab.services.auth;
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.entities.Manager;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
-import com.p4zd4n.kebab.repositories.EmployeeRepository;
+import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -17,9 +17,9 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeesRepository employeeRepository;
 
-    public CustomUserDetailsService(EmployeeRepository employeeRepository) {
+    public CustomUserDetailsService(EmployeesRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 

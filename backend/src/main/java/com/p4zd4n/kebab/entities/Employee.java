@@ -46,6 +46,9 @@ public class Employee extends WithTimestamp{
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
+    @Column(name = "job", nullable = false)
+    private String job;
+
     @Column(name = "employment_type", nullable = false)
     private EmploymentType employmentType;
 
@@ -69,6 +72,7 @@ public class Employee extends WithTimestamp{
         String email,
         String password,
         LocalDate dateOfBirth,
+        String job,
         String phoneNumber,
         EmploymentType employmentType,
         BigDecimal hourlyWage,
@@ -80,6 +84,7 @@ public class Employee extends WithTimestamp{
         this.email = email;
         this.password = password;
         this.dateOfBirth = dateOfBirth;
+        this.job = job;
         this.phoneNumber = phoneNumber;
         this.hourlyWage = hourlyWage;
         this.employmentType = employmentType;

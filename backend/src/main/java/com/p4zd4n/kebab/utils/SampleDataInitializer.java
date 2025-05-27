@@ -20,7 +20,7 @@ import java.util.Set;
 @Component
 public class SampleDataInitializer implements CommandLineRunner {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeesRepository employeeRepository;
     private final OpeningHoursRepository openingHoursRepository;
     private final BeverageRepository beverageRepository;
     private final AddonRepository addonRepository;
@@ -37,7 +37,7 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final DiscountCodesRepository discountCodesRepository;
 
     public SampleDataInitializer(
-            EmployeeRepository employeeRepository,
+            EmployeesRepository employeeRepository,
             OpeningHoursRepository openingHoursRepository,
             BeverageRepository beverageRepository,
             AddonRepository addonRepository,
@@ -112,6 +112,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .password(PasswordEncoder.encodePassword("employee123"))
                 .dateOfBirth(LocalDate.of(1990, 1, 1))
                 .phoneNumber("123456789")
+                .job("Cashier")
                 .employmentType(EmploymentType.PERMANENT)
                 .hourlyWage(BigDecimal.valueOf(30))
                 .isActive(true)
@@ -124,6 +125,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .email("employee2@example.com")
                 .password(PasswordEncoder.encodePassword("employee123"))
                 .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .job("Cashier")
                 .phoneNumber("123456789")
                 .employmentType(EmploymentType.PERMANENT)
                 .hourlyWage(BigDecimal.valueOf(32))

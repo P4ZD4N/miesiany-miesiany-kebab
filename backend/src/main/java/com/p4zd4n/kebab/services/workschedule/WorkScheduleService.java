@@ -1,6 +1,5 @@
 package com.p4zd4n.kebab.services.workschedule;
 
-import com.p4zd4n.kebab.entities.Addon;
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.entities.WorkScheduleEntry;
 import com.p4zd4n.kebab.exceptions.alreadyexists.WorkScheduleEntryAlreadyExistsException;
@@ -8,10 +7,9 @@ import com.p4zd4n.kebab.exceptions.invalid.InvalidTimeRangeException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.WorkScheduleEntryNotFoundException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
-import com.p4zd4n.kebab.repositories.EmployeeRepository;
+import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import com.p4zd4n.kebab.repositories.WorkScheduleEntryRepository;
 import com.p4zd4n.kebab.requests.workschedule.NewWorkScheduleEntryRequest;
-import com.p4zd4n.kebab.responses.menu.addons.RemovedAddonResponse;
 import com.p4zd4n.kebab.responses.workschedule.NewWorkScheduleEntryResponse;
 import com.p4zd4n.kebab.responses.workschedule.RemovedWorkScheduleEntryResponse;
 import com.p4zd4n.kebab.responses.workschedule.WorkScheduleEntryResponse;
@@ -28,11 +26,11 @@ import java.util.stream.Collectors;
 public class WorkScheduleService {
 
     private final WorkScheduleEntryRepository workScheduleEntryRepository;
-    private final EmployeeRepository employeeRepository;
+    private final EmployeesRepository employeeRepository;
 
     public WorkScheduleService(
             WorkScheduleEntryRepository workScheduleEntryRepository,
-            EmployeeRepository employeeRepository
+            EmployeesRepository employeeRepository
     ) {
         this.workScheduleEntryRepository = workScheduleEntryRepository;
         this.employeeRepository = employeeRepository;

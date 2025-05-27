@@ -73,7 +73,8 @@ public class SecurityConfig {
                                 "/api/v1/newsletter/subscribers",
                                 "/api/v1/work-schedule/all-entries",
                                 "/api/v1/work-schedule/add-entry",
-                                "/api/v1/work-schedule/remove-entry"
+                                "/api/v1/work-schedule/remove-entry",
+                                "/api/v1/employees/all"
                         ).hasRole("MANAGER")
                         .requestMatchers(
                                 "api/v1/auth/logout",

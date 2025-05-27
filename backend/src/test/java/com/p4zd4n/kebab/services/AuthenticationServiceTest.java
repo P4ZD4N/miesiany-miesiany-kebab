@@ -5,7 +5,7 @@ import com.p4zd4n.kebab.enums.Role;
 import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidCredentialsException;
-import com.p4zd4n.kebab.repositories.EmployeeRepository;
+import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
 import com.p4zd4n.kebab.responses.auth.LogoutResponse;
@@ -30,13 +30,13 @@ public class AuthenticationServiceTest {
 
     private AuthenticationManager authenticationManager;
     private AuthenticationService authenticationService;
-    private EmployeeRepository employeeRepository;
+    private EmployeesRepository employeeRepository;
     private HttpSession session;
 
     @BeforeEach
     void setUp() {
         authenticationManager = mock(AuthenticationManager.class);
-        employeeRepository = mock(EmployeeRepository.class);
+        employeeRepository = mock(EmployeesRepository.class);
         session = mock(HttpSession.class);
         authenticationService = new AuthenticationService(authenticationManager, employeeRepository);
     }
