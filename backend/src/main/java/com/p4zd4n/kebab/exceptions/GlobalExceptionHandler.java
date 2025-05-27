@@ -651,7 +651,6 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-<<<<<<< HEAD
     @ExceptionHandler(WorkScheduleEntryAlreadyExistsException.class)
     public ResponseEntity<ExceptionResponse> handleWorkScheduleEntryAlreadyExistsException(
             HttpServletRequest request
@@ -712,17 +711,6 @@ public class GlobalExceptionHandler {
 
         Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
         String message = messageSource.getMessage("workSchedule.notFound", null, locale);
-=======
-    @ExceptionHandler(OrderNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleOrderNotFoundException(
-            OrderNotFoundException exception,
-            HttpServletRequest request
-    ) {
-        log.error("Attempted request to {} with id of not existing order: '{}'", request.getRequestURI(), exception.getId());
-
-        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
-        String message = messageSource.getMessage("order.notExists", null, locale);
->>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -732,8 +720,25 @@ public class GlobalExceptionHandler {
                         .message(message)
                         .build());
     }
-<<<<<<< HEAD
-=======
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleOrderNotFoundException(
+            OrderNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with id of not existing order: '{}'", request.getRequestURI(), exception.getId());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("order.notExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(message)
+                        .build());
+    }
 
     @ExceptionHandler(InvalidIngredientException.class)
     public ResponseEntity<ExceptionResponse> handleInvalidIngredientException(
@@ -865,5 +870,4 @@ public class GlobalExceptionHandler {
                         .message(message)
                         .build());
     }
->>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
 }

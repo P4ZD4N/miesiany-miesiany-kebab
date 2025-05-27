@@ -32,12 +32,9 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final BeveragePromotionsRepository beveragePromotionsRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
     private final NewsletterRepository newsletterRepository;
-<<<<<<< HEAD
     private final WorkScheduleEntryRepository workScheduleEntryRepository;
-=======
     private final OrdersRepository ordersRepository;
     private final DiscountCodesRepository discountCodesRepository;
->>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
 
     public SampleDataInitializer(
             EmployeeRepository employeeRepository,
@@ -52,12 +49,9 @@ public class SampleDataInitializer implements CommandLineRunner {
             BeveragePromotionsRepository beveragePromotionsRepository,
             AddonPromotionsRepository addonPromotionsRepository,
             NewsletterRepository newsletterRepository,
-<<<<<<< HEAD
-            WorkScheduleEntryRepository workScheduleEntryRepository
-=======
+            WorkScheduleEntryRepository workScheduleEntryRepository,
             OrdersRepository ordersRepository,
             DiscountCodesRepository discountCodesRepository
->>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
     ) {
         this.employeeRepository = employeeRepository;
         this.openingHoursRepository = openingHoursRepository;
@@ -71,12 +65,9 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.beveragePromotionsRepository = beveragePromotionsRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
         this.newsletterRepository = newsletterRepository;
-<<<<<<< HEAD
         this.workScheduleEntryRepository = workScheduleEntryRepository;
-=======
         this.ordersRepository = ordersRepository;
         this.discountCodesRepository = discountCodesRepository;
->>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
     }
 
     @Override
@@ -93,12 +84,9 @@ public class SampleDataInitializer implements CommandLineRunner {
         initJobOffers();
         initPromotions();
         initNewsletterSubscribers();
-<<<<<<< HEAD
         initWorkScheduleEntries();
-=======
         initOrders();
         initDiscountCodes();
->>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
     }
 
     private void initOpeningHours() {
@@ -537,11 +525,11 @@ public class SampleDataInitializer implements CommandLineRunner {
         newsletterRepository.save(newsletterSubscriber);
     }
 
-<<<<<<< HEAD
+
     private void initWorkScheduleEntries() {
 
         Employee employee = employeeRepository.findByEmail("employee1@example.com")
-                        .orElseThrow(() -> new EmployeeNotFoundException("employee1@example.com"));
+                .orElseThrow(() -> new EmployeeNotFoundException("employee1@example.com"));
 
         WorkScheduleEntry workScheduleEntry = WorkScheduleEntry.builder()
                 .employee(employee)
@@ -551,7 +539,8 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         workScheduleEntryRepository.save(workScheduleEntry);
-=======
+    }
+
     private void initOrders() {
 
         Meal meal = mealRepository.findByName("Pita Kebab Salads and Fries")
@@ -610,6 +599,5 @@ public class SampleDataInitializer implements CommandLineRunner {
                 "kodzik", BigDecimal.valueOf(20), LocalDate.now().plusMonths(1), 3L);
 
         discountCodesRepository.save(discountCode2);
->>>>>>> 3a8d1028420bcefcdd82192a2379077cd9b8eb43
     }
 }
