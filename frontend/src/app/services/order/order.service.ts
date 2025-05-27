@@ -141,7 +141,7 @@ export class OrderService {
       cancelButtonColor: '#198754',
       confirmButtonText: this.langService.currentLang === 'pl' ? '🍽️ Dania' : '🍽️ Meals',
       confirmButtonColor: 'red',
-      footer: `<button id="swal-exit-btn" class="swal2-styled" style="background:#555;margin-top:10px;">
+      footer: `<button id="swal-exit-btn" class="swal2-styled" style="color: white; background-color: #555; margin-top: 10px; border: none; outline: none; box-shadow: none;">
         ❌ ${this.langService.currentLang === 'pl' ? 'Wroc pozniej' : 'Come back later'}
       </button>`,
       customClass: {
