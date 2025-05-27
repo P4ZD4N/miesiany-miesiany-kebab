@@ -1,7 +1,9 @@
 package com.p4zd4n.kebab.services.discountcodes;
 
 import com.p4zd4n.kebab.entities.DiscountCode;
+import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.exceptions.alreadyexists.DiscountCodeAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.alreadyexists.JobOfferAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.expired.DiscountCodeExpiredException;
 import com.p4zd4n.kebab.exceptions.notfound.DiscountCodeNotFoundException;
 import com.p4zd4n.kebab.repositories.DiscountCodesRepository;
@@ -115,6 +117,12 @@ public class DiscountCodesService {
     }
 
     public UpdatedDiscountCodeResponse updateDiscountCode(DiscountCode discountCode, UpdatedDiscountCodeRequest request) {
+
+        Optional<DiscountCode> optionalDiscountCode = discountCodesRepository.findByCode(request.newCode());
+
+        if (optionalDiscountCode.isPresent() && !optionalDiscountCode.get().getId().equals(discountCode.getId())) {
+            throw new DiscountCodeAlreadyExistsException(request.newCode());
+        }
 
         UpdatedDiscountCodeResponse response = UpdatedDiscountCodeResponse.builder()
                 .statusCode(HttpStatus.OK.value())
