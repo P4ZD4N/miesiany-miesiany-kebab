@@ -126,6 +126,7 @@ export class OrderService {
   
     this.initRequiredData();
 
+    let forceClose = false;
     Swal.fire({
       allowOutsideClick: false,
       title: this.isManager() || this.isEmployee() ? titleForStaff  : titleForCustomers,
@@ -140,13 +141,26 @@ export class OrderService {
       cancelButtonColor: '#198754',
       confirmButtonText: this.langService.currentLang === 'pl' ? '🍽️ Dania' : '🍽️ Meals',
       confirmButtonColor: 'red',
+      footer: `<button id="swal-exit-btn" class="swal2-styled" style="background:#555;margin-top:10px;">
+        ❌ ${this.langService.currentLang === 'pl' ? 'Wroc pozniej' : 'Come back later'}
+      </button>`,
       customClass: {
-        actions: 'swal-actions-vertical',  
+        actions: 'swal-actions-vertical',
         confirmButton: 'swal-confirm-btn',
         denyButton: 'swal-deny-btn',
         cancelButton: 'swal-cancel-btn'
+      },
+      didRender: () => {
+        const exitBtn = document.getElementById('swal-exit-btn');
+        if (exitBtn) {
+          exitBtn.addEventListener('click', () => {
+            forceClose = true;
+            Swal.close();
+          });
+        }
       }
     }).then((result) => {
+      if (forceClose) return;
       if (result.isConfirmed) {
         this.startChoosingMeal()
       } else if (result.isDenied) {
@@ -154,7 +168,7 @@ export class OrderService {
       } else if (result.isDismissed) {
         this.startChoosingAddonProperties();
       }
-    });
+    });;
   }
 
   askWhetherReturnToPreviousOrder(): void {
@@ -1583,7 +1597,7 @@ export class OrderService {
       denyButtonText: this.langService.currentLang === 'pl' ? '🍽 W restauracji' : '🍽 In restaurant',
       denyButtonColor: '#33acff',
       showCancelButton: true,
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Wroc pozniej' : 'Come back later',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go back',
       cancelButtonColor: 'red',
       confirmButtonText: this.isManager() || this.isEmployee() ? houseButtomForStaff : houseButtomForCustomers,
       confirmButtonColor: '#198754',
@@ -1598,6 +1612,8 @@ export class OrderService {
         this.startEnteringAddress()
       } else if (result.isDenied) {
         this.startEnteringContactData();
+      } else if (result.isDismissed) {
+        this.askWhetherOrderComplete();
       }
     });
   }
