@@ -260,11 +260,7 @@ export class OrderService {
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
     const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac danie' : 'Please select meal';
     const mealNamesOriginal = this.meals.map(meal => meal.name).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
-    const mealNamesTranslated = this.meals.map(meal => {
-      let mealNameTranslated = this.translate.instant('menu.meals.' + meal.name);
-      if (!this.isMealTranslationAvailable(meal.name)) mealNameTranslated = meal.name;
-      return mealNameTranslated;
-    }).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
+    const mealNamesTranslated = this.meals.map(meal => this.getTranslatedMealName(meal.name)).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
@@ -306,11 +302,7 @@ export class OrderService {
   async startChoosingMealProperties(mealName: string): Promise<void> {
 
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-    let mealNameTranslated = this.translate.instant('menu.meals.' + mealName);
-
-    if (!this.isMealTranslationAvailable(mealName)) {
-      mealNameTranslated = mealName;
-    }
+    let mealNameTranslated = this.getTranslatedMealName(mealName);
 
     const ingredientIcons: { [key: string]: string } = {
       BREAD: 'fa-solid fa-bread-slice',
@@ -323,12 +315,7 @@ export class OrderService {
     const meal = this.meals.filter(meal => meal.name === mealName)[0];
 
     const mealIngredients = meal.ingredients.map(ingredient => {
-      let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
-
-      if (!this.isIngredientTranslationAvailable(ingredient.name)) {
-        ingredientNameTranslated = ingredient.name;
-      }
-  
+      let ingredientNameTranslated = this.getTranslatedIngredientName(ingredient.name);
       const icon = ingredientIcons[ingredient.ingredient_type] || 'fa-solid fa-question';
   
       return `<li style="display: flex; align-items: center; justify-content: center; gap: 10px;">
@@ -346,25 +333,15 @@ export class OrderService {
     const meats = this.ingredients
       .filter(ingredient => ingredient.ingredient_type === 'MEAT')
       .map(ingredient => {
-        let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
-
-        if (!this.isIngredientTranslationAvailable(ingredient.name)) {
-          ingredientNameTranslated = ingredient.name;
-        }
-
+        let ingredientNameTranslated = this.getTranslatedIngredientName(ingredient.name);
         return `<option value="${ingredient.name}">${ingredientNameTranslated}</option>`;
       }).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
     const sauces = this.ingredients
       .filter(ingredient => ingredient.ingredient_type === 'SAUCE')
       .map(ingredient => {
-        let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredient.name);
-
-        if (!this.isIngredientTranslationAvailable(ingredient.name)) {
-          ingredientNameTranslated = ingredient.name;
-        }
-
-      return `<option value="${ingredient.name}">${ingredientNameTranslated}</option>`;
+        let ingredientNameTranslated = this.getTranslatedIngredientName(ingredient.name);
+        return `<option value="${ingredient.name}">${ingredientNameTranslated}</option>`;
     }).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
     const ingredientsHeading = this.langService.currentLang === 'pl' ? `<h3>Skladniki</h3>` : `<h3>Ingredients</h3>`;
@@ -591,8 +568,7 @@ export class OrderService {
 
     const beverageNamesTranslated = this.beverages
       .map(beverage => {
-        let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverage.name);
-        if (!this.isBeverageTranslationAvailable(beverage.name)) beverageNameTranslated = beverage.name;
+        let beverageNameTranslated = this.getTranslatedBeverageName(beverage.name);
         return beverageNameTranslated;
       })
       .sort((a, b) => a.localeCompare(b, this.langService.currentLang))
@@ -638,16 +614,12 @@ export class OrderService {
   async startChoosingBeverageProperties(beverageName: string): Promise<void> {
 
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-    let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverageName);
-
-    if (!this.isBeverageTranslationAvailable(beverageName)) {
-      beverageNameTranslated = beverageName;
-    }
+    let beverageNameTranslated = this.getTranslatedBeverageName(beverageName);
 
     const beverages = this.beverages.filter(beverage => beverage.name === beverageName);
     const beverageCapacities = beverages.map(beverage => {
         return `<option value="${beverage.capacity}">${beverage.capacity} L</option>`;
-      }).join('');
+    }).join('');
 
     const selectCapacityHeading = this.langService.currentLang === 'pl' ? `<h3>Wybierz pojemnosc</h3>` : `<h3>Select capacity</h3>`;
     const howManyHeading = this.langService.currentLang === 'pl' ? `<h3>Jaka ilosc?</h3>` : `<h3>How many?</h3>`;
@@ -859,10 +831,7 @@ export class OrderService {
     const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
     const addonNames = this.addons.map(addon => {
-        let addonNameTranslated = this.translate.instant('menu.addons.' + addon.name);
-        if (!this.isAddonTranslationAvailable(addon.name)) {
-          addonNameTranslated = addon.name;
-        }
+        let addonNameTranslated = this.getTranslatedAddonName(addon.name);
         return `<option value="${addon.name}">${addonNameTranslated}</option>`;
       }).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
@@ -1048,10 +1017,7 @@ export class OrderService {
 
       this.setOrderData(this.order);
 
-      const addonNameTranslated = this.isAddonTranslationAvailable(addon.name)
-        ? this.translate.instant('menu.addons.' + addon.name)
-        : addon.name;
-      
+      const addonNameTranslated = this.getTranslatedAddonName(addon.name);
       this.askWhetherOrderComplete(addonNameTranslated);
     }
   } 
@@ -1061,17 +1027,9 @@ export class OrderService {
     let orderMealsList = Object.keys(this.order.meals).map(mealNameWithDetails => {
       const parts = mealNameWithDetails.split('_');
 
-      const mealName = this.isMealTranslationAvailable(parts[0])
-        ? this.translate.instant('menu.meals.' + parts[0])
-        : parts[0];
-
-      const meatName = this.isIngredientTranslationAvailable(parts[1])
-        ? this.translate.instant('menu.meals.ingredients.' + parts[1])
-        : parts[1];
-
-      const sauceName = this.isIngredientTranslationAvailable(parts[2])
-        ? this.translate.instant('menu.meals.ingredients.' + parts[2])
-        : parts[2];
+      const mealName = this.getTranslatedMealName(parts[0]);
+      const meatName = this.getTranslatedIngredientName(parts[1]);
+      const sauceName = this.getTranslatedIngredientName(parts[2]);
 
       const mealSizes = Object.entries(this.order.meals[mealNameWithDetails])
         .filter(([size, quantity]) => quantity > 0) 
@@ -1106,10 +1064,7 @@ export class OrderService {
     }).join('');
 
     let orderBeveragesList = Object.keys(this.order.beverages).map(beverageNameWithDetails => {
-      const beverageName = this.isBeverageTranslationAvailable(beverageNameWithDetails)
-        ? this.translate.instant('menu.beverages.' + beverageNameWithDetails)
-        : beverageNameWithDetails;
-
+      const beverageName = this.getTranslatedBeverageName(beverageNameWithDetails);
       const beverageCapacities = Object.entries(this.order.beverages[beverageNameWithDetails])
         .filter(([capacity, quantity]) => quantity > 0) 
         .map(([capacity, quantity]) => {
@@ -1146,9 +1101,7 @@ export class OrderService {
         const finalUnitPrice = addon.promotion 
         ? baseUnitPrice * (1 - addon.promotion.discount_percentage / 100) 
         : baseUnitPrice;
-        const addonNameTranslated = this.isAddonTranslationAvailable(addonName)
-          ? this.translate.instant('menu.addons.' + addonName)
-          : addonName;
+        const addonNameTranslated = this.getTranslatedAddonName(addonName);
 
         return `
           <div class="addon-item">
@@ -2129,7 +2082,7 @@ export class OrderService {
     orderTypes.forEach((type) => {
       const translationKey = 'order-management.order_type.' + type; 
       const translated = this.translate.instant(translationKey);
-      orderTypesTranslated[type] = this.isOrderTypeTranslationAvailable(type) ? translated : type;
+      orderTypesTranslated[type] = this.getTranslatedOrderType(type);
     });
 
     const { value: choice } = await Swal.fire({
@@ -2269,29 +2222,58 @@ export class OrderService {
     });
   }
 
-  isMealTranslationAvailable(mealName: string): boolean {
-    const translatedName = this.translate.instant('menu.meals.' + mealName);
-    return translatedName !== 'menu.meals.' + mealName;
+  getTranslatedMealName(mealName: string): string {
+    let mealNameTranslated = this.translate.instant('menu.meals.' + mealName);
+    if (mealNameTranslated === 'menu.meals.' + mealName) {
+      mealNameTranslated = mealName;
+    }
+    
+    return mealNameTranslated;
   }
 
-  isIngredientTranslationAvailable(ingredientName: string): boolean {
-    const translatedName = this.translate.instant('menu.meals.ingredients.' + ingredientName);
-    return translatedName !== 'menu.meals.ingredients.' + ingredientName;
+  getTranslatedBeverageName(beverageName: string): string {
+    let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverageName);
+    if (beverageNameTranslated === 'menu.addons.' + beverageName) {
+      beverageNameTranslated = beverageName;
+    }
+    
+    return beverageNameTranslated;
   }
 
-  isBeverageTranslationAvailable(beverageName: string): boolean {
-    const translatedName = this.translate.instant('menu.beverages.' + beverageName);
-    return translatedName !== 'menu.beverages.' + beverageName;
+  getTranslatedAddonName(addonName: string): string {
+    let addonNameTranslated = this.translate.instant('menu.addons.' + addonName);
+    if (addonNameTranslated === 'menu.addons.' + addonName) {
+      addonNameTranslated = addonName;
+    }
+    
+    return addonNameTranslated;
   }
 
-  isAddonTranslationAvailable(addonName: string): boolean {
-    const translatedName = this.translate.instant('menu.addons.' + addonName);
-    return translatedName !== 'menu.addons.' + addonName;
+  getTranslatedIngredientName(ingredientName: string): string {
+    let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredientName);
+    if (ingredientNameTranslated === 'menu.meals.ingredients.' + ingredientName) {
+      ingredientNameTranslated = ingredientName;
+    }
+    
+    return ingredientNameTranslated;
   }
 
-  isOrderTypeTranslationAvailable(orderType: string): boolean {
-    const translatedName = this.translate.instant('order-management.order_type.' + orderType);
-    return translatedName !== 'order-management.order_type.' + orderType;
+  getTranslatedOrderStatus(orderStatus: OrderStatus): string {
+    let orderStatusTranslated = this.translate.instant('order-management.order_status.' + orderStatus);
+    if (orderStatusTranslated === 'order-management.order_status.' + orderStatus) {
+      orderStatusTranslated = orderStatus;
+    }
+
+    return orderStatusTranslated;
+  }
+
+  getTranslatedOrderType(orderType: OrderType): string {
+    let orderTypeTranslated = this.translate.instant('order-management.order_type.' + orderType);
+    if (orderTypeTranslated === 'order-management.order_status.' + orderType) {
+      orderTypeTranslated = orderType;
+    }
+
+    return orderTypeTranslated;
   }
 
   setOrderData(order: NewOrderRequest): void {
