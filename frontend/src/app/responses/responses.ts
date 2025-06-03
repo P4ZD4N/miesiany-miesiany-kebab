@@ -370,3 +370,30 @@ export interface RemovedDiscountCodeResponse {
   status_code: number;
   message: string;
 }
+
+export interface EmployeeResponse {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  date_of_birth: Date;
+  job: string;
+  employment_type: EmploymentType,
+  hourly_wage: number;
+  is_active: boolean;
+  hired_at: Date;
+}
+
+export interface WorkScheduleEntryResponse {
+  id: number;
+  employee: EmployeeResponse;
+  date: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface NewWorkScheduleEntryResponse {
+  status_code: number;
+  message: string;
+}

@@ -368,5 +368,8 @@
         "headline": "Nie jestes upowazniony do przejscia na ta strone!",
         "paragraph": "Wydaje sie, ze nie posiadasz uprawnien wymaganych do uzyskania dostepu do tej sekcji. Jesli wierzysz, ze to blad, prosze skontaktowac sie z administratorem.",
         "button": "Wroc"
+    },
+    "work-schedule": {
+        "headline": "Grafik"
     }
 }

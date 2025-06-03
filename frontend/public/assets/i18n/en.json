@@ -365,5 +365,8 @@
         "headline": "You are not able to enter this page!",
         "paragraph": "It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.",
         "button": "Go back"
+    },
+    "work-schedule": {
+        "headline": "Work schedule"
     }
 }

@@ -243,3 +243,10 @@ export interface UpdatedDiscountCodeRequest {
 export interface RemovedDiscountCodeRequest {
   code: string;
 }
+
+export interface NewWorkScheduleEntryRequest {
+  employee_email: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+}

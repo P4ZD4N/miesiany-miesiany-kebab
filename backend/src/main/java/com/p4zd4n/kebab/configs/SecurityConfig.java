@@ -71,16 +71,16 @@ public class SecurityConfig {
                                 "/api/v1/discount-codes/update-discount-code",
                                 "/api/v1/discount-codes/remove-discount-code",
                                 "/api/v1/newsletter/subscribers",
-                                "/api/v1/work-schedule/all-entries",
                                 "/api/v1/work-schedule/add-entry",
-                                "/api/v1/work-schedule/remove-entry",
-                                "/api/v1/employees/all"
+                                "/api/v1/work-schedule/remove-entry"
                         ).hasRole("MANAGER")
                         .requestMatchers(
                                 "api/v1/auth/logout",
                                 "/api/v1/orders/all",
                                 "/api/v1/orders/update-order",
-                                "/api/v1/orders/remove-order"
+                                "/api/v1/orders/remove-order",
+                                "/api/v1/work-schedule/all-entries",
+                                "/api/v1/employees/all"
                         ).hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )

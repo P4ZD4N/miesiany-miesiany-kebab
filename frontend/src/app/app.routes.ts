@@ -26,6 +26,8 @@ import { DiscountCodeManagementLayoutComponent } from './components/discount-cod
 import { DiscountCodeManagementComponent } from './components/discount-code-management/discount-code-management/discount-code-management.component';
 import { OrderStatusDisplayComponent } from './components/order-status-display/order-status-display/order-status-display.component';
 import { OrderStatusDisplayLayoutComponent } from './components/order-status-display/order-status-display-layout.component';
+import { WorkScheduleLayoutComponent } from './components/work-schedule/work-schedule-layout-component';
+import { WorkScheduleComponent } from './components/work-schedule/work-schedule/work-schedule.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -67,5 +69,8 @@ export const routes: Routes = [
     ]},
     { path: 'order-status-display', component: OrderStatusDisplayLayoutComponent, children: [
         { path: '', component: OrderStatusDisplayComponent }
+    ]},
+    { path: 'work-schedule', component: WorkScheduleLayoutComponent, children: [
+        { path: '', component: WorkScheduleComponent }
     ]}
 ];

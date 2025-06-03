@@ -1,0 +1,32 @@
+<section class="work-schedule" *ngIf="isManager() || isEmployee()">
+    <h1>{{ 'work-schedule.headline' | translate }}</h1>
+    <p>{{ scheduleDate }}</p>
+    <section class="table-and-buttons">
+        <button class="prev-next-buttons" (click)="previousMonth()"><</button>
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>Pracownik</th>
+                    <th *ngFor="let day of daysInSchedule">{{ day }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let employee of employees">
+                    <td>{{ employee.first_name }} {{ employee.last_name }} ({{ employee.email }})</td> 
+                    <td *ngFor="let day of daysInSchedule">
+                        <ng-container *ngFor="let entry of getMatchingEntries(employee.email, day)">
+                            <p>{{ entry.start_time | slice:0:5 }} - {{ entry.end_time | slice:0:5 }}</p>
+                        </ng-container>
+                        <button *ngIf="isManager()" class="btn btn-success" (click)="startAddingWorkScheduleEntry(employee, day)">+</button>
+                    </td> 
+                </tr>
+            </tbody>
+        </table>
+        <button class="prev-next-buttons" (click)="nextMonth()">></button>
+    </section>
+</section>
+
+<section class="verification-required" *ngIf="!isEmployee() && !isManager()">
+    <h1>{{ 'verification_required.headline' | translate }}</h1>
+    <p>{{ 'verification_required.paragraph' | translate }}</p>
+</section>
