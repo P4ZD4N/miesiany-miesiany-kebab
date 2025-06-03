@@ -397,3 +397,8 @@ export interface NewWorkScheduleEntryResponse {
   status_code: number;
   message: string;
 }
+
+export interface RemovedWorkScheduleEntryResponse {
+  status_code: number;
+  message: string;
+}

@@ -15,7 +15,10 @@
                     <td>{{ employee.first_name }} {{ employee.last_name }} ({{ employee.email }})</td> 
                     <td *ngFor="let day of daysInSchedule">
                         <ng-container *ngFor="let entry of getMatchingEntries(employee.email, day)">
-                            <p>{{ entry.start_time | slice:0:5 }} - {{ entry.end_time | slice:0:5 }}</p>
+                            <div class="entry-line">
+                                <button *ngIf="isManager()" class="button-remove" (click)="removeWorkScheduleEntry(employee.email, day, entry.start_time, entry.end_time)">X</button>
+                                <p>{{ entry.start_time | slice:0:5 }} - {{ entry.end_time | slice:0:5 }}</p>
+                            </div>
                         </ng-container>
                         <button *ngIf="isManager()" class="btn btn-success" (click)="startAddingWorkScheduleEntry(employee, day)">+</button>
                     </td> 

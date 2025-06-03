@@ -75,6 +75,28 @@
             padding: 10px;
         }
     }
+
+    .button-remove {
+        background: none;
+        border: none;
+        transition: color 0.3s ease;
+        color: rgb(255, 0, 0);
+
+        &:hover {
+            color: #b90909;
+        }
+    }
+
+    .entry-line {
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        gap: 8px; 
+        
+        p {
+            margin: 0;
+        }
+    }
 }
 
 .verification-required {

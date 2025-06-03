@@ -2,8 +2,8 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewWorkScheduleEntryResponse, WorkScheduleEntryResponse } from '../../responses/responses';
-import { NewWorkScheduleEntryRequest } from '../../requests/requests';
+import { NewWorkScheduleEntryResponse, RemovedWorkScheduleEntryResponse, WorkScheduleEntryResponse } from '../../responses/responses';
+import { NewWorkScheduleEntryRequest, RemovedWorkScheduleEntryRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,16 @@ export class WorkScheduleService {
     });
 
     return this.http.post<NewWorkScheduleEntryResponse>(`${this.apiUrl}/add-entry`, request, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  removeWorkScheduleEntry(request: RemovedWorkScheduleEntryRequest): Observable<RemovedWorkScheduleEntryResponse> {
+
+    const requestBody = { id: request.id };
+    
+    return this.http.delete<RemovedWorkScheduleEntryResponse>(`${this.apiUrl}/remove-entry`, { body: requestBody, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

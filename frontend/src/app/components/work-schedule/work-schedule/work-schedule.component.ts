@@ -4,11 +4,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { LangService } from '../../../services/lang/lang.service';
 import { EmployeeService } from '../../../services/employees/employee.service';
-import { EmployeeResponse, OpeningHoursResponse, WorkScheduleEntryResponse } from '../../../responses/responses';
+import { EmployeeResponse, OpeningHoursResponse, RemovedWorkScheduleEntryResponse, WorkScheduleEntryResponse } from '../../../responses/responses';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 import { WorkScheduleService } from '../../../services/work-schedule/work-schedule.service';
-import { NewWorkScheduleEntryRequest } from '../../../requests/requests';
+import { NewWorkScheduleEntryRequest, RemovedWorkScheduleEntryRequest } from '../../../requests/requests';
 import { OpeningHoursService } from '../../../services/opening-hours/opening-hours.service';
 
 @Component({
@@ -314,6 +314,46 @@ export class WorkScheduleComponent implements OnInit {
       const [dd, mm, yyyy] = rawDate.split(".");
       const formattedDate = `${yyyy}-${mm}-${dd}`;
       return entry.employee.email === employeeEmail && entry.date === formattedDate;
+    });
+  }
+
+  removeWorkScheduleEntry(employeeEmail: string, day: string, startTime: string, endTime: string): void {
+
+    let matchingEntries = this.getMatchingEntries(employeeEmail, day).filter(entry =>
+      entry.start_time === startTime && entry.end_time === endTime
+    );
+    
+    if (matchingEntries.length !== 1) return;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ten wpis?`
+        : `Are you sure you want to remove this entry?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.workScheduleService.removeWorkScheduleEntry({ id: matchingEntries[0].id } as RemovedWorkScheduleEntryRequest).subscribe(() => {
+          Swal.fire({
+            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto wpis do grafiku!` : `Successfully removed work schedule entry!`,
+            icon: 'success',
+            iconColor: 'green',
+            confirmButtonColor: 'green',
+            background: '#141414',
+            color: 'white',
+            confirmButtonText: 'Ok',
+          });
+          this.loadWorkScheduleEntries();
+        });
+      }
     });
   }
 }
