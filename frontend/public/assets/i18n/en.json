@@ -367,6 +367,9 @@
         "button": "Go back"
     },
     "work-schedule": {
-        "headline": "Work schedule"
+        "headline": "Work schedule",
+        "buttons": {
+            "download": "Download work schedule"
+        }
     }
 }

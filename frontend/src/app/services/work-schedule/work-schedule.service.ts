@@ -19,6 +19,19 @@ export class WorkScheduleService {
     return this.http.get<WorkScheduleEntryResponse[]>(`${this.apiUrl}/all-entries`, { withCredentials: true });
   }
 
+  getWorkSchedulePDF(startDate: string, endDate: string): Observable<Blob> {
+
+    const params = {
+      startDate: startDate,
+      endDate: endDate
+    };
+
+    return this.http.get(`${this.apiUrl}/get-work-schedule-pdf`, { params: params, responseType: 'blob', withCredentials: true }).pipe(
+      map(response => response), 
+      catchError(this.handleError) 
+    );
+  }
+
   addWorkScheduleEntry(request: NewWorkScheduleEntryRequest): Observable<NewWorkScheduleEntryResponse> {
   
     const headers = new HttpHeaders({

@@ -1,11 +1,18 @@
 package com.p4zd4n.kebab.services.workschedule;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.entities.WorkScheduleEntry;
 import com.p4zd4n.kebab.exceptions.alreadyexists.WorkScheduleEntryAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidTimeRangeException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.WorkScheduleEntryNotFoundException;
+import com.p4zd4n.kebab.exceptions.others.InvalidDateOrderException;
+import com.p4zd4n.kebab.exceptions.others.NullEndDateException;
+import com.p4zd4n.kebab.exceptions.others.NullStartDateException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
 import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import com.p4zd4n.kebab.repositories.WorkScheduleEntryRepository;
@@ -17,8 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -132,4 +143,92 @@ public class WorkScheduleService {
 
         return response;
     }
+
+    public byte[] generateWorkSchedulePDF(LocalDate startDate, LocalDate endDate, String language) throws DocumentException {
+
+        if (startDate == null) throw new NullStartDateException();
+        if (endDate == null) throw new NullEndDateException();
+        if (startDate.isAfter(endDate)) throw new InvalidDateOrderException();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4.rotate());
+        PdfWriter.getInstance(document, out);
+
+        document.open();
+
+        addDocumentHeader(document, startDate, endDate, language);
+        addDocumentTable(document, startDate, endDate);
+
+        document.close();
+
+        return out.toByteArray();
+    }
+
+    private void addDocumentHeader(
+            Document document, LocalDate startDate, LocalDate endDate, String language
+    ) throws DocumentException {
+        Font headerFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
+
+        if (language.equalsIgnoreCase("pl")) {
+            document.add(new Paragraph("Harmonogram pracy", headerFont));
+            document.add(new Paragraph("Od: " + startDate + " Do: " + endDate, headerFont));
+            document.add(Chunk.NEWLINE);
+            return;
+        }
+
+        document.add(new Paragraph("Work schedule", headerFont));
+        document.add(new Paragraph("From: " + startDate + " To: " + endDate, headerFont));
+        document.add(Chunk.NEWLINE);
+    }
+
+    private void addDocumentTable(
+            Document document, LocalDate startDate, LocalDate endDate
+    ) throws DocumentException {
+        Font tableFont = new Font(Font.FontFamily.HELVETICA, 8);
+        List<WorkScheduleEntry> filteredWorkScheduleEntries = workScheduleEntryRepository.findAll().stream()
+                .filter(entry -> !entry.getDate().isBefore(startDate) && !entry.getDate().isAfter(endDate))
+                .toList();
+        List<LocalDate> daysInMonth = startDate.datesUntil(endDate.plusDays(1)).toList();
+        Map<Employee, List<WorkScheduleEntry>> entriesByEmployee = filteredWorkScheduleEntries.stream()
+                .collect(Collectors.groupingBy(WorkScheduleEntry::getEmployee));
+        PdfPTable table = new PdfPTable(daysInMonth.size() + 1);
+
+        table.setWidthPercentage(100);
+        table.addCell(createCenteredCell("", tableFont));
+
+        daysInMonth.forEach(date -> table.addCell(createCenteredCell(date.format(DateTimeFormatter.ofPattern("dd.MM")), tableFont)));
+        entriesByEmployee.forEach((employee, workSchedule) -> {
+            table.addCell(createCenteredCell(employee.getFirstName() + " " + employee.getLastName(), tableFont));
+
+            daysInMonth.forEach(date -> {
+                List<WorkScheduleEntry> entriesForDay = workSchedule.stream()
+                        .filter(entry -> entry.getDate().equals(date))
+                        .toList();
+
+                if (entriesForDay.isEmpty()) {
+                    table.addCell(createCenteredCell("", tableFont));
+                } else {
+                    StringBuilder sb = new StringBuilder();
+
+                    for (int i = 0; i < entriesForDay.size(); i++) {
+                        WorkScheduleEntry e = entriesForDay.get(i);
+                        sb.append(e.getStartTime()).append(" - ").append(e.getEndTime());
+                        if (i < entriesForDay.size() - 1) sb.append("\n\n");
+                    }
+
+                    table.addCell(createCenteredCell(sb.toString().trim(), tableFont));
+                }
+            });
+        });
+
+        document.add(table);
+    }
+
+    private PdfPCell createCenteredCell(String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        return cell;
+    }
+
 }

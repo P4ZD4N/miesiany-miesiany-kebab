@@ -1,6 +1,7 @@
 <section class="work-schedule" *ngIf="isManager() || isEmployee()">
     <h1>{{ 'work-schedule.headline' | translate }}</h1>
     <p>{{ scheduleDate }}</p>
+
     <section class="table-and-buttons">
         <button class="prev-next-buttons" (click)="previousMonth()"><</button>
         <table class="schedule-table">
@@ -27,6 +28,8 @@
         </table>
         <button class="prev-next-buttons" (click)="nextMonth()">></button>
     </section>
+
+    <button class="btn btn-success btn-download" (click)="downloadWorkSchedule()">{{ 'work-schedule.buttons.download' | translate }}</button>
 </section>
 
 <section class="verification-required" *ngIf="!isEmployee() && !isManager()">

@@ -80,7 +80,8 @@ public class SecurityConfig {
                                 "/api/v1/orders/update-order",
                                 "/api/v1/orders/remove-order",
                                 "/api/v1/work-schedule/all-entries",
-                                "/api/v1/employees/all"
+                                "/api/v1/employees/all",
+                                "/api/v1/work-schedule/get-work-schedule-pdf"
                         ).hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
                 )

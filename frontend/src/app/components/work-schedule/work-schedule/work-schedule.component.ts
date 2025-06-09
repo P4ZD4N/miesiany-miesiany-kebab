@@ -356,4 +356,23 @@ export class WorkScheduleComponent implements OnInit {
       }
     });
   }
+
+  downloadWorkSchedule(): void {
+
+    let lastDayOfCurrentMonth = new Date(this.currentYear, this.currentMonth, 0).getDate()
+    let monthFormatted = this.currentMonth.toString().length == 2 ? this.currentMonth : "0" + this.currentMonth;
+    let startDate =  `${this.currentYear}-${monthFormatted}-01`;
+    let endDate = `${this.currentYear}-${monthFormatted}-${lastDayOfCurrentMonth}`;
+
+    this.workScheduleService.getWorkSchedulePDF(startDate, endDate).subscribe({
+      next: (response: Blob) => {
+        const url = window.URL.createObjectURL(response);
+        window.open(url);
+      },
+      error: (error) => {
+        console.error('Error previewing work schedule: ', error);
+      },
+    });
+
+  }
 }

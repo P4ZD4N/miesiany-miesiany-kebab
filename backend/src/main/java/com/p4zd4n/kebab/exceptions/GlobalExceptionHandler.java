@@ -11,6 +11,9 @@ import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchException;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
+import com.p4zd4n.kebab.exceptions.others.InvalidDateOrderException;
+import com.p4zd4n.kebab.exceptions.others.NullEndDateException;
+import com.p4zd4n.kebab.exceptions.others.NullStartDateException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
@@ -867,6 +870,54 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.GONE.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidDateOrderException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidDateOrderException(HttpServletRequest request) {
+        log.error("Attempted request to {} with invalid date order", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("dateOrder.invalid", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(NullEndDateException.class)
+    public ResponseEntity<ExceptionResponse> handleNullEndDateException(HttpServletRequest request) {
+        log.error("Attempted request to {} with null end date", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("endDate.notNull", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(NullStartDateException.class)
+    public ResponseEntity<ExceptionResponse> handleNullStartDateException(HttpServletRequest request) {
+        log.error("Attempted request to {} with null start date", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("startDate.notNull", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message(message)
                         .build());
     }

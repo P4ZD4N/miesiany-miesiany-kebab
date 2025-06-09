@@ -370,6 +370,9 @@
         "button": "Wroc"
     },
     "work-schedule": {
-        "headline": "Grafik"
+        "headline": "Grafik",
+        "buttons": {
+            "download": "Pobierz grafik"
+        }
     }
 }
