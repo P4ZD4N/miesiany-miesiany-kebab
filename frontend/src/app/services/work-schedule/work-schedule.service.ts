@@ -21,12 +21,16 @@ export class WorkScheduleService {
 
   getWorkSchedulePDF(startDate: string, endDate: string): Observable<Blob> {
 
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
     const params = {
       startDate: startDate,
       endDate: endDate
     };
 
-    return this.http.get(`${this.apiUrl}/get-work-schedule-pdf`, { params: params, responseType: 'blob', withCredentials: true }).pipe(
+    return this.http.get(`${this.apiUrl}/get-work-schedule-pdf`, { headers, params: params, responseType: 'blob', withCredentials: true }).pipe(
       map(response => response), 
       catchError(this.handleError) 
     );
