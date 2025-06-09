@@ -1,0 +1,82 @@
+.employee-management {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+        color: red;
+        text-align: center;
+    }
+
+    thead {
+        border-bottom: 3px solid red;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        margin-bottom: 2rem;
+        font-size: 24px;
+        text-align: center;
+        width: 70%;
+        scrollbar-color: #ff0000 #f1f1f1; 
+        scrollbar-width: thin; 
+    }
+
+    th {
+        background-color: black;
+        color: red;
+        padding: 1rem;
+    }
+
+    tr {
+        color: white;
+        background: none;
+        border-bottom: 1px solid white;
+    }
+
+    td {
+        padding: 1em;
+    }
+
+    .green-circle {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: rgb(13, 102, 25);
+    }
+
+    .gray-circle {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: rgb(56, 56, 56);
+    }
+}
+
+.verification-required {
+    padding: 3rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+
+    h1 {
+        color: red;
+        text-align: center;
+    }
+    
+    p {
+        text-align: center;
+        color: white;
+        font-size: 24px;
+        width: 80%;
+        margin-bottom: 0.2em;
+    }
+}

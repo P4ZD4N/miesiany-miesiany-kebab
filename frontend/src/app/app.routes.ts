@@ -28,6 +28,8 @@ import { OrderStatusDisplayComponent } from './components/order-status-display/o
 import { OrderStatusDisplayLayoutComponent } from './components/order-status-display/order-status-display-layout.component';
 import { WorkScheduleLayoutComponent } from './components/work-schedule/work-schedule-layout-component';
 import { WorkScheduleComponent } from './components/work-schedule/work-schedule/work-schedule.component';
+import { EmployeeManagementComponent } from './components/employee-management/employee-management/employee-management.component';
+import { EmployeeManagementLayoutComponent } from './components/employee-management/employee-management.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -72,5 +74,8 @@ export const routes: Routes = [
     ]},
     { path: 'work-schedule', component: WorkScheduleLayoutComponent, children: [
         { path: '', component: WorkScheduleComponent }
+    ]},
+    { path: 'employee-management', component: EmployeeManagementLayoutComponent, children: [
+        { path: '', component: EmployeeManagementComponent }
     ]}
 ];

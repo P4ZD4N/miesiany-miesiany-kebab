@@ -371,5 +371,24 @@
         "buttons": {
             "download": "Download work schedule"
         }
+    },
+    "employee-management": {
+        "headline": "Employee management",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "phone": "Phone",
+        "date_of_birth": "Date of birth",
+        "job": "Job",
+        "jobs": {
+            "Cashier": "Cashier"
+        },
+        "employment_type": "Employment type",
+        "employment_types": {
+            "PERMANENT": "Permanent",
+            "MANDATE CONTRACT": "Mandate contract"
+        },
+        "hourly_wage": "Hourly wage gross",
+        "hired_at": "Hired at",
+        "active": "Active"
     }
 }

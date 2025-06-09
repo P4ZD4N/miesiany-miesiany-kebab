@@ -1,0 +1,43 @@
+<section class="employee-management" *ngIf="isManager()">
+    <h1>{{ 'employee-management.headline' | translate }}</h1>
+
+    <table class="employee-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>{{ 'employee-management.first_name' | translate }}</th>
+                <th>{{ 'employee-management.last_name' | translate }}</th>
+                <th>Email</th>
+                <th>{{ 'employee-management.phone' | translate }}</th>
+                <th>{{ 'employee-management.date_of_birth' | translate }}</th>
+                <th>{{ 'employee-management.job' | translate }}</th>
+                <th>{{ 'employee-management.employment_type' | translate }}</th>
+                <th>{{ 'employee-management.hourly_wage' | translate }}</th>
+                <th>{{ 'employee-management.hired_at' | translate }}</th>
+                <th>{{ 'employee-management.active' | translate }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let employee of employees">
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.first_name }}</td>
+                <td>{{ employee.last_name }}</td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.phone_number }}</td>
+                <td>{{ employee.date_of_birth }}</td>
+                <td>{{ getTranslatedJobName(employee.job) }}</td>
+                <td>{{ getTranslatedEmploymentType(employee.employment_type) }}</td>
+                <td>{{ employee.hourly_wage }}</td>
+                <td>{{ employee.hired_at }}</td>
+                <td>
+                    <span [ngClass]="employee.is_active ? 'green-circle' : 'gray-circle'"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="verification-required" *ngIf="!isManager()">
+    <h1>{{ 'verification_required.headline' | translate }}</h1>
+    <p>{{ 'verification_required.paragraph' | translate }}</p>
+</section>

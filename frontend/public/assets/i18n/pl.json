@@ -374,5 +374,24 @@
         "buttons": {
             "download": "Pobierz grafik"
         }
+    },
+    "employee-management": {
+        "headline": "Zarzadzanie pracownikami",
+        "first_name": "Imie",
+        "last_name": "Nazwisko",
+        "phone": "Telefon",
+        "date_of_birth": "Data urodzenia",
+        "job": "Stanowisko",
+        "jobs": {
+            "Cashier": "Kasjer"
+        },
+        "employment_type": "Typ zatrudnienia",
+        "employment_types": {
+            "PERMANENT": "Umowa o prace",
+            "MANDATE CONTRACT": "Umowa zlecenie"
+        },
+        "hourly_wage": "Stawka godzinowa brutto",
+        "hired_at": "Zatrudniony dnia",
+        "active": "Aktywny"
     }
 }
