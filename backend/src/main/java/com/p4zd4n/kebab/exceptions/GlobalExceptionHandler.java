@@ -10,10 +10,8 @@ import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchException;
-import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
+import com.p4zd4n.kebab.exceptions.others.*;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidDateOrderException;
-import com.p4zd4n.kebab.exceptions.others.NullEndDateException;
-import com.p4zd4n.kebab.exceptions.others.NullStartDateException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
@@ -936,6 +934,42 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(ManagerDemotionNotAllowedException.class)
+    public ResponseEntity<ExceptionResponse> handleManagerDemotionNotAllowedException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not allowed role change (manager demotion)", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("manager.demotionNotAllowed", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(ManagerPromotionNotAllowedException.class)
+    public ResponseEntity<ExceptionResponse> handleManagerPromotionNotAllowedException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not allowed role change (manager promotion)", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("manager.promotionNotAllowed", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
                         .message(message)
                         .build());
     }

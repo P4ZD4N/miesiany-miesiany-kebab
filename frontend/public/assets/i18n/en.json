@@ -394,8 +394,11 @@
         "buttons": {
             "add": "Add employee",
             "accept": "Accept",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "update": "Update",
+            "remove": "Remove"
         },
-        "new_employee": "New employee"
+        "new_employee": "New employee",
+        "updated_employee": "Updated employee"
     }
 }

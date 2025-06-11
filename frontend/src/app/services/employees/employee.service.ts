@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { EmployeeResponse, NewEmployeeResponse } from '../../responses/responses';
+import { EmployeeResponse, NewEmployeeResponse, UpdatedEmployeeResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewEmployeeRequest } from '../../requests/requests';
+import { NewEmployeeRequest, UpdatedEmployeeRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,18 @@ export class EmployeeService {
     });
 
     return this.http.post<NewEmployeeResponse>(`${this.apiUrl}/add-employee`, newEmployee, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  updateEmployee(updatedEmployee: UpdatedEmployeeRequest): Observable<UpdatedEmployeeResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.put<NewEmployeeResponse>(`${this.apiUrl}/update-employee`, updatedEmployee, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

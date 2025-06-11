@@ -1,26 +1,21 @@
 package com.p4zd4n.kebab.services.employees;
 
-import com.p4zd4n.kebab.entities.DiscountCode;
-import com.p4zd4n.kebab.entities.Employee;
-import com.p4zd4n.kebab.entities.JobApplication;
-import com.p4zd4n.kebab.entities.Manager;
-import com.p4zd4n.kebab.exceptions.alreadyexists.DiscountCodeAlreadyExistsException;
+import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.exceptions.alreadyexists.EmployeeAlreadyExistsException;
-import com.p4zd4n.kebab.exceptions.notfound.JobOfferNotFoundException;
+import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
+import com.p4zd4n.kebab.exceptions.others.ManagerDemotionNotAllowedException;
+import com.p4zd4n.kebab.exceptions.others.ManagerPromotionNotAllowedException;
 import com.p4zd4n.kebab.repositories.EmployeesRepository;
-import com.p4zd4n.kebab.requests.discountcodes.NewDiscountCodeRequest;
 import com.p4zd4n.kebab.requests.employee.NewEmployeeRequest;
-import com.p4zd4n.kebab.responses.discountcodes.DiscountCodeResponse;
-import com.p4zd4n.kebab.responses.discountcodes.NewDiscountCodeResponse;
+import com.p4zd4n.kebab.requests.employee.UpdatedEmployeeRequest;
 import com.p4zd4n.kebab.responses.employee.EmployeeResponse;
 import com.p4zd4n.kebab.responses.employee.NewEmployeeResponse;
-import com.p4zd4n.kebab.responses.jobs.JobOfferApplicationResponse;
+import com.p4zd4n.kebab.responses.employee.UpdatedEmployeeResponse;
+import com.p4zd4n.kebab.utils.PasswordEncoder;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.engine.spi.Managed;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +96,7 @@ public class EmployeesService {
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
-                .password(request.password())
+                .password(PasswordEncoder.encodePassword(request.password()))
                 .phoneNumber(request.phone())
                 .dateOfBirth(request.dateOfBirth())
                 .job(request.job())
@@ -117,5 +112,63 @@ public class EmployeesService {
                 .statusCode(HttpStatus.OK.value())
                 .message("Successfully added new employee with email '" + request.email() + "'")
                 .build();
+    }
+
+    public Employee findEmployeeByEmail(String email) {
+
+        log.info("Started finding employee with email '{}'", email);
+
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EmployeeNotFoundException(email));
+
+        log.info("Successfully found employee with email '{}'", email);
+
+        return employee;
+    }
+
+    public UpdatedEmployeeResponse updateEmployee(Employee employee, UpdatedEmployeeRequest request) {
+
+        UpdatedEmployeeResponse response = UpdatedEmployeeResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated employee with email '" + request.employeeEmail() + "'")
+                .build();
+
+        if (request.updatedFirstName() != null) employee.setFirstName(request.updatedFirstName());
+        if (request.updatedLastName() != null) employee.setLastName(request.updatedLastName());
+        if (request.updatedEmail() != null) updateEmployeeEmail(employee, request);
+        if (request.updatedPassword() != null) employee.setPassword(PasswordEncoder.encodePassword(request.updatedPassword()));
+        if (request.updatedPhone() != null) employee.setPhoneNumber(request.updatedPhone());
+        if (request.updatedJob() != null) updateEmployeeJob(employee, request);
+        if (request.updatedHourlyWage() != null) employee.setHourlyWage(request.updatedHourlyWage());
+        if (request.updatedDateOfBirth() != null) employee.setDateOfBirth(request.updatedDateOfBirth());
+        if (request.updatedEmploymentType() != null) employee.setEmploymentType(request.updatedEmploymentType());
+        if (request.updatedActive() != null) employee.setActive(request.updatedActive());
+        if (request.updatedHiredDate() != null) employee.setHiredAt(request.updatedHiredDate());
+
+        employeeRepository.save(employee);
+
+        return response;
+    }
+
+    private void updateEmployeeEmail(Employee employee, UpdatedEmployeeRequest request) {
+        Optional<Employee> existingEmployee = employeeRepository.findByEmail(request.updatedEmail());
+
+        if (existingEmployee.isPresent() && !existingEmployee.get().getId().equals(employee.getId())) {
+            throw new EmployeeAlreadyExistsException(request.updatedEmail());
+        }
+
+        employee.setEmail(request.updatedEmail());
+    }
+
+    private void updateEmployeeJob(Employee employee, UpdatedEmployeeRequest request) {
+        if (employee.getJob().equalsIgnoreCase("manager") && !request.updatedJob().equalsIgnoreCase("manager")) {
+            throw new ManagerDemotionNotAllowedException();
+        }
+
+        if (!employee.getJob().equalsIgnoreCase("manager") && request.updatedJob().equalsIgnoreCase("manager")) {
+            throw new ManagerPromotionNotAllowedException();
+        }
+
+        employee.setJob(request.updatedJob());
     }
 }

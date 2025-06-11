@@ -407,3 +407,8 @@ export interface NewEmployeeResponse {
   status_code: number;
   message: string;
 }
+
+export interface UpdatedEmployeeResponse {
+  status_code: number;
+  message: string;
+}

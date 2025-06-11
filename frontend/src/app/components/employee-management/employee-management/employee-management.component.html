@@ -75,9 +75,62 @@
         </tr>
     </table>
 
+    <table class="update-employee-table" *ngIf="isEditing">
+        <tr>
+            <h1>{{ 'employee-management.updated_employee' | translate }}</h1>
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.first_name' | translate }}" maxlength="20" [(ngModel)]="updatedEmployee!.updated_first_name" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.last_name' | translate }}" maxlength="20" [(ngModel)]="updatedEmployee!.updated_last_name" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="Email" maxlength="35" [(ngModel)]="updatedEmployee!.updated_email" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.password' | translate }}" [(ngModel)]="updatedEmployee!.updated_password" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.phone' | translate }}" maxlength="9" [(ngModel)]="updatedEmployee!.updated_phone" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.job' | translate }}" maxlength="16" [(ngModel)]="updatedEmployee!.updated_job" />
+        </tr>
+        <tr>
+            {{ 'employee-management.hourly_wage' | translate }}: <input type="number" placeholder="{{ 'employee-management.hourly_wage' | translate }}" min="1" [(ngModel)]="updatedEmployee!.updated_hourly_wage" /> zl
+        </tr>
+        <tr>
+            {{ 'employee-management.date_of_birth' | translate }}: <input type="date" [(ngModel)]="updatedEmployee!.updated_date_of_birth" />
+        </tr>
+        <tr>
+            {{ 'employee-management.hired_at' | translate }}: <input type="date" [(ngModel)]="updatedEmployee!.updated_hired_date" />
+        </tr>
+        <tr>
+            {{ 'employee-management.active' | translate }}: <input type="checkbox" [(ngModel)]="updatedEmployee!.updated_active" />
+        </tr>
+        <tr>
+            {{ 'employee-management.employment_type' | translate }}: 
+            <select [(ngModel)]="updatedEmployee!.updated_employment_type">
+                <option value="" disabled selected>{{ 'employee-management.employment_type' | translate }}</option>
+                <option *ngFor="let type of employmentTypes" [value]="type">
+                    {{ 'employee-management.employment_types.' + type | translate }}
+                </option>
+            </select>
+        </tr>
+        <tr>
+            <button class="button-accept" *ngIf="updatedEmployee" (click)="updateEmployee(updatedEmployee)">{{ 'employee-management.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideUpdateEmployeeTable()">{{ 'employee-management.buttons.cancel' | translate }}</button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
+        </tr>
+    </table>
+
     <table class="employee-table">
         <thead>
             <tr>
+                <th></th>
                 <th>ID</th>
                 <th>{{ 'employee-management.first_name' | translate }}</th>
                 <th>{{ 'employee-management.last_name' | translate }}</th>
@@ -93,6 +146,10 @@
         </thead>
         <tbody>
             <tr *ngFor="let employee of employees">
+                <td>
+                    <button class="button-update" *ngIf="!isEditing && !isAdding" (click)="editEmployeeRow(employee)">{{ 'employee-management.buttons.update' | translate }}</button>
+                    <button class="button-remove" *ngIf="!isEditing && !isAdding">{{ 'employee-management.buttons.remove' | translate }}</button>
+                </td>
                 <td>{{ employee.id }}</td>
                 <td>{{ employee.first_name }}</td>
                 <td>{{ employee.last_name }}</td>

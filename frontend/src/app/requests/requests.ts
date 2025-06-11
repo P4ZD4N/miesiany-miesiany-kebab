@@ -262,8 +262,23 @@ export interface NewEmployeeRequest {
   email: string;
   password: string;
   phone: string;
-  date_of_birth: Date| null;
+  date_of_birth: Date | null;
   job: string;
   employment_type: EmploymentType | null,
   hourly_wage: number;
+}
+
+export interface UpdatedEmployeeRequest {
+  employee_email: string,
+  updated_first_name: string;
+  updated_last_name: string;
+  updated_email: string;
+  updated_password: string | null;
+  updated_phone: string;
+  updated_date_of_birth: Date | null;
+  updated_job: string;
+  updated_employment_type: EmploymentType | null,
+  updated_hourly_wage: number;
+  updated_active: boolean;
+  updated_hired_date: Date | null;
 }

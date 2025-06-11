@@ -397,8 +397,11 @@
         "buttons": {
             "add": "Dodaj pracownika",
             "accept": "Akceptuj",
-            "cancel": "Anuluj"
+            "cancel": "Anuluj",
+            "update": "Aktualizuj",
+            "remove": "Usun"
         },
-        "new_employee": "Nowy pracownik"
+        "new_employee": "Nowy pracownik",
+        "updated_employee": "Aktualizowany pracownik"
     }
 }

@@ -1,10 +1,15 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.entities.Employee;
+import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.requests.employee.NewEmployeeRequest;
+import com.p4zd4n.kebab.requests.employee.UpdatedEmployeeRequest;
 import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
 import com.p4zd4n.kebab.responses.employee.EmployeeResponse;
 import com.p4zd4n.kebab.responses.employee.NewEmployeeResponse;
+import com.p4zd4n.kebab.responses.employee.UpdatedEmployeeResponse;
 import com.p4zd4n.kebab.responses.jobs.NewJobOfferResponse;
+import com.p4zd4n.kebab.responses.jobs.UpdatedJobOfferResponse;
 import com.p4zd4n.kebab.services.employees.EmployeesService;
 import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
@@ -44,6 +49,23 @@ public class EmployeesController {
         NewEmployeeResponse response = employeesService.addEmployee(request);
 
         log.info("Successfully added new employee with email: {}", request.email());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-employee")
+    public ResponseEntity<UpdatedEmployeeResponse> updateEmployee(
+            @RequestHeader(value = "Accept-Language") String language,
+            @Valid @RequestBody UpdatedEmployeeRequest request
+    ) {
+        LanguageValidator.validateLanguage(language);
+
+        log.info("Received update job employee request");
+
+        Employee existingEmployee = employeesService.findEmployeeByEmail(request.employeeEmail());
+        UpdatedEmployeeResponse response = employeesService.updateEmployee(existingEmployee, request);
+
+        log.info("Successfully updated employee with email: {}", request.employeeEmail());
 
         return ResponseEntity.ok(response);
     }

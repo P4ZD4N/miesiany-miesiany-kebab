@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeResponse } from '../../../responses/responses';
-import { NewEmployeeRequest } from '../../../requests/requests';
+import { NewEmployeeRequest, UpdatedEmployeeRequest } from '../../../requests/requests';
 import { EmploymentType } from '../../../enums/employment-type.enum';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -31,6 +31,7 @@ export class EmployeeManagementComponent implements OnInit {
     employment_type: null,
     hourly_wage: 0
   };
+  updatedEmployee: UpdatedEmployeeRequest | null = null;
 
   isAdding = false;
   isEditing = false;
@@ -121,10 +122,62 @@ export class EmployeeManagementComponent implements OnInit {
     });
   }
 
- hideAddEmployeeTable(): void {
+  editEmployeeRow(employee: EmployeeResponse) {
+    if (this.isEditing) {
+      return;
+    }
+
+    this.hideErrorMessages();
+    this.isEditing = true;
+
+    this.updatedEmployee = {
+      employee_email: employee.email,
+      updated_first_name: employee.first_name,
+      updated_last_name: employee.last_name,
+      updated_email: employee.email,
+      updated_password: null,
+      updated_phone: employee.phone_number,
+      updated_job: employee.job,
+      updated_hourly_wage: employee.hourly_wage,
+      updated_date_of_birth: employee.date_of_birth,
+      updated_employment_type: employee.employment_type,
+      updated_active: employee.is_active,
+      updated_hired_date: employee.hired_at
+    };
+  }
+
+  updateEmployee(request: UpdatedEmployeeRequest) {
+
+    this.employeeService.updateEmployee(request).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? 'Pomyslnie zaktualizowano pracownika!' : 'Successfully updated employee!',
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        this.loadEmployees();
+        this.hideUpdateEmployeeTable();
+      },
+      error: (error) => {
+        this.handleError(error);
+      }
+    });
+  }
+
+  hideAddEmployeeTable(): void {
     this.hideErrorMessages();
     this.isAdding = false;
     this.resetNewEmployee();
+  }
+
+  hideUpdateEmployeeTable(): void {
+    this.isEditing = false;
+    this.hideErrorMessages();
   }
 
   resetNewEmployee(): void {
