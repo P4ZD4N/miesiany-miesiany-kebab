@@ -1,15 +1,13 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.p4zd4n.kebab.entities.Employee;
-import com.p4zd4n.kebab.entities.JobOffer;
 import com.p4zd4n.kebab.requests.employee.NewEmployeeRequest;
+import com.p4zd4n.kebab.requests.employee.RemovedEmployeeRequest;
 import com.p4zd4n.kebab.requests.employee.UpdatedEmployeeRequest;
-import com.p4zd4n.kebab.requests.jobs.NewJobOfferRequest;
 import com.p4zd4n.kebab.responses.employee.EmployeeResponse;
 import com.p4zd4n.kebab.responses.employee.NewEmployeeResponse;
+import com.p4zd4n.kebab.responses.employee.RemovedEmployeeResponse;
 import com.p4zd4n.kebab.responses.employee.UpdatedEmployeeResponse;
-import com.p4zd4n.kebab.responses.jobs.NewJobOfferResponse;
-import com.p4zd4n.kebab.responses.jobs.UpdatedJobOfferResponse;
 import com.p4zd4n.kebab.services.employees.EmployeesService;
 import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
@@ -66,6 +64,18 @@ public class EmployeesController {
         UpdatedEmployeeResponse response = employeesService.updateEmployee(existingEmployee, request);
 
         log.info("Successfully updated employee with email: {}", request.employeeEmail());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove-employee")
+    public ResponseEntity<RemovedEmployeeResponse> removeOrder(
+            @Valid @RequestBody RemovedEmployeeRequest request
+    ) {
+        log.info("Received remove employee request");
+
+        Employee existingEmployee = employeesService.findEmployeeByEmail(request.email());
+        RemovedEmployeeResponse response = employeesService.removeEmployee(existingEmployee);
 
         return ResponseEntity.ok(response);
     }

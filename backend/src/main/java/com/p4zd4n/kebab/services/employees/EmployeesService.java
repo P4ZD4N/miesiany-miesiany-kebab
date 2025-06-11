@@ -3,6 +3,7 @@ package com.p4zd4n.kebab.services.employees;
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.exceptions.alreadyexists.EmployeeAlreadyExistsException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
+import com.p4zd4n.kebab.exceptions.others.ManagerDeletionNotAllowedException;
 import com.p4zd4n.kebab.exceptions.others.ManagerDemotionNotAllowedException;
 import com.p4zd4n.kebab.exceptions.others.ManagerPromotionNotAllowedException;
 import com.p4zd4n.kebab.repositories.EmployeesRepository;
@@ -10,6 +11,7 @@ import com.p4zd4n.kebab.requests.employee.NewEmployeeRequest;
 import com.p4zd4n.kebab.requests.employee.UpdatedEmployeeRequest;
 import com.p4zd4n.kebab.responses.employee.EmployeeResponse;
 import com.p4zd4n.kebab.responses.employee.NewEmployeeResponse;
+import com.p4zd4n.kebab.responses.employee.RemovedEmployeeResponse;
 import com.p4zd4n.kebab.responses.employee.UpdatedEmployeeResponse;
 import com.p4zd4n.kebab.utils.PasswordEncoder;
 import lombok.extern.slf4j.Slf4j;
@@ -170,5 +172,24 @@ public class EmployeesService {
         }
 
         employee.setJob(request.updatedJob());
+    }
+
+    public RemovedEmployeeResponse removeEmployee(Employee employee) {
+        log.info("Started removing employee with employee '{}'", employee.getEmail());
+
+        if (employee.getJob().equalsIgnoreCase("manager")) {
+            throw new ManagerDeletionNotAllowedException();
+        }
+
+        employeeRepository.delete(employee);
+
+        RemovedEmployeeResponse response = RemovedEmployeeResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully removed employee with email '" + employee.getEmail() + "'")
+                .build();
+
+        log.info("Successfully removed employee with employee '{}'", employee.getEmail());
+
+        return response;
     }
 }

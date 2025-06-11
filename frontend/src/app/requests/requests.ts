@@ -282,3 +282,7 @@ export interface UpdatedEmployeeRequest {
   updated_active: boolean;
   updated_hired_date: Date | null;
 }
+
+export interface RemovedEmployeeRequest {
+  email: string;
+}

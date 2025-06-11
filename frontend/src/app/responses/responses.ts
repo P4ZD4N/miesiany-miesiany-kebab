@@ -412,3 +412,8 @@ export interface UpdatedEmployeeResponse {
   status_code: number;
   message: string;
 }
+
+export interface RemovedEmployeeResponse {
+  status_code: number;
+  message: string;
+}

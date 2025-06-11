@@ -973,4 +973,22 @@ public class GlobalExceptionHandler {
                         .message(message)
                         .build());
     }
+
+    @ExceptionHandler(ManagerDeletionNotAllowedException.class)
+    public ResponseEntity<ExceptionResponse> handleManagerDeletionNotAllowedException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with email of manager", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("manager.deletionNotAllowed", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
 }

@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeResponse } from '../../../responses/responses';
-import { NewEmployeeRequest, UpdatedEmployeeRequest } from '../../../requests/requests';
+import { NewEmployeeRequest, RemovedEmployeeRequest, UpdatedEmployeeRequest } from '../../../requests/requests';
 import { EmploymentType } from '../../../enums/employment-type.enum';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -165,6 +165,58 @@ export class EmployeeManagementComponent implements OnInit {
       },
       error: (error) => {
         this.handleError(error);
+      }
+    });
+  }
+
+  removeEmployee(employee: EmployeeResponse): void {
+    const confirmationMessage =
+      this.langService.currentLang === 'pl'
+      ? `Czy na pewno chcesz usunac pracownika z emailem '${employee.email}'?`
+      : `Are you sure you want to remove employee with email '${employee.email}'?`;
+
+    Swal.fire({
+      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.employeeService.removeEmployee({ email: employee.email } as RemovedEmployeeRequest).subscribe({
+          next: () => {
+            Swal.fire({
+              text: this.langService.currentLang === 'pl'
+                ? `Pomyslnie usunieto pracownika z emailem '${employee.email}'!`
+                : `Successfully removed employee with email '${employee.email}'!`,
+              icon: 'success',
+              iconColor: 'green',
+              confirmButtonColor: 'green',
+              background: '#141414',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
+            this.loadEmployees();
+          },
+          error: (err) => {
+            console.log(err.errorMessages);
+            Swal.fire({
+              text: err.errorMessages['message'],
+              icon: 'error',
+              iconColor: 'red',
+              confirmButtonColor: 'red',
+              background: '#141414',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
+          }
+        });
       }
     });
   }

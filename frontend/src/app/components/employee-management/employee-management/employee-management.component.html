@@ -148,7 +148,7 @@
             <tr *ngFor="let employee of employees">
                 <td>
                     <button class="button-update" *ngIf="!isEditing && !isAdding" (click)="editEmployeeRow(employee)">{{ 'employee-management.buttons.update' | translate }}</button>
-                    <button class="button-remove" *ngIf="!isEditing && !isAdding">{{ 'employee-management.buttons.remove' | translate }}</button>
+                    <button class="button-remove" *ngIf="!isEditing && !isAdding" (click)="removeEmployee(employee)">{{ 'employee-management.buttons.remove' | translate }}</button>
                 </td>
                 <td>{{ employee.id }}</td>
                 <td>{{ employee.first_name }}</td>

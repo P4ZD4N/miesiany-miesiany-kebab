@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { EmployeeResponse, NewEmployeeResponse, UpdatedEmployeeResponse } from '../../responses/responses';
+import { EmployeeResponse, NewEmployeeResponse, RemovedEmployeeResponse, UpdatedEmployeeResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewEmployeeRequest, UpdatedEmployeeRequest } from '../../requests/requests';
+import { NewEmployeeRequest, RemovedEmployeeRequest, UpdatedEmployeeRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +38,20 @@ export class EmployeeService {
     });
 
     return this.http.put<NewEmployeeResponse>(`${this.apiUrl}/update-employee`, updatedEmployee, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  removeEmployee(request: RemovedEmployeeRequest): Observable<RemovedEmployeeResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    const requestBody = { email: request.email };
+
+    return this.http.delete<RemovedEmployeeResponse>(`${this.apiUrl}/remove-employee`, { body: requestBody, headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )
