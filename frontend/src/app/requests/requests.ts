@@ -1,5 +1,6 @@
 import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
+import { EmploymentType } from "../enums/employment-type.enum";
 import { IngredientType } from "../enums/ingredient-type.enum";
 import { NewsletterMessagesLanguage } from "../enums/newsletter-messages-language.enum";
 import { OrderStatus } from "../enums/order-status.enum";
@@ -253,4 +254,16 @@ export interface NewWorkScheduleEntryRequest {
 
 export interface RemovedWorkScheduleEntryRequest {
   id: number;
+}
+
+export interface NewEmployeeRequest {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  phone: string;
+  date_of_birth: Date| null;
+  job: string;
+  employment_type: EmploymentType | null,
+  hourly_wage: number;
 }

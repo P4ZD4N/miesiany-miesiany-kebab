@@ -1,5 +1,79 @@
 <section class="employee-management" *ngIf="isManager()">
     <h1>{{ 'employee-management.headline' | translate }}</h1>
+    <button class="btn btn-success" *ngIf="!isAdding && !isEditing" (click)="showAddEmployeeTable()">{{ 'employee-management.buttons.add' | translate }}</button>
+
+    <table class="add-employee-table" *ngIf="isAdding">
+        <tr>
+            <h1>{{ 'employee-management.new_employee' | translate }}</h1>
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.first_name' | translate }}" maxlength="20" [(ngModel)]="newEmployee.first_name" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.last_name' | translate }}" maxlength="20" [(ngModel)]="newEmployee.last_name" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="Email" maxlength="35" [(ngModel)]="newEmployee.email" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.password' | translate }}" [(ngModel)]="newEmployee.password" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.phone' | translate }}" maxlength="9" [(ngModel)]="newEmployee.phone" />
+        </tr>
+        <tr>
+            <input type="text" placeholder="{{ 'employee-management.job' | translate }}" maxlength="16" [(ngModel)]="newEmployee.job" />
+        </tr>
+        <tr>
+            {{ 'employee-management.hourly_wage' | translate }}: <input type="number" placeholder="{{ 'employee-management.hourly_wage' | translate }}" min="1" [(ngModel)]="newEmployee.hourly_wage" /> zl
+        </tr>
+        <tr>
+            {{ 'employee-management.date_of_birth' | translate }}: <input type="date" [(ngModel)]="newEmployee.date_of_birth" />
+        </tr>
+        <tr>
+            {{ 'employee-management.employment_type' | translate }}: 
+            <select [(ngModel)]="newEmployee.employment_type">
+                <option value="" disabled selected>{{ 'employee-management.employment_type' | translate }}</option>
+                <option *ngFor="let type of employmentTypes" [value]="type">
+                    {{ 'employee-management.employment_types.' + type | translate }}
+                </option>
+            </select>
+        </tr>
+        <tr>
+            <button class="button-accept" (click)="addEmployee()">{{ 'employee-management.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideAddEmployeeTable()">{{ 'employee-management.buttons.cancel' | translate }}</button>
+        </tr>
+        <tr *ngIf="errorMessages" class="error">
+            {{ errorMessages['message'] }}
+        </tr>
+        <tr *ngIf="errorMessages['firstName']" class="error">
+            {{ errorMessages['firstName'] }}
+        </tr>
+        <tr *ngIf="errorMessages['lastName']" class="error">
+            {{ errorMessages['lastName'] }}
+        </tr>
+        <tr *ngIf="errorMessages['email']" class="error">
+            {{ errorMessages['email'] }}
+        </tr>
+        <tr *ngIf="errorMessages['password']" class="error">
+            {{ errorMessages['password'] }}
+        </tr>
+        <tr *ngIf="errorMessages['phone']" class="error">
+            {{ errorMessages['phone'] }}
+        </tr>
+        <tr *ngIf="errorMessages['job']" class="error">
+            {{ errorMessages['job'] }}
+        </tr>
+        <tr *ngIf="errorMessages['hourlyWage']" class="error">
+            {{ errorMessages['hourlyWage'] }}
+        </tr>
+        <tr *ngIf="errorMessages['dateOfBirth']" class="error">
+            {{ errorMessages['dateOfBirth'] }}
+        </tr>
+        <tr *ngIf="errorMessages['employmentType']" class="error">
+            {{ errorMessages['employmentType'] }}
+        </tr>
+    </table>
 
     <table class="employee-table">
         <thead>
@@ -24,11 +98,11 @@
                 <td>{{ employee.last_name }}</td>
                 <td>{{ employee.email }}</td>
                 <td>{{ employee.phone_number }}</td>
-                <td>{{ employee.date_of_birth }}</td>
+                <td>{{ employee.date_of_birth | date:'dd.MM.yyyy' }}</td>
                 <td>{{ getTranslatedJobName(employee.job) }}</td>
                 <td>{{ getTranslatedEmploymentType(employee.employment_type) }}</td>
-                <td>{{ employee.hourly_wage }}</td>
-                <td>{{ employee.hired_at }}</td>
+                <td>{{ employee.hourly_wage }} zl</td>
+                <td>{{ employee.hired_at | date:'dd.MM.yyyy' }}</td>
                 <td>
                     <span [ngClass]="employee.is_active ? 'green-circle' : 'gray-circle'"></span>
                 </td>

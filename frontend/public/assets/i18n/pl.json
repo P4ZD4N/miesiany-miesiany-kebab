@@ -379,6 +379,7 @@
         "headline": "Zarzadzanie pracownikami",
         "first_name": "Imie",
         "last_name": "Nazwisko",
+        "password": "Haslo",
         "phone": "Telefon",
         "date_of_birth": "Data urodzenia",
         "job": "Stanowisko",
@@ -388,10 +389,16 @@
         "employment_type": "Typ zatrudnienia",
         "employment_types": {
             "PERMANENT": "Umowa o prace",
-            "MANDATE CONTRACT": "Umowa zlecenie"
+            "MANDATE_CONTRACT": "Umowa zlecenie"
         },
         "hourly_wage": "Stawka godzinowa brutto",
         "hired_at": "Zatrudniony dnia",
-        "active": "Aktywny"
+        "active": "Aktywny",
+        "buttons": {
+            "add": "Dodaj pracownika",
+            "accept": "Akceptuj",
+            "cancel": "Anuluj"
+        },
+        "new_employee": "Nowy pracownik"
     }
 }

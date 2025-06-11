@@ -402,3 +402,8 @@ export interface RemovedWorkScheduleEntryResponse {
   status_code: number;
   message: string;
 }
+
+export interface NewEmployeeResponse {
+  status_code: number;
+  message: string;
+}

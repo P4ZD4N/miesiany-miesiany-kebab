@@ -376,6 +376,7 @@
         "headline": "Employee management",
         "first_name": "First name",
         "last_name": "Last name",
+        "password": "Password",
         "phone": "Phone",
         "date_of_birth": "Date of birth",
         "job": "Job",
@@ -385,10 +386,16 @@
         "employment_type": "Employment type",
         "employment_types": {
             "PERMANENT": "Permanent",
-            "MANDATE CONTRACT": "Mandate contract"
+            "MANDATE_CONTRACT": "Mandate contract"
         },
         "hourly_wage": "Hourly wage gross",
         "hired_at": "Hired at",
-        "active": "Active"
+        "active": "Active",
+        "buttons": {
+            "add": "Add employee",
+            "accept": "Accept",
+            "cancel": "Cancel"
+        },
+        "new_employee": "New employee"
     }
 }

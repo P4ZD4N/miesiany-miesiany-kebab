@@ -6,16 +6,37 @@ import { Subscription } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeResponse } from '../../../responses/responses';
+import { NewEmployeeRequest } from '../../../requests/requests';
+import { EmploymentType } from '../../../enums/employment-type.enum';
+import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-employee-management',
   standalone: true,
-  imports: [TranslateModule, CommonModule],
+  imports: [TranslateModule, CommonModule, FormsModule],
   templateUrl: './employee-management.component.html',
   styleUrl: './employee-management.component.scss'
 })
 export class EmployeeManagementComponent implements OnInit {
 
+  newEmployee: NewEmployeeRequest = {
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    phone: '',
+    date_of_birth: null,
+    job: '',
+    employment_type: null,
+    hourly_wage: 0
+  };
+
+  isAdding = false;
+  isEditing = false;
+
+  employmentTypes: EmploymentType[] = [EmploymentType.MANDATE_CONTRACT, EmploymentType.PERMANENT];
+  errorMessages: { [key: string]: string } = {};
   employees: EmployeeResponse[] = [];
   languageChangeSubscription: Subscription;
 
@@ -25,7 +46,9 @@ export class EmployeeManagementComponent implements OnInit {
     private employeeService: EmployeeService,
     private translate: TranslateService
   ) {
-    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {});
+    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
+      this.hideErrorMessages();
+    });
   }
 
   ngOnInit(): void {
@@ -62,5 +85,72 @@ export class EmployeeManagementComponent implements OnInit {
     }
     
     return employmentTypeTranslated;
+  }
+
+  showAddEmployeeTable(): void {
+    this.hideErrorMessages();
+    this.isAdding = true;
+  }
+
+  addEmployee(): void {
+    
+    this.newEmployee.first_name = this.newEmployee.first_name.charAt(0).toUpperCase() + this.newEmployee.first_name.slice(1).toLowerCase();
+    this.newEmployee.last_name = this.newEmployee.last_name.charAt(0).toUpperCase() + this.newEmployee.last_name.slice(1).toLowerCase();
+    this.newEmployee.job = this.newEmployee.job.charAt(0).toUpperCase() + this.newEmployee.job.slice(1).toLowerCase();
+
+    this.employeeService.addEmployee(this.newEmployee).subscribe({
+      next: (response) => {
+        Swal.fire({
+          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano nowego pracownika'!` : `Successfully added new employee!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+
+        this.loadEmployees();
+        this.resetNewEmployee();
+        this.hideAddEmployeeTable();
+        this.hideErrorMessages();
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+    });
+  }
+
+ hideAddEmployeeTable(): void {
+    this.hideErrorMessages();
+    this.isAdding = false;
+    this.resetNewEmployee();
+  }
+
+  resetNewEmployee(): void {
+    this.newEmployee = {
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      phone: '',
+      date_of_birth: null,
+      job: '',
+      employment_type: null,
+      hourly_wage: 0
+    };
+  }
+
+  hideErrorMessages(): void {
+    this.errorMessages = {};
+  }
+
+  handleError(error: any) {
+    if (error.errorMessages) {
+      this.errorMessages = error.errorMessages;
+      console.log(this.errorMessages);
+    } else {
+      this.errorMessages = { general: 'An unexpected error occurred' };
+    }
   }
 }

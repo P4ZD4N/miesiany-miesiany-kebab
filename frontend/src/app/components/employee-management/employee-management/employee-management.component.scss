@@ -14,10 +14,14 @@
         border-bottom: 3px solid red;
     }
 
-    table {
+    .employee-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
+    }
+
+    table {
+        
         margin-bottom: 2rem;
         font-size: 24px;
         text-align: center;
@@ -42,6 +46,52 @@
         padding: 1em;
     }
 
+    input {
+        color: white;
+        text-align: center;
+        background: inherit;
+        border: none;
+        border-bottom: 1px solid white;
+        outline: none;
+        transition: border-bottom 0.3s ease;
+
+        &:focus {
+            border-bottom: 1px solid red;
+        }
+
+        &[type=text] {
+            width: 100%;
+        }
+
+        &[type=number] {
+            max-width: 70px;
+        }
+
+        &[type=checkbox] {
+            accent-color: red;
+        }
+    }
+
+    select {
+        text-align: center;
+        color: white;
+        border: none;
+        border-bottom: 1px solid white;
+        outline: none;
+        background: inherit;
+        transition: border-bottom 0.3s ease;
+        cursor: pointer;
+
+        &:focus {
+            border-bottom: 1px solid red;
+        }
+    }
+
+    option {
+        text-align: center;
+        background: black;
+    }
+
     .green-circle {
         display: inline-block;
         width: 20px;
@@ -56,6 +106,46 @@
         height: 20px;
         border-radius: 50%;
         background-color: rgb(56, 56, 56);
+    }
+
+    .btn-success {
+        margin: 0.5em;
+    }
+
+    .button-update,.button-cancel, .button-accept, .button-remove {
+        background: none;
+        border: none;
+        transition: color 0.3s ease;
+    }
+
+    .button-update {
+        color: rgb(0, 119, 255);
+
+        &:hover {
+            color: rgb(0, 59, 126);
+        }
+    }
+
+    .button-accept {
+        color: rgb(0, 255, 85);
+
+        &:hover {
+            color: rgb(0, 102, 34);
+        }
+    }
+
+    .button-remove, .button-cancel {
+        color: rgb(255, 0, 0);
+
+        &:hover {
+            color: #b90909;
+        }
+    }
+
+    .error {
+        font-size: 24px;
+        margin-top: 1rem;
+        color: rgb(126, 15, 15);
     }
 }
 
