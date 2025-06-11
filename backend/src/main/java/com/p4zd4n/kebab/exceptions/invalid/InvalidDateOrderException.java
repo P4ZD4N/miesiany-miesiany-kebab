@@ -1,4 +1,4 @@
-package com.p4zd4n.kebab.exceptions.others;
+package com.p4zd4n.kebab.exceptions.invalid;
 
 public class InvalidDateOrderException extends RuntimeException {
     public InvalidDateOrderException() {

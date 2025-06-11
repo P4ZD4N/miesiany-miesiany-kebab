@@ -10,7 +10,7 @@ import com.p4zd4n.kebab.exceptions.alreadyexists.WorkScheduleEntryAlreadyExistsE
 import com.p4zd4n.kebab.exceptions.invalid.InvalidTimeRangeException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.WorkScheduleEntryNotFoundException;
-import com.p4zd4n.kebab.exceptions.others.InvalidDateOrderException;
+import com.p4zd4n.kebab.exceptions.invalid.InvalidDateOrderException;
 import com.p4zd4n.kebab.exceptions.others.NullEndDateException;
 import com.p4zd4n.kebab.exceptions.others.NullStartDateException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;

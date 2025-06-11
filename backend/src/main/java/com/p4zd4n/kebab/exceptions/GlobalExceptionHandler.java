@@ -11,7 +11,7 @@ import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchException;
 import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
-import com.p4zd4n.kebab.exceptions.others.InvalidDateOrderException;
+import com.p4zd4n.kebab.exceptions.invalid.InvalidDateOrderException;
 import com.p4zd4n.kebab.exceptions.others.NullEndDateException;
 import com.p4zd4n.kebab.exceptions.others.NullStartDateException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
@@ -918,6 +918,24 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(EmployeeAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleEmployeeAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing employee", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("employee.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
                         .message(message)
                         .build());
     }
