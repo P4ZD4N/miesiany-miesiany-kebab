@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from '../lang/lang.service';
 import { MenuService } from '../menu/menu.service';
-import { AddonResponse, BeverageResponse, IngredientResponse, MealPromotion, MealResponse } from '../../responses/responses';
+import { AddonResponse, BeverageResponse, IngredientResponse, MealResponse } from '../../responses/responses';
 import Swal from 'sweetalert2';
 import { Size } from '../../enums/size.enum';
 import { NewOrderRequest } from '../../requests/requests';
@@ -12,6 +12,7 @@ import { OrderStatus } from '../../enums/order-status.enum';
 import { Router } from '@angular/router';
 import { DiscountCodesService } from '../discount-codes/discount-codes.service';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { MealPromotion } from '../../util-types/util-types';
 
 @Injectable({
   providedIn: 'root'

@@ -6,7 +6,7 @@ import { NewsletterMessagesLanguage } from "../enums/newsletter-messages-languag
 import { OrderStatus } from "../enums/order-status.enum";
 import { OrderType } from "../enums/order-type.enum";
 import { Size } from "../enums/size.enum";
-import { JobEmploymentType, JobRequirement, SimpleMealIngredient } from "../responses/responses";
+import { JobEmploymentType, JobRequirement, SimpleMealIngredient } from "../util-types/util-types";
 
 export interface NewBeverageRequest {
   new_beverage_name: string;

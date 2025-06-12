@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { JobEmploymentType, JobOfferGeneralResponse, JobOfferManagerResponse, JobRequirement } from '../../../responses/responses';
+import {  JobOfferGeneralResponse, JobOfferManagerResponse } from '../../../responses/responses';
 import { JobsService } from '../../../services/jobs/jobs.service';
 import { LangService } from '../../../services/lang/lang.service';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -12,6 +12,7 @@ import { JobOfferApplicationRequest, NewJobOfferRequest, RemovedJobOfferRequest,
 import { EmploymentType } from '../../../enums/employment-type.enum';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
+import { JobEmploymentType, JobRequirement } from '../../../util-types/util-types';
 
 @Component({
   selector: 'app-jobs',
