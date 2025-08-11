@@ -56,4 +56,4 @@ public record UpdatedEmployeeRequest(
 
         @JsonProperty("updated_hired_date")
         LocalDate updatedHiredDate
-) {}
+) implements EmailUpdateRequest {}

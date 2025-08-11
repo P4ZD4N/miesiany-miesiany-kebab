@@ -83,7 +83,21 @@
     },
     "employee-panel": {
         "headline": "Panel pracownika",
-        "button_logout": "Wyloguj"
+        "good-morning": "Dzien dobry",
+        "good-afternoon": "Dzien dobry",
+        "good-evening": "Dobry wieczor",
+        "wishes": "Dzialaj z pasja – robisz swietna robote",
+        "contact_data": "Dane kontaktowe",
+        "employment_details": "Szczegoly zatrudnienia",
+        "actions_heading": "Akcje",
+        "buttons": {
+            "order_management": "Zarzadzanie zamowieniami",
+            "order_status_display": "Wyswietlanie statusow zamowien",
+            "work_schedule": "Grafik",
+            "button_logout": "Wyloguj",
+            "update_email": "Aktualizuj email",
+            "update_password": "Aktualizuj haslo"
+        }
     },
     "menu": {
         "addons": {

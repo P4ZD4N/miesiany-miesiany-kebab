@@ -7,15 +7,17 @@ import com.p4zd4n.kebab.exceptions.others.ManagerDeletionNotAllowedException;
 import com.p4zd4n.kebab.exceptions.others.ManagerDemotionNotAllowedException;
 import com.p4zd4n.kebab.exceptions.others.ManagerPromotionNotAllowedException;
 import com.p4zd4n.kebab.repositories.EmployeesRepository;
+import com.p4zd4n.kebab.requests.employee.EmailUpdateRequest;
 import com.p4zd4n.kebab.requests.employee.NewEmployeeRequest;
+import com.p4zd4n.kebab.requests.employee.UpdatedCredentialsRequest;
 import com.p4zd4n.kebab.requests.employee.UpdatedEmployeeRequest;
-import com.p4zd4n.kebab.responses.employee.EmployeeResponse;
-import com.p4zd4n.kebab.responses.employee.NewEmployeeResponse;
-import com.p4zd4n.kebab.responses.employee.RemovedEmployeeResponse;
-import com.p4zd4n.kebab.responses.employee.UpdatedEmployeeResponse;
+import com.p4zd4n.kebab.responses.employee.*;
 import com.p4zd4n.kebab.utils.PasswordEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -46,6 +48,21 @@ public class EmployeesService {
         log.info("Successfully retrieved employees");
 
         return response;
+    }
+
+    public EmployeeResponse getCurrentEmployee() {
+
+        log.info("Started retrieving current employee");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authenticatedEmail = authentication.getName();
+
+        Employee employee = employeeRepository.findByEmail(authenticatedEmail)
+                        .orElseThrow(() -> new EmployeeNotFoundException(authenticatedEmail));
+
+        log.info("Successfully retrieved current employee");
+
+        return mapToResponse(employee);
     }
 
     public EmployeeResponse mapToResponse(Employee employee) {
@@ -152,7 +169,7 @@ public class EmployeesService {
         return response;
     }
 
-    private void updateEmployeeEmail(Employee employee, UpdatedEmployeeRequest request) {
+    private void updateEmployeeEmail(Employee employee, EmailUpdateRequest request) {
         Optional<Employee> existingEmployee = employeeRepository.findByEmail(request.updatedEmail());
 
         if (existingEmployee.isPresent() && !existingEmployee.get().getId().equals(employee.getId())) {
@@ -172,6 +189,34 @@ public class EmployeesService {
         }
 
         employee.setJob(request.updatedJob());
+    }
+
+    public UpdatedCredentialsResponse updateCurrentEmployeeCredentials(UpdatedCredentialsRequest request) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authenticatedEmail = authentication.getName();
+
+        Employee employee = employeeRepository.findByEmail(authenticatedEmail)
+                .orElseThrow(() -> new EmployeeNotFoundException(authenticatedEmail));
+
+        UpdatedCredentialsResponse response = UpdatedCredentialsResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Successfully updated current employee (" + authenticatedEmail + ") credentials")
+                .build();
+
+        if (request.updatedEmail() != null) updateEmployeeEmail(employee, request);
+        if (request.updatedPassword() != null) employee.setPassword(PasswordEncoder.encodePassword(request.updatedPassword()));
+
+        employeeRepository.save(employee);
+
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                employee.getEmail(),
+                authentication.getCredentials(),
+                authentication.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+        return response;
     }
 
     public RemovedEmployeeResponse removeEmployee(Employee employee) {

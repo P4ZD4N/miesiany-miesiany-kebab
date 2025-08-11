@@ -83,7 +83,21 @@
     },
     "employee-panel": {
         "headline": "Employee panel",
-        "button_logout": "Logout"
+        "good-morning": "Good morning",
+        "good-afternoon": "Good afternoon",
+        "good-evening": "Good evening",
+        "wishes": "Keep up the passion – you’re doing an awesome job",
+        "contact_data": "Contact data",
+        "employment_details": "Employment details",
+        "actions_heading": "Actions",
+        "buttons": {
+            "order_management": "Order management",
+            "order_status_display": "Order status display",
+            "work_schedule": "Work schedule",
+            "button_logout": "Logout",
+            "update_email": "Update email",
+            "update_password": "Update password"
+        }
     },
     "menu": {
         "addons": {

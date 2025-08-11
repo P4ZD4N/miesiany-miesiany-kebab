@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LangService } from '../lang/lang.service';
-import { EmployeeResponse, NewEmployeeResponse, RemovedEmployeeResponse, UpdatedEmployeeResponse } from '../../responses/responses';
+import { EmployeeResponse, NewEmployeeResponse, RemovedEmployeeResponse, UpdatedCredentialsResponse, UpdatedEmployeeResponse } from '../../responses/responses';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NewEmployeeRequest, RemovedEmployeeRequest, UpdatedEmployeeRequest } from '../../requests/requests';
+import { NewEmployeeRequest, RemovedEmployeeRequest, UpdatedCredentialsRequest, UpdatedEmployeeRequest } from '../../requests/requests';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,15 @@ export class EmployeeService {
   getEmployees(): Observable<EmployeeResponse[]> {
     
     return this.http.get<EmployeeResponse[]>(`${this.apiUrl}/all`, { withCredentials: true });
+  }
+
+  getCurrentEmployee(): Observable<EmployeeResponse> {
+   
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.get<EmployeeResponse>(`${this.apiUrl}/current`, { headers, withCredentials: true });
   }
 
   addEmployee(newEmployee: NewEmployeeRequest): Observable<NewEmployeeResponse> {
@@ -37,7 +46,19 @@ export class EmployeeService {
       'Accept-Language': this.langService.currentLang
     });
 
-    return this.http.put<NewEmployeeResponse>(`${this.apiUrl}/update-employee`, updatedEmployee, { headers, withCredentials: true }).pipe(
+    return this.http.put<UpdatedEmployeeResponse>(`${this.apiUrl}/update-employee`, updatedEmployee, { headers, withCredentials: true }).pipe(
+      map(response => response),
+      catchError(this.handleError)
+    )
+  }
+
+  updateEmployeeCredentials(updatedCredentials: UpdatedCredentialsRequest): Observable<UpdatedCredentialsResponse> {
+
+    const headers = new HttpHeaders({
+      'Accept-Language': this.langService.currentLang
+    });
+
+    return this.http.patch<UpdatedCredentialsResponse>(`${this.apiUrl}/update-credentials`, updatedCredentials, { headers, withCredentials: true }).pipe(
       map(response => response),
       catchError(this.handleError)
     )

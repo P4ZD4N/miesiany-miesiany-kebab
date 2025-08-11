@@ -383,3 +383,8 @@ export interface RemovedEmployeeResponse {
   status_code: number;
   message: string;
 }
+
+export interface UpdatedCredentialsResponse {
+  status_code: number;
+  message: string;
+}
