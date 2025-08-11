@@ -22,9 +22,12 @@ import com.p4zd4n.kebab.responses.workschedule.RemovedWorkScheduleEntryResponse;
 import com.p4zd4n.kebab.responses.workschedule.WorkScheduleEntryResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -156,12 +159,30 @@ public class WorkScheduleService {
 
         document.open();
 
+        addDocumentImage(document);
         addDocumentHeader(document, startDate, endDate, language);
         addDocumentTable(document, startDate, endDate);
 
         document.close();
 
         return out.toByteArray();
+    }
+
+    private void addDocumentImage(Document document) {
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/static/images/logo2.png");
+
+            byte[] imageBytes = inputStream.readAllBytes();
+            Image logo = Image.getInstance(imageBytes);
+
+            logo.scaleToFit(100, 50);
+
+            document.add(logo);
+            document.add(Chunk.NEWLINE);
+
+        } catch (Exception e) {
+            log.warn("Can't load logo image to work schedule PDF", e);
+        }
     }
 
     private void addDocumentHeader(
@@ -184,6 +205,9 @@ public class WorkScheduleService {
     private void addDocumentTable(
             Document document, LocalDate startDate, LocalDate endDate
     ) throws DocumentException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authenticatedEmail = authentication.getName();
+
         Font tableFont = new Font(Font.FontFamily.HELVETICA, 8);
         List<WorkScheduleEntry> filteredWorkScheduleEntries = workScheduleEntryRepository.findAll().stream()
                 .filter(entry -> !entry.getDate().isBefore(startDate) && !entry.getDate().isAfter(endDate))
@@ -194,11 +218,17 @@ public class WorkScheduleService {
         PdfPTable table = new PdfPTable(daysInMonth.size() + 1);
 
         table.setWidthPercentage(100);
-        table.addCell(createCenteredCell("", tableFont));
+        table.addCell(createCenteredCell("", tableFont, BaseColor.LIGHT_GRAY));
 
-        daysInMonth.forEach(date -> table.addCell(createCenteredCell(date.format(DateTimeFormatter.ofPattern("dd.MM")), tableFont)));
+        daysInMonth.forEach(date -> table.addCell(createCenteredCell(date.format(DateTimeFormatter.ofPattern("dd.MM")), tableFont, BaseColor.LIGHT_GRAY)));
         entriesByEmployee.forEach((employee, workSchedule) -> {
-            table.addCell(createCenteredCell(employee.getFirstName() + " " + employee.getLastName(), tableFont));
+            boolean isCurrentUser = employee.getEmail().equals(authenticatedEmail);
+
+            table.addCell(createCenteredCell(
+                employee.getFirstName() + " " + employee.getLastName(),
+                tableFont,
+                isCurrentUser ? BaseColor.RED : BaseColor.WHITE
+            ));
 
             daysInMonth.forEach(date -> {
                 List<WorkScheduleEntry> entriesForDay = workSchedule.stream()
@@ -206,7 +236,7 @@ public class WorkScheduleService {
                         .toList();
 
                 if (entriesForDay.isEmpty()) {
-                    table.addCell(createCenteredCell("", tableFont));
+                    table.addCell(createCenteredCell("", tableFont, isCurrentUser ? BaseColor.RED : BaseColor.WHITE));
                 } else {
                     StringBuilder sb = new StringBuilder();
 
@@ -216,7 +246,11 @@ public class WorkScheduleService {
                         if (i < entriesForDay.size() - 1) sb.append("\n\n");
                     }
 
-                    table.addCell(createCenteredCell(sb.toString().trim(), tableFont));
+                    table.addCell(createCenteredCell(
+                        sb.toString().trim(),
+                        tableFont,
+                        isCurrentUser ? BaseColor.RED : BaseColor.WHITE
+                    ));
                 }
             });
         });
@@ -224,10 +258,11 @@ public class WorkScheduleService {
         document.add(table);
     }
 
-    private PdfPCell createCenteredCell(String text, Font font) {
+    private PdfPCell createCenteredCell(String text, Font font, BaseColor color) {
         PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBackgroundColor(color);
         return cell;
     }
 
