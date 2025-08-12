@@ -289,5 +289,6 @@ export interface RemovedEmployeeRequest {
 
 export interface UpdatedCredentialsRequest {
   updated_email?: string;
+  password?: string;
   updated_password?: string;
 }

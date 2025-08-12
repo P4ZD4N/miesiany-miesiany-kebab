@@ -2,10 +2,12 @@ package com.p4zd4n.kebab.services.employees;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.exceptions.alreadyexists.EmployeeAlreadyExistsException;
+import com.p4zd4n.kebab.exceptions.invalid.InvalidCredentialsException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.others.ManagerDeletionNotAllowedException;
 import com.p4zd4n.kebab.exceptions.others.ManagerDemotionNotAllowedException;
 import com.p4zd4n.kebab.exceptions.others.ManagerPromotionNotAllowedException;
+import com.p4zd4n.kebab.exceptions.wrong.WrongPasswordException;
 import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import com.p4zd4n.kebab.requests.employee.EmailUpdateRequest;
 import com.p4zd4n.kebab.requests.employee.NewEmployeeRequest;
@@ -204,8 +206,21 @@ public class EmployeesService {
                 .message("Successfully updated current employee (" + authenticatedEmail + ") credentials")
                 .build();
 
-        if (request.updatedEmail() != null) updateEmployeeEmail(employee, request);
-        if (request.updatedPassword() != null) employee.setPassword(PasswordEncoder.encodePassword(request.updatedPassword()));
+        if (request.password() != null && request.updatedEmail() != null) {
+            if (!PasswordEncoder.matches(request.password(), employee.getPassword())) {
+                throw new WrongPasswordException();
+            }
+
+            updateEmployeeEmail(employee, request);
+        }
+
+        if (request.password() != null && request.updatedPassword() != null) {
+            if (!PasswordEncoder.matches(request.password(), employee.getPassword())) {
+                throw new WrongPasswordException();
+            }
+
+            employee.setPassword(PasswordEncoder.encodePassword(request.updatedPassword()));
+        }
 
         employeeRepository.save(employee);
 

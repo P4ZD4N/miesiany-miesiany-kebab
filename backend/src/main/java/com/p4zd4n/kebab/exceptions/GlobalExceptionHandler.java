@@ -13,6 +13,7 @@ import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchExceptio
 import com.p4zd4n.kebab.exceptions.others.*;
 import com.p4zd4n.kebab.exceptions.invalid.InvalidDateOrderException;
 import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
+import com.p4zd4n.kebab.exceptions.wrong.WrongPasswordException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
 import jakarta.mail.MessagingException;
@@ -988,6 +989,22 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(WrongPasswordException.class)
+    public ResponseEntity<ExceptionResponse> handleWrongPasswordException(HttpServletRequest request) {
+        log.error("Wrong password provided");
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("password.wrong", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
                         .message(message)
                         .build());
     }

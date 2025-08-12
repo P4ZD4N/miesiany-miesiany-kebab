@@ -87,92 +87,182 @@ export class EmployeePanelComponent implements OnInit {
     const titlePl = isEmail ? 'Aktualizuj email' : 'Aktualizuj haslo';
     const titleEn = isEmail ? 'Update email' : 'Update password';
 
-    const inputValue = isEmail ? this.currentEmployeeData?.email : '';
+    if (isEmail) {
+      const { value: formValues } = await Swal.fire({
+        title:
+          this.langService.currentLang === 'pl'
+            ? `<span style="color: red;">${titlePl}</span>`
+            : `<span style="color: red;">${titleEn}</span>`,
+        background: '#141414',
+        color: 'white',
+        showCancelButton: true,
+        cancelButtonText,
+        cancelButtonColor: 'red',
+        confirmButtonText,
+        confirmButtonColor: '#198754',
+        customClass: { validationMessage: 'custom-validation-message' },
+        html: `
+          <input id="swal-password" class="swal2-input" type="password" placeholder="${
+            this.langService.currentLang === 'pl' ? 'Haslo' : 'Password'
+          }">
+          <input id="swal-email" class="swal2-input" type="text" placeholder="Email" value="${
+            this.currentEmployeeData?.email
+          }">
+        `,
+        focusConfirm: false,
+        preConfirm: () => {
+          const password = (
+            document.getElementById('swal-password') as HTMLInputElement
+          ).value;
+          const email = (
+            document.getElementById('swal-email') as HTMLInputElement
+          ).value;
 
-    const { value: newValue } = await Swal.fire({
-      title:
-        this.langService.currentLang === 'pl'
-          ? `<span style="color: red;">${titlePl}</span>`
-          : `<span style="color: red;">${titleEn}</span>`,
-      background: '#141414',
-      color: 'white',
-      focusConfirm: false,
-      showCancelButton: true,
-      cancelButtonText,
-      cancelButtonColor: 'red',
-      confirmButtonText,
-      confirmButtonColor: '#198754',
-      customClass: { validationMessage: 'custom-validation-message' },
-      input: isEmail ? 'text' : 'password',
-      inputValue,
-      inputValidator: (value: string) => {
-        if (!value) {
-          return this.langService.currentLang === 'pl'
-            ? 'Pole nie moze byc puste!'
-            : 'You need to write something!';
-        }
+          if (!password || !email) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Wszystkie pola sa wymagane!'
+                : 'All fields are required!'
+            );
+            return false;
+          }
 
-        if (isEmail && value.length > 35) {
-          return this.langService.currentLang === 'pl'
-            ? `Email nie moze przekraczac 35 znakow!`
-            : `Email length can't exceed 35 characters!`;
-        }
+          if (email.length > 35) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Email nie moze przekraczac 35 znakow!'
+                : "Email length can't exceed 35 characters!"
+            );
+            return false;
+          }
 
-        if (!isEmail && value.length < 5) {
-          return this.langService.currentLang === 'pl'
-            ? `Haslo musi mieć przynajmniej 5 znakow!`
-            : `Password must be at least 5 characters long!`;
-        }
+          return { password, email };
+        },
+      });
 
+      if (!formValues) {
+        this.isUpdating = false;
         return;
-      },
-    });
+      }
 
-    if (!newValue) {
-      this.isUpdating = false;
-      return;
+      await this.saveUpdatedCredential(
+        { password: formValues.password, updated_email: formValues.email },
+        isEmail
+      );
+    } else {
+      const { value: formValues } = await Swal.fire({
+        title:
+          this.langService.currentLang === 'pl'
+            ? `<span style="color: red;">${titlePl}</span>`
+            : `<span style="color: red;">${titleEn}</span>`,
+        background: '#141414',
+        color: 'white',
+        showCancelButton: true,
+        cancelButtonText,
+        cancelButtonColor: 'red',
+        confirmButtonText,
+        confirmButtonColor: '#198754',
+        customClass: { validationMessage: 'custom-validation-message' },
+        html: `
+          <input id="swal-input1" class="swal2-input" type="password" placeholder="${
+            this.langService.currentLang === 'pl'
+              ? 'Stare haslo'
+              : 'Old password'
+          }">
+          <input id="swal-input2" class="swal2-input" type="password" placeholder="${
+            this.langService.currentLang === 'pl'
+              ? 'Nowe haslo'
+              : 'New password'
+          }">
+        `,
+        focusConfirm: false,
+        preConfirm: () => {
+          const password = (
+            document.getElementById('swal-input1') as HTMLInputElement
+          ).value;
+          const newPassword = (
+            document.getElementById('swal-input2') as HTMLInputElement
+          ).value;
+
+          if (!password || !newPassword) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Wszystkie pola sa wymagane!'
+                : 'All fields are required!'
+            );
+            return false;
+          }
+
+          if (newPassword.length < 5) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Nowe haslo musi miec przynajmniej 5 znakow!'
+                : 'Password must be at least 5 characters long!'
+            );
+            return false;
+          }
+
+          return {
+            password: password,
+            updated_password: newPassword,
+          };
+        },
+      });
+
+      if (!formValues) {
+        this.isUpdating = false;
+        return;
+      }
+
+      this.saveUpdatedCredential(
+        {
+          password: formValues.old_password,
+          updated_password: formValues.updated_password,
+        },
+        isEmail
+      );
     }
 
-    const payload = isEmail
-      ? { updated_email: newValue }
-      : { updated_password: newValue };
-
-    this.employeeService
-      .updateEmployeeCredentials(payload as UpdatedCredentialsRequest)
-      .subscribe(
-        () => {
-          Swal.fire({
-            text:
-              this.langService.currentLang === 'pl'
-                ? `Pomyslnie zaktualizowano ${isEmail ? 'email' : 'haslo'}!`
-                : `Successfully updated ${isEmail ? 'email' : 'password'}!`,
-            icon: 'success',
-            iconColor: 'green',
-            confirmButtonColor: 'green',
-            background: '#141414',
-            color: 'white',
-            confirmButtonText: 'Ok',
-          });
-          this.loadCurrentEmployeeDetails();
-        },
-        (error) => {
-          const errMsg =
-            error.errorMessages.message ||
-            error.errorMessages.updatedEmail ||
-            error.errorMessages.updated_password;
-
-          Swal.fire({
-            text: errMsg,
-            icon: 'error',
-            iconColor: 'red',
-            confirmButtonColor: 'red',
-            background: '#141414',
-            color: 'white',
-            confirmButtonText: 'Ok',
-          });
-        }
-      );
-
     this.isUpdating = false;
+  }
+
+  private async saveUpdatedCredential(
+    payload: UpdatedCredentialsRequest,
+    isEmail: boolean
+  ) {
+    console.log(payload);
+    this.employeeService.updateEmployeeCredentials(payload).subscribe(
+      () => {
+        Swal.fire({
+          text:
+            this.langService.currentLang === 'pl'
+              ? `Pomyslnie zaktualizowano ${isEmail ? 'email' : 'haslo'}!`
+              : `Successfully updated ${isEmail ? 'email' : 'password'}!`,
+          icon: 'success',
+          iconColor: 'green',
+          confirmButtonColor: 'green',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+        this.loadCurrentEmployeeDetails();
+      },
+      (error) => {
+        const errMsg =
+          error.errorMessages.message ||
+          error.errorMessages.updatedEmail ||
+          error.errorMessages.updated_password;
+
+        Swal.fire({
+          text: errMsg,
+          icon: 'error',
+          iconColor: 'red',
+          confirmButtonColor: 'red',
+          background: '#141414',
+          color: 'white',
+          confirmButtonText: 'Ok',
+        });
+      }
+    );
   }
 }
