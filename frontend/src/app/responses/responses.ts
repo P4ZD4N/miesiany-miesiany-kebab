@@ -353,7 +353,9 @@ export interface EmployeeResponse {
 
 export interface WorkScheduleEntryResponse {
   id: number;
-  employee: EmployeeResponse;
+  employee_first_name: string;
+  employee_last_name: string;
+  employee_email: string;
   date: string;
   start_time: string;
   end_time: string;

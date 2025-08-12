@@ -7,5 +7,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface WorkScheduleEntryRepository extends JpaRepository<WorkScheduleEntry, Long> {
-    List<WorkScheduleEntry> findByEmployee_EmailAndDate(String email, LocalDate date);
+    List<WorkScheduleEntry> findByEmployeeEmailAndDate(String employeeEmail, LocalDate date);
+
 }

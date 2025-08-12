@@ -534,7 +534,9 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .orElseThrow(() -> new EmployeeNotFoundException("employee1@example.com"));
 
         WorkScheduleEntry workScheduleEntry = WorkScheduleEntry.builder()
-                .employee(employee)
+                .employeeFirstName(employee.getFirstName())
+                .employeeLastName(employee.getLastName())
+                .employeeEmail(employee.getEmail())
                 .date(LocalDate.now())
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(18, 0))

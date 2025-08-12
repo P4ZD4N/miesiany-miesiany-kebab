@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { LangService } from '../../../services/lang/lang.service';
 import { EmployeeService } from '../../../services/employees/employee.service';
-import { EmployeeResponse, OpeningHoursResponse, RemovedWorkScheduleEntryResponse, WorkScheduleEntryResponse } from '../../../responses/responses';
+import { EmployeeResponse, OpeningHoursResponse, WorkScheduleEntryResponse } from '../../../responses/responses';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 import { WorkScheduleService } from '../../../services/work-schedule/work-schedule.service';
@@ -313,7 +313,7 @@ export class WorkScheduleComponent implements OnInit {
     return this.workScheduleEntries.filter(entry => {
       const [dd, mm, yyyy] = rawDate.split(".");
       const formattedDate = `${yyyy}-${mm}-${dd}`;
-      return entry.employee.email === employeeEmail && entry.date === formattedDate;
+      return entry.employee_email === employeeEmail && entry.date === formattedDate;
     });
   }
 

@@ -68,7 +68,9 @@ public class WorkScheduleService {
 
         return WorkScheduleEntryResponse.builder()
                 .id(workScheduleEntry.getId())
-                .employee(workScheduleEntry.getEmployee())
+                .employeeFirstName(workScheduleEntry.getEmployeeFirstName())
+                .employeeLastName(workScheduleEntry.getEmployeeLastName())
+                .employeeEmail(workScheduleEntry.getEmployeeEmail())
                 .date(workScheduleEntry.getDate())
                 .startTime(workScheduleEntry.getStartTime())
                 .endTime(workScheduleEntry.getEndTime())
@@ -80,7 +82,7 @@ public class WorkScheduleService {
         Employee employee = employeeRepository.findByEmail(request.employeeEmail())
                 .orElseThrow(() -> new EmployeeNotFoundException(request.employeeEmail()));
 
-        List<WorkScheduleEntry> existingEntries = workScheduleEntryRepository.findByEmployee_EmailAndDate(
+        List<WorkScheduleEntry> existingEntries = workScheduleEntryRepository.findByEmployeeEmailAndDate(
                 request.employeeEmail(),
                 request.date()
         );
@@ -106,7 +108,9 @@ public class WorkScheduleService {
         });
 
         WorkScheduleEntry newWorkScheduleEntry = WorkScheduleEntry.builder()
-                .employee(employee)
+                .employeeFirstName(employee.getFirstName())
+                .employeeLastName(employee.getLastName())
+                .employeeEmail(employee.getEmail())
                 .date(request.date())
                 .startTime(request.startTime())
                 .endTime(request.endTime())
@@ -213,8 +217,14 @@ public class WorkScheduleService {
                 .filter(entry -> !entry.getDate().isBefore(startDate) && !entry.getDate().isAfter(endDate))
                 .toList();
         List<LocalDate> daysInMonth = startDate.datesUntil(endDate.plusDays(1)).toList();
-        Map<Employee, List<WorkScheduleEntry>> entriesByEmployee = filteredWorkScheduleEntries.stream()
-                .collect(Collectors.groupingBy(WorkScheduleEntry::getEmployee));
+        Map<String, Employee> employeesByEmail = employeeRepository.findAll().stream()
+                .collect(Collectors.toMap(Employee::getEmail, e -> e));
+        Map<Employee, List<WorkScheduleEntry>> entriesByEmployee =
+                filteredWorkScheduleEntries.stream()
+                        .filter(e -> employeesByEmail.containsKey(e.getEmployeeEmail()))
+                        .collect(Collectors.groupingBy(
+                                e -> employeesByEmail.get(e.getEmployeeEmail())
+                        ));
         PdfPTable table = new PdfPTable(daysInMonth.size() + 1);
 
         table.setWidthPercentage(100);

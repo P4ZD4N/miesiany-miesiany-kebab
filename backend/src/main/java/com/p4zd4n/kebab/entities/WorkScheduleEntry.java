@@ -21,9 +21,14 @@ public class WorkScheduleEntry extends WithTimestamp {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    @Column(name = "employee_first_name", nullable = false)
+    private String employeeFirstName;
+
+    @Column(name = "employee_last_name", nullable = false)
+    private String employeeLastName;
+
+    @Column(name = "employee_email", nullable = false)
+    private String employeeEmail;
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
@@ -35,8 +40,17 @@ public class WorkScheduleEntry extends WithTimestamp {
     private LocalTime endTime;
 
     @Builder
-    public WorkScheduleEntry(Employee employee, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        this.employee = employee;
+    public WorkScheduleEntry(
+        String employeeFirstName,
+        String employeeLastName,
+        String employeeEmail,
+        LocalDate date,
+        LocalTime startTime,
+        LocalTime endTime
+    ) {
+        this.employeeFirstName = employeeFirstName;
+        this.employeeLastName = employeeLastName;
+        this.employeeEmail = employeeEmail;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;

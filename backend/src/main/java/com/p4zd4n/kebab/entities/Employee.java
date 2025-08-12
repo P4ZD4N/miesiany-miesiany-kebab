@@ -61,10 +61,6 @@ public class Employee extends WithTimestamp{
     @Column(name = "hired_at", nullable = false)
     private LocalDate hiredAt;
 
-    @OneToMany(mappedBy = "employee")
-    @JsonIgnore
-    private List<WorkScheduleEntry> scheduleEntries = new ArrayList<>();
-
     @Builder
     public Employee(
         String firstName,
