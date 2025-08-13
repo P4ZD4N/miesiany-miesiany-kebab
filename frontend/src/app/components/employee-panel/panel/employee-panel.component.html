@@ -58,10 +58,10 @@
       </button>
 
 
-        <button class="btn btn-success button-update" *ngIf="!isUpdating" (click)="updateCurrentEmployeeCredential('email')">
+        <button class="btn btn-success button-update" (click)="updateCurrentEmployeeCredential('email')">
           {{ "employee-panel.buttons.update_email" | translate }}
         </button>
-        <button class="btn btn-success button-update" *ngIf="!isUpdating" (click)="updateCurrentEmployeeCredential('password')">
+        <button class="btn btn-success button-update" (click)="updateCurrentEmployeeCredential('password')">
           {{ "employee-panel.buttons.update_password" | translate }}
         </button>
     </section>

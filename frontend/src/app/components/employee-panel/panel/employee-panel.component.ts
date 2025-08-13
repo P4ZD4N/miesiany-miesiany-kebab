@@ -18,7 +18,6 @@ import { UpdatedCredentialsRequest } from '../../../requests/requests';
 })
 export class EmployeePanelComponent implements OnInit {
   currentEmployeeData: EmployeeResponse | null = null;
-  isUpdating: boolean = false;
 
   constructor(
     private langService: LangService,
@@ -76,8 +75,6 @@ export class EmployeePanelComponent implements OnInit {
   }
 
   async updateCurrentEmployeeCredential(field: 'email' | 'password') {
-    this.isUpdating = true;
-
     const isEmail = field === 'email';
     const confirmButtonText =
       this.langService.currentLang === 'pl' ? 'Zapisz' : 'Save';
@@ -140,11 +137,8 @@ export class EmployeePanelComponent implements OnInit {
         },
       });
 
-      if (!formValues) {
-        this.isUpdating = false;
-        return;
-      }
-
+      if (!formValues) return;
+      
       await this.saveUpdatedCredential(
         { password: formValues.password, updated_email: formValues.email },
         isEmail
@@ -209,10 +203,7 @@ export class EmployeePanelComponent implements OnInit {
         },
       });
 
-      if (!formValues) {
-        this.isUpdating = false;
-        return;
-      }
+      if (!formValues) return;
 
       this.saveUpdatedCredential(
         {
@@ -222,8 +213,6 @@ export class EmployeePanelComponent implements OnInit {
         isEmail
       );
     }
-
-    this.isUpdating = false;
   }
 
   private async saveUpdatedCredential(

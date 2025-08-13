@@ -79,7 +79,28 @@
     },
     "manager-panel": {
         "headline": "Panel managera",
-        "button_logout": "Wyloguj"
+        "good-morning": "Dzien dobry",
+        "good-afternoon": "Dzien dobry",
+        "good-evening": "Dobry wieczor",
+        "wishes": "Twoja pasja inspiruje i napedza nasz zespol",
+        "button_logout": "Wyloguj",
+        "contact_data": "Dane kontaktowe",
+        "employment_details": "Szczegoly zatrudnienia",
+        "actions_heading": "Akcje",
+        "buttons": {
+            "order_management": "Zarzadzanie zamowieniami",
+            "order_status_display": "Wyswietlanie statusow zamowien",
+            "work_schedule": "Grafik",
+            "opening_hours_management": "Zarzadzanie godzinami otwarcia",
+            "menu_management": "Zarzadzanie menu",
+            "promotions_management": "Zarzadzanie promocjami",
+            "jobs_management": "Zarzadzanie ofertami pracy",
+            "discount_code_management": "Zarzadzanie kodami promocyjnymi",
+            "employee_management": "Zarzadzanie pracownikami",
+            "button_logout": "Wyloguj",
+            "update_email": "Aktualizuj email",
+            "update_password": "Aktualizuj haslo"
+        }
     },
     "employee-panel": {
         "headline": "Panel pracownika",
@@ -398,7 +419,8 @@
         "date_of_birth": "Data urodzenia",
         "job": "Stanowisko",
         "jobs": {
-            "Cashier": "Kasjer"
+            "Cashier": "Kasjer",
+            "Manager": "Manager"
         },
         "employment_type": "Typ zatrudnienia",
         "employment_types": {
