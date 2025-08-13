@@ -3,9 +3,9 @@ import { DayOfWeek } from "../enums/day-of-week.enum";
 import { EmploymentType } from "../enums/employment-type.enum";
 import { OrderStatus } from "../enums/order-status.enum";
 import { OrderType } from "../enums/order-type.enum";
-import { RequirementType } from "../enums/requirement-type.enum";
 import { Role } from "../enums/role.enum";
 import { Size } from "../enums/size.enum";
+import { BeveragePromotion, JobEmploymentType, JobRequirement, MealPromotion, SimpleMealIngredient } from "../util-types/util-types";
 
 export interface NewBeverageResponse {
   status_code: number;
@@ -22,12 +22,6 @@ export interface RemovedBeverageResponse {
   message: string;
 }
 
-export interface BeveragePromotion {
-  id: number;
-  description: string;
-  discount_percentage: number;
-}
-
 export interface BeverageResponse {
   name: string;
   capacity: number;
@@ -36,30 +30,11 @@ export interface BeverageResponse {
   isEditing?: boolean;
 }
 
-export interface AddonPromotion {
-  id: number;
-  description: string;
-  discount_percentage: number;
-}
-
 export interface AddonResponse {
   name: string;
   price: number;
   promotion: AddonPromotionResponse;
   isEditing?: boolean;
-}
-
-export interface SimpleMealIngredient {
-  id?: number;
-  name: string;
-  ingredient_type: string;
-}
-
-export interface MealPromotion {
-  id: number;
-  description: string;
-  sizes: Size[];
-  discount_percentage: number;
 }
 
 export interface MealResponse {
@@ -136,15 +111,6 @@ export interface ContactResponse {
 export interface UpdatedContactResponse {
   status_code: number;
   message: string;
-}
-
-export interface JobRequirement {
-  requirement_type: RequirementType | null;
-  description: string;
-}
-
-export interface JobEmploymentType {
-  employment_type: EmploymentType  | null;
 }
 
 export interface JobApplicationResponse {
@@ -367,6 +333,60 @@ export interface UpdatedDiscountCodeResponse {
 }
 
 export interface RemovedDiscountCodeResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface EmployeeResponse {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  date_of_birth: Date;
+  job: string;
+  employment_type: EmploymentType,
+  hourly_wage: number;
+  is_active: boolean;
+  hired_at: Date;
+}
+
+export interface WorkScheduleEntryResponse {
+  id: number;
+  employee_first_name: string;
+  employee_last_name: string;
+  employee_email: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface NewWorkScheduleEntryResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedWorkScheduleEntryResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface NewEmployeeResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedEmployeeResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface RemovedEmployeeResponse {
+  status_code: number;
+  message: string;
+}
+
+export interface UpdatedCredentialsResponse {
   status_code: number;
   message: string;
 }

@@ -24,6 +24,6 @@ public class Manager extends Employee {
         boolean isActive,
         LocalDate hiredAt
     ) {
-        super(firstName, lastName, email, password, dateOfBirth, phoneNumber, EmploymentType.PERMANENT, hourlyWage, isActive, hiredAt);
+        super(firstName, lastName, email, password, dateOfBirth, "Manager", phoneNumber, EmploymentType.PERMANENT, hourlyWage, isActive, hiredAt);
     }
 }

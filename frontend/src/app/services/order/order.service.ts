@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from '../lang/lang.service';
 import { MenuService } from '../menu/menu.service';
-import { AddonResponse, BeverageResponse, IngredientResponse, MealPromotion, MealResponse } from '../../responses/responses';
+import { AddonResponse, BeverageResponse, IngredientResponse, MealResponse } from '../../responses/responses';
 import Swal from 'sweetalert2';
 import { Size } from '../../enums/size.enum';
 import { NewOrderRequest } from '../../requests/requests';
@@ -12,6 +12,7 @@ import { OrderStatus } from '../../enums/order-status.enum';
 import { Router } from '@angular/router';
 import { DiscountCodesService } from '../discount-codes/discount-codes.service';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { MealPromotion } from '../../util-types/util-types';
 
 @Injectable({
   providedIn: 'root'
@@ -1006,8 +1007,6 @@ export class OrderService {
         : baseUnitPrice;
       const finalTotalPrice = (finalUnitPrice * quantity).toFixed(2);
 
-      console.log(addonSelect.value + ' ' + quantityInput.value + ' ' + finalTotalPrice);
-
       if (!this.order.addons[addon.name]) {
         this.order.addons[addon.name] = 0; 
       }
@@ -1330,6 +1329,7 @@ export class OrderService {
 
               const mealQuantityElement = target.closest('.meal-size-item')?.querySelector('.meal-quantity') as HTMLElement;
               const priceContainer = document.getElementById('total-price');
+
               if (mealQuantityElement && priceContainer) {
                 const quantity = this.order.meals[mealName][mealSize as Size];
                 const meal = this.meals.filter(meal => meal.name === mealName.split("_")[0])[0];
@@ -1468,8 +1468,6 @@ export class OrderService {
           const mealSize = target.getAttribute('meal-size');
 
           if (mealName && mealSize) {
-
-            const quantity = this.order.meals[mealName][mealSize as Size];
             const mealQuantityElement = target.closest('.meal-size-item')?.querySelector('.meal-quantity') as HTMLElement;
             const priceContainer = document.getElementById('total-price');
             const meal = this.meals.filter(meal => meal.name === mealName.split("_")[0])[0];
@@ -1478,12 +1476,14 @@ export class OrderService {
             const finalUnitPrice = activePromotion 
               ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100)
               : baseUnitPrice;
-            mealQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(2)} zl`;
-
+            
             if (this.order.meals[mealName][mealSize as Size] > 1) {
               this.order.meals[mealName][mealSize as Size]--;
 
               if (mealQuantityElement && priceContainer) {
+                const quantity = this.order.meals[mealName][mealSize as Size];
+                mealQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(2)} zl`;
+
                 this.order.total_price -= Number(finalUnitPrice);
                 const total = this.order.total_price.toFixed(2);
                 const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
@@ -1493,7 +1493,6 @@ export class OrderService {
               this.setOrderData(this.order);
               this.checkIfOrderIsEmpty();
             } else {
-              console.log(this.order.meals);
               this.order.total_price -= Number(finalUnitPrice);
               delete this.order.meals[mealName];
 
@@ -1508,7 +1507,6 @@ export class OrderService {
                 mealElement.remove();
               }
 
-              console.log(this.order.meals);
               this.setOrderData(this.order);
               this.checkIfOrderIsEmpty();
             }

@@ -79,11 +79,46 @@
     },
     "manager-panel": {
         "headline": "Panel managera",
-        "button_logout": "Wyloguj"
+        "good-morning": "Dzien dobry",
+        "good-afternoon": "Dzien dobry",
+        "good-evening": "Dobry wieczor",
+        "wishes": "Twoja pasja inspiruje i napedza nasz zespol",
+        "button_logout": "Wyloguj",
+        "contact_data": "Dane kontaktowe",
+        "employment_details": "Szczegoly zatrudnienia",
+        "actions_heading": "Akcje",
+        "buttons": {
+            "order_management": "Zarzadzanie zamowieniami",
+            "order_status_display": "Wyswietlanie statusow zamowien",
+            "work_schedule": "Grafik",
+            "opening_hours_management": "Zarzadzanie godzinami otwarcia",
+            "menu_management": "Zarzadzanie menu",
+            "promotions_management": "Zarzadzanie promocjami",
+            "jobs_management": "Zarzadzanie ofertami pracy",
+            "discount_code_management": "Zarzadzanie kodami promocyjnymi",
+            "employee_management": "Zarzadzanie pracownikami",
+            "button_logout": "Wyloguj",
+            "update_email": "Aktualizuj email",
+            "update_password": "Aktualizuj haslo"
+        }
     },
     "employee-panel": {
         "headline": "Panel pracownika",
-        "button_logout": "Wyloguj"
+        "good-morning": "Dzien dobry",
+        "good-afternoon": "Dzien dobry",
+        "good-evening": "Dobry wieczor",
+        "wishes": "Dzialaj z pasja – robisz swietna robote",
+        "contact_data": "Dane kontaktowe",
+        "employment_details": "Szczegoly zatrudnienia",
+        "actions_heading": "Akcje",
+        "buttons": {
+            "order_management": "Zarzadzanie zamowieniami",
+            "order_status_display": "Wyswietlanie statusow zamowien",
+            "work_schedule": "Grafik",
+            "button_logout": "Wyloguj",
+            "update_email": "Aktualizuj email",
+            "update_password": "Aktualizuj haslo"
+        }
     },
     "menu": {
         "addons": {
@@ -368,5 +403,41 @@
         "headline": "Nie jestes upowazniony do przejscia na ta strone!",
         "paragraph": "Wydaje sie, ze nie posiadasz uprawnien wymaganych do uzyskania dostepu do tej sekcji. Jesli wierzysz, ze to blad, prosze skontaktowac sie z administratorem.",
         "button": "Wroc"
+    },
+    "work-schedule": {
+        "headline": "Grafik",
+        "buttons": {
+            "download": "Pobierz grafik"
+        }
+    },
+    "employee-management": {
+        "headline": "Zarzadzanie pracownikami",
+        "first_name": "Imie",
+        "last_name": "Nazwisko",
+        "password": "Haslo",
+        "phone": "Telefon",
+        "date_of_birth": "Data urodzenia",
+        "job": "Stanowisko",
+        "jobs": {
+            "Cashier": "Kasjer",
+            "Manager": "Manager"
+        },
+        "employment_type": "Typ zatrudnienia",
+        "employment_types": {
+            "PERMANENT": "Umowa o prace",
+            "MANDATE_CONTRACT": "Umowa zlecenie"
+        },
+        "hourly_wage": "Stawka godzinowa brutto",
+        "hired_at": "Zatrudniony dnia",
+        "active": "Aktywny",
+        "buttons": {
+            "add": "Dodaj pracownika",
+            "accept": "Akceptuj",
+            "cancel": "Anuluj",
+            "update": "Aktualizuj",
+            "remove": "Usun"
+        },
+        "new_employee": "Nowy pracownik",
+        "updated_employee": "Aktualizowany pracownik"
     }
 }

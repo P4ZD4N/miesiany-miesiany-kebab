@@ -10,7 +10,10 @@ import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.*;
 import com.p4zd4n.kebab.exceptions.notmatches.OtpNotMatchesException;
 import com.p4zd4n.kebab.exceptions.notmatches.TrackOrderDataDoesNotMatchException;
-import com.p4zd4n.kebab.exceptions.others.ExcessBreadException;
+import com.p4zd4n.kebab.exceptions.others.*;
+import com.p4zd4n.kebab.exceptions.invalid.InvalidDateOrderException;
+import com.p4zd4n.kebab.exceptions.overlap.WorkScheduleTimeOverlapException;
+import com.p4zd4n.kebab.exceptions.wrong.WrongPasswordException;
 import com.p4zd4n.kebab.responses.exceptions.ExceptionResponse;
 import com.p4zd4n.kebab.responses.exceptions.ItemTypeExceptionResponse;
 import jakarta.mail.MessagingException;
@@ -650,6 +653,76 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(WorkScheduleEntryAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleWorkScheduleEntryAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing work schedule entry", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("workScheduleEntry.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(WorkScheduleTimeOverlapException.class)
+    public ResponseEntity<ExceptionResponse> handleWorkScheduleTimeOverlapException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with work schedule entry, which time overlaps with an existing schedule entry", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("workScheduleEntry.timeOverlap", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidTimeRangeException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidTimeRangeException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with invalid time range", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("workSchedule.invalidTimeRange", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(WorkScheduleEntryNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleWorkScheduleEntryNotFoundException(HttpServletRequest request) {
+        log.error("Attempted request to {} with id of not existing work schedule entry", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("workSchedule.notFound", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.NOT_FOUND.value())
+                        .message(message)
+                        .build());
+    }
+
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleOrderNotFoundException(
             OrderNotFoundException exception,
@@ -796,6 +869,142 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse
                         .builder()
                         .statusCode(HttpStatus.GONE.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(InvalidDateOrderException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidDateOrderException(HttpServletRequest request) {
+        log.error("Attempted request to {} with invalid date order", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("dateOrder.invalid", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(NullEndDateException.class)
+    public ResponseEntity<ExceptionResponse> handleNullEndDateException(HttpServletRequest request) {
+        log.error("Attempted request to {} with null end date", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("endDate.notNull", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(NullStartDateException.class)
+    public ResponseEntity<ExceptionResponse> handleNullStartDateException(HttpServletRequest request) {
+        log.error("Attempted request to {} with null start date", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("startDate.notNull", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(EmployeeAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleEmployeeAlreadyExistsException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with existing employee", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("employee.alreadyExists", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.CONFLICT.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(ManagerDemotionNotAllowedException.class)
+    public ResponseEntity<ExceptionResponse> handleManagerDemotionNotAllowedException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not allowed role change (manager demotion)", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("manager.demotionNotAllowed", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(ManagerPromotionNotAllowedException.class)
+    public ResponseEntity<ExceptionResponse> handleManagerPromotionNotAllowedException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with not allowed role change (manager promotion)", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("manager.promotionNotAllowed", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(ManagerDeletionNotAllowedException.class)
+    public ResponseEntity<ExceptionResponse> handleManagerDeletionNotAllowedException(
+            HttpServletRequest request
+    ) {
+        log.error("Attempted request to {} with email of manager", request.getRequestURI());
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("manager.deletionNotAllowed", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.value())
+                        .message(message)
+                        .build());
+    }
+
+    @ExceptionHandler(WrongPasswordException.class)
+    public ResponseEntity<ExceptionResponse> handleWrongPasswordException(HttpServletRequest request) {
+        log.error("Wrong password provided");
+
+        Locale locale = Locale.forLanguageTag(request.getHeader("Accept-Language"));
+        String message = messageSource.getMessage("password.wrong", null, locale);
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ExceptionResponse
+                        .builder()
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
                         .message(message)
                         .build());
     }

@@ -3,7 +3,7 @@ package com.p4zd4n.kebab.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p4zd4n.kebab.entities.OpeningHour;
 import com.p4zd4n.kebab.enums.DayOfWeek;
-import com.p4zd4n.kebab.repositories.EmployeeRepository;
+import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import com.p4zd4n.kebab.requests.hour.UpdatedHourRequest;
 import com.p4zd4n.kebab.responses.hours.OpeningHoursResponse;
@@ -47,7 +47,7 @@ public class HoursControllerTest {
     private HoursService hoursService;
 
     @MockBean
-    private EmployeeRepository employeeRepository;
+    private EmployeesRepository employeeRepository;
 
     @MockBean
     private OpeningHoursRepository openingHoursRepository;

@@ -174,7 +174,7 @@
                             type="checkbox" 
                             [value]="capacity" 
                             (change)="toggleCapacityAdd(beverage[0], capacity, $event)" 
-                            [checked]="newBeveragePromotion.beverages_with_capacities[beverage[0]]?.includes(capacity)" />
+                            [checked]="newBeveragePromotion.beverages_with_capacities[beverage[0]].includes(capacity)" />
                             {{ capacity }} L
                     </label>
                 </li>
@@ -223,7 +223,7 @@
                             type="checkbox" 
                             [value]="capacity" 
                             (change)="toggleCapacityEdit(beverage[0], capacity, $event)" 
-                            [checked]="updatedBeveragePromotion!.updated_beverages_with_capacities[beverage[0]]?.includes(capacity)" />
+                            [checked]="updatedBeveragePromotion!.updated_beverages_with_capacities[beverage[0]].includes(capacity)" />
                             {{ capacity }} L
                     </label>
                 </li>

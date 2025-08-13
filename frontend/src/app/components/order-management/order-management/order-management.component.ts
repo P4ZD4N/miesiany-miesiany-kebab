@@ -343,7 +343,6 @@ export class OrderManagementComponent implements OnInit{
               color: 'white',
               confirmButtonText: 'Ok',
             });
-            console.error(err);
           }
         );
       }

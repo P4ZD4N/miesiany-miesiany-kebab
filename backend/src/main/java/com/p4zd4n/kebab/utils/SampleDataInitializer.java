@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.utils;
 
 import com.p4zd4n.kebab.entities.*;
 import com.p4zd4n.kebab.enums.*;
+import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
 import org.springframework.boot.CommandLineRunner;
@@ -19,7 +20,7 @@ import java.util.Set;
 @Component
 public class SampleDataInitializer implements CommandLineRunner {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeesRepository employeeRepository;
     private final OpeningHoursRepository openingHoursRepository;
     private final BeverageRepository beverageRepository;
     private final AddonRepository addonRepository;
@@ -31,11 +32,12 @@ public class SampleDataInitializer implements CommandLineRunner {
     private final BeveragePromotionsRepository beveragePromotionsRepository;
     private final AddonPromotionsRepository addonPromotionsRepository;
     private final NewsletterRepository newsletterRepository;
+    private final WorkScheduleEntryRepository workScheduleEntryRepository;
     private final OrdersRepository ordersRepository;
     private final DiscountCodesRepository discountCodesRepository;
 
     public SampleDataInitializer(
-            EmployeeRepository employeeRepository,
+            EmployeesRepository employeeRepository,
             OpeningHoursRepository openingHoursRepository,
             BeverageRepository beverageRepository,
             AddonRepository addonRepository,
@@ -47,6 +49,7 @@ public class SampleDataInitializer implements CommandLineRunner {
             BeveragePromotionsRepository beveragePromotionsRepository,
             AddonPromotionsRepository addonPromotionsRepository,
             NewsletterRepository newsletterRepository,
+            WorkScheduleEntryRepository workScheduleEntryRepository,
             OrdersRepository ordersRepository,
             DiscountCodesRepository discountCodesRepository
     ) {
@@ -62,6 +65,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         this.beveragePromotionsRepository = beveragePromotionsRepository;
         this.addonPromotionsRepository = addonPromotionsRepository;
         this.newsletterRepository = newsletterRepository;
+        this.workScheduleEntryRepository = workScheduleEntryRepository;
         this.ordersRepository = ordersRepository;
         this.discountCodesRepository = discountCodesRepository;
     }
@@ -80,6 +84,7 @@ public class SampleDataInitializer implements CommandLineRunner {
         initJobOffers();
         initPromotions();
         initNewsletterSubscribers();
+        initWorkScheduleEntries();
         initOrders();
         initDiscountCodes();
     }
@@ -100,20 +105,36 @@ public class SampleDataInitializer implements CommandLineRunner {
 
     private void initSampleEmployees() {
 
-        Employee employee = Employee.builder()
+        Employee employee1 = Employee.builder()
                 .firstName("John")
                 .lastName("Doe")
-                .email("employee@example.com")
+                .email("employee1@example.com")
                 .password(PasswordEncoder.encodePassword("employee123"))
                 .dateOfBirth(LocalDate.of(1990, 1, 1))
                 .phoneNumber("123456789")
+                .job("Cashier")
                 .employmentType(EmploymentType.PERMANENT)
                 .hourlyWage(BigDecimal.valueOf(30))
                 .isActive(true)
                 .hiredAt(LocalDate.now())
                 .build();
 
-        employeeRepository.save(employee);
+        Employee employee2 = Employee.builder()
+                .firstName("Sue")
+                .lastName("Doe")
+                .email("employee2@example.com")
+                .password(PasswordEncoder.encodePassword("employee123"))
+                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .job("Cashier")
+                .phoneNumber("123456789")
+                .employmentType(EmploymentType.PERMANENT)
+                .hourlyWage(BigDecimal.valueOf(32))
+                .isActive(true)
+                .hiredAt(LocalDate.now())
+                .build();
+
+        employeeRepository.save(employee1);
+        employeeRepository.save(employee2);
     }
 
     private void initSampleManagers() {
@@ -504,6 +525,24 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .build();
 
         newsletterRepository.save(newsletterSubscriber);
+    }
+
+
+    private void initWorkScheduleEntries() {
+
+        Employee employee = employeeRepository.findByEmail("employee1@example.com")
+                .orElseThrow(() -> new EmployeeNotFoundException("employee1@example.com"));
+
+        WorkScheduleEntry workScheduleEntry = WorkScheduleEntry.builder()
+                .employeeFirstName(employee.getFirstName())
+                .employeeLastName(employee.getLastName())
+                .employeeEmail(employee.getEmail())
+                .date(LocalDate.now())
+                .startTime(LocalTime.of(10, 0))
+                .endTime(LocalTime.of(18, 0))
+                .build();
+
+        workScheduleEntryRepository.save(workScheduleEntry);
     }
 
     private void initOrders() {

@@ -1,11 +1,12 @@
 import { ContactType } from "../enums/contact-type.enum";
 import { DayOfWeek } from "../enums/day-of-week.enum";
+import { EmploymentType } from "../enums/employment-type.enum";
 import { IngredientType } from "../enums/ingredient-type.enum";
 import { NewsletterMessagesLanguage } from "../enums/newsletter-messages-language.enum";
 import { OrderStatus } from "../enums/order-status.enum";
 import { OrderType } from "../enums/order-type.enum";
 import { Size } from "../enums/size.enum";
-import { JobEmploymentType, JobRequirement, SimpleMealIngredient } from "../responses/responses";
+import { JobEmploymentType, JobRequirement, SimpleMealIngredient } from "../util-types/util-types";
 
 export interface NewBeverageRequest {
   new_beverage_name: string;
@@ -242,4 +243,52 @@ export interface UpdatedDiscountCodeRequest {
 
 export interface RemovedDiscountCodeRequest {
   code: string;
+}
+
+export interface NewWorkScheduleEntryRequest {
+  employee_email: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface RemovedWorkScheduleEntryRequest {
+  id: number;
+}
+
+export interface NewEmployeeRequest {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  phone: string;
+  date_of_birth: Date | null;
+  job: string;
+  employment_type: EmploymentType | null,
+  hourly_wage: number;
+}
+
+export interface UpdatedEmployeeRequest {
+  employee_email: string,
+  updated_first_name: string;
+  updated_last_name: string;
+  updated_email: string;
+  updated_password: string | null;
+  updated_phone: string;
+  updated_date_of_birth: Date | null;
+  updated_job: string;
+  updated_employment_type: EmploymentType | null,
+  updated_hourly_wage: number;
+  updated_active: boolean;
+  updated_hired_date: Date | null;
+}
+
+export interface RemovedEmployeeRequest {
+  email: string;
+}
+
+export interface UpdatedCredentialsRequest {
+  updated_email?: string;
+  password?: string;
+  updated_password?: string;
 }

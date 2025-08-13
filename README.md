@@ -1,3 +1,4 @@
+
 # 💻 Miesiany Miesiany Kebab
 
 ![](./images/logo.png)
@@ -54,6 +55,9 @@ Gastronomic industry plays an important role in the economy. Nowadays many gastr
 - Possibility to place order by customers in easy and concise way. Each menu position can be selected and added to such order and partially customized (by choosing size, meat, sauce, quantity or capacity). After adding item, customer may continue adding more items, proceed to the next step, or come back later - all order details are saved in local storage. Next step is choosing preferred delivery method: pickup at the restaurant or home delivery. Depending on the choice, a dedicated panel is shown to collect the necessary information. Finally, the customer has the option to leave additional comments and enter a discount code, if available, to receive a price reduction. Managers and employees can add, update and delete orders.
 - Track order panel, where customers can easily monitor status of their order in real time. Here they can find information such as order id (number of order displayed on the screen in restaurant), total price, delivery address (if home delivery method was selected), payment methods, ordered items details and current order status. Customers can access this panel for up to two hours after the last update to their order.
 - Order status display for in-restaurant screen, which shows numbers of orders currently being prepared (in gray color) and those, that are ready (in green color). This provides clear information to customers waiting in the restaurant, improving communication and overall experience.
+- Work schedule panel which allows managers to assign shifts for all employees for a selected month and year. All employees can display and then download a printable PDF document that clearly displays the shift schedule.
+- Employee management panel where manager can add, update or remove employees.
+- Employee and manager panels which allow authenticated users to view their current contact information and employment details. Each panel includes an actions section with buttons that provide functions available to the particular account type (employee or manager). Both employees and managers can also update their email address and password.
 
 ## 🔗 API
 
@@ -1034,6 +1038,175 @@ Removes existing order.
 }
 ```
 
+### EmployeesController
+ 
+#### GET /api/v1/employees/all
+
+**Description:**  
+Retrieves all employees stored in database.
+
+**Authorization Requirements:**
+- Role: `MANAGER` 
+
+#### GET /api/v1/employees/current
+
+**Description:**  
+Retrieves current authenticated employee data.
+
+#### POST /api/v1/employees/add-employee
+
+**Description:**
+Add new employee.
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Authorization Requirements:**
+- Role: `MANAGER` 
+
+**Request Body:**
+```json
+{
+  "first_name":  "Jan",
+  "last_name":  "Kowalski",
+  "email":  "jan.kowalski@example.com",
+  "password":  "haslo123",
+  "phone":  "123456789",
+  "job":  "Cook",
+  "hourly_wage":  35.50,
+  "date_of_birth":  "1990-05-15",
+  "employment_type":  "PERMANENT"
+}
+```
+
+#### PUT /api/v1/employees/update-employee
+
+**Description:**  
+Updates existing employee.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "employee_email": "jan.kowalski@example.com",
+  "updated_first_name": "Janusz",
+  "updated_last_name": "Kowalski-Nowak",
+  "updated_email": "janusz.nowak@example.com",
+  "updated_password": "noweHaslo123",
+  "updated_phone": "987654321",
+  "updated_job": "Manager",
+  "updated_hourly_wage": 35.75,
+  "updated_date_of_birth": "1988-03-22",
+  "updated_employment_type": "PERMANENT",
+  "updated_active": true,
+  "updated_hired_date": "2020-01-15"
+}
+```
+
+#### PUT /api/v1/employees/update-credentials
+
+**Description:**  
+Updates current logged in employee's credentials. It is possible to update email or password.
+
+**Authorization Requirements:**
+- Role: `MANAGER` or `EMPLOYEE`
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Request Body:**
+```json
+{
+  "updated_email": "nowy.email@example.com",
+  "password": "stareHaslo123",
+  "updated_password": "noweHaslo456"
+}
+```
+
+#### DELETE /api/v1/employees/remove-employee
+
+**Description:**  
+Removes existing employee.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Body:**
+```json
+{
+  "email": "jan.kowalski@example.com"
+}
+```
+
+### WorkScheduleController
+ 
+#### GET /api/v1/work-schedule/all-entries
+
+**Description:**  
+Retrieves all work schedule entries stored in database.
+
+**Authorization Requirements:**
+- Role: `MANAGER` or `EMPLOYEE`
+
+#### GET /api/v1/work-schedule/get-work-schedule-pdf
+
+**Description:**  
+Retrieves current authenticated employee data.
+
+**Request Params:**
+- `startDate`: Start date of the work schedule period.
+	* Type: `LocalDate`
+    * Required: Yes
+    * Example: `2025-09-01`
+- `endDate`: End date of the work schedule period.
+	 * Type: `LocalDate`
+	 * Required: Yes
+	 * Example: `2025-09-30`
+
+**Authorization Requirements:**
+- Role: `MANAGER` or `EMPLOYEE`
+
+#### POST /api/v1/work-schedule/add-entry
+
+**Description:**
+Add new work schedule entry.
+
+**Request Headers:**
+- `Accept-Language`: Specifies preferred language for the response. Default is `pl` (Polish). You can also set `en` (English).
+
+**Authorization Requirements:**
+- Role: `MANAGER` 
+
+**Request Body:**
+```json
+{
+  "employee_email": "jan.kowalski@example.com",
+  "date": "2025-09-15",
+  "start_time": "09:00",
+  "end_time": "17:00"
+}
+```
+
+#### DELETE /api/v1/work-schedule/remove-employee
+
+**Description:**  
+Removes existing work schedule entry.
+
+**Authorization Requirements:**
+- Role: `MANAGER`
+
+**Request Body:**
+```json
+{
+  "id": 3
+}
+```
+
 ## 📋 Requirements
 - Java 21 (or higher)
 - Docker
@@ -1052,6 +1225,8 @@ Do it step by step:
 1. Navigate to `https://developer.tomtom.com/` and log in to your account. Then create new Map Display API key and copy it.
 2. Create `.env` file on the following path: `/miesiany-miesiany-kebab/frontend/src/.env`
 3. Add previously copied API key to `.env` file
+
+How to make name of whatever record saved in database multilingual? Just enter frontend/public/assets/i18n and add relevant name in both **en.json** and **pl.json** files. For example you would like to store addon with name Fries in English and Frytki in Polish. Then you should add "menu.addons.Fries" key in en.json and "menu.addons.Frytki" in pl.json.
 
 ### Backend
 

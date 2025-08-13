@@ -1,7 +1,7 @@
 package com.p4zd4n.kebab.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.p4zd4n.kebab.repositories.EmployeeRepository;
+import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import com.p4zd4n.kebab.repositories.OpeningHoursRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
@@ -34,7 +34,7 @@ public class AuthenticationControllerTest {
     private AuthenticationService authenticationService;
 
     @MockBean
-    private EmployeeRepository employeeRepository;
+    private EmployeesRepository employeeRepository;
 
     @MockBean
     private OpeningHoursRepository openingHoursRepository;

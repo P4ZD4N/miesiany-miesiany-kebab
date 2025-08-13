@@ -79,11 +79,46 @@
     },
     "manager-panel": {
         "headline": "Manager panel",
-        "button_logout": "Logout"
+        "button_logout": "Logout",
+        "good-morning": "Good morning",
+        "good-afternoon": "Good afternoon",
+        "good-evening": "Good evening",
+        "wishes": "Your passion inspires and drives our shared success",
+        "contact_data": "Contact data",
+        "employment_details": "Employment details",
+        "actions_heading": "Actions",
+        "buttons": {
+            "order_management": "Order management",
+            "order_status_display": "Order status display",
+            "work_schedule": "Work schedule",
+            "opening_hours_management": "Opening hours management",
+            "menu_management": "Menu management",
+            "promotions_management": "Promotions management",
+            "jobs_management": "Jobs management",
+            "discount_code_management": "Discount code management",
+            "employee_management": "Employee management",
+            "button_logout": "Logout",
+            "update_email": "Update email",
+            "update_password": "Update password"
+        }
     },
     "employee-panel": {
         "headline": "Employee panel",
-        "button_logout": "Logout"
+        "good-morning": "Good morning",
+        "good-afternoon": "Good afternoon",
+        "good-evening": "Good evening",
+        "wishes": "Keep up the passion – you’re doing an awesome job",
+        "contact_data": "Contact data",
+        "employment_details": "Employment details",
+        "actions_heading": "Actions",
+        "buttons": {
+            "order_management": "Order management",
+            "order_status_display": "Order status display",
+            "work_schedule": "Work schedule",
+            "button_logout": "Logout",
+            "update_email": "Update email",
+            "update_password": "Update password"
+        }
     },
     "menu": {
         "addons": {
@@ -365,5 +400,41 @@
         "headline": "You are not able to enter this page!",
         "paragraph": "It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.",
         "button": "Go back"
+    },
+    "work-schedule": {
+        "headline": "Work schedule",
+        "buttons": {
+            "download": "Download work schedule"
+        }
+    },
+    "employee-management": {
+        "headline": "Employee management",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "password": "Password",
+        "phone": "Phone",
+        "date_of_birth": "Date of birth",
+        "job": "Job",
+        "jobs": {
+            "Cashier": "Cashier",
+            "Manager": "Manager"
+        },
+        "employment_type": "Employment type",
+        "employment_types": {
+            "PERMANENT": "Permanent",
+            "MANDATE_CONTRACT": "Mandate contract"
+        },
+        "hourly_wage": "Hourly wage gross",
+        "hired_at": "Hired at",
+        "active": "Active",
+        "buttons": {
+            "add": "Add employee",
+            "accept": "Accept",
+            "cancel": "Cancel",
+            "update": "Update",
+            "remove": "Remove"
+        },
+        "new_employee": "New employee",
+        "updated_employee": "Updated employee"
     }
 }

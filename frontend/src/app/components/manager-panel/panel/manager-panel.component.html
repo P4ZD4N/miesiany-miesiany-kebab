@@ -1,8 +1,99 @@
-<section class="manager-panel-forbidden" *ngIf="!isManager()">
-    <h1>:(</h1>
+<section class="manager-panel" *ngIf="isManager()">
+  <h1>{{ "manager-panel.headline" | translate }}</h1>
+  <p>
+    {{ getGreetingKey() | translate }} {{ currentEmployeeData?.first_name }}!
+    {{ "manager-panel.wishes" | translate }} :)
+  </p>
+
+  <section class="section-wrapper">
+    <section class="manager-data">
+      <h2>{{ "manager-panel.contact_data" | translate }}</h2>
+      <p>
+        {{ "employee-management.first_name" | translate }}:
+        {{ currentEmployeeData?.first_name }}
+      </p>
+      <p>
+        {{ "employee-management.last_name" | translate }}:
+        {{ currentEmployeeData?.last_name }}
+      </p>
+      <p>Email: {{ currentEmployeeData?.email }}</p>
+      <p>
+        {{ "employee-management.phone" | translate }}:
+        {{ currentEmployeeData?.phone_number }}
+      </p>
+      <h2>{{ "employee-panel.employment_details" | translate }}</h2>
+      <p>
+        {{ "employee-management.job" | translate }}:
+        {{ "employee-management.jobs." + currentEmployeeData?.job | translate }}
+      </p>
+      <p>
+        {{ "employee-management.employment_type" | translate }}:
+        {{
+          "employee-management.employment_types." +
+            currentEmployeeData?.employment_type | translate
+        }}
+      </p>
+      <p>
+        {{ "employee-management.hourly_wage" | translate }}:
+        {{ currentEmployeeData?.hourly_wage }} zl
+      </p>
+      <p>
+        {{ "employee-management.hired_at" | translate }}:
+        {{ currentEmployeeData?.hired_at | date : "dd.MM.yyyy" }}
+      </p>
+    </section>
+
+    <section class="actions-buttons">
+      <h2>{{ "manager-panel.actions_heading" | translate }}</h2>
+      <button class="btn btn-success" [routerLink]="['/order-management']">
+        {{ "manager-panel.buttons.order_management" | translate }}
+      </button>
+      <button class="btn btn-success" [routerLink]="['/order-status-display']">
+        {{ "manager-panel.buttons.order_status_display" | translate }}
+      </button>
+      <button class="btn btn-success" [routerLink]="['/work-schedule']">
+        {{ "manager-panel.buttons.work_schedule" | translate }}
+      </button>
+      <button class="btn btn-success" [routerLink]="['/opening-hours']">
+        {{ "manager-panel.buttons.opening_hours_management" | translate }}
+      </button>
+      <button class="btn btn-success" [routerLink]="['/menu']">
+        {{ "manager-panel.buttons.menu_management" | translate }}
+      </button>
+      <button class="btn btn-success" [routerLink]="['/promotions']">
+        {{ "manager-panel.buttons.promotions_management" | translate }}
+      </button>
+      <button class="btn btn-success" [routerLink]="['/jobs']">
+        {{ "manager-panel.buttons.jobs_management" | translate }}
+      </button>
+      <button class="btn btn-success" [routerLink]="['/discount-code-management']">
+        {{ "manager-panel.buttons.discount_code_management" | translate }}
+      </button>
+      <button class="btn btn-success" [routerLink]="['/employee-management']">
+        {{ "manager-panel.buttons.employee_management" | translate }}
+      </button>
+
+      <button
+        class="btn btn-success button-update"
+        (click)="updateCurrentEmployeeCredential('email')"
+      >
+        {{ "manager-panel.buttons.update_email" | translate }}
+      </button>
+      <button
+        class="btn btn-success button-update"
+        (click)="updateCurrentEmployeeCredential('password')"
+      >
+        {{ "manager-panel.buttons.update_password" | translate }}
+      </button>
+    </section>
+  </section>
+
+  <button class="btn btn-danger" (click)="logout()">
+    {{ "manager-panel.buttons.button_logout" | translate }}
+  </button>
 </section>
 
-<section class="manager-panel" *ngIf="isManager()">
-    <h1>{{ 'manager-panel.headline' | translate }}</h1>
-    <a class="btn btn-danger" (click)="logout()"> {{ 'manager-panel.button_logout' | translate }}</a>
+<section class="verification-required" *ngIf="!isManager()">
+  <h1>{{ "verification_required.headline" | translate }}</h1>
+  <p>{{ "verification_required.paragraph" | translate }}</p>
 </section>
