@@ -72,7 +72,10 @@ public class SecurityConfig {
                                 "/api/v1/discount-codes/remove-discount-code",
                                 "/api/v1/newsletter/subscribers",
                                 "/api/v1/work-schedule/add-entry",
-                                "/api/v1/work-schedule/remove-entry"
+                                "/api/v1/work-schedule/remove-entry",
+                                "/api/v1/employees/add-employee",
+                                "/api/v1/employees/update-employee",
+                                "/api/v1/employees/remove-employee"
                         ).hasRole("MANAGER")
                         .requestMatchers(
                                 "api/v1/auth/logout",
@@ -81,6 +84,7 @@ public class SecurityConfig {
                                 "/api/v1/orders/remove-order",
                                 "/api/v1/work-schedule/all-entries",
                                 "/api/v1/employees/all",
+                                "/api/v1/employees/update-credentials",
                                 "/api/v1/work-schedule/get-work-schedule-pdf"
                         ).hasAnyRole("MANAGER", "EMPLOYEE")
                         .anyRequest().permitAll()
