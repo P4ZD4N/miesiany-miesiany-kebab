@@ -1,4 +1,5 @@
 
+
 # 💻 Miesiany Miesiany Kebab
 
 ![](./images/logo.png)
@@ -1075,7 +1076,8 @@ Add new employee.
   "job":  "Cook",
   "hourly_wage":  35.50,
   "date_of_birth":  "1990-05-15",
-  "employment_type":  "PERMANENT"
+  "employment_type":  "PERMANENT",
+  "is_student": false
 }
 ```
 
@@ -1103,6 +1105,7 @@ Updates existing employee.
   "updated_hourly_wage": 35.75,
   "updated_date_of_birth": "1988-03-22",
   "updated_employment_type": "PERMANENT",
+  "updated_student": false,
   "updated_active": true,
   "updated_hired_date": "2020-01-15"
 }
