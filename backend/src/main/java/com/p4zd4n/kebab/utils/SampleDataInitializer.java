@@ -116,6 +116,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .employmentType(EmploymentType.PERMANENT)
                 .hourlyWage(BigDecimal.valueOf(30))
                 .isActive(true)
+                .isStudent(false)
                 .hiredAt(LocalDate.now())
                 .build();
 
@@ -130,6 +131,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .employmentType(EmploymentType.PERMANENT)
                 .hourlyWage(BigDecimal.valueOf(32))
                 .isActive(true)
+                .isStudent(true)
                 .hiredAt(LocalDate.now())
                 .build();
 
@@ -148,6 +150,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 "123456798",
                 BigDecimal.valueOf(40),
                 true,
+                false,
                 LocalDate.now()
         );
 

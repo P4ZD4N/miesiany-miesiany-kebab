@@ -43,5 +43,9 @@ public record NewEmployeeRequest(
 
         @JsonProperty("employment_type")
         @NotNull(message = "{employmentType.notNull}")
-        EmploymentType employmentType
+        EmploymentType employmentType,
+
+        @JsonProperty("is_student")
+        @NotNull(message = "{isStudent.notNull}")
+        Boolean isStudent
 ) {}

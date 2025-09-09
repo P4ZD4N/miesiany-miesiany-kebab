@@ -58,6 +58,9 @@ public class Employee extends WithTimestamp{
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
+    @Column(name = "is_student", nullable = false)
+    private boolean isStudent;
+
     @Column(name = "hired_at", nullable = false)
     private LocalDate hiredAt;
 
@@ -73,6 +76,7 @@ public class Employee extends WithTimestamp{
         EmploymentType employmentType,
         BigDecimal hourlyWage,
         boolean isActive,
+        boolean isStudent,
         LocalDate hiredAt
     ) {
         this.firstName = firstName;
@@ -85,6 +89,7 @@ public class Employee extends WithTimestamp{
         this.hourlyWage = hourlyWage;
         this.employmentType = employmentType;
         this.isActive = isActive;
+        this.isStudent = isStudent;
         this.hiredAt = hiredAt;
     }
 }

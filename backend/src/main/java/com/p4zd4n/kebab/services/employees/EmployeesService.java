@@ -80,6 +80,7 @@ public class EmployeesService {
                 .employmentType(employee.getEmploymentType())
                 .hourlyWage(employee.getHourlyWage())
                 .isActive(employee.isActive())
+                .isStudent(employee.isStudent())
                 .hiredAt(employee.getHiredAt())
                 .build();
     }
@@ -103,6 +104,7 @@ public class EmployeesService {
                     request.phone(),
                     request.hourlyWage(),
                     true,
+                    request.isStudent(),
                     LocalDate.now());
 
             employeeRepository.save(newManager);
@@ -163,6 +165,7 @@ public class EmployeesService {
         if (request.updatedHourlyWage() != null) employee.setHourlyWage(request.updatedHourlyWage());
         if (request.updatedDateOfBirth() != null) employee.setDateOfBirth(request.updatedDateOfBirth());
         if (request.updatedEmploymentType() != null) employee.setEmploymentType(request.updatedEmploymentType());
+        if (request.updatedStudent() != null) employee.setStudent(request.updatedStudent());
         if (request.updatedActive() != null) employee.setActive(request.updatedActive());
         if (request.updatedHiredDate() != null) employee.setHiredAt(request.updatedHiredDate());
 

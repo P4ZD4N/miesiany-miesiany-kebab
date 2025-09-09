@@ -20,5 +20,6 @@ public record EmployeeResponse(
         @JsonProperty("employment_type") EmploymentType employmentType,
         @JsonProperty("hourly_wage") BigDecimal hourlyWage,
         @JsonProperty("is_active") boolean isActive,
+        @JsonProperty("is_student") boolean isStudent,
         @JsonProperty("hired_at") LocalDate hiredAt
 ) {}
