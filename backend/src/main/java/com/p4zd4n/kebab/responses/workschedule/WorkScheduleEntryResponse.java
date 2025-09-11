@@ -6,6 +6,7 @@ import com.p4zd4n.kebab.entities.Employee;
 import jakarta.persistence.Column;
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -18,5 +19,6 @@ public record WorkScheduleEntryResponse(
         @JsonProperty("employee_email") String employeeEmail,
         LocalDate date,
         @JsonProperty("start_time") LocalTime startTime,
-        @JsonProperty("end_time") LocalTime endTime
+        @JsonProperty("end_time") LocalTime endTime,
+        @JsonProperty("hourly_wage") BigDecimal hourlyWage
 ) {}

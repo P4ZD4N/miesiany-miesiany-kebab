@@ -543,6 +543,7 @@ public class SampleDataInitializer implements CommandLineRunner {
                 .date(LocalDate.now())
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(18, 0))
+                .hourlyWage(employee.getHourlyWage())
                 .build();
 
         workScheduleEntryRepository.save(workScheduleEntry);
