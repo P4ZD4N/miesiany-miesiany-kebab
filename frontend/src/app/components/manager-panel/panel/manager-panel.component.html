@@ -5,8 +5,8 @@
     {{ "manager-panel.wishes" | translate }} :)
   </p>
 
-  <section class="section-wrapper">
-    <section class="manager-data">
+  <section class="manager-data">
+    <section>
       <h2>{{ "manager-panel.contact_data" | translate }}</h2>
       <p>
         {{ "employee-management.first_name" | translate }}:
@@ -21,6 +21,8 @@
         {{ "employee-management.phone" | translate }}:
         {{ currentEmployeeData?.phone_number }}
       </p>
+    </section>
+    <section>
       <h2>{{ "employee-panel.employment_details" | translate }}</h2>
       <p>
         {{ "employee-management.job" | translate }}:
@@ -42,53 +44,91 @@
         {{ currentEmployeeData?.hired_at | date : "dd.MM.yyyy" }}
       </p>
     </section>
+  </section>
 
-    <section class="actions-buttons">
-      <h2>{{ "manager-panel.actions_heading" | translate }}</h2>
+  <section class="actions-buttons">
+    <h2>{{ "manager-panel.actions_heading" | translate }}</h2>
+    <div class="action-button">
+      <i class="fa-solid fa-bag-shopping"></i>
       <button class="btn btn-success" [routerLink]="['/order-management']">
         {{ "manager-panel.buttons.order_management" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-clock"></i>
       <button class="btn btn-success" [routerLink]="['/order-status-display']">
         {{ "manager-panel.buttons.order_status_display" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-calendar-days"></i>
       <button class="btn btn-success" [routerLink]="['/work-schedule']">
         {{ "manager-panel.buttons.work_schedule" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-dollar-sign"></i>
       <button class="btn btn-success" [routerLink]="['/payments']">
         {{ "manager-panel.buttons.payments" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-lock-open"></i>
       <button class="btn btn-success" [routerLink]="['/opening-hours']">
         {{ "manager-panel.buttons.opening_hours_management" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-utensils"></i>
       <button class="btn btn-success" [routerLink]="['/menu']">
         {{ "manager-panel.buttons.menu_management" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-percent"></i>
       <button class="btn btn-success" [routerLink]="['/promotions']">
         {{ "manager-panel.buttons.promotions_management" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-briefcase"></i>
       <button class="btn btn-success" [routerLink]="['/jobs']">
         {{ "manager-panel.buttons.jobs_management" | translate }}
       </button>
-      <button class="btn btn-success" [routerLink]="['/discount-code-management']">
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-tag"></i>
+      <button
+        class="btn btn-success"
+        [routerLink]="['/discount-code-management']"
+      >
         {{ "manager-panel.buttons.discount_code_management" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-users"></i>
       <button class="btn btn-success" [routerLink]="['/employee-management']">
         {{ "manager-panel.buttons.employee_management" | translate }}
       </button>
-
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-at"></i>
       <button
         class="btn btn-success button-update"
         (click)="updateCurrentEmployeeCredential('email')"
       >
         {{ "manager-panel.buttons.update_email" | translate }}
       </button>
+    </div>
+    <div class="action-button">
+      <i class="fa-solid fa-key"></i>
       <button
         class="btn btn-success button-update"
         (click)="updateCurrentEmployeeCredential('password')"
       >
         {{ "manager-panel.buttons.update_password" | translate }}
       </button>
-    </section>
+    </div>
   </section>
 
   <button class="btn btn-danger" (click)="logout()">
