@@ -74,6 +74,7 @@ public class WorkScheduleService {
                 .date(workScheduleEntry.getDate())
                 .startTime(workScheduleEntry.getStartTime())
                 .endTime(workScheduleEntry.getEndTime())
+                .hourlyWage(workScheduleEntry.getHourlyWage())
                 .build();
     }
 
@@ -114,6 +115,7 @@ public class WorkScheduleService {
                 .date(request.date())
                 .startTime(request.startTime())
                 .endTime(request.endTime())
+                .hourlyWage(employee.getHourlyWage())
                 .build();
 
         workScheduleEntryRepository.save(newWorkScheduleEntry);

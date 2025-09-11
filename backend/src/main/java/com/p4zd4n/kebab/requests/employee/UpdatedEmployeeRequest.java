@@ -54,6 +54,9 @@ public record UpdatedEmployeeRequest(
         @JsonProperty("updated_active")
         Boolean updatedActive,
 
+        @JsonProperty("updated_student")
+        Boolean updatedStudent,
+
         @JsonProperty("updated_hired_date")
         LocalDate updatedHiredDate
 ) implements EmailUpdateRequest {}

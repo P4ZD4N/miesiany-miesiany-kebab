@@ -266,6 +266,7 @@ export interface NewEmployeeRequest {
   job: string;
   employment_type: EmploymentType | null,
   hourly_wage: number;
+  is_student: boolean;
 }
 
 export interface UpdatedEmployeeRequest {
@@ -280,6 +281,7 @@ export interface UpdatedEmployeeRequest {
   updated_employment_type: EmploymentType | null,
   updated_hourly_wage: number;
   updated_active: boolean;
+  updated_student: boolean;
   updated_hired_date: Date | null;
 }
 

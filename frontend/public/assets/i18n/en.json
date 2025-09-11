@@ -91,6 +91,7 @@
             "order_management": "Order management",
             "order_status_display": "Order status display",
             "work_schedule": "Work schedule",
+            "payments": "Payments",
             "opening_hours_management": "Opening hours management",
             "menu_management": "Menu management",
             "promotions_management": "Promotions management",
@@ -403,6 +404,7 @@
     },
     "work-schedule": {
         "headline": "Work schedule",
+        "employee": "Employee",
         "buttons": {
             "download": "Download work schedule"
         }
@@ -415,6 +417,7 @@
         "phone": "Phone",
         "date_of_birth": "Date of birth",
         "job": "Job",
+        "is_student": "Is student?",
         "jobs": {
             "Cashier": "Cashier",
             "Manager": "Manager"
@@ -436,5 +439,15 @@
         },
         "new_employee": "New employee",
         "updated_employee": "Updated employee"
+    },
+    "payments": {
+        "headline": "Payments",
+        "employee": "Employee",
+        "job": "Job",
+        "employment_type": "Employment type",
+        "hourly_wage": "Hourly wage gross",
+        "hours": "Working hours",
+        "is_student": "Is student?",
+        "total": "Total"
     }
 }

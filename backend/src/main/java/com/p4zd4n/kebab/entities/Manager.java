@@ -22,8 +22,9 @@ public class Manager extends Employee {
         String phoneNumber,
         BigDecimal hourlyWage,
         boolean isActive,
+        boolean isStudent,
         LocalDate hiredAt
     ) {
-        super(firstName, lastName, email, password, dateOfBirth, "Manager", phoneNumber, EmploymentType.PERMANENT, hourlyWage, isActive, hiredAt);
+        super(firstName, lastName, email, password, dateOfBirth, "Manager", phoneNumber, EmploymentType.PERMANENT, hourlyWage, isActive, isStudent, hiredAt);
     }
 }

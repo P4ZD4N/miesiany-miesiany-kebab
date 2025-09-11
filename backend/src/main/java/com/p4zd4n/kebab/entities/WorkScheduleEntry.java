@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -39,6 +40,9 @@ public class WorkScheduleEntry extends WithTimestamp {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
+    @Column(name = "hourly_wage", nullable = false)
+    private BigDecimal hourlyWage;
+
     @Builder
     public WorkScheduleEntry(
         String employeeFirstName,
@@ -46,7 +50,8 @@ public class WorkScheduleEntry extends WithTimestamp {
         String employeeEmail,
         LocalDate date,
         LocalTime startTime,
-        LocalTime endTime
+        LocalTime endTime,
+        BigDecimal hourlyWage
     ) {
         this.employeeFirstName = employeeFirstName;
         this.employeeLastName = employeeLastName;
@@ -54,5 +59,6 @@ public class WorkScheduleEntry extends WithTimestamp {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.hourlyWage = hourlyWage;
     }
 }

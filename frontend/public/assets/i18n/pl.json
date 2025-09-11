@@ -91,6 +91,7 @@
             "order_management": "Zarzadzanie zamowieniami",
             "order_status_display": "Wyswietlanie statusow zamowien",
             "work_schedule": "Grafik",
+            "payments": "Platnosci",
             "opening_hours_management": "Zarzadzanie godzinami otwarcia",
             "menu_management": "Zarzadzanie menu",
             "promotions_management": "Zarzadzanie promocjami",
@@ -406,6 +407,7 @@
     },
     "work-schedule": {
         "headline": "Grafik",
+        "employee": "Pracownik",
         "buttons": {
             "download": "Pobierz grafik"
         }
@@ -418,6 +420,7 @@
         "phone": "Telefon",
         "date_of_birth": "Data urodzenia",
         "job": "Stanowisko",
+        "is_student": "Czy student?",
         "jobs": {
             "Cashier": "Kasjer",
             "Manager": "Manager"
@@ -439,5 +442,15 @@
         },
         "new_employee": "Nowy pracownik",
         "updated_employee": "Aktualizowany pracownik"
+    },
+    "payments": {
+        "headline": "Platnosci",
+        "employee": "Pracownik",
+        "job": "Stanowisko",
+        "employment_type": "Typ zatrudnienia",
+        "hourly_wage": "Stawka godzinowa brutto",
+        "hours": "Godziny pracy",
+        "is_student": "Czy student?",
+        "total": "Lacznie"
     }
 }

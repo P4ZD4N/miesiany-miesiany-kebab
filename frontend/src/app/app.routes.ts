@@ -30,6 +30,8 @@ import { WorkScheduleLayoutComponent } from './components/work-schedule/work-sch
 import { WorkScheduleComponent } from './components/work-schedule/work-schedule/work-schedule.component';
 import { EmployeeManagementComponent } from './components/employee-management/employee-management/employee-management.component';
 import { EmployeeManagementLayoutComponent } from './components/employee-management/employee-management.component';
+import { PaymentsComponent } from './components/payments/payments/payments.component';
+import { PaymentsLayoutComponent } from './components/payments/payments-layout.component';
 
 export const routes: Routes = [
     { path: '', component: HomeLayoutComponent },
@@ -77,5 +79,8 @@ export const routes: Routes = [
     ]},
     { path: 'employee-management', component: EmployeeManagementLayoutComponent, children: [
         { path: '', component: EmployeeManagementComponent }
+    ]},
+    { path: 'payments', component: PaymentsLayoutComponent, children: [
+        { path: '', component: PaymentsComponent }
     ]}
 ];

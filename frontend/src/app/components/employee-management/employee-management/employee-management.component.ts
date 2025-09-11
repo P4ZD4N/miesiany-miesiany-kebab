@@ -29,6 +29,7 @@ export class EmployeeManagementComponent implements OnInit {
     date_of_birth: null,
     job: '',
     employment_type: null,
+    is_student: false,
     hourly_wage: 0
   };
   updatedEmployee: UpdatedEmployeeRequest | null = null;
@@ -142,6 +143,7 @@ export class EmployeeManagementComponent implements OnInit {
       updated_date_of_birth: employee.date_of_birth,
       updated_employment_type: employee.employment_type,
       updated_active: employee.is_active,
+      updated_student: employee.is_student,
       updated_hired_date: employee.hired_at
     };
   }
@@ -242,6 +244,7 @@ export class EmployeeManagementComponent implements OnInit {
       date_of_birth: null,
       job: '',
       employment_type: null,
+      is_student: false,
       hourly_wage: 0
     };
   }
