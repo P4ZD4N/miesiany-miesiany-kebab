@@ -40,6 +40,9 @@
             </select>
         </tr>
         <tr>
+            {{ 'employee-management.is_student' | translate }}: <input type="checkbox" [(ngModel)]="newEmployee.is_student" />
+        </tr>
+        <tr>
             <button class="button-accept" (click)="addEmployee()">{{ 'employee-management.buttons.accept' | translate }}</button>
             <button class="button-cancel" (click)="hideAddEmployeeTable()">{{ 'employee-management.buttons.cancel' | translate }}</button>
         </tr>
@@ -107,6 +110,9 @@
             {{ 'employee-management.hired_at' | translate }}: <input type="date" [(ngModel)]="updatedEmployee!.updated_hired_date" />
         </tr>
         <tr>
+            {{ 'employee-management.is_student' | translate }}: <input type="checkbox" [(ngModel)]="updatedEmployee!.updated_student" />
+        </tr>
+        <tr>
             {{ 'employee-management.active' | translate }}: <input type="checkbox" [(ngModel)]="updatedEmployee!.updated_active" />
         </tr>
         <tr>
@@ -141,6 +147,7 @@
                 <th>{{ 'employee-management.employment_type' | translate }}</th>
                 <th>{{ 'employee-management.hourly_wage' | translate }}</th>
                 <th>{{ 'employee-management.hired_at' | translate }}</th>
+                <th>{{ 'employee-management.is_student' | translate }}</th>
                 <th>{{ 'employee-management.active' | translate }}</th>
             </tr>
         </thead>
@@ -160,6 +167,9 @@
                 <td>{{ getTranslatedEmploymentType(employee.employment_type) }}</td>
                 <td>{{ employee.hourly_wage }} zl</td>
                 <td>{{ employee.hired_at | date:'dd.MM.yyyy' }}</td>
+                <td>
+                    <span [ngClass]="employee.is_student ? 'green-circle' : 'gray-circle'"></span>
+                </td>
                 <td>
                     <span [ngClass]="employee.is_active ? 'green-circle' : 'gray-circle'"></span>
                 </td>

@@ -348,6 +348,7 @@ export interface EmployeeResponse {
   employment_type: EmploymentType,
   hourly_wage: number;
   is_active: boolean;
+  is_student: boolean;
   hired_at: Date;
 }
 
@@ -359,6 +360,7 @@ export interface WorkScheduleEntryResponse {
   date: string;
   start_time: string;
   end_time: string;
+  hourly_wage: number;
 }
 
 export interface NewWorkScheduleEntryResponse {

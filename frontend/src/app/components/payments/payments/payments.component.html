@@ -1,0 +1,67 @@
+<section class="payments" *ngIf="isManager()">
+  <h1>{{ "payments.headline" | translate }}</h1>
+  <p>{{ scheduleDate }}</p>
+
+  <section class="table-and-buttons">
+    <button class="prev-next-buttons" (click)="previousMonth()"><</button>
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>{{ "payments.employee" | translate }}</th>
+          <th>{{ "payments.job" | translate }}</th>
+          <th>{{ "payments.employment_type" | translate }}</th>
+          <th>{{ "payments.hourly_wage" | translate }}</th>
+          <th>
+            {{ "payments.hourly_wage" | translate }} ({{
+              scheduleDate
+            }})
+          </th>
+          <th>{{ "payments.hours" | translate }}</th>
+          <th>{{ "payments.is_student" | translate }}</th>
+          <th>{{ "payments.total" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let employee of employees">
+          <td>
+            {{ employee.first_name }} {{ employee.last_name }} ({{
+              employee.email
+            }})
+          </td>
+
+          <td>{{ "employee-management.jobs." + employee.job | translate }}</td>
+          <td>
+            {{
+              "employee-management.employment_types." + employee.employment_type
+                | translate
+            }}
+          </td>
+          <td>{{ employee.hourly_wage }} zl</td>
+          <td>
+            {{
+              getHourlyWageFromCurrentMonth(employee) !== null
+                ? (getHourlyWageFromCurrentMonth(employee) | number : "1.2-2") +
+                  " zl"
+                : "-"
+            }}
+          </td>
+          <td>{{ getHoursFromCurrentMonth(employee) | number : "1.2-2" }}</td>
+          <td>
+            <span
+              [ngClass]="employee.is_student ? 'green-circle' : 'gray-circle'"
+            ></span>
+          </td>
+          <td>
+            {{ getTotalFromCurrentMonth(employee) | number : "1.2-2" }} zl
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="prev-next-buttons" (click)="nextMonth()">></button>
+  </section>
+</section>
+
+<section class="verification-required" *ngIf="!isManager()">
+  <h1>{{ "verification_required.headline" | translate }}</h1>
+  <p>{{ "verification_required.paragraph" | translate }}</p>
+</section>
