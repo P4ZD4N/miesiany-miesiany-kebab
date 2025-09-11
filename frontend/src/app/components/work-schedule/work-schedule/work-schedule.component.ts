@@ -4,11 +4,18 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { LangService } from '../../../services/lang/lang.service';
 import { EmployeeService } from '../../../services/employees/employee.service';
-import { EmployeeResponse, OpeningHoursResponse, WorkScheduleEntryResponse } from '../../../responses/responses';
+import {
+  EmployeeResponse,
+  OpeningHoursResponse,
+  WorkScheduleEntryResponse,
+} from '../../../responses/responses';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 import { WorkScheduleService } from '../../../services/work-schedule/work-schedule.service';
-import { NewWorkScheduleEntryRequest, RemovedWorkScheduleEntryRequest } from '../../../requests/requests';
+import {
+  NewWorkScheduleEntryRequest,
+  RemovedWorkScheduleEntryRequest,
+} from '../../../requests/requests';
 import { OpeningHoursService } from '../../../services/opening-hours/opening-hours.service';
 
 @Component({
@@ -16,7 +23,7 @@ import { OpeningHoursService } from '../../../services/opening-hours/opening-hou
   standalone: true,
   imports: [CommonModule, TranslateModule],
   templateUrl: './work-schedule.component.html',
-  styleUrl: './work-schedule.component.scss'
+  styleUrl: './work-schedule.component.scss',
 })
 export class WorkScheduleComponent implements OnInit {
   days: string[] = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
@@ -30,6 +37,7 @@ export class WorkScheduleComponent implements OnInit {
   currentYear: number = new Date().getFullYear();
   scheduleDate: string = '';
   languageChangeSubscription: Subscription;
+  currentEmployeeData: EmployeeResponse | null = null;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -38,10 +46,11 @@ export class WorkScheduleComponent implements OnInit {
     private workScheduleService: WorkScheduleService,
     private openingHoursService: OpeningHoursService
   ) {
-    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
-      this.setDays(); 
-      this.daysInSchedule = this.generateMonthDays(); 
-    });
+    this.languageChangeSubscription =
+      this.langService.languageChanged$.subscribe(() => {
+        this.setDays();
+        this.daysInSchedule = this.generateMonthDays();
+      });
   }
 
   ngOnInit(): void {
@@ -51,6 +60,7 @@ export class WorkScheduleComponent implements OnInit {
 
     if (this.isManager() || this.isEmployee()) {
       this.loadEmployees();
+      this.loadCurrentEmployeeDetails();
       this.loadWorkScheduleEntries();
       this.loadOpeningHours();
     }
@@ -58,31 +68,58 @@ export class WorkScheduleComponent implements OnInit {
 
   setDays(): void {
     if (this.langService.currentLang === 'pl') {
-      this.days = ['Poniedzialek', 'Wtorek', 'Sroda', 'Czwartek', 'Piatek', 'Sobota', 'Niedziela'];
+      this.days = [
+        'Poniedzialek',
+        'Wtorek',
+        'Sroda',
+        'Czwartek',
+        'Piatek',
+        'Sobota',
+        'Niedziela',
+      ];
     } else {
-      this.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      this.days = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ];
     }
   }
 
   loadEmployees(): void {
     this.employeeService.getEmployees().subscribe(
-      (data: EmployeeResponse[]) => this.employees = data
-        .filter(emp => emp.job.toLowerCase() !== 'manager')
-        .filter(emp => emp.is_active === true)
-        .sort((a, b) => a.last_name.localeCompare(b.last_name)),
-      (error) => console.log('Error loading employees', error));
+      (data: EmployeeResponse[]) =>
+        (this.employees = data
+          .filter((emp) => emp.job.toLowerCase() !== 'manager')
+          .filter((emp) => emp.is_active === true)
+          .sort((a, b) => a.last_name.localeCompare(b.last_name))),
+      (error) => console.log('Error loading employees', error)
+    );
+  }
+
+  loadCurrentEmployeeDetails(): void {
+    this.employeeService.getCurrentEmployee().subscribe(
+      (data: EmployeeResponse) => (this.currentEmployeeData = data),
+      (error) => console.log('Error loading current employee data')
+    );
   }
 
   loadWorkScheduleEntries(): void {
     this.workScheduleService.getWorkScheduleEntries().subscribe(
-      (data: WorkScheduleEntryResponse[]) => this.workScheduleEntries = data,
-      (error) => console.log('Error loading work schedule entries', error));
+      (data: WorkScheduleEntryResponse[]) => (this.workScheduleEntries = data),
+      (error) => console.log('Error loading work schedule entries', error)
+    );
   }
 
   loadOpeningHours(): void {
     this.openingHoursService.getOpeningHours().subscribe(
-      (data: OpeningHoursResponse[]) => this.openingHours = data,
-      error => console.log('Error loading opening hours', error));
+      (data: OpeningHoursResponse[]) => (this.openingHours = data),
+      (error) => console.log('Error loading opening hours', error)
+    );
   }
 
   isManager(): boolean {
@@ -94,16 +131,28 @@ export class WorkScheduleComponent implements OnInit {
   }
 
   generateMonthDays(): string[] {
-    const daysInMonth = new Date(this.currentYear, this.currentMonth - 1, 0).getDate();
-    const firstDay = new Date(this.currentYear, this.currentMonth - 1, 1).getDay(); 
+    const daysInMonth = new Date(
+      this.currentYear,
+      this.currentMonth - 1,
+      0
+    ).getDate();
+    const firstDay = new Date(
+      this.currentYear,
+      this.currentMonth - 1,
+      1
+    ).getDay();
     const startIndex = firstDay === 0 ? 6 : firstDay - 1;
     const monthDays: string[] = [];
 
     for (let i = 0; i < daysInMonth; i++) {
       const dayIndex = (startIndex + i) % 7;
-      const currentDate = new Date(this.currentYear, this.currentMonth - 1, i + 1);
+      const currentDate = new Date(
+        this.currentYear,
+        this.currentMonth - 1,
+        i + 1
+      );
       const day = String(currentDate.getDate()).padStart(2, '0');
-      const monthNum = String(currentDate.getMonth() + 1).padStart(2, '0'); 
+      const monthNum = String(currentDate.getMonth() + 1).padStart(2, '0');
       const yearStr = currentDate.getFullYear();
       const dateString = `${this.days[dayIndex]} (${day}.${monthNum}.${yearStr})`;
 
@@ -114,8 +163,15 @@ export class WorkScheduleComponent implements OnInit {
   }
 
   getScheduleDate(): string {
-    let lastDayOfCurrentMonth = new Date(this.currentYear, this.currentMonth, 0).getDate()
-    let monthFormatted = this.currentMonth.toString().length == 2 ? this.currentMonth : "0" + this.currentMonth;
+    let lastDayOfCurrentMonth = new Date(
+      this.currentYear,
+      this.currentMonth,
+      0
+    ).getDate();
+    let monthFormatted =
+      this.currentMonth.toString().length == 2
+        ? this.currentMonth
+        : '0' + this.currentMonth;
     return `01.${monthFormatted}.${this.currentYear} - ${lastDayOfCurrentMonth}.${monthFormatted}.${this.currentYear}`;
   }
 
@@ -144,26 +200,44 @@ export class WorkScheduleComponent implements OnInit {
   }
 
   startAddingWorkScheduleEntry(employee: EmployeeResponse, day: string) {
-
-    let employeeTranslated = this.langService.currentLang === 'pl' ? 'Pracownik' : 'Employee';
-    let dateTranslated = this.langService.currentLang === 'pl' ? 'Data' : 'Date';
-    let startTimeTranslated = this.langService.currentLang === 'pl' ? 'Godzina rozpoczecia' : 'Start time';
-    let endTimeTranslated = this.langService.currentLang === 'pl' ? 'Godzina zakonczenia' : 'End time';
-    let nullValidationMessage = this.langService.currentLang === 'pl' ? 'Obie godziny powinny byc uzupelnione!' : 'Both start and end time should be fulfilled!';
-    let invalidValidationMessage = this.langService.currentLang === 'pl' ? 'Godzina zakonczenia musi byc po godzinie rozpoczecia!' : 'End hour must be after start hour!';
+    let employeeTranslated =
+      this.langService.currentLang === 'pl' ? 'Pracownik' : 'Employee';
+    let dateTranslated =
+      this.langService.currentLang === 'pl' ? 'Data' : 'Date';
+    let startTimeTranslated =
+      this.langService.currentLang === 'pl'
+        ? 'Godzina rozpoczecia'
+        : 'Start time';
+    let endTimeTranslated =
+      this.langService.currentLang === 'pl'
+        ? 'Godzina zakonczenia'
+        : 'End time';
+    let nullValidationMessage =
+      this.langService.currentLang === 'pl'
+        ? 'Obie godziny powinny byc uzupelnione!'
+        : 'Both start and end time should be fulfilled!';
+    let invalidValidationMessage =
+      this.langService.currentLang === 'pl'
+        ? 'Godzina zakonczenia musi byc po godzinie rozpoczecia!'
+        : 'End hour must be after start hour!';
 
     Swal.fire({
-      title: this.langService.currentLang === 'pl' ? 'Dodaj wpis do grafiku' : 'Add work schedule entry',
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Dodaj wpis do grafiku'
+          : 'Add work schedule entry',
       showCancelButton: true,
       confirmButtonColor: '#198754',
       cancelButtonColor: 'red',
       background: '#141414',
       color: 'white',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Dodaj' : 'Add',
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      confirmButtonText:
+        this.langService.currentLang === 'pl' ? 'Dodaj' : 'Add',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
       customClass: {
         validationMessage: 'custom-validation-message',
-        title: 'swal2-title-red'
+        title: 'swal2-title-red',
       },
       html: `
         <span style="display:block; margin-bottom: 1rem;">
@@ -186,8 +260,12 @@ export class WorkScheduleComponent implements OnInit {
         <input id="end-time" type="time" class="swal2-input">
       `,
       preConfirm: () => {
-        const startTime = (document.getElementById('start-time') as HTMLInputElement).value;
-        const endTime = (document.getElementById('end-time') as HTMLInputElement).value;
+        const startTime = (
+          document.getElementById('start-time') as HTMLInputElement
+        ).value;
+        const endTime = (
+          document.getElementById('end-time') as HTMLInputElement
+        ).value;
 
         if (!startTime || !endTime) {
           Swal.showValidationMessage(nullValidationMessage);
@@ -200,25 +278,31 @@ export class WorkScheduleComponent implements OnInit {
         }
 
         return { startTime, endTime, employee, day };
-      }
+      },
     }).then((result) => {
       if (result.isConfirmed && result.value) {
         const startTime = result.value.startTime;
         const endTime = result.value.endTime;
         const employee = result.value.employee;
 
-        const parts = result.value.day.split(" ");
+        const parts = result.value.day.split(' ');
         const day = parts[0];
         const dayIndex = this.days.indexOf(day);
         const openingHourAtChosenDay = this.openingHours[dayIndex].opening_time;
         const closingHourAtChosenDay = this.openingHours[dayIndex].closing_time;
-        const rawDate = parts[1].replace(")", "").replace("(", "");
-        const [dd, mm, yyyy] = rawDate.split(".");
+        const rawDate = parts[1].replace(')', '').replace('(', '');
+        const [dd, mm, yyyy] = rawDate.split('.');
         const formattedDate = `${yyyy}-${mm}-${dd}`;
 
-        if (startTime < openingHourAtChosenDay || endTime > closingHourAtChosenDay) {
+        if (
+          startTime < openingHourAtChosenDay ||
+          endTime > closingHourAtChosenDay
+        ) {
           Swal.fire({
-            title: this.langService.currentLang === 'pl' ? 'Czy napewno dodac taki wpis?' : 'Are you sure you want to add such entry?',
+            title:
+              this.langService.currentLang === 'pl'
+                ? 'Czy napewno dodac taki wpis?'
+                : 'Are you sure you want to add such entry?',
             icon: 'warning',
             iconColor: 'red',
             showCancelButton: true,
@@ -226,44 +310,70 @@ export class WorkScheduleComponent implements OnInit {
             cancelButtonColor: 'red',
             background: '#141414',
             color: 'white',
-            confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
-            cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+            confirmButtonText:
+              this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+            cancelButtonText:
+              this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
             html: `
               <span style="display:block; margin-bottom: 1rem;">
-                ${this.langService.currentLang === 'pl' ? 'Rozwaz godziny otwarcia w ' : 'Consider opening hours at '}<span style="color: red;">${day}</span>
+                ${
+                  this.langService.currentLang === 'pl'
+                    ? 'Rozwaz godziny otwarcia w '
+                    : 'Consider opening hours at '
+                }<span style="color: red;">${day}</span>
               </span>
 
               <span style="display:block; margin-bottom: 1rem;">
-                ${this.langService.currentLang === 'pl' ? 'Otwarcie o ' : 'Opening at '}<span style="color: red;">${openingHourAtChosenDay}</span>
+                ${
+                  this.langService.currentLang === 'pl'
+                    ? 'Otwarcie o '
+                    : 'Opening at '
+                }<span style="color: red;">${openingHourAtChosenDay}</span>
               </span>
 
               <span style="display:block; margin-bottom: 1rem;">
-                ${this.langService.currentLang === 'pl' ? 'Zamkniecie o ' : 'Closing at '}<span style="color: red;">${closingHourAtChosenDay}</span>
+                ${
+                  this.langService.currentLang === 'pl'
+                    ? 'Zamkniecie o '
+                    : 'Closing at '
+                }<span style="color: red;">${closingHourAtChosenDay}</span>
               </span>
 
               <span style="display:block; margin-bottom: 1rem;">
-                ${this.langService.currentLang === 'pl' ? 'Twoje dane dotyczace nowego wpisu' : 'Your data about new entry'}
+                ${
+                  this.langService.currentLang === 'pl'
+                    ? 'Twoje dane dotyczace nowego wpisu'
+                    : 'Your data about new entry'
+                }
               </span>
 
               <span style="display:block; margin-bottom: 1rem;">
-                ${this.langService.currentLang === 'pl' ? 'Poczatek zmiany o ' : 'Beginning of shift at '}<span style="color: red;">${startTime}</span>
+                ${
+                  this.langService.currentLang === 'pl'
+                    ? 'Poczatek zmiany o '
+                    : 'Beginning of shift at '
+                }<span style="color: red;">${startTime}</span>
               </span>
 
               <span style="display:block; margin-bottom: 1rem;">
-                ${this.langService.currentLang === 'pl' ? 'Koniec zmiany o ' : 'End of shift at '}<span style="color: red;">${endTime}</span>
+                ${
+                  this.langService.currentLang === 'pl'
+                    ? 'Koniec zmiany o '
+                    : 'End of shift at '
+                }<span style="color: red;">${endTime}</span>
               </span>
             `,
-            customClass: { title: 'swal2-title-red' }
+            customClass: { title: 'swal2-title-red' },
           }).then((result) => {
             if (result.isConfirmed) {
               this.addWorkScheduleEntry({
                 employee_email: employee.email,
                 date: formattedDate,
                 start_time: startTime,
-                end_time: endTime
+                end_time: endTime,
               });
             }
-          }); 
+          });
 
           return;
         }
@@ -272,7 +382,7 @@ export class WorkScheduleComponent implements OnInit {
           employee_email: employee.email,
           date: formattedDate,
           start_time: startTime,
-          end_time: endTime
+          end_time: endTime,
         });
       }
     });
@@ -282,7 +392,10 @@ export class WorkScheduleComponent implements OnInit {
     this.workScheduleService.addWorkScheduleEntry(request).subscribe(
       () => {
         Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano nowy wpis do grafiku!` : `Successfully added new work schedule entry!`,
+          text:
+            this.langService.currentLang === 'pl'
+              ? `Pomyslnie dodano nowy wpis do grafiku!`
+              : `Successfully added new work schedule entry!`,
           icon: 'success',
           iconColor: 'green',
           confirmButtonColor: 'green',
@@ -290,8 +403,8 @@ export class WorkScheduleComponent implements OnInit {
           color: 'white',
           confirmButtonText: 'Ok',
         });
-      this.loadWorkScheduleEntries();
-    },
+        this.loadWorkScheduleEntries();
+      },
       (err) => {
         Swal.fire({
           text: err.errorMessages.message,
@@ -306,30 +419,43 @@ export class WorkScheduleComponent implements OnInit {
     );
   }
 
-  getMatchingEntries(employeeEmail: string, day: string): WorkScheduleEntryResponse[] {
-    const parts = day.split(" ");
-    const rawDate = parts[1].replace(")", "").replace("(", "");
+  getMatchingEntries(
+    employeeEmail: string,
+    day: string
+  ): WorkScheduleEntryResponse[] {
+    const parts = day.split(' ');
+    const rawDate = parts[1].replace(')', '').replace('(', '');
 
-    return this.workScheduleEntries.filter(entry => {
-      const [dd, mm, yyyy] = rawDate.split(".");
+    return this.workScheduleEntries.filter((entry) => {
+      const [dd, mm, yyyy] = rawDate.split('.');
       const formattedDate = `${yyyy}-${mm}-${dd}`;
-      return entry.employee_email === employeeEmail && entry.date === formattedDate;
+      return (
+        entry.employee_email === employeeEmail && entry.date === formattedDate
+      );
     });
   }
 
-  removeWorkScheduleEntry(employeeEmail: string, day: string, startTime: string, endTime: string): void {
-
-    let matchingEntries = this.getMatchingEntries(employeeEmail, day).filter(entry =>
-      entry.start_time === startTime && entry.end_time === endTime
+  removeWorkScheduleEntry(
+    employeeEmail: string,
+    day: string,
+    startTime: string,
+    endTime: string
+  ): void {
+    let matchingEntries = this.getMatchingEntries(employeeEmail, day).filter(
+      (entry) => entry.start_time === startTime && entry.end_time === endTime
     );
-    
+
     if (matchingEntries.length !== 1) return;
 
     Swal.fire({
-      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
-      text: this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac ten wpis?`
-        : `Are you sure you want to remove this entry?`,
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac ten wpis?`
+          : `Are you sure you want to remove this entry?`,
       icon: 'warning',
       iconColor: 'red',
       showCancelButton: true,
@@ -338,30 +464,44 @@ export class WorkScheduleComponent implements OnInit {
       background: '#141414',
       color: 'white',
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.workScheduleService.removeWorkScheduleEntry({ id: matchingEntries[0].id } as RemovedWorkScheduleEntryRequest).subscribe(() => {
-          Swal.fire({
-            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto wpis do grafiku!` : `Successfully removed work schedule entry!`,
-            icon: 'success',
-            iconColor: 'green',
-            confirmButtonColor: 'green',
-            background: '#141414',
-            color: 'white',
-            confirmButtonText: 'Ok',
+        this.workScheduleService
+          .removeWorkScheduleEntry({
+            id: matchingEntries[0].id,
+          } as RemovedWorkScheduleEntryRequest)
+          .subscribe(() => {
+            Swal.fire({
+              text:
+                this.langService.currentLang === 'pl'
+                  ? `Pomyslnie usunieto wpis do grafiku!`
+                  : `Successfully removed work schedule entry!`,
+              icon: 'success',
+              iconColor: 'green',
+              confirmButtonColor: 'green',
+              background: '#141414',
+              color: 'white',
+              confirmButtonText: 'Ok',
+            });
+            this.loadWorkScheduleEntries();
           });
-          this.loadWorkScheduleEntries();
-        });
       }
     });
   }
 
   downloadWorkSchedule(): void {
-
-    let lastDayOfCurrentMonth = new Date(this.currentYear, this.currentMonth, 0).getDate()
-    let monthFormatted = this.currentMonth.toString().length == 2 ? this.currentMonth : "0" + this.currentMonth;
-    let startDate =  `${this.currentYear}-${monthFormatted}-01`;
+    let lastDayOfCurrentMonth = new Date(
+      this.currentYear,
+      this.currentMonth,
+      0
+    ).getDate();
+    let monthFormatted =
+      this.currentMonth.toString().length == 2
+        ? this.currentMonth
+        : '0' + this.currentMonth;
+    let startDate = `${this.currentYear}-${monthFormatted}-01`;
     let endDate = `${this.currentYear}-${monthFormatted}-${lastDayOfCurrentMonth}`;
 
     this.workScheduleService.getWorkSchedulePDF(startDate, endDate).subscribe({
@@ -373,6 +513,9 @@ export class WorkScheduleComponent implements OnInit {
         console.error('Error previewing work schedule: ', error);
       },
     });
+  }
 
+  shouldHighlight(employee: EmployeeResponse): boolean {
+    return employee.email === this.currentEmployeeData?.email;
   }
 }
