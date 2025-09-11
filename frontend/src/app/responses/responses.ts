@@ -7,20 +7,14 @@ import { Role } from "../enums/role.enum";
 import { Size } from "../enums/size.enum";
 import { BeveragePromotion, JobEmploymentType, JobRequirement, MealPromotion, SimpleMealIngredient } from "../util-types/util-types";
 
-export interface NewBeverageResponse {
+export interface CommonResponse {
   status_code: number;
   message: string;
 }
 
-export interface UpdatedBeverageResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedBeverageResponse {
-  status_code: number;
-  message: string;
-}
+export interface NewBeverageResponse extends CommonResponse {}
+export interface UpdatedBeverageResponse extends CommonResponse {}
+export interface RemovedBeverageResponse extends CommonResponse {}
 
 export interface BeverageResponse {
   name: string;
@@ -52,66 +46,31 @@ export interface OpeningHoursResponse {
   isEditing?: boolean;
 }
 
-export interface AuthenticationResponse {
-  status_code: number
-  message: string
+export interface AuthenticationResponse extends CommonResponse {
   role: Role;
 }
 
-export interface NewAddonResponse {
-  status_code: number;
-  message: string;
-}
-  
-export interface UpdatedAddonResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedAddonResponse {
-  status_code: number;
-  message: string;
-}  
-
-export interface NewMealResponse {
-  status_code: number;
-  message: string;
-}
+export interface NewAddonResponse extends CommonResponse {}
+export interface UpdatedAddonResponse extends CommonResponse {}
+export interface RemovedAddonResponse extends CommonResponse {}
+export interface NewMealResponse extends CommonResponse {}
 
 export interface IngredientResponse {
   name: string;
   ingredient_type: string;
 }
 
-export interface RemovedMealResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface UpdatedMealResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedIngredientResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface NewIngredientResponse {
-  status_code: number;
-  message: string;
-}
+export interface RemovedMealResponse extends CommonResponse {}
+export interface UpdatedMealResponse extends CommonResponse {}
+export interface RemovedIngredientResponse extends CommonResponse {}
+export interface NewIngredientResponse extends CommonResponse {}
 
 export interface ContactResponse {
   contact_type: ContactType;
   value: string;
 }
 
-export interface UpdatedContactResponse {
-  status_code: number;
-  message: string;
-}
+export interface UpdatedContactResponse extends CommonResponse {}
 
 export interface JobApplicationResponse {
   id: number;
@@ -143,36 +102,16 @@ export interface JobOfferManagerResponse {
   job_applications: JobApplicationResponse[];
 }
 
-export interface NewJobOfferResponse {
-  status_code: number;
-  message: string;
-}
+export interface NewJobOfferResponse extends CommonResponse {}
+export interface UpdatedJobOfferResponse extends CommonResponse {}
+export interface RemovedJobOfferResponse extends CommonResponse {}
 
-export interface UpdatedJobOfferResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedJobOfferResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface JobOfferApplicationResponse {
+export interface JobOfferApplicationResponse extends CommonResponse {
   application_id: number;
-  status_code: number;
-  message: string;
 }
 
-export interface NewCvResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedApplicationResponse {
-  status_code: number;
-  message: string;
-}
+export interface NewCvResponse extends CommonResponse {}
+export interface RemovedApplicationResponse extends CommonResponse {}
 
 export interface MealPromotionResponse {
   id: number;
@@ -199,70 +138,19 @@ export interface AddonPromotionResponse {
   isEditing?: boolean;
 }
 
-export interface NewMealPromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface UpdatedMealPromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedMealPromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface NewBeveragePromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface UpdatedBeveragePromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedBeveragePromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface NewAddonPromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface UpdatedAddonPromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedAddonPromotionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface NewNewsletterSubscriberResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface VerifyNewsletterSubscriptionResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RegenerateOtpResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface UnsubscribeResponse {
-  status_code: number;
-  message: string;
-}
+export interface NewMealPromotionResponse extends CommonResponse {}
+export interface UpdatedMealPromotionResponse extends CommonResponse {}
+export interface RemovedMealPromotionResponse extends CommonResponse {}
+export interface NewBeveragePromotionResponse extends CommonResponse {}
+export interface UpdatedBeveragePromotionResponse extends CommonResponse {}
+export interface RemovedBeveragePromotionResponse extends CommonResponse {}
+export interface NewAddonPromotionResponse extends CommonResponse {}
+export interface UpdatedAddonPromotionResponse extends CommonResponse {}
+export interface RemovedAddonPromotionResponse extends CommonResponse {}
+export interface NewNewsletterSubscriberResponse extends CommonResponse {}
+export interface VerifyNewsletterSubscriptionResponse extends CommonResponse {}
+export interface RegenerateOtpResponse extends CommonResponse {}
+export interface UnsubscribeResponse extends CommonResponse {}
 
 export interface OrderResponse {
   id: number;
@@ -297,21 +185,12 @@ export interface OrderResponse {
   }[];
 }
 
-export interface NewOrderResponse {
-  status_code: number;
-  message: string;
+export interface NewOrderResponse extends CommonResponse {
   id: number;
 }
 
-export interface UpdatedOrderResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedOrderResponse {
-  status_code: number;
-  message: string;
-}
+export interface UpdatedOrderResponse extends CommonResponse {}
+export interface RemovedOrderResponse extends CommonResponse {}
 
 
 export interface DiscountCodeResponse {
@@ -322,20 +201,9 @@ export interface DiscountCodeResponse {
   remaining_uses: number;
 }
 
-export interface NewDiscountCodeResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface UpdatedDiscountCodeResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedDiscountCodeResponse {
-  status_code: number;
-  message: string;
-}
+export interface NewDiscountCodeResponse extends CommonResponse {}
+export interface UpdatedDiscountCodeResponse extends CommonResponse {}
+export interface RemovedDiscountCodeResponse extends CommonResponse {}
 
 export interface EmployeeResponse {
   id: number;
@@ -363,32 +231,9 @@ export interface WorkScheduleEntryResponse {
   hourly_wage: number;
 }
 
-export interface NewWorkScheduleEntryResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedWorkScheduleEntryResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface NewEmployeeResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface UpdatedEmployeeResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface RemovedEmployeeResponse {
-  status_code: number;
-  message: string;
-}
-
-export interface UpdatedCredentialsResponse {
-  status_code: number;
-  message: string;
-}
+export interface NewWorkScheduleEntryResponse extends CommonResponse {}
+export interface RemovedWorkScheduleEntryResponse extends CommonResponse {}
+export interface NewEmployeeResponse extends CommonResponse {}
+export interface UpdatedEmployeeResponse extends CommonResponse {}
+export interface RemovedEmployeeResponse extends CommonResponse {}
+export interface UpdatedCredentialsResponse extends CommonResponse {}
