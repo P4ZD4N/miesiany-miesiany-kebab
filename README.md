@@ -59,6 +59,7 @@ Gastronomic industry plays an important role in the economy. Nowadays many gastr
 - Work schedule panel which allows managers to assign shifts for all employees for a selected month and year. All employees can display and then download a printable PDF document that clearly displays the shift schedule.
 - Employee management panel where manager can add, update or remove employees.
 - Employee and manager panels which allow authenticated users to view their current contact information and employment details. Each panel includes an actions section with buttons that provide functions available to the particular account type (employee or manager). Both employees and managers can also update their email address and password.
+- Payments panel where manager can clearly check all necessary information about payments related to particular employee for any month: personal data, job, employment type, current hourly wage gross, hourly wage gross in chosen period, working hours in chosen period, student status and total payment amount.
 
 ## 🔗 API
 
