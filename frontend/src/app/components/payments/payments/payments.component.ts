@@ -32,7 +32,8 @@ export class PaymentsComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private langService: LangService,
     private employeeService: EmployeeService,
-    private workScheduleService: WorkScheduleService
+    private workScheduleService: WorkScheduleService,
+    private translate: TranslateService
   ) {
     this.languageChangeSubscription =
       this.langService.languageChanged$.subscribe(() => {
@@ -217,5 +218,25 @@ export class PaymentsComponent implements OnInit {
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     return entries.length > 0 ? entries[0].hourly_wage : null;
+  }
+
+  getTranslatedJobName(jobName: string): string {
+    let jobNameTranslated = this.translate.instant('employee-management.jobs.' + jobName);
+
+    if (jobNameTranslated === 'employee-management.jobs.' + jobName) {
+      jobNameTranslated = jobName;
+    }
+    
+    return jobNameTranslated;
+  }
+
+  getTranslatedEmploymentType(employmentType: string): string {
+    let employmentTypeTranslated = this.translate.instant('employee-management.employment_types.' + employmentType);
+
+    if (employmentTypeTranslated === 'employee-management.employment_types.' + employmentType) {
+      employmentTypeTranslated = employmentType;
+    }
+    
+    return employmentTypeTranslated;
   }
 }

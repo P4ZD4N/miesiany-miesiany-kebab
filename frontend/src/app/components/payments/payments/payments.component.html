@@ -11,11 +11,7 @@
           <th>{{ "payments.job" | translate }}</th>
           <th>{{ "payments.employment_type" | translate }}</th>
           <th>{{ "payments.hourly_wage" | translate }}</th>
-          <th>
-            {{ "payments.hourly_wage" | translate }} ({{
-              scheduleDate
-            }})
-          </th>
+          <th>{{ "payments.hourly_wage" | translate }} ({{ scheduleDate }})</th>
           <th>{{ "payments.hours" | translate }}</th>
           <th>{{ "payments.is_student" | translate }}</th>
           <th>{{ "payments.total" | translate }}</th>
@@ -29,12 +25,9 @@
             }})
           </td>
 
-          <td>{{ "employee-management.jobs." + employee.job | translate }}</td>
+          <td>{{ getTranslatedJobName(employee.job) | translate }}</td>
           <td>
-            {{
-              "employee-management.employment_types." + employee.employment_type
-                | translate
-            }}
+            {{ getTranslatedEmploymentType(employee.employment_type) }}
           </td>
           <td>{{ employee.hourly_wage }} zl</td>
           <td>
