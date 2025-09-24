@@ -1,51 +1,97 @@
 <section class="contact">
-    <h1>{{ 'contact.headline' | translate }}</h1>
-    <p>{{ 'contact.paragraph_top' | translate }}</p>
+  <h1>{{ "contact.headline" | translate }}</h1>
+  <p>{{ "contact.paragraph_top" | translate }}</p>
 
-    <div class="cont">
-        <section class="left">
-            <h2>{{ 'contact.left.contact_data' | translate }}</h2>
-            <p *ngIf="errorMessages['newValue']" class="error">{{ errorMessages['newValue'] }}</p>
-            <p *ngIf="errorMessages['message']" class="error">{{ errorMessages['message'] }}</p>
-            <div class="phone">
-                <i class="fa-solid fa-phone"></i> 
-                <span *ngIf="!isEditingPhone">{{ formatPhone(getTelephone()[0].value) }}</span>
-                <input *ngIf="isEditingPhone" type="text" [(ngModel)]="phoneValue" />
-                <button class="button-update" *ngIf="isManager() && !isEditingPhone && !isEditing" (click)="toggleEditPhone()">{{ 'common.buttons.update' | translate }}</button>
-                <button class="button-accept" *ngIf="isManager() && isEditingPhone" (click)="updatePhone()">{{ 'common.buttons.accept' | translate }}</button>
-                <button class="button-cancel" *ngIf="isManager() && isEditingPhone" (click)="hideEditPhoneForm()">{{ 'common.buttons.cancel' | translate }}</button>
-            </div>
-            <div class="email">
-                <i class="fa-solid fa-envelope"></i> 
-                <span *ngIf="!isEditingEmail">{{ getEmail()[0].value }}</span>
-                <input *ngIf="isEditingEmail" type="text" [(ngModel)]="emailValue" />
-                <button class="button-update" *ngIf="isManager() && !isEditingEmail && !isEditing" (click)="toggleEditEmail()">{{ 'common.buttons.update' | translate }}</button>
-                <button class="button-accept" *ngIf="isManager() && isEditingEmail" (click)="updateEmail()">{{ 'common.buttons.accept' | translate }}</button>
-                <button class="button-cancel" *ngIf="isManager() && isEditingEmail" (click)="hideEditEmailForm()">{{ 'common.buttons.cancel' | translate }}</button>
-            </div>
-            
-            <h2>Social media</h2>
-            <section class="icons">
-                <div class="icon-item">
-                    <i class="fa-brands fa-facebook-f fa-2xl"></i>
-                    <span>miesianymiesianykebab</span>
-                </div>
-                <div class="icon-item">
-                    <i class="fa-brands fa-instagram fa-2xl"></i>
-                    <span>miesianymiesianykebab</span>
-                </div>
-                <div class="icon-item">
-                    <i class="fa-brands fa-tiktok fa-2xl"></i>
-                    <span>miesianymiesianykebab</span>
-                </div>
-            </section>
-        </section>
-        <section class="right">
-            <h2>{{ 'contact.right.our_location' | translate }}</h2>
-            <a class="btn btn-danger" href="https://www.google.com/maps/dir/?api=1&destination=50.73271996898827,18.978145609677117" target="_blank">
-                {{ 'contact.right.button' | translate }}
-            </a>
-            <div id="map"></div>
-        </section>
-    </div>
+  <div class="cont">
+    <section class="left">
+      <h2>{{ "contact.left.contact_data" | translate }}</h2>
+      <p *ngIf="errorMessages['newValue']" class="error">
+        {{ errorMessages["newValue"] }}
+      </p>
+      <p *ngIf="errorMessages['message']" class="error">
+        {{ errorMessages["message"] }}
+      </p>
+      <div class="phone">
+        <i class="fa-solid fa-phone"></i>
+        <span *ngIf="!isEditingPhone">{{
+          getTelephone()[0].value | phoneFormat
+        }}</span>
+        <input *ngIf="isEditingPhone" type="text" [(ngModel)]="phoneValue" />
+        <button
+          class="button-update"
+          *ngIf="isManager() && !isEditingPhone && !isEditing"
+          (click)="toggleEditPhone()"
+        >
+          {{ "common.buttons.update" | translate }}
+        </button>
+        <button
+          class="button-accept"
+          *ngIf="isManager() && isEditingPhone"
+          (click)="updatePhone()"
+        >
+          {{ "common.buttons.accept" | translate }}
+        </button>
+        <button
+          class="button-cancel"
+          *ngIf="isManager() && isEditingPhone"
+          (click)="hideEditPhoneForm()"
+        >
+          {{ "common.buttons.cancel" | translate }}
+        </button>
+      </div>
+      <div class="email">
+        <i class="fa-solid fa-envelope"></i>
+        <span *ngIf="!isEditingEmail">{{ getEmail()[0].value }}</span>
+        <input *ngIf="isEditingEmail" type="text" [(ngModel)]="emailValue" />
+        <button
+          class="button-update"
+          *ngIf="isManager() && !isEditingEmail && !isEditing"
+          (click)="toggleEditEmail()"
+        >
+          {{ "common.buttons.update" | translate }}
+        </button>
+        <button
+          class="button-accept"
+          *ngIf="isManager() && isEditingEmail"
+          (click)="updateEmail()"
+        >
+          {{ "common.buttons.accept" | translate }}
+        </button>
+        <button
+          class="button-cancel"
+          *ngIf="isManager() && isEditingEmail"
+          (click)="hideEditEmailForm()"
+        >
+          {{ "common.buttons.cancel" | translate }}
+        </button>
+      </div>
+
+      <h2>Social media</h2>
+      <section class="icons">
+        <div class="icon-item">
+          <i class="fa-brands fa-facebook-f fa-2xl"></i>
+          <span>miesianymiesianykebab</span>
+        </div>
+        <div class="icon-item">
+          <i class="fa-brands fa-instagram fa-2xl"></i>
+          <span>miesianymiesianykebab</span>
+        </div>
+        <div class="icon-item">
+          <i class="fa-brands fa-tiktok fa-2xl"></i>
+          <span>miesianymiesianykebab</span>
+        </div>
+      </section>
+    </section>
+    <section class="right">
+      <h2>{{ "contact.right.our_location" | translate }}</h2>
+      <a
+        class="btn btn-danger"
+        href="https://www.google.com/maps/dir/?api=1&destination=50.73271996898827,18.978145609677117"
+        target="_blank"
+      >
+        {{ "contact.right.button" | translate }}
+      </a>
+      <div id="map"></div>
+    </section>
+  </div>
 </section>

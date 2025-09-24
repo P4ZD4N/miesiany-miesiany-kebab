@@ -11,25 +11,25 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import { UpdatedContactRequest } from '../../../requests/requests';
 import { ContactType } from '../../../enums/contact-type.enum';
 import { LangService } from '../../../services/lang/lang.service';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../../services/alert/alert.service';
+import { TranslationHelperService } from '../../../services/translation-helper/translation-helper.service';
+import { PhoneFormatPipe } from '../../../pipes/phone-format.pipe';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [FormsModule, TranslateModule, CommonModule],
+  imports: [FormsModule, TranslateModule, CommonModule, PhoneFormatPipe],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
 })
-
 export class ContactComponent implements OnInit {
-
   contacts: ContactResponse[] = [];
   errorMessages: { [key: string]: string } = {};
-  kebabCoordinates: [number, number] = [18.978145609677117, 50.73271996898827]
+  kebabCoordinates: [number, number] = [18.978145609677117, 50.73271996898827];
 
   isEditingPhone: boolean = false;
   isEditingEmail: boolean = false;
-  isEditing = false;
+  isEditing: boolean = false;
 
   phoneValue: string = '';
   emailValue: string = '';
@@ -37,29 +37,29 @@ export class ContactComponent implements OnInit {
   languageChangeSubscription: Subscription;
 
   constructor(
-    private contactService: ContactService, 
+    private contactService: ContactService,
     private authenticationService: AuthenticationService,
     private langService: LangService,
-    private translate: TranslateService
+    private translationHelper: TranslationHelperService,
+    private alertService: AlertService
   ) {
-    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
-      this.hideErrorMessages();
-    });
+    this.languageChangeSubscription =
+      this.langService.languageChanged$.subscribe(() => {
+        this.hideErrorMessages();
+      });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const map = tt.map({
       key: environment.MAP_API_KEY,
-      container: "map",
+      container: 'map',
       center: this.kebabCoordinates,
-      zoom: 15
-    })
+      zoom: 15,
+    });
 
-    map.addControl(new tt.NavigationControl())
+    map.addControl(new tt.NavigationControl());
 
-    new tt.Marker()
-      .setLngLat(this.kebabCoordinates)
-      .addTo(map);
+    new tt.Marker().setLngLat(this.kebabCoordinates).addTo(map);
 
     this.loadContacts();
   }
@@ -76,39 +76,31 @@ export class ContactComponent implements OnInit {
     );
   }
 
-  toggleEditPhone(): void {
-    this.isEditing = true;
-    this.isEditingPhone = !this.isEditingPhone;
-  }
+  initPhoneAndEmailValues(): void {
+    const phoneContact = this.contacts.find(
+      (contact) => contact.contact_type === 'TELEPHONE'
+    );
+    const emailContact = this.contacts.find(
+      (contact) => contact.contact_type === 'EMAIL'
+    );
 
-  hideEditPhoneForm(): void {
-    this.hideErrorMessages();
-    this.isEditingPhone = false;
-    this.isEditing = false;
-    this.initPhoneAndEmailValues();
+    this.phoneValue = phoneContact?.value ?? '';
+    this.emailValue = emailContact?.value ?? '';
   }
 
   updatePhone(): void {
-
-    let contactTypeTranslated = this.translate.instant('contact.types.' + ContactType.TELEPHONE);
-
+    let contactTypeTranslated: string =
+      this.translationHelper.getTranslatedContactType(ContactType.TELEPHONE);
     let updatedPhone: UpdatedContactRequest = {
-        contact_type: ContactType.TELEPHONE,
-        new_value: this.phoneValue
-    }
+      contact_type: ContactType.TELEPHONE,
+      new_value: this.phoneValue,
+    };
 
     this.contactService.updateContact(updatedPhone).subscribe({
-      next: (response) => {
-        Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie zaktualizowano kontakt typu '${contactTypeTranslated}'!` : `Successfully updated contact of type '${contactTypeTranslated}'!`,
-          icon: 'success',
-          iconColor: 'green',
-          confirmButtonColor: 'green',
-          background: '#141414',
-          color: 'white',
-          confirmButtonText: 'Ok',
-        });
-
+      next: () => {
+        this.alertService.showSuccessfulContactUpdateAlert(
+          contactTypeTranslated
+        );
         this.loadContacts();
         this.phoneValue = '';
         this.isEditing = false;
@@ -120,40 +112,20 @@ export class ContactComponent implements OnInit {
       },
     });
   }
- 
-  toggleEditEmail(): void {
-    this.isEditing = true;
-    this.isEditingEmail = !this.isEditingEmail;
-  }
-
-  hideEditEmailForm(): void {
-    this.hideErrorMessages();
-    this.isEditingEmail = false;
-    this.isEditing = false;
-    this.initPhoneAndEmailValues();
-  }
 
   updateEmail(): void {
-
-    let contactTypeTranslated = this.translate.instant('contact.types.' + ContactType.EMAIL);
-
+    let contactTypeTranslated: string =
+      this.translationHelper.getTranslatedContactType(ContactType.EMAIL);
     let updatedEmail: UpdatedContactRequest = {
-        contact_type: ContactType.EMAIL,
-        new_value: this.emailValue
-    }
+      contact_type: ContactType.EMAIL,
+      new_value: this.emailValue,
+    };
 
     this.contactService.updateContact(updatedEmail).subscribe({
-      next: (response) => {
-        Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie zaktualizowano kontakt typu '${contactTypeTranslated}'!` : `Successfully updated contact of type '${contactTypeTranslated}'!`,
-          icon: 'success',
-          iconColor: 'green',
-          confirmButtonColor: 'green',
-          background: '#141414',
-          color: 'white',
-          confirmButtonText: 'Ok',
-        });
-
+      next: () => {
+        this.alertService.showSuccessfulContactUpdateAlert(
+          contactTypeTranslated
+        );
         this.loadContacts();
         this.emailValue = '';
         this.isEditing = false;
@@ -166,16 +138,38 @@ export class ContactComponent implements OnInit {
     });
   }
 
-  getTelephone(): ContactResponse[] {
-    return this.contacts.filter(contact => contact.contact_type === 'TELEPHONE');
+  toggleEditPhone(): void {
+    this.isEditing = true;
+    this.isEditingPhone = !this.isEditingPhone;
   }
 
-  formatPhone(telephone: string): string {
-    return `+48 ${telephone.slice(0, 3)} ${telephone.slice(3, 6)} ${telephone.slice(6, 9)}`;
+  toggleEditEmail(): void {
+    this.isEditing = true;
+    this.isEditingEmail = !this.isEditingEmail;
+  }
+
+  hideEditPhoneForm(): void {
+    this.hideErrorMessages();
+    this.isEditingPhone = false;
+    this.isEditing = false;
+    this.initPhoneAndEmailValues();
+  }
+
+  hideEditEmailForm(): void {
+    this.hideErrorMessages();
+    this.isEditingEmail = false;
+    this.isEditing = false;
+    this.initPhoneAndEmailValues();
+  }
+
+  getTelephone(): ContactResponse[] {
+    return this.contacts.filter(
+      (contact) => contact.contact_type === 'TELEPHONE'
+    );
   }
 
   getEmail(): ContactResponse[] {
-    return this.contacts.filter(contact => contact.contact_type === 'EMAIL');
+    return this.contacts.filter((contact) => contact.contact_type === 'EMAIL');
   }
 
   isManager(): boolean {
@@ -183,23 +177,12 @@ export class ContactComponent implements OnInit {
   }
 
   handleError(error: any) {
-    if (error.errorMessages) {
-      this.errorMessages = error.errorMessages;
-      console.log(this.errorMessages);
-    } else {
-      this.errorMessages = { general: 'An unexpected error occurred' };
-    }
+    error.errorMessages
+      ? (this.errorMessages = error.errorMessages)
+      : (this.errorMessages = { general: 'An unexpected error occurred' });
   }
 
   hideErrorMessages(): void {
     this.errorMessages = {};
-  }
-
-  initPhoneAndEmailValues(): void {
-    const phoneContact = this.contacts.find(contact => contact.contact_type === 'TELEPHONE');
-    const emailContact = this.contacts.find(contact => contact.contact_type === 'EMAIL');
-    
-    this.phoneValue = phoneContact ? phoneContact.value : '';
-    this.emailValue = emailContact ? emailContact.value : '';
   }
 }

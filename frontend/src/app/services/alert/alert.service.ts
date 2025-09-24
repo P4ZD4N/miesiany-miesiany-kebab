@@ -23,4 +23,19 @@ export class AlertService {
       confirmButtonText: 'Ok',
     });
   }
+
+  showSuccessfulContactUpdateAlert(contactTypeTranslated: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zaktualizowano kontakt typu '${contactTypeTranslated}'!`
+          : `Successfully updated contact of type '${contactTypeTranslated}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
 }
