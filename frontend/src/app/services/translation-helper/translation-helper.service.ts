@@ -19,4 +19,31 @@ export class TranslationHelperService {
 
     return contactTypeTranslated;
   }
+
+  getTranslatedJobName(jobName: string): string {
+    let jobNameTranslated = this.translate.instant(
+      'employee-management.jobs.' + jobName
+    );
+
+    if (jobNameTranslated === 'employee-management.jobs.' + jobName) {
+      jobNameTranslated = jobName;
+    }
+
+    return jobNameTranslated;
+  }
+
+  getTranslatedEmploymentType(employmentType: string): string {
+    let employmentTypeTranslated = this.translate.instant(
+      'employee-management.employment_types.' + employmentType
+    );
+
+    if (
+      employmentTypeTranslated ===
+      'employee-management.employment_types.' + employmentType
+    ) {
+      employmentTypeTranslated = employmentType;
+    }
+
+    return employmentTypeTranslated;
+  }
 }
