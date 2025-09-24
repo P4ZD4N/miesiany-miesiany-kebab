@@ -7,70 +7,59 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { LangService } from '../../../services/lang/lang.service';
 import { AuthenticationRequest } from '../../../requests/requests';
-import { AuthenticationResponse } from '../../../responses/responses';
-import Swal from 'sweetalert2';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-authentication',
   standalone: true,
   imports: [CommonModule, TranslateModule, FormsModule],
   templateUrl: './authentication.component.html',
-  styleUrls: ['./authentication.component.scss']
+  styleUrls: ['./authentication.component.scss'],
 })
 export class AuthenticationComponent {
   email: string = '';
   password: string = '';
-  errorMessages: { [key: string]: string } = {};
-  private languageChangeSubscription: Subscription;
 
-  constructor(private authService: AuthenticationService, private router: Router, private langService: LangService) {
-    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
-      this.hideErrorMessages();
-    });
+  errorMessages: { [key: string]: string } = {};
+
+  languageChangeSubscription: Subscription;
+
+  constructor(
+    private authService: AuthenticationService,
+    private router: Router,
+    private langService: LangService,
+    private alertService: AlertService
+  ) {
+    this.languageChangeSubscription =
+      this.langService.languageChanged$.subscribe(() => {
+        this.errorMessages = {};
+      });
   }
-  
-  authenticate() {
-    const authData: AuthenticationRequest = { email: this.email, password: this.password };
+
+  authenticate(): void {
+    const authData: AuthenticationRequest = {
+      email: this.email,
+      password: this.password,
+    };
 
     this.authService.authenticate(authData).subscribe({
-      next: (response) => {
-        this.hideErrorMessages();
-
-        Swal.fire({
-          text: this.langService.currentLang === 'pl' 
-          ? `Zalogowano pomyslnie uzytkownika z emailem ${authData.email}!` 
-          : `Successfully logged in user with ${authData.email} email!`,
-          icon: 'success',
-          iconColor: 'green',
-          confirmButtonColor: 'green',
-          background: '#141414',
-          color: 'white',
-          confirmButtonText: 'Ok',
-        });
-
-        this.handleUpdateResponse(response);
+      next: () => {
+        this.errorMessages = {};
+        this.alertService.showSuccessfulLoginAlert(authData);
         this.router.navigate(['/']);
       },
-      error: (error) => this.handleError(error)
+      error: (error) => this.handleError(error),
     });
   }
 
-  handleUpdateResponse(response: AuthenticationResponse) {
-    console.log('Login successful', response);
-    this.hideErrorMessages();
-  }
-  
-  handleError(error: any) {
-    console.error('Login failed', error);
-
-    if (error.errorMessages) {
-      this.errorMessages = error.errorMessages;
-    } else {
-      this.errorMessages = { general: this.langService.currentLang === 'pl' ? 'Wystąpił niespodziewany błąd' : 'An unexpected error occurred' };
-    }
-  }
-
-  hideErrorMessages() {
-    this.errorMessages = {};
+  handleError(error: any): void {
+    error.errorMessages
+      ? (this.errorMessages = error.errorMessages)
+      : (this.errorMessages = {
+          general:
+            this.langService.currentLang === 'pl'
+              ? 'Wystąpił niespodziewany błąd'
+              : 'An unexpected error occurred',
+        });
   }
 }
