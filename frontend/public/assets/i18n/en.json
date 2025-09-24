@@ -1,453 +1,412 @@
 {
-    "common": {
-        "navbar": {
-            "home": "Home",
-            "opening_hours": "Opening hours",
-            "menu": "Menu",
-            "promotions": "Promotions",
-            "track_order": "Track order",
-            "contact": "Contact",
-            "order": "Order",
-            "employee": "Employee Panel",
-            "manager": "Manager Panel"
-        },
-        "footer": {
-            "home": "Home",
-            "opening_hours": "Opening hours",
-            "menu": "Menu",
-            "promotions": "Promotions",
-            "jobs": "Jobs",
-            "track_order": "Track order",
-            "contact": "Contact"
-        }
+  "common": {
+    "links": {
+      "home": "Home",
+      "opening_hours": "Opening hours",
+      "menu": "Menu",
+      "promotions": "Promotions",
+      "jobs": "Jobs",
+      "track_order": "Track order",
+      "contact": "Contact",
+      "order": "Order",
+      "employee": "Employee Panel",
+      "manager": "Manager Panel"
     },
-    "home": {
-        "hero_section": {
-            "headline": "Flavor, that’s addictive",
-            "paragraph": "Try our kebab and find out why our customers keep coming back for more. Juicy meat, crunchy vegetables, the perfect sauce – everything you crave in one bite!"
-        },
-        "about_section": {
-            "headline": "About Us",
-            "paragraph_top": "Welcome to Miesiany Miesiany Kebab! We are a place where tradition meets modernity, and our passion for Eastern cuisine translates into unforgettable taste experiences.",
-            "paragraph_center": "We prepare our dishes using the highest quality ingredients, carefully selected and always fresh. Our goal is not only to satisfy your hunger but also to make every visit a unique experience. We serve authentic kebabs that will delight you with their richness of flavors and aromas.",
-            "paragraph_bottom": "We invite you to try our specialties and discover why we are often referred as the favorite kebab in the area! We can't wait to welcome you!"
-        },
-        "awards_section": {
-            "headline": "Awards",
-            "paragraph_top": "We are proud that our kebab has gained recognition among food enthusiasts and culinary experts! Our passion for exceptional taste and quality has been acknowledged through numerous awards and accolades that we have received.",
-            "paragraph_bottom": "Each award motivates us to continue striving for perfection and delivering unforgettable taste experiences to our customers. Thank you for your support and trust – you are the reason for our success!"
-        },
-        "location_section": {
-            "headline": "Location",
-            "paragraph": "The kebab is located in small village Kopalnia, near Czestochowa. Getting to the place is very easy. It is placed at the intersection of Szkolna and Brzozowa Streets. The exact address is Kopalnia, Szkolna Street 89.",
-            "button": "Get directions"
-        }
+    "buttons": {
+      "add": "Add",
+      "update": "Update",
+      "accept": "Accept",
+      "cancel": "Cancel",
+      "remove": "Remove"
     },
-    "authentication": {
-        "login_form": {
-            "headline": "Log in",
-            "paragraph_top": "Section intended only for employees.",
-            "password": "Password",
-            "button": "Login",
-            "paragraph_bottom": "If you don't remember your password, then contact with manager."
-        }
-    },
-    "opening-hours": {
-        "headline": "Opening hours",
-        "paragraph_top": "Don't hesitate and come to us for a delicious kebab on the following days and hours!",
-        "status": {
-            "open": "Open",
-            "closed": "Closed"
-        },
-        "table": {
-            "day": "Day",
-            "opening": "Opening hour",
-            "closing": "Closing hour"
-        },
-        "days": {
-            "MONDAY": "Monday",
-            "TUESDAY": "Tuesday",
-            "WEDNESDAY": "Wednesday",
-            "THURSDAY": "Thursday",
-            "FRIDAY": "Friday",
-            "SATURDAY": "Saturday",
-            "SUNDAY": "Sunday"
-        },
-        "update": "Update",
-        "accept": "Accept",
-        "cancel": "Cancel"
-    },
-    "manager-panel": {
-        "headline": "Manager panel",
+    "staff-panel": {
+      "good-morning": "Good morning",
+      "good-afternoon": "Good afternoon",
+      "good-evening": "Good evening",
+      "contact_data": "Contact data",
+      "employment_details": "Employment details",
+      "actions_heading": "Actions",
+      "buttons": {
+        "order_management": "Order management",
+        "order_status_display": "Order status display",
+        "work_schedule": "Work schedule",
         "button_logout": "Logout",
-        "good-morning": "Good morning",
-        "good-afternoon": "Good afternoon",
-        "good-evening": "Good evening",
-        "wishes": "Your passion inspires and drives our shared success",
-        "contact_data": "Contact data",
-        "employment_details": "Employment details",
-        "actions_heading": "Actions",
-        "buttons": {
-            "order_management": "Order management",
-            "order_status_display": "Order status display",
-            "work_schedule": "Work schedule",
-            "payments": "Payments",
-            "opening_hours_management": "Opening hours management",
-            "menu_management": "Menu management",
-            "promotions_management": "Promotions management",
-            "jobs_management": "Jobs management",
-            "discount_code_management": "Discount code management",
-            "employee_management": "Employee management",
-            "button_logout": "Logout",
-            "update_email": "Update email",
-            "update_password": "Update password"
-        }
-    },
-    "employee-panel": {
-        "headline": "Employee panel",
-        "good-morning": "Good morning",
-        "good-afternoon": "Good afternoon",
-        "good-evening": "Good evening",
-        "wishes": "Keep up the passion – you’re doing an awesome job",
-        "contact_data": "Contact data",
-        "employment_details": "Employment details",
-        "actions_heading": "Actions",
-        "buttons": {
-            "order_management": "Order management",
-            "order_status_display": "Order status display",
-            "work_schedule": "Work schedule",
-            "button_logout": "Logout",
-            "update_email": "Update email",
-            "update_password": "Update password"
-        }
-    },
-    "menu": {
-        "addons": {
-            "paragraph_addons": "Addons",
-            "button_add": "Add addon",
-            "addon": "Addon",
-            "price": "Price",
-            "Fries (140g)": "Fries (140g)",
-            "Fries (200g)": "Fries (200g)",
-            "Nuggets (7pcs)": "Nuggets (7pcs)"
-        },
-        "beverages": {
-            "paragraph_beverages": "Beverages",
-            "button_add": "Add beverage",
-            "beverage": "Beverage",
-            "capacity": "Capacity",
-            "price": "Price",
-            "Coca-Cola": "Coca-Cola",
-            "Coca-Cola Zero": "Coca-Cola Zero",
-            "Fanta": "Fanta",
-            "Sprite": "Sprite",
-            "Ayran": "Ayran",
-            "Cisowianka Niegazowana": "Cisowianka Niegazowana"
-        },
-        "meals": {
-            "paragraph_meals": "Meals",
-            "button_add": "Add meal",
-            "meal": "Meal",
-            "prices": "Prices",
-            "base_ingredients": "Base ingredients",
-            "Pita Kebab Salads": "Pita Kebab Salads",
-            "Pita Kebab Salads and Fries": "Pita Kebab Salads and Fries",
-            "size": "Size",
-            "price": "Price",
-            "sizes": {
-                "SMALL": "Small",
-                "MEDIUM": "Medium",
-                "LARGE": "Large",
-                "XL": "XL"
-            },
-            "ingredients": {
-                "Pita": "Pita",
-                "Cabbage": "Cabbage",
-                "Tomato": "Tomato",
-                "Cucumber": "Cucumber",
-                "Onion": "Onion",
-                "Fries": "Fries",
-                "Cheese": "Cheese",
-                "Chicken": "Chicken",
-                "Mutton": "Mutton",
-                "Meat Mix": "Meat Mix",
-                "Falafel": "Falafel",
-                "Garlic Sauce": "Garlic Sauce",
-                "BBQ Sauce": "BBQ Sauce",
-                "Mild Sauce": "Mild Sauce",
-                "Hot Sauce": "Hot Sauce",
-                "Sauce Mix": "Sauce Mix"
-            }
-        },
-        "ingredients": {
-            "headline": "Ingredients",
-            "button_add": "Add ingredient",
-            "breads": "Breads",
-            "meats": "Meats",
-            "vegetables": "Vegetables",
-            "sauces": "Sosy",
-            "other": "Other",
-            "ingredient": "Ingredient",
-            "ingredient_type": "Ingredient type",
-            "BREAD": "Bread",
-            "MEAT": "Meat",
-            "VEGETABLE": "Vegetable",
-            "SAUCE": "Sauce",
-            "OTHER": "Other"
-        },
-        "meats": {
-            "paragraph_meats": "Meats to choose"
-        },
-        "sauces": {
-            "paragraph_sauces": "Sauces to choose"
-        },
-        "update": "Update",
-        "cancel": "Cancel",
-        "accept": "Accept",
-        "remove": "Remove"
-    },
-    "contact": {
-        "headline": "Contact",
-        "paragraph_top": "Contact us!",
-        "left": {
-            "contact_data": "Contact data"
-        },
-        "right": {
-            "our_location": "Our location",
-            "button": "Get directions"
-        },
-        "types": {
-            "TELEPHONE": "Telephone",
-            "EMAIL": "Email"
-        },
-        "update": "Update",
-        "accept": "Accept",
-        "cancel": "Cancel"
-    },
-    "jobs": {
-        "headline": "Jobs",
-        "paragraph_top": "You can never have enough capable people! Browse current job offers and join the team!",
-        "description": "Description",
-        "requirements": "Requirements",
-        "nice_to_have": "Nice to have",
-        "employment_types": "Employment types",
-        "employment_type": "Employment type",
-        "hourly_wage": "Hourly wage",
-        "PERMANENT": "Permanent",
-        "MANDATE_CONTRACT": "Mandate contract",
-        "brutto": "gross",
-        "button_add": "Add job offer",
-        "position": "Position",
-        "requirement_type": "Requirement type",
-        "requirement_description": "Requirement description",
-        "MANDATORY": "Mandatory",
-        "NICE_TO_HAVE": "Nice to have",
-        "accept": "Accept",
-        "cancel": "Cancel",
-        "update": "Update",
-        "remove": "Remove",
-        "add": "Add",
-        "position_name": "Position name",
-        "is_active": "Is offer active",
-        "apply": "Apply",
-        "candidates": "Candidates",
-        "job_applications": {
-            "headline": "Candidates to position",
-            "first_name": "First name",
-            "last_name": "Last name",
-            "phone": "Phone",
-            "additional_message": "Additional message",
-            "no_candidates": "No candidates!",
-            "button": "Back to the list of jobs"
-        }
-    },
-    "promotions": {
-        "headline": "Promotions",
-        "paragraph_top": "Check out our current promotions!",
-        "paragraph_bottom": "Haven’t found any interesting promotions? Sign up for our newsletter to stay updated on new occasions!",
-        "paragraph_meal_promotions": "Meal promotions",
-        "paragraph_beverage_promotions": "Beverage promotions",
-        "paragraph_addon_promotions": "Addon promotions",
-        "promotion_description": "Promotion description",
-        "discount_percentage": "Discount percentage",
-        "meals": "Meals",
-        "sizes": "Sizes",
-        "sizes_list": {
-            "SMALL": "Small",
-            "MEDIUM": "Medium",
-            "LARGE": "Large",
-            "XL": "XL"
-        },
-        "beverages": "Beverages",
-        "addons": "Addons",
-        "buttons": {
-            "accept": "Accept",
-            "cancel": "Cancel",
-            "update": "Update",
-            "remove": "Remove",
-            "add_meal_promotion": "Add meal promotion",
-            "add_beverage_promotion": "Add beverage promotion",
-            "add_addon_promotion": "Add addon promotion",
-            "sign_up": "Sign up for newsletter"
-        },
-        "new_meal_promotion": "New meal promotion",
-        "new_beverage_promotion": "New beverage promotion",
-        "new_addon_promotion": "New addon promotion",
-        "update_meal_promotion": "Updated meal promotion",
-        "update_beverage_promotion": "Updated beverage promotion",
-        "update_addon_promotion": "Updated addon promotion"
-    },
-    "unsubscribe": {
-        "headline": "Dear Customer",
-        "paragraph_top": "Are you sure you want to unsubscribe our newsletter?",
-        "buttons": {
-            "yes": "Yes, sign me out"
-        }
-    },
-    "track-order": {
-        "headline": "Track your order",
-        "paragraph_top": "Enter your order ID and phone number to check current status of your order!",
-        "paragraph_thank_you": "Dear Client, thank you for your order!",
-        "phone": "Phone (9 digits)",
-        "buttons": {
-            "track": "Track",
-            "stop_tracking": "Stop tracking"
-        },
-        "total_price": "Total price",
-        "delivery_address": "Delivery address",
-        "receive_restaurant": "Pick-up at the restaurant",
-        "payment_methods": {
-            "headline": "Payment methods",
-            "methods": "Card / Cash"
-        },
-        "order_status": {
-            "headline": "Order status",
-            "IN_PREPARATION": "In preparation",
-            "READY1": "Ready to deliver",
-            "READY2": "Ready to pick up",
-            "SHIPPED1": "Shipped",
-            "SHIPPED2": "Waiting for pick up",
-            "RECEIVED": "Received",
-            "CANCELED": "Canceled",
-            "RETURNED": "Returned"
-        },
-        "discount_included": "discount included",
-        "delivery_included": "delivery included",
-        "delivery_and_discount_included": "delivery and discount included",
-        "thanks": "Thank you for providing your email! We remind you, that every 10 orders you will receive a discount code for your next order!",
-        "encourage": " We encourage you to enter your email next time! We remind, that every 10 orders with entered email you will receive discount code for your next order!"
-    },
-    "order-management": {
-        "headline": "Order management",
-        "paragraph_today": "Today",
-        "paragraph_past": "Past",
-        "no_orders": "No orders from this category!",
-        "order_status": {
-            "IN_PREPARATION": "To prepare",
-            "READY": "Ready",
-            "SHIPPED": "Shipped",
-            "RECEIVED": "Received",
-            "CANCELED": "Canceled",
-            "RETURNED": "Returned",
-            "All": "All"
-        },
-        "order_type": {
-            "ON_SITE": "On site",
-            "TAKEAWAY": "Takeaway"
-        },
-        "card": {
-            "main": {
-                "headline": "Order",
-                "type": "Type",
-                "status": "Status",
-                "total_price": "Total price",
-                "placed_at": "Placed at"
-            },
-            "contact": {
-                "headline": "Contact",
-                "phone": "Phone",
-                "email": "Email"
-            },
-            "meals_headline": "Meals",
-            "beverages_headline": "Beverages",
-            "addons_headline": "Addons",
-            "additional_comments_headline": "Additional comments"
-        },
-        "buttons": {
-            "add": "Add order",
-            "update": "Update",
-            "remove": "Remove"
-        }
-    },
-    "discount-code-management": {
-        "headline": "Discount code management",
-        "buttons": {
-            "add": "Add discount code",
-            "cancel": "Cancel",
-            "update": "Update",
-            "remove": "Remove",
-            "accept": "Accept"
-        },
-        "no_discount_codes": "No discount codes!",
-        "code": "Code",
-        "code_optional": "Code (optional)",
-        "discount_percentage": "Discount percentage",
-        "expiration_date": "Expiration date",
-        "remaining_uses": "Remaining uses",
-        "new_discount_code": "New discount code",
-        "update_discount_code": "Updated discount code"
-    },
-    "verification_required": {
-        "headline": "You are not able to enter this page!",
-        "paragraph": "It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.",
-        "button": "Go back"
-    },
-    "work-schedule": {
-        "headline": "Work schedule",
-        "employee": "Employee",
-        "buttons": {
-            "download": "Download work schedule"
-        }
-    },
-    "employee-management": {
-        "headline": "Employee management",
-        "first_name": "First name",
-        "last_name": "Last name",
-        "password": "Password",
-        "phone": "Phone",
-        "date_of_birth": "Date of birth",
-        "job": "Job",
-        "is_student": "Is student?",
-        "jobs": {
-            "Cashier": "Cashier",
-            "Manager": "Manager"
-        },
-        "employment_type": "Employment type",
-        "employment_types": {
-            "PERMANENT": "Permanent",
-            "MANDATE_CONTRACT": "Mandate contract"
-        },
-        "hourly_wage": "Hourly wage gross",
-        "hired_at": "Hired at",
-        "active": "Active",
-        "buttons": {
-            "add": "Add employee",
-            "accept": "Accept",
-            "cancel": "Cancel",
-            "update": "Update",
-            "remove": "Remove"
-        },
-        "new_employee": "New employee",
-        "updated_employee": "Updated employee"
-    },
-    "payments": {
-        "headline": "Payments",
-        "employee": "Employee",
-        "job": "Job",
-        "employment_type": "Employment type",
-        "hourly_wage": "Hourly wage gross",
-        "hours": "Working hours",
-        "is_student": "Is student?",
-        "total": "Total"
+        "update_email": "Update email",
+        "update_password": "Update password"
+      }
     }
+  },
+  "home": {
+    "hero_section": {
+      "headline": "Flavor, that’s addictive",
+      "paragraph": "Try our kebab and find out why our customers keep coming back for more. Juicy meat, crunchy vegetables, the perfect sauce – everything you crave in one bite!"
+    },
+    "about_section": {
+      "headline": "About Us",
+      "paragraph_top": "Welcome to Miesiany Miesiany Kebab! We are a place where tradition meets modernity, and our passion for Eastern cuisine translates into unforgettable taste experiences.",
+      "paragraph_center": "We prepare our dishes using the highest quality ingredients, carefully selected and always fresh. Our goal is not only to satisfy your hunger but also to make every visit a unique experience. We serve authentic kebabs that will delight you with their richness of flavors and aromas.",
+      "paragraph_bottom": "We invite you to try our specialties and discover why we are often referred as the favorite kebab in the area! We can't wait to welcome you!"
+    },
+    "awards_section": {
+      "headline": "Awards",
+      "paragraph_top": "We are proud that our kebab has gained recognition among food enthusiasts and culinary experts! Our passion for exceptional taste and quality has been acknowledged through numerous awards and accolades that we have received.",
+      "paragraph_bottom": "Each award motivates us to continue striving for perfection and delivering unforgettable taste experiences to our customers. Thank you for your support and trust – you are the reason for our success!"
+    },
+    "location_section": {
+      "headline": "Location",
+      "paragraph": "The kebab is located in small village Kopalnia, near Czestochowa. Getting to the place is very easy. It is placed at the intersection of Szkolna and Brzozowa Streets. The exact address is Kopalnia, Szkolna Street 89.",
+      "button": "Get directions"
+    }
+  },
+  "authentication": {
+    "login_form": {
+      "headline": "Log in",
+      "paragraph_top": "Section intended only for employees.",
+      "password": "Password",
+      "button": "Login",
+      "paragraph_bottom": "If you don't remember your password, then contact with manager."
+    }
+  },
+  "opening-hours": {
+    "headline": "Opening hours",
+    "paragraph_top": "Don't hesitate and come to us for a delicious kebab on the following days and hours!",
+    "status": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "table": {
+      "day": "Day",
+      "opening": "Opening hour",
+      "closing": "Closing hour"
+    },
+    "days": {
+      "MONDAY": "Monday",
+      "TUESDAY": "Tuesday",
+      "WEDNESDAY": "Wednesday",
+      "THURSDAY": "Thursday",
+      "FRIDAY": "Friday",
+      "SATURDAY": "Saturday",
+      "SUNDAY": "Sunday"
+    }
+  },
+  "manager-panel": {
+    "headline": "Manager panel",
+    "wishes": "Your passion inspires and drives our shared success",
+    "buttons": {
+      "payments": "Payments",
+      "opening_hours_management": "Opening hours management",
+      "menu_management": "Menu management",
+      "promotions_management": "Promotions management",
+      "jobs_management": "Jobs management",
+      "discount_code_management": "Discount code management",
+      "employee_management": "Employee management"
+    }
+  },
+  "employee-panel": {
+    "headline": "Employee panel",
+    "wishes": "Keep up the passion – you’re doing an awesome job"
+  },
+  "menu": {
+    "addons": {
+      "paragraph_addons": "Addons",
+      "button_add": "Add addon",
+      "addon": "Addon",
+      "price": "Price",
+      "Fries (140g)": "Fries (140g)",
+      "Fries (200g)": "Fries (200g)",
+      "Nuggets (7pcs)": "Nuggets (7pcs)"
+    },
+    "beverages": {
+      "paragraph_beverages": "Beverages",
+      "button_add": "Add beverage",
+      "beverage": "Beverage",
+      "capacity": "Capacity",
+      "price": "Price",
+      "Coca-Cola": "Coca-Cola",
+      "Coca-Cola Zero": "Coca-Cola Zero",
+      "Fanta": "Fanta",
+      "Sprite": "Sprite",
+      "Ayran": "Ayran",
+      "Cisowianka Niegazowana": "Cisowianka Niegazowana"
+    },
+    "meals": {
+      "paragraph_meals": "Meals",
+      "button_add": "Add meal",
+      "meal": "Meal",
+      "prices": "Prices",
+      "base_ingredients": "Base ingredients",
+      "Pita Kebab Salads": "Pita Kebab Salads",
+      "Pita Kebab Salads and Fries": "Pita Kebab Salads and Fries",
+      "size": "Size",
+      "price": "Price",
+      "sizes": {
+        "SMALL": "Small",
+        "MEDIUM": "Medium",
+        "LARGE": "Large",
+        "XL": "XL"
+      },
+      "ingredients": {
+        "Pita": "Pita",
+        "Cabbage": "Cabbage",
+        "Tomato": "Tomato",
+        "Cucumber": "Cucumber",
+        "Onion": "Onion",
+        "Fries": "Fries",
+        "Cheese": "Cheese",
+        "Chicken": "Chicken",
+        "Mutton": "Mutton",
+        "Meat Mix": "Meat Mix",
+        "Falafel": "Falafel",
+        "Garlic Sauce": "Garlic Sauce",
+        "BBQ Sauce": "BBQ Sauce",
+        "Mild Sauce": "Mild Sauce",
+        "Hot Sauce": "Hot Sauce",
+        "Sauce Mix": "Sauce Mix"
+      }
+    },
+    "ingredients": {
+      "headline": "Ingredients",
+      "button_add": "Add ingredient",
+      "breads": "Breads",
+      "meats": "Meats",
+      "vegetables": "Vegetables",
+      "sauces": "Sosy",
+      "other": "Other",
+      "ingredient": "Ingredient",
+      "ingredient_type": "Ingredient type",
+      "BREAD": "Bread",
+      "MEAT": "Meat",
+      "VEGETABLE": "Vegetable",
+      "SAUCE": "Sauce",
+      "OTHER": "Other"
+    },
+    "meats": {
+      "paragraph_meats": "Meats to choose"
+    },
+    "sauces": {
+      "paragraph_sauces": "Sauces to choose"
+    }
+  },
+  "contact": {
+    "headline": "Contact",
+    "paragraph_top": "Contact us!",
+    "left": {
+      "contact_data": "Contact data"
+    },
+    "right": {
+      "our_location": "Our location",
+      "button": "Get directions"
+    },
+    "types": {
+      "TELEPHONE": "Telephone",
+      "EMAIL": "Email"
+    }
+  },
+  "jobs": {
+    "headline": "Jobs",
+    "paragraph_top": "You can never have enough capable people! Browse current job offers and join the team!",
+    "description": "Description",
+    "requirements": "Requirements",
+    "nice_to_have": "Nice to have",
+    "employment_types": "Employment types",
+    "employment_type": "Employment type",
+    "hourly_wage": "Hourly wage",
+    "PERMANENT": "Permanent",
+    "MANDATE_CONTRACT": "Mandate contract",
+    "brutto": "gross",
+    "button_add": "Add job offer",
+    "position": "Position",
+    "requirement_type": "Requirement type",
+    "requirement_description": "Requirement description",
+    "MANDATORY": "Mandatory",
+    "NICE_TO_HAVE": "Nice to have",
+    "position_name": "Position name",
+    "is_active": "Is offer active",
+    "apply": "Apply",
+    "candidates": "Candidates",
+    "job_applications": {
+      "headline": "Candidates to position",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "phone": "Phone",
+      "additional_message": "Additional message",
+      "no_candidates": "No candidates!",
+      "button": "Back to the list of jobs"
+    }
+  },
+  "promotions": {
+    "headline": "Promotions",
+    "paragraph_top": "Check out our current promotions!",
+    "paragraph_bottom": "Haven’t found any interesting promotions? Sign up for our newsletter to stay updated on new occasions!",
+    "paragraph_meal_promotions": "Meal promotions",
+    "paragraph_beverage_promotions": "Beverage promotions",
+    "paragraph_addon_promotions": "Addon promotions",
+    "promotion_description": "Promotion description",
+    "discount_percentage": "Discount percentage",
+    "meals": "Meals",
+    "sizes": "Sizes",
+    "sizes_list": {
+      "SMALL": "Small",
+      "MEDIUM": "Medium",
+      "LARGE": "Large",
+      "XL": "XL"
+    },
+    "beverages": "Beverages",
+    "addons": "Addons",
+    "buttons": {
+      "add_meal_promotion": "Add meal promotion",
+      "add_beverage_promotion": "Add beverage promotion",
+      "add_addon_promotion": "Add addon promotion",
+      "sign_up": "Sign up for newsletter"
+    },
+    "new_meal_promotion": "New meal promotion",
+    "new_beverage_promotion": "New beverage promotion",
+    "new_addon_promotion": "New addon promotion",
+    "update_meal_promotion": "Updated meal promotion",
+    "update_beverage_promotion": "Updated beverage promotion",
+    "update_addon_promotion": "Updated addon promotion"
+  },
+  "unsubscribe": {
+    "headline": "Dear Customer",
+    "paragraph_top": "Are you sure you want to unsubscribe our newsletter?",
+    "buttons": {
+      "yes": "Yes, sign me out"
+    }
+  },
+  "track-order": {
+    "headline": "Track your order",
+    "paragraph_top": "Enter your order ID and phone number to check current status of your order!",
+    "paragraph_thank_you": "Dear Client, thank you for your order!",
+    "phone": "Phone (9 digits)",
+    "buttons": {
+      "track": "Track",
+      "stop_tracking": "Stop tracking"
+    },
+    "total_price": "Total price",
+    "delivery_address": "Delivery address",
+    "receive_restaurant": "Pick-up at the restaurant",
+    "payment_methods": {
+      "headline": "Payment methods",
+      "methods": "Card / Cash"
+    },
+    "order_status": {
+      "headline": "Order status",
+      "IN_PREPARATION": "In preparation",
+      "READY1": "Ready to deliver",
+      "READY2": "Ready to pick up",
+      "SHIPPED1": "Shipped",
+      "SHIPPED2": "Waiting for pick up",
+      "RECEIVED": "Received",
+      "CANCELED": "Canceled",
+      "RETURNED": "Returned"
+    },
+    "discount_included": "discount included",
+    "delivery_included": "delivery included",
+    "delivery_and_discount_included": "delivery and discount included",
+    "thanks": "Thank you for providing your email! We remind you, that every 10 orders you will receive a discount code for your next order!",
+    "encourage": " We encourage you to enter your email next time! We remind, that every 10 orders with entered email you will receive discount code for your next order!"
+  },
+  "order-management": {
+    "headline": "Order management",
+    "paragraph_today": "Today",
+    "paragraph_past": "Past",
+    "no_orders": "No orders from this category!",
+    "order_status": {
+      "IN_PREPARATION": "To prepare",
+      "READY": "Ready",
+      "SHIPPED": "Shipped",
+      "RECEIVED": "Received",
+      "CANCELED": "Canceled",
+      "RETURNED": "Returned",
+      "All": "All"
+    },
+    "order_type": {
+      "ON_SITE": "On site",
+      "TAKEAWAY": "Takeaway"
+    },
+    "card": {
+      "main": {
+        "headline": "Order",
+        "type": "Type",
+        "status": "Status",
+        "total_price": "Total price",
+        "placed_at": "Placed at"
+      },
+      "contact": {
+        "headline": "Contact",
+        "phone": "Phone",
+        "email": "Email"
+      },
+      "meals_headline": "Meals",
+      "beverages_headline": "Beverages",
+      "addons_headline": "Addons",
+      "additional_comments_headline": "Additional comments"
+    },
+    "buttons": {
+      "add": "Add order"
+    }
+  },
+  "discount-code-management": {
+    "headline": "Discount code management",
+    "buttons": {
+      "add": "Add discount code"
+    },
+    "no_discount_codes": "No discount codes!",
+    "code": "Code",
+    "code_optional": "Code (optional)",
+    "discount_percentage": "Discount percentage",
+    "expiration_date": "Expiration date",
+    "remaining_uses": "Remaining uses",
+    "new_discount_code": "New discount code",
+    "update_discount_code": "Updated discount code"
+  },
+  "verification_required": {
+    "headline": "You are not able to enter this page!",
+    "paragraph": "It seems you do not have the required permissions to access this section. If you believe this is a mistake, please contact the administrator.",
+    "button": "Go back"
+  },
+  "work-schedule": {
+    "headline": "Work schedule",
+    "employee": "Employee",
+    "buttons": {
+      "download": "Download work schedule"
+    }
+  },
+  "employee-management": {
+    "headline": "Employee management",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "password": "Password",
+    "phone": "Phone",
+    "date_of_birth": "Date of birth",
+    "job": "Job",
+    "is_student": "Is student?",
+    "jobs": {
+      "Cashier": "Cashier",
+      "Manager": "Manager"
+    },
+    "employment_type": "Employment type",
+    "employment_types": {
+      "PERMANENT": "Permanent",
+      "MANDATE_CONTRACT": "Mandate contract"
+    },
+    "hourly_wage": "Hourly wage gross",
+    "hired_at": "Hired at",
+    "active": "Active",
+    "buttons": {
+      "add": "Add employee"
+    },
+    "new_employee": "New employee",
+    "updated_employee": "Updated employee"
+  },
+  "payments": {
+    "headline": "Payments",
+    "employee": "Employee",
+    "job": "Job",
+    "employment_type": "Employment type",
+    "hourly_wage": "Hourly wage gross",
+    "hours": "Working hours",
+    "is_student": "Is student?",
+    "total": "Total"
+  }
 }

@@ -43,8 +43,8 @@
             {{ 'employee-management.is_student' | translate }}: <input type="checkbox" [(ngModel)]="newEmployee.is_student" />
         </tr>
         <tr>
-            <button class="button-accept" (click)="addEmployee()">{{ 'employee-management.buttons.accept' | translate }}</button>
-            <button class="button-cancel" (click)="hideAddEmployeeTable()">{{ 'employee-management.buttons.cancel' | translate }}</button>
+            <button class="button-accept" (click)="addEmployee()">{{ 'common.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideAddEmployeeTable()">{{ 'common.buttons.cancel' | translate }}</button>
         </tr>
         <tr *ngIf="errorMessages" class="error">
             {{ errorMessages['message'] }}
@@ -125,8 +125,8 @@
             </select>
         </tr>
         <tr>
-            <button class="button-accept" *ngIf="updatedEmployee" (click)="updateEmployee(updatedEmployee)">{{ 'employee-management.buttons.accept' | translate }}</button>
-            <button class="button-cancel" (click)="hideUpdateEmployeeTable()">{{ 'employee-management.buttons.cancel' | translate }}</button>
+            <button class="button-accept" *ngIf="updatedEmployee" (click)="updateEmployee(updatedEmployee)">{{ 'common.buttons.accept' | translate }}</button>
+            <button class="button-cancel" (click)="hideUpdateEmployeeTable()">{{ 'common.buttons.cancel' | translate }}</button>
         </tr>
         <tr *ngIf="errorMessages" class="error">
             {{ errorMessages['message'] }}
@@ -154,8 +154,8 @@
         <tbody>
             <tr *ngFor="let employee of employees">
                 <td>
-                    <button class="button-update" *ngIf="!isEditing && !isAdding" (click)="editEmployeeRow(employee)">{{ 'employee-management.buttons.update' | translate }}</button>
-                    <button class="button-remove" *ngIf="!isEditing && !isAdding" (click)="removeEmployee(employee)">{{ 'employee-management.buttons.remove' | translate }}</button>
+                    <button class="button-update" *ngIf="!isEditing && !isAdding" (click)="editEmployeeRow(employee)">{{ 'common.buttons.update' | translate }}</button>
+                    <button class="button-remove" *ngIf="!isEditing && !isAdding" (click)="removeEmployee(employee)">{{ 'common.buttons.remove' | translate }}</button>
                 </td>
                 <td>{{ employee.id }}</td>
                 <td>{{ employee.first_name }}</td>

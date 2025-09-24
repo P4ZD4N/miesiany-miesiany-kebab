@@ -19,9 +19,9 @@
                 [formGroup]="hourForms[hour.day_of_week]"
             >
                 <td *ngIf="isManager()">
-                    <button class="button-update" *ngIf="!hour.isEditing && !isEditing" (click)="editRow(hour)">{{ 'opening-hours.update' | translate }}</button>
-                    <button class="button-accept" *ngIf="hour.isEditing" (click)="saveRow(hour)">{{ 'opening-hours.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="hour.isEditing" (click)="hideRow(hour)">{{ 'opening-hours.cancel' | translate }}</button>
+                    <button class="button-update" *ngIf="!hour.isEditing && !isEditing" (click)="editRow(hour)">{{ 'common.buttons.update' | translate }}</button>
+                    <button class="button-accept" *ngIf="hour.isEditing" (click)="saveRow(hour)">{{ 'common.buttons.accept' | translate }}</button>
+                    <button class="button-cancel" *ngIf="hour.isEditing" (click)="hideRow(hour)">{{ 'common.buttons.cancel' | translate }}</button>
                 </td>
                 <td>{{ 'opening-hours.days.' + hour.day_of_week | translate }}</td>
 

@@ -11,8 +11,8 @@
     <table class="add-ingredient-table" *ngIf="isAddingIngredient">
         <tr>
             <td>
-                <button class="button-accept" (click)="addIngredient()">{{ 'menu.accept' | translate }}</button>
-                <button class="button-cancel" (click)="hideAddIngredientTable()">{{ 'menu.cancel' | translate }}</button>
+                <button class="button-accept" (click)="addIngredient()">{{ 'common.buttons.accept' | translate }}</button>
+                <button class="button-cancel" (click)="hideAddIngredientTable()">{{ 'common.buttons.cancel' | translate }}</button>
             </td>
             <td>
                 <input type="text" placeholder="{{ 'menu.ingredients.ingredient' | translate }}"  [(ngModel)]="newIngredient.new_ingredient_name" />
@@ -103,8 +103,8 @@
     <table class="add-meal-table" *ngIf="isAddingMeal">
         <tr>
             <td>
-                <button class="button-accept" (click)="addMeal()">{{ 'menu.accept' | translate }}</button>
-                <button class="button-cancel" (click)="hideAddMealTable()">{{ 'menu.cancel' | translate }}</button>
+                <button class="button-accept" (click)="addMeal()">{{ 'common.buttons.accept' | translate }}</button>
+                <button class="button-cancel" (click)="hideAddMealTable()">{{ 'common.buttons.cancel' | translate }}</button>
             </td>
             <td>
                 <input type="text" placeholder="{{ 'menu.meals.meal' | translate }}"  [(ngModel)]="newMeal.new_meal_name" />
@@ -176,10 +176,10 @@
             <tr *ngFor="let meal of sortMealsByName(meals)">
 
                 <td *ngIf="isManager()" class="manager">
-                    <button class="button-update" *ngIf="!meal.isEditing && !isEditing && !isAdding" (click)="editMealRow(meal)">{{ 'menu.update' | translate }}</button>
-                    <button class="button-accept" *ngIf="meal.isEditing" (click)="saveMealRow(meal)">{{ 'menu.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="meal.isEditing" (click)="hideEditableMealRow(meal)">{{ 'menu.cancel' | translate }}</button>
-                    <button class="button-remove" *ngIf="!meal.isEditing && !isEditing && !isAdding" (click)="removeMeal(meal)">{{ 'menu.remove' | translate }}</button>
+                    <button class="button-update" *ngIf="!meal.isEditing && !isEditing && !isAdding" (click)="editMealRow(meal)">{{ 'common.buttons.update' | translate }}</button>
+                    <button class="button-accept" *ngIf="meal.isEditing" (click)="saveMealRow(meal)">{{ 'common.buttons.accept' | translate }}</button>
+                    <button class="button-cancel" *ngIf="meal.isEditing" (click)="hideEditableMealRow(meal)">{{ 'common.buttons.cancel' | translate }}</button>
+                    <button class="button-remove" *ngIf="!meal.isEditing && !isEditing && !isAdding" (click)="removeMeal(meal)">{{ 'common.buttons.remove' | translate }}</button>
                 </td>
 
                 <td>
@@ -303,8 +303,8 @@
     <table class="add-addon-table" *ngIf="isAddingAddon">
         <tr>
             <td>
-                <button class="button-accept" (click)="addAddon()">{{ 'menu.accept' | translate }}</button>
-                <button class="button-cancel" (click)="hideAddAddonTable()">{{ 'menu.cancel' | translate }}</button>
+                <button class="button-accept" (click)="addAddon()">{{ 'common.buttons.accept' | translate }}</button>
+                <button class="button-cancel" (click)="hideAddAddonTable()">{{ 'common.buttons.cancel' | translate }}</button>
             </td>
             <td>
                 <input type="text" placeholder="{{ 'menu.addons.addon' | translate }}"  [(ngModel)]="newAddon.new_addon_name" />
@@ -326,10 +326,10 @@
                 [formGroup]="addonForms[addon.name]"
             >
                 <td *ngIf="isManager()" class="manager">
-                    <button class="button-update" *ngIf="!addon.isEditing && !isEditing && !isAdding" (click)="editAddonRow(addon)">{{ 'menu.update' | translate }}</button>
-                    <button class="button-accept" *ngIf="addon.isEditing" (click)="saveAddonRow(addon)">{{ 'menu.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="addon.isEditing" (click)="hideEditableAddonRow(addon)">{{ 'menu.cancel' | translate }}</button>
-                    <button class="button-remove" *ngIf="!addon.isEditing && !isEditing && !isAdding" (click)="removeAddon(addon)">{{ 'menu.remove' | translate }}</button>
+                    <button class="button-update" *ngIf="!addon.isEditing && !isEditing && !isAdding" (click)="editAddonRow(addon)">{{ 'common.buttons.update' | translate }}</button>
+                    <button class="button-accept" *ngIf="addon.isEditing" (click)="saveAddonRow(addon)">{{ 'common.buttons.accept' | translate }}</button>
+                    <button class="button-cancel" *ngIf="addon.isEditing" (click)="hideEditableAddonRow(addon)">{{ 'common.buttons.cancel' | translate }}</button>
+                    <button class="button-remove" *ngIf="!addon.isEditing && !isEditing && !isAdding" (click)="removeAddon(addon)">{{ 'common.buttons.remove' | translate }}</button>
                 </td>
                 
                 <td>
@@ -372,8 +372,8 @@
     <table class="add-beverage-table" *ngIf="isAddingBeverage">
         <tr>
             <td>
-                <button class="button-accept" (click)="addBeverage()">{{ 'menu.accept' | translate }}</button>
-                <button class="button-cancel" (click)="hideAddBeverageTable()">{{ 'menu.cancel' | translate }}</button>
+                <button class="button-accept" (click)="addBeverage()">{{ 'common.buttons.accept' | translate }}</button>
+                <button class="button-cancel" (click)="hideAddBeverageTable()">{{ 'common.buttons.cancel' | translate }}</button>
             </td>
             <td>
                 <input type="text" placeholder="{{ 'menu.beverages.beverage' | translate }}"  [(ngModel)]="newBeverage.new_beverage_name" />
@@ -398,10 +398,10 @@
                 [formGroup]="beverageForms[beverage.name]"
             >
                 <td *ngIf="isManager()" class="manager">
-                    <button class="button-update" *ngIf="!beverage.isEditing && !isEditing && !isAdding" (click)="editBeverageRow(beverage)">{{ 'menu.update' | translate }}</button>
-                    <button class="button-accept" *ngIf="beverage.isEditing" (click)="saveBeverageRow(beverage)">{{ 'menu.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="beverage.isEditing" (click)="hideEditableBeverageRow(beverage)">{{ 'menu.cancel' | translate }}</button>
-                    <button class="button-remove" *ngIf="!beverage.isEditing && !isEditing && !isAdding" (click)="removeBeverage(beverage)">{{ 'menu.remove' | translate }}</button>
+                    <button class="button-update" *ngIf="!beverage.isEditing && !isEditing && !isAdding" (click)="editBeverageRow(beverage)">{{ 'common.buttons.update' | translate }}</button>
+                    <button class="button-accept" *ngIf="beverage.isEditing" (click)="saveBeverageRow(beverage)">{{ 'common.buttons.accept' | translate }}</button>
+                    <button class="button-cancel" *ngIf="beverage.isEditing" (click)="hideEditableBeverageRow(beverage)">{{ 'common.buttons.cancel' | translate }}</button>
+                    <button class="button-remove" *ngIf="!beverage.isEditing && !isEditing && !isAdding" (click)="removeBeverage(beverage)">{{ 'common.buttons.remove' | translate }}</button>
                 </td>
 
                 <td>

@@ -11,17 +11,17 @@
                 <i class="fa-solid fa-phone"></i> 
                 <span *ngIf="!isEditingPhone">{{ formatPhone(getTelephone()[0].value) }}</span>
                 <input *ngIf="isEditingPhone" type="text" [(ngModel)]="phoneValue" />
-                <button class="button-update" *ngIf="isManager() && !isEditingPhone && !isEditing" (click)="toggleEditPhone()">{{ 'contact.update' | translate }}</button>
-                <button class="button-accept" *ngIf="isManager() && isEditingPhone" (click)="updatePhone()">{{ 'contact.accept' | translate }}</button>
-                <button class="button-cancel" *ngIf="isManager() && isEditingPhone" (click)="hideEditPhoneForm()">{{ 'contact.cancel' | translate }}</button>
+                <button class="button-update" *ngIf="isManager() && !isEditingPhone && !isEditing" (click)="toggleEditPhone()">{{ 'common.buttons.update' | translate }}</button>
+                <button class="button-accept" *ngIf="isManager() && isEditingPhone" (click)="updatePhone()">{{ 'common.buttons.accept' | translate }}</button>
+                <button class="button-cancel" *ngIf="isManager() && isEditingPhone" (click)="hideEditPhoneForm()">{{ 'common.buttons.cancel' | translate }}</button>
             </div>
             <div class="email">
                 <i class="fa-solid fa-envelope"></i> 
                 <span *ngIf="!isEditingEmail">{{ getEmail()[0].value }}</span>
                 <input *ngIf="isEditingEmail" type="text" [(ngModel)]="emailValue" />
-                <button class="button-update" *ngIf="isManager() && !isEditingEmail && !isEditing" (click)="toggleEditEmail()">{{ 'contact.update' | translate }}</button>
-                <button class="button-accept" *ngIf="isManager() && isEditingEmail" (click)="updateEmail()">{{ 'contact.accept' | translate }}</button>
-                <button class="button-cancel" *ngIf="isManager() && isEditingEmail" (click)="hideEditEmailForm()">{{ 'contact.cancel' | translate }}</button>
+                <button class="button-update" *ngIf="isManager() && !isEditingEmail && !isEditing" (click)="toggleEditEmail()">{{ 'common.buttons.update' | translate }}</button>
+                <button class="button-accept" *ngIf="isManager() && isEditingEmail" (click)="updateEmail()">{{ 'common.buttons.accept' | translate }}</button>
+                <button class="button-cancel" *ngIf="isManager() && isEditingEmail" (click)="hideEditEmailForm()">{{ 'common.buttons.cancel' | translate }}</button>
             </div>
             
             <h2>Social media</h2>

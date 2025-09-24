@@ -65,11 +65,11 @@ export class ManagerPanelComponent {
     const hour = new Date().getHours();
 
     if (hour >= 5 && hour < 12) {
-      return 'manager-panel.good-morning';
+      return 'common.staff-panel.good-morning';
     } else if (hour >= 12 && hour < 18) {
-      return 'manager-panel.good-afternoon';
+      return 'common.staff-panel.good-afternoon';
     } else {
-      return 'manager-panel.good-evening';
+      return 'common.staff-panel.good-evening';
     }
   }
 

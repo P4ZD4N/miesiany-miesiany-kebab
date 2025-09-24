@@ -15,8 +15,8 @@
     <table class="add-job-offer-table" *ngIf="isAdding">
       <tr>
         <td class="buttons">
-            <button class="button-accept" (click)="addJobOffer()">{{ 'jobs.add' | translate }}</button>
-            <button class="button-cancel" (click)="hideAddJobOfferTable()">{{ 'jobs.cancel' | translate }}</button>
+            <button class="button-accept" (click)="addJobOffer()">{{ 'common.buttons.add' | translate }}</button>
+            <button class="button-cancel" (click)="hideAddJobOfferTable()">{{ 'common.buttons.cancel' | translate }}</button>
         </td>
       </tr>
       <tr>
@@ -42,7 +42,7 @@
             </li>
           </ul>
 
-          <button class="button-accept" (click)="addRequirementToJobOffer(newJobOffer)">{{ 'jobs.add' | translate }}</button>
+          <button class="button-accept" (click)="addRequirementToJobOffer(newJobOffer)">{{ 'common.buttons.add' | translate }}</button>
           <select [(ngModel)]="jobOfferRequirement.requirement_type">
               <option value="" disabled selected>{{ 'jobs.requirement_type' | translate }}</option>
               <option *ngFor="let type of requirementTypes" [value]="type">
@@ -60,7 +60,7 @@
             </li>
           </ul>
 
-          <button *ngIf="getAvailableEmploymentTypes(newJobOffer).length > 0" class="button-accept" (click)="addEmploymentTypeToJobOffer(newJobOffer)">{{ 'jobs.add' | translate }}</button>
+          <button *ngIf="getAvailableEmploymentTypes(newJobOffer).length > 0" class="button-accept" (click)="addEmploymentTypeToJobOffer(newJobOffer)">{{ 'common.buttons.add' | translate }}</button>
           <select *ngIf="getAvailableEmploymentTypes(newJobOffer).length > 0" [(ngModel)]="jobOfferEmploymentType.employment_type">
               <option value="" disabled selected>{{ 'jobs.employment_type' | translate }}</option>
               <option *ngFor="let type of getAvailableEmploymentTypes(newJobOffer)" [value]="type">
@@ -81,10 +81,10 @@
           </mat-expansion-panel-header>
           <section class="job-details-section">
             <div *ngIf="isManager()">
-              <button class="button-accept" *ngIf="isEditing" (click)="updateJob()">{{ 'jobs.accept' | translate }}</button>
-              <button class="button-update" *ngIf="!isAdding && !isEditing" (click)="startUpdating(job)">{{ 'jobs.update' | translate}}</button>
-              <button class="button-remove" *ngIf="!isAdding && !isEditing" (click)="removeJobOffer(job)">{{ 'jobs.remove' | translate }}</button>
-              <button class="button-cancel" *ngIf="isEditing" (click)="stopUpdating()">{{ 'jobs.cancel' | translate }}</button>
+              <button class="button-accept" *ngIf="isEditing" (click)="updateJob()">{{ 'common.buttons.accept' | translate }}</button>
+              <button class="button-update" *ngIf="!isAdding && !isEditing" (click)="startUpdating(job)">{{ 'common.buttons.update' | translate}}</button>
+              <button class="button-remove" *ngIf="!isAdding && !isEditing" (click)="removeJobOffer(job)">{{ 'common.buttons.remove' | translate }}</button>
+              <button class="button-cancel" *ngIf="isEditing" (click)="stopUpdating()">{{ 'common.buttons.cancel' | translate }}</button>
             </div>
 
             <ng-container *ngIf="isEditing && currentlyUpdatedJobOffer">
@@ -154,7 +154,7 @@
             <p *ngIf="errorMessages['requirementDescription']" class="error">{{ errorMessages['requirementDescription'] }}</p>
 
             <ng-container *ngIf="isEditing">
-              <button class="button-accept" (click)="addRequirementToJobOffer(job)">{{ 'jobs.add' | translate }}</button>
+              <button class="button-accept" (click)="addRequirementToJobOffer(job)">{{ 'common.buttons.add' | translate }}</button>
               <select [(ngModel)]="jobOfferRequirement.requirement_type">
                   <option value="" disabled selected>{{ 'jobs.requirement_type' | translate }}</option>
                   <option *ngFor="let type of requirementTypes" [value]="type">
@@ -187,7 +187,7 @@
             <p *ngIf="errorMessages['employmentType']" class="error">{{ errorMessages['employmentType'] }}</p>
 
             <ng-container *ngIf="isEditing">
-              <button *ngIf="getAvailableEmploymentTypes(job).length > 0" class="button-accept" (click)="addEmploymentTypeToJobOffer(job)">{{ 'jobs.add' | translate }}</button>
+              <button *ngIf="getAvailableEmploymentTypes(job).length > 0" class="button-accept" (click)="addEmploymentTypeToJobOffer(job)">{{ 'common.buttons.add' | translate }}</button>
               <select *ngIf="getAvailableEmploymentTypes(job).length > 0" [(ngModel)]="jobOfferEmploymentType.employment_type">
                   <option value="" disabled selected>{{ 'jobs.employment_type' | translate }}</option>
                   <option *ngFor="let type of getAvailableEmploymentTypes(job)" [value]="type">

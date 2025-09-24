@@ -7,7 +7,7 @@
 
   <section class="employee-data">
     <section>
-      <h2>{{ "employee-panel.contact_data" | translate }}</h2>
+      <h2>{{ "common.staff-panel.contact_data" | translate }}</h2>
       <p>
         {{ "employee-management.first_name" | translate }}:
         {{ currentEmployeeData?.first_name }}
@@ -23,7 +23,7 @@
       </p>
     </section>
     <section>
-      <h2>{{ "employee-panel.employment_details" | translate }}</h2>
+      <h2>{{ "common.staff-panel.employment_details" | translate }}</h2>
       <p>
         {{ "employee-management.job" | translate }}:
         {{ "employee-management.jobs." + currentEmployeeData?.job | translate }}
@@ -47,23 +47,23 @@
   </section>
 
   <section class="actions-buttons">
-    <h2>{{ "employee-panel.actions_heading" | translate }}</h2>
+    <h2>{{ "common.staff-panel.actions_heading" | translate }}</h2>
     <div class="action-button">
       <i class="fa-solid fa-bag-shopping"></i>
       <button class="btn btn-success" [routerLink]="['/order-management']">
-        {{ "manager-panel.buttons.order_management" | translate }}
+        {{ "common.staff-panel.buttons.order_management" | translate }}
       </button>
     </div>
     <div class="action-button">
       <i class="fa-solid fa-clock"></i>
       <button class="btn btn-success" [routerLink]="['/order-status-display']">
-        {{ "manager-panel.buttons.order_status_display" | translate }}
+        {{ "common.staff-panel.buttons.order_status_display" | translate }}
       </button>
     </div>
     <div class="action-button">
       <i class="fa-solid fa-calendar-days"></i>
       <button class="btn btn-success" [routerLink]="['/work-schedule']">
-        {{ "manager-panel.buttons.work_schedule" | translate }}
+        {{ "common.staff-panel.buttons.work_schedule" | translate }}
       </button>
     </div>
     <div class="action-button">
@@ -72,7 +72,7 @@
         class="btn btn-success button-update"
         (click)="updateCurrentEmployeeCredential('email')"
       >
-        {{ "manager-panel.buttons.update_email" | translate }}
+        {{ "common.staff-panel.buttons.update_email" | translate }}
       </button>
     </div>
     <div class="action-button">
@@ -81,13 +81,13 @@
         class="btn btn-success button-update"
         (click)="updateCurrentEmployeeCredential('password')"
       >
-        {{ "manager-panel.buttons.update_password" | translate }}
+        {{ "common.staff-panel.buttons.update_password" | translate }}
       </button>
     </div>
   </section>
 
   <button class="btn btn-danger" (click)="logout()">
-    {{ "employee-panel.buttons.button_logout" | translate }}
+    {{ "common.staff-panel.buttons.button_logout" | translate }}
   </button>
 </section>
 

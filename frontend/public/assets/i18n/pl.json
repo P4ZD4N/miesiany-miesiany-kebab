@@ -1,456 +1,415 @@
 {
-    "common": {
-        "navbar": {
-            "home": "Strona glowna",
-            "opening_hours": "Godziny otwarcia",
-            "menu": "Menu",
-            "promotions": "Promocje",
-            "track_order": "Sledz zamowienie",
-            "contact": "Kontakt",
-            "order": "Zamów",
-            "employee": "Panel Pracownika",
-            "manager": "Panel Managera"
-        },
-        "footer": {
-            "home": "Strona glowna",
-            "opening_hours": "Godziny otwarcia",
-            "menu": "Menu",
-            "promotions": "Promocje",
-            "jobs": "Praca",
-            "track_order": "Sledz zamowienie",
-            "contact": "Kontakt"
-        }
+  "common": {
+    "links": {
+      "home": "Strona glowna",
+      "opening_hours": "Godziny otwarcia",
+      "menu": "Menu",
+      "promotions": "Promocje",
+      "jobs": "Praca",
+      "track_order": "Sledz zamowienie",
+      "contact": "Kontakt",
+      "order": "Zamów",
+      "employee": "Panel Pracownika",
+      "manager": "Panel Managera"
     },
-    "home": {
-        "hero_section": {
-            "headline": "Smak, ktory uzaleznia",
-            "paragraph": "Sprobuj naszego kebaba i odkryj, dlaczego nasi klienci wracaja po wiecej. Soczyste mieso, chrupiace warzywa, idealny sos – wszystko, czego pragniesz, w jednym kesie!"
-        },
-        "about_section": {
-            "headline": "O nas",
-            "paragraph_top": "Witamy w Miesiany Miesiany Kebab! Jestesmy miejscem, gdzie tradycja spotyka sie z nowoczesnoscia, a pasja do kuchni wschodniej przeklada sie na niezapomniane doznania smakowe.",
-            "paragraph_center": "Nasze dania przygotowujemy z najwyzszej jakości skladnikow, starannie dobranych i zawsze swiezych. Naszym celem jest nie tylko zaspokoic Twoj glod, ale takze sprawic, by kazda wizyta u nas byla wyjatkowym przezyciem. Serwujemy autentyczne kebaby, które zachwyca Cie bogactwem smakow i aromatow.",
-            "paragraph_bottom": "Zapraszamy do sprobowania naszych specjalow i odkrycia, dlaczego tak czesto mowi sie o nas, jako o ulubionym kebabie w okolicy!" 
-        },
-        "awards_section": {
-            "headline": "Nagrody",
-            "paragraph_top": "Jestesmy dumni z tego, ze nasz kebab zdobyl uznanie wsrod smakoszy i ekspertow kulinarnych! Nasza pasja do doskonalego smaku i jakosci zostala doceniona poprzez liczne nagrody i wyroznienia, ktore otrzymalismy.",
-            "paragraph_bottom": "Kazde wyroznienie motywuje nas do dalszego dazenia do perfekcji i dostarczania naszym klientom niezapomnianych doznan smakowych. Dziekujemy za Wasze wsparcie i zaufanie – to Wy jestescie powodem naszych sukcesow!"
-        },
-        "location_section": {
-            "headline": "Lokalizacja",
-            "paragraph": "Kebab znajduje sie w miejscowosci Kopalnia niedaleko Czestochowy. Dotarcie do lokalu jest bardzo proste. Znajduje sie on na skrzyzowaniu ulicy Szkolnej i Brzozowej. Dokladny adres to Kopalnia, ul. Szkolna 89",
-            "button": "Wyznacz trase"
-        }
+    "buttons": {
+      "add": "Dodaj",
+      "update": "Aktualizuj",
+      "accept": "Akceptuj",
+      "cancel": "Anuluj",
+      "remove": "Usun"
     },
-    "authentication": {
-        "login_form": {
-            "headline": "Zaloguj",
-            "paragraph_top": "Sekcja przeznaczona tylko dla pracownikow.",
-            "password": "Haslo",
-            "button": "Zaloguj",
-            "paragraph_bottom": "Jesli nie pamietasz hasla, skontaktuj sie z managerem."
-        }
-    },
-    "opening-hours": {
-        "headline": "Godziny otwarcia",
-        "paragraph_top": "Nie zwlekaj i wpadaj do nas na pyszny kebab w nastepujacych dniach i godzinach!",
-        "status": {
-            "open": "Otwarte",
-            "closed": "Zamkniete"
-        },
-        "table": {
-            "day": "Dzien",
-            "opening": "Godzina otwarcia",
-            "closing": "Godzina zamkniecia"
-        },
-        "days": {
-            "MONDAY": "Poniedzialek",
-            "TUESDAY": "Wtorek",
-            "WEDNESDAY": "Sroda",
-            "THURSDAY": "Czwartek",
-            "FRIDAY": "Piatek",
-            "SATURDAY": "Sobota",
-            "SUNDAY": "Niedziela"
-        },
-        "update": "Aktualizuj",
-        "accept": "Akceptuj",
-        "cancel": "Anuluj"
-    },
-    "manager-panel": {
-        "headline": "Panel managera",
-        "good-morning": "Dzien dobry",
-        "good-afternoon": "Dzien dobry",
-        "good-evening": "Dobry wieczor",
-        "wishes": "Twoja pasja inspiruje i napedza nasz zespol",
+    "staff-panel": {
+      "good-morning": "Dzien dobry",
+      "good-afternoon": "Dzien dobry",
+      "good-evening": "Dobry wieczor",
+      "contact_data": "Dane kontaktowe",
+      "employment_details": "Szczegoly zatrudnienia",
+      "actions_heading": "Akcje",
+      "buttons": {
+        "order_management": "Zarzadzanie zamowieniami",
+        "order_status_display": "Wyswietlanie statusow zamowien",
+        "work_schedule": "Grafik",
         "button_logout": "Wyloguj",
-        "contact_data": "Dane kontaktowe",
-        "employment_details": "Szczegoly zatrudnienia",
-        "actions_heading": "Akcje",
-        "buttons": {
-            "order_management": "Zarzadzanie zamowieniami",
-            "order_status_display": "Wyswietlanie statusow zamowien",
-            "work_schedule": "Grafik",
-            "payments": "Platnosci",
-            "opening_hours_management": "Zarzadzanie godzinami otwarcia",
-            "menu_management": "Zarzadzanie menu",
-            "promotions_management": "Zarzadzanie promocjami",
-            "jobs_management": "Zarzadzanie ofertami pracy",
-            "discount_code_management": "Zarzadzanie kodami promocyjnymi",
-            "employee_management": "Zarzadzanie pracownikami",
-            "button_logout": "Wyloguj",
-            "update_email": "Aktualizuj email",
-            "update_password": "Aktualizuj haslo"
-        }
-    },
-    "employee-panel": {
-        "headline": "Panel pracownika",
-        "good-morning": "Dzien dobry",
-        "good-afternoon": "Dzien dobry",
-        "good-evening": "Dobry wieczor",
-        "wishes": "Dzialaj z pasja – robisz swietna robote",
-        "contact_data": "Dane kontaktowe",
-        "employment_details": "Szczegoly zatrudnienia",
-        "actions_heading": "Akcje",
-        "buttons": {
-            "order_management": "Zarzadzanie zamowieniami",
-            "order_status_display": "Wyswietlanie statusow zamowien",
-            "work_schedule": "Grafik",
-            "button_logout": "Wyloguj",
-            "update_email": "Aktualizuj email",
-            "update_password": "Aktualizuj haslo"
-        }
-    },
-    "menu": {
-        "addons": {
-            "paragraph_addons": "Dodatki",
-            "button_add": "Dodaj dodatek",
-            "addon": "Dodatek",
-            "price": "Cena",
-            "Fries (140g)": "Frytki (140g)",
-            "Fries (200g)": "Frytki (200g)",
-            "Nuggets (7pcs)": "Nuggetsy (7szt.)"
-        },
-        "beverages": {
-            "paragraph_beverages": "Napoje",
-            "button_add": "Dodaj napoj",
-            "beverage": "Napoj",
-            "capacity": "Pojemnosc",
-            "price": "Cena",
-            "Coca-Cola": "Coca-Cola",
-            "Coca-Cola Zero": "Coca-Cola Zero",
-            "Fanta": "Fanta",
-            "Sprite": "Sprite",
-            "Ayran": "Ayran",
-            "Cisowianka Niegazowana": "Cisowianka Niegazowana"
-        },
-        "meals": {
-            "paragraph_meals": "Dania",
-            "button_add": "Dodaj danie",
-            "meal": "Danie",
-            "prices": "Ceny",
-            "base_ingredients": "Bazowe skladniki",
-            "Pita Kebab Salads": "Pita Kebab Surowki",
-            "Pita Kebab Salads and Fries": "Pita Kebab Surowki i Frytki",
-            "size": "Rozmiar",
-            "price": "Cena",
-            "sizes": {
-                "SMALL": "Maly",
-                "MEDIUM": "Sredni",
-                "LARGE": "Duzy",
-                "XL": "XL"
-            },
-            "ingredients": {
-                "Pita": "Pita",
-                "Cabbage": "Kapusta",
-                "Tomato": "Pomidor",
-                "Cucumber": "Ogorek",
-                "Onion": "Cebula",
-                "Fries": "Frytki",
-                "Cheese": "Ser",
-                "Chicken": "Kurczak",
-                "Mutton": "Baranina",
-                "Meat Mix": "Mieszane",
-                "Falafel": "Falafel",
-                "Garlic Sauce": "Sos czosnkowy",
-                "BBQ Sauce": "Sos BBQ",
-                "Mild Sauce": "Sos lagodny",
-                "Hot Sauce": "Sos ostry",
-                "Sauce Mix": "Sos mieszany"
-            }
-        },
-        "ingredients": {
-            "headline": "Skladniki",
-            "button_add": "Dodaj skladnik",
-            "breads": "Ciasta",
-            "meats": "Miesa",
-            "vegetables": "Warzywa",
-            "sauces": "Sosy",
-            "other": "Inne",
-            "ingredient": "Skladnik",
-            "ingredient_type": "Typ skladnika",
-            "BREAD": "Ciasto",
-            "MEAT": "Mieso",
-            "VEGETABLE": "Warzywo",
-            "SAUCE": "Sos",
-            "OTHER": "Inny"
-        },
-        "meats": {
-            "paragraph_meats": "Miesa do wyboru"
-        },
-        "sauces": {
-            "paragraph_sauces": "Sosy do wyboru"
-        },
-        "update": "Aktualizuj",
-        "cancel": "Anuluj",
-        "accept": "Akceptuj",
-        "remove": "Usun"  
-    },
-    "contact": {
-        "headline": "Kontakt",
-        "paragraph_top": "Skontaktuj sie z nami!",
-        "left": {
-            "contact_data": "Dane kontaktowe"
-        },
-        "right": {
-            "our_location": "Nasza lokalizacja",
-            "button": "Wyznacz trase"
-        },
-        "types": {
-            "TELEPHONE": "Telefon",
-            "EMAIL": "Email"
-        },
-        "update": "Aktualizuj",
-        "accept": "Akceptuj",
-        "cancel": "Anuluj"
-    },
-    "jobs": {
-        "headline": "Praca",
-        "paragraph_top": "Zdolnych ludzi nigdy za malo! Przejrzyj aktualne oferty pracy i dolacz do zespolu!",
-        "description": "Opis stanowiska",
-        "requirements": "Wymagania",
-        "nice_to_have": "Nice to have",
-        "employment_types": "Mozliwosc zatrudnienia na umowach",
-        "employment_type": "Typ zatrudnienia",
-        "hourly_wage": "Stawka godzinowa",
-        "PERMANENT": "Umowa o prace",
-        "MANDATE_CONTRACT": "Umowa zlecenie",
-        "brutto": "brutto",
-        "button_add": "Dodaj oferte pracy",
-        "position": "Stanowisko",
-        "requirement_type": "Typ wymagania",
-        "requirement_description": "Opis wymagania",
-        "MANDATORY": "Wymagane",
-        "NICE_TO_HAVE": "Nice to have",
-        "accept": "Akceptuj",
-        "cancel": "Anuluj",
-        "update": "Aktualizuj",
-        "remove": "Usun",
-        "add": "Dodaj",
-        "position_name": "Pozycja",
-        "is_active": "Czy oferta jest aktywna",
-        "apply": "Aplikuj",
-        "candidates": "Kandydaci",
-        "job_applications": {
-            "headline": "Kandydaci na pozycje",
-            "first_name": "Imie",
-            "last_name": "Nazwisko",
-            "telephone": "Telefon",
-            "additional_message": "Dodatkowa wiadomosc",
-            "no_candidates": "Brak kandydatow!",
-            "button": "Wroc do listy ofert pracy"
-        }
-    },
-    "promotions": {
-        "headline": "Promocje",
-        "paragraph_top": "Sprawdz nasze aktualne promocje!",
-        "paragraph_bottom": "Brak interesujacych promocji? Zapisz sie na nasz newsletter, aby nie przegapic przyszlych okazji!",
-        "paragraph_meal_promotions": "Promocje na dania",
-        "paragraph_beverage_promotions": "Promocje na napoje",
-        "paragraph_addon_promotions": "Promocje na dodatki",
-        "promotion_description": "Opis promocji",
-        "discount_percentage": "Procent znizki",
-        "meals": "Dania",
-        "sizes": "Rozmiary",
-        "sizes_list": {
-            "SMALL": "Maly",
-            "MEDIUM": "Sredni",
-            "LARGE": "Duzy",
-            "XL": "XL"
-        },
-        "beverages": "Napoje",
-        "addons": "Dodatki",
-        "buttons": {
-            "accept": "Akceptuj",
-            "cancel": "Anuluj",
-            "update": "Aktualizuj",
-            "remove": "Usun",
-            "add_meal_promotion": "Dodaj promocje na dania",
-            "add_beverage_promotion": "Dodaj promocje na napoje",
-            "add_addon_promotion": "Dodaj promocje na dodatki",
-            "sign_up": "Zapisz sie na newsletter"
-        },
-        "new_meal_promotion": "Nowa promocja na dania",
-        "new_beverage_promotion": "Nowa promocja na napoje",
-        "new_addon_promotion": "Nowa promocja na dodatki",
-        "update_meal_promotion": "Aktualizowana promocja na dania",
-        "update_beverage_promotion": "Aktualizowana promocja na napoje",
-        "update_addon_promotion": "Aktualizowana promocja na dodatki",
-        "no_meal_promotions": "Aktualnie brak promocji na dania! Zapisz sie na newsletter, aby nie przegapic okazji!",
-        "no_beverage_promotions": "Aktualnie brak promocji na napoje! Zapisz sie na newsletter, aby nie przegapic okazji!",
-        "no_addon_promotions": "Aktualnie brak promocji na dodatki! Zapisz sie na newsletter, aby nie przegapic okazji!"
-    },
-    "unsubscribe": {
-        "headline": "Drogi Kliencie",
-        "paragraph_top": "Czy jestes pewny, ze chcesz odsubskrybowac nasz newsletter?",
-        "buttons": {
-            "yes": "Tak, wypisz mnie"
-        }
-    },
-    "track-order": {
-        "headline": "Sledz swoje zamowienie",
-        "paragraph_top": "Wprowadz ID zamowienia oraz numer telefonu, aby sprawdzic aktualny status swojego zamowienia!",
-        "paragraph_thank_you": "Szanowny Kliencie, dziekujemy za twoje zamowienie!",
-        "phone": "Telefon (9 cyfr)",
-        "buttons": {
-            "track": "Sledz",
-            "stop_tracking": "Przestan sledzic"
-        },
-        "total_price": "Wartosc zamowienia",
-        "delivery_address": "Adres dostawy",
-        "receive_restaurant": "Odbior w restauracji",
-        "payment_methods": {
-            "headline": "Metody platnosci",
-            "methods": "Gotowka / Karta"
-        },
-        "order_status": {
-            "headline": "Status zamowienia",
-            "IN_PREPARATION": "W przygotowaniu",
-            "READY1": "Gotowe do wyslania",
-            "READY2": "Gotowe do odbioru",
-            "SHIPPED1": "Wyslane",
-            "SHIPPED2": "Oczekiwanie na odbior",
-            "RECEIVED": "Odebrane",
-            "CANCELED": "Anulowane",
-            "RETURNED": "Zwrocone"
-        },
-        "discount_included": "znizka wliczona",
-        "delivery_included": "dostawa wliczona",
-        "delivery_and_discount_included": "dostawa i znizka wliczone",
-        "thanks": "Dziekujemy za podanie swojego emaila! Przypominamy, ze co 10 zamowien z podanym emailem otrzymasz kod rabatowy na kolejne zamowienie!",
-        "encourage": "Zachecamy do podania swojego emaila przy kolejnym zamowieniu! Przypominamy, ze co 10 zamowien z podanym emailem otrzymujesz kod rabatowy na kolejne zamowienie!"
-    },
-    "order-management": {
-        "headline": "Zarzadzanie zamowieniami",
-        "paragraph_today": "Dzisiejsze",
-        "paragraph_past": "Z przeszlosci",
-        "no_orders": "Brak zamowien z tej kategorii!",
-        "order_status": {
-            "IN_PREPARATION": "Do przygotowania",
-            "READY": "Gotowe",
-            "SHIPPED": "Wyslane",
-            "RECEIVED": "Odebrane",
-            "CANCELED": "Anulowane",
-            "RETURNED": "Zwrocone",
-            "All": "Wszystkie"
-        },
-        "order_type": {
-            "ON_SITE": "Na miejscu",
-            "TAKEAWAY": "Na wynos"
-        },
-        "card": {
-            "main": {
-                "headline": "Zamowienie",
-                "type": "Typ",
-                "status": "Status",
-                "total_price": "Wartosc zamowienia",
-                "placed_at": "Data zlozenia"
-            },
-            "contact": {
-                "headline": "Kontakt",
-                "phone": "Telefon",
-                "email": "Email"
-            },
-            "meals_headline": "Dania",
-            "beverages_headline": "Napoje",
-            "addons_headline": "Dodatki",
-            "additional_comments_headline": "Dodatkowe komentarze"
-        },
-        "buttons": {
-            "add": "Dodaj zamowienie",
-            "update": "Aktualizuj",
-            "remove": "Usun"
-        }
-    },
-    "discount-code-management": {
-        "headline": "Zarzadzanie kodami rabatowymi",
-        "buttons": {
-            "add": "Dodaj kod rabatowy",
-            "cancel": "Anuluj",
-            "update": "Aktualizuj",
-            "remove": "Usun",
-            "accept": "Akceptuj"
-        },
-        "no_discount_codes": "Brak kodow rabatowych!",
-        "code": "Kod",
-        "code_optional": "Kod (opcjonalnie)",
-        "discount_percentage": "Procent znizki",
-        "expiration_date": "Data wygasniecia",
-        "remaining_uses": "Pozostale uzycia",
-        "new_discount_code": "Nowy kod rabatowy",
-        "update_discount_code": "Aktualizowany kod rabatowy"
-    },
-    "verification_required": {
-        "headline": "Nie jestes upowazniony do przejscia na ta strone!",
-        "paragraph": "Wydaje sie, ze nie posiadasz uprawnien wymaganych do uzyskania dostepu do tej sekcji. Jesli wierzysz, ze to blad, prosze skontaktowac sie z administratorem.",
-        "button": "Wroc"
-    },
-    "work-schedule": {
-        "headline": "Grafik",
-        "employee": "Pracownik",
-        "buttons": {
-            "download": "Pobierz grafik"
-        }
-    },
-    "employee-management": {
-        "headline": "Zarzadzanie pracownikami",
-        "first_name": "Imie",
-        "last_name": "Nazwisko",
-        "password": "Haslo",
-        "phone": "Telefon",
-        "date_of_birth": "Data urodzenia",
-        "job": "Stanowisko",
-        "is_student": "Czy student?",
-        "jobs": {
-            "Cashier": "Kasjer",
-            "Manager": "Manager"
-        },
-        "employment_type": "Typ zatrudnienia",
-        "employment_types": {
-            "PERMANENT": "Umowa o prace",
-            "MANDATE_CONTRACT": "Umowa zlecenie"
-        },
-        "hourly_wage": "Stawka godzinowa brutto",
-        "hired_at": "Zatrudniony dnia",
-        "active": "Aktywny",
-        "buttons": {
-            "add": "Dodaj pracownika",
-            "accept": "Akceptuj",
-            "cancel": "Anuluj",
-            "update": "Aktualizuj",
-            "remove": "Usun"
-        },
-        "new_employee": "Nowy pracownik",
-        "updated_employee": "Aktualizowany pracownik"
-    },
-    "payments": {
-        "headline": "Platnosci",
-        "employee": "Pracownik",
-        "job": "Stanowisko",
-        "employment_type": "Typ zatrudnienia",
-        "hourly_wage": "Stawka godzinowa brutto",
-        "hours": "Godziny pracy",
-        "is_student": "Czy student?",
-        "total": "Lacznie"
+        "update_email": "Aktualizuj email",
+        "update_password": "Aktualizuj haslo"
+      }
     }
+  },
+  "home": {
+    "hero_section": {
+      "headline": "Smak, ktory uzaleznia",
+      "paragraph": "Sprobuj naszego kebaba i odkryj, dlaczego nasi klienci wracaja po wiecej. Soczyste mieso, chrupiace warzywa, idealny sos – wszystko, czego pragniesz, w jednym kesie!"
+    },
+    "about_section": {
+      "headline": "O nas",
+      "paragraph_top": "Witamy w Miesiany Miesiany Kebab! Jestesmy miejscem, gdzie tradycja spotyka sie z nowoczesnoscia, a pasja do kuchni wschodniej przeklada sie na niezapomniane doznania smakowe.",
+      "paragraph_center": "Nasze dania przygotowujemy z najwyzszej jakości skladnikow, starannie dobranych i zawsze swiezych. Naszym celem jest nie tylko zaspokoic Twoj glod, ale takze sprawic, by kazda wizyta u nas byla wyjatkowym przezyciem. Serwujemy autentyczne kebaby, które zachwyca Cie bogactwem smakow i aromatow.",
+      "paragraph_bottom": "Zapraszamy do sprobowania naszych specjalow i odkrycia, dlaczego tak czesto mowi sie o nas, jako o ulubionym kebabie w okolicy!"
+    },
+    "awards_section": {
+      "headline": "Nagrody",
+      "paragraph_top": "Jestesmy dumni z tego, ze nasz kebab zdobyl uznanie wsrod smakoszy i ekspertow kulinarnych! Nasza pasja do doskonalego smaku i jakosci zostala doceniona poprzez liczne nagrody i wyroznienia, ktore otrzymalismy.",
+      "paragraph_bottom": "Kazde wyroznienie motywuje nas do dalszego dazenia do perfekcji i dostarczania naszym klientom niezapomnianych doznan smakowych. Dziekujemy za Wasze wsparcie i zaufanie – to Wy jestescie powodem naszych sukcesow!"
+    },
+    "location_section": {
+      "headline": "Lokalizacja",
+      "paragraph": "Kebab znajduje sie w miejscowosci Kopalnia niedaleko Czestochowy. Dotarcie do lokalu jest bardzo proste. Znajduje sie on na skrzyzowaniu ulicy Szkolnej i Brzozowej. Dokladny adres to Kopalnia, ul. Szkolna 89",
+      "button": "Wyznacz trase"
+    }
+  },
+  "authentication": {
+    "login_form": {
+      "headline": "Zaloguj",
+      "paragraph_top": "Sekcja przeznaczona tylko dla pracownikow.",
+      "password": "Haslo",
+      "button": "Zaloguj",
+      "paragraph_bottom": "Jesli nie pamietasz hasla, skontaktuj sie z managerem."
+    }
+  },
+  "opening-hours": {
+    "headline": "Godziny otwarcia",
+    "paragraph_top": "Nie zwlekaj i wpadaj do nas na pyszny kebab w nastepujacych dniach i godzinach!",
+    "status": {
+      "open": "Otwarte",
+      "closed": "Zamkniete"
+    },
+    "table": {
+      "day": "Dzien",
+      "opening": "Godzina otwarcia",
+      "closing": "Godzina zamkniecia"
+    },
+    "days": {
+      "MONDAY": "Poniedzialek",
+      "TUESDAY": "Wtorek",
+      "WEDNESDAY": "Sroda",
+      "THURSDAY": "Czwartek",
+      "FRIDAY": "Piatek",
+      "SATURDAY": "Sobota",
+      "SUNDAY": "Niedziela"
+    }
+  },
+  "manager-panel": {
+    "headline": "Panel managera",
+    "wishes": "Twoja pasja inspiruje i napedza nasz zespol",
+    "buttons": {
+      "payments": "Platnosci",
+      "opening_hours_management": "Zarzadzanie godzinami otwarcia",
+      "menu_management": "Zarzadzanie menu",
+      "promotions_management": "Zarzadzanie promocjami",
+      "jobs_management": "Zarzadzanie ofertami pracy",
+      "discount_code_management": "Zarzadzanie kodami promocyjnymi",
+      "employee_management": "Zarzadzanie pracownikami"
+    }
+  },
+  "employee-panel": {
+    "headline": "Panel pracownika",
+    "wishes": "Dzialaj z pasja – robisz swietna robote"
+  },
+  "menu": {
+    "addons": {
+      "paragraph_addons": "Dodatki",
+      "button_add": "Dodaj dodatek",
+      "addon": "Dodatek",
+      "price": "Cena",
+      "Fries (140g)": "Frytki (140g)",
+      "Fries (200g)": "Frytki (200g)",
+      "Nuggets (7pcs)": "Nuggetsy (7szt.)"
+    },
+    "beverages": {
+      "paragraph_beverages": "Napoje",
+      "button_add": "Dodaj napoj",
+      "beverage": "Napoj",
+      "capacity": "Pojemnosc",
+      "price": "Cena",
+      "Coca-Cola": "Coca-Cola",
+      "Coca-Cola Zero": "Coca-Cola Zero",
+      "Fanta": "Fanta",
+      "Sprite": "Sprite",
+      "Ayran": "Ayran",
+      "Cisowianka Niegazowana": "Cisowianka Niegazowana"
+    },
+    "meals": {
+      "paragraph_meals": "Dania",
+      "button_add": "Dodaj danie",
+      "meal": "Danie",
+      "prices": "Ceny",
+      "base_ingredients": "Bazowe skladniki",
+      "Pita Kebab Salads": "Pita Kebab Surowki",
+      "Pita Kebab Salads and Fries": "Pita Kebab Surowki i Frytki",
+      "size": "Rozmiar",
+      "price": "Cena",
+      "sizes": {
+        "SMALL": "Maly",
+        "MEDIUM": "Sredni",
+        "LARGE": "Duzy",
+        "XL": "XL"
+      },
+      "ingredients": {
+        "Pita": "Pita",
+        "Cabbage": "Kapusta",
+        "Tomato": "Pomidor",
+        "Cucumber": "Ogorek",
+        "Onion": "Cebula",
+        "Fries": "Frytki",
+        "Cheese": "Ser",
+        "Chicken": "Kurczak",
+        "Mutton": "Baranina",
+        "Meat Mix": "Mieszane",
+        "Falafel": "Falafel",
+        "Garlic Sauce": "Sos czosnkowy",
+        "BBQ Sauce": "Sos BBQ",
+        "Mild Sauce": "Sos lagodny",
+        "Hot Sauce": "Sos ostry",
+        "Sauce Mix": "Sos mieszany"
+      }
+    },
+    "ingredients": {
+      "headline": "Skladniki",
+      "button_add": "Dodaj skladnik",
+      "breads": "Ciasta",
+      "meats": "Miesa",
+      "vegetables": "Warzywa",
+      "sauces": "Sosy",
+      "other": "Inne",
+      "ingredient": "Skladnik",
+      "ingredient_type": "Typ skladnika",
+      "BREAD": "Ciasto",
+      "MEAT": "Mieso",
+      "VEGETABLE": "Warzywo",
+      "SAUCE": "Sos",
+      "OTHER": "Inny"
+    },
+    "meats": {
+      "paragraph_meats": "Miesa do wyboru"
+    },
+    "sauces": {
+      "paragraph_sauces": "Sosy do wyboru"
+    }
+  },
+  "contact": {
+    "headline": "Kontakt",
+    "paragraph_top": "Skontaktuj sie z nami!",
+    "left": {
+      "contact_data": "Dane kontaktowe"
+    },
+    "right": {
+      "our_location": "Nasza lokalizacja",
+      "button": "Wyznacz trase"
+    },
+    "types": {
+      "TELEPHONE": "Telefon",
+      "EMAIL": "Email"
+    }
+  },
+  "jobs": {
+    "headline": "Praca",
+    "paragraph_top": "Zdolnych ludzi nigdy za malo! Przejrzyj aktualne oferty pracy i dolacz do zespolu!",
+    "description": "Opis stanowiska",
+    "requirements": "Wymagania",
+    "nice_to_have": "Nice to have",
+    "employment_types": "Mozliwosc zatrudnienia na umowach",
+    "employment_type": "Typ zatrudnienia",
+    "hourly_wage": "Stawka godzinowa",
+    "PERMANENT": "Umowa o prace",
+    "MANDATE_CONTRACT": "Umowa zlecenie",
+    "brutto": "brutto",
+    "button_add": "Dodaj oferte pracy",
+    "position": "Stanowisko",
+    "requirement_type": "Typ wymagania",
+    "requirement_description": "Opis wymagania",
+    "MANDATORY": "Wymagane",
+    "NICE_TO_HAVE": "Nice to have",
+    "position_name": "Pozycja",
+    "is_active": "Czy oferta jest aktywna",
+    "apply": "Aplikuj",
+    "candidates": "Kandydaci",
+    "job_applications": {
+      "headline": "Kandydaci na pozycje",
+      "first_name": "Imie",
+      "last_name": "Nazwisko",
+      "telephone": "Telefon",
+      "additional_message": "Dodatkowa wiadomosc",
+      "no_candidates": "Brak kandydatow!",
+      "button": "Wroc do listy ofert pracy"
+    }
+  },
+  "promotions": {
+    "headline": "Promocje",
+    "paragraph_top": "Sprawdz nasze aktualne promocje!",
+    "paragraph_bottom": "Brak interesujacych promocji? Zapisz sie na nasz newsletter, aby nie przegapic przyszlych okazji!",
+    "paragraph_meal_promotions": "Promocje na dania",
+    "paragraph_beverage_promotions": "Promocje na napoje",
+    "paragraph_addon_promotions": "Promocje na dodatki",
+    "promotion_description": "Opis promocji",
+    "discount_percentage": "Procent znizki",
+    "meals": "Dania",
+    "sizes": "Rozmiary",
+    "sizes_list": {
+      "SMALL": "Maly",
+      "MEDIUM": "Sredni",
+      "LARGE": "Duzy",
+      "XL": "XL"
+    },
+    "beverages": "Napoje",
+    "addons": "Dodatki",
+    "buttons": {
+      "add_meal_promotion": "Dodaj promocje na dania",
+      "add_beverage_promotion": "Dodaj promocje na napoje",
+      "add_addon_promotion": "Dodaj promocje na dodatki",
+      "sign_up": "Zapisz sie na newsletter"
+    },
+    "new_meal_promotion": "Nowa promocja na dania",
+    "new_beverage_promotion": "Nowa promocja na napoje",
+    "new_addon_promotion": "Nowa promocja na dodatki",
+    "update_meal_promotion": "Aktualizowana promocja na dania",
+    "update_beverage_promotion": "Aktualizowana promocja na napoje",
+    "update_addon_promotion": "Aktualizowana promocja na dodatki",
+    "no_meal_promotions": "Aktualnie brak promocji na dania! Zapisz sie na newsletter, aby nie przegapic okazji!",
+    "no_beverage_promotions": "Aktualnie brak promocji na napoje! Zapisz sie na newsletter, aby nie przegapic okazji!",
+    "no_addon_promotions": "Aktualnie brak promocji na dodatki! Zapisz sie na newsletter, aby nie przegapic okazji!"
+  },
+  "unsubscribe": {
+    "headline": "Drogi Kliencie",
+    "paragraph_top": "Czy jestes pewny, ze chcesz odsubskrybowac nasz newsletter?",
+    "buttons": {
+      "yes": "Tak, wypisz mnie"
+    }
+  },
+  "track-order": {
+    "headline": "Sledz swoje zamowienie",
+    "paragraph_top": "Wprowadz ID zamowienia oraz numer telefonu, aby sprawdzic aktualny status swojego zamowienia!",
+    "paragraph_thank_you": "Szanowny Kliencie, dziekujemy za twoje zamowienie!",
+    "phone": "Telefon (9 cyfr)",
+    "buttons": {
+      "track": "Sledz",
+      "stop_tracking": "Przestan sledzic"
+    },
+    "total_price": "Wartosc zamowienia",
+    "delivery_address": "Adres dostawy",
+    "receive_restaurant": "Odbior w restauracji",
+    "payment_methods": {
+      "headline": "Metody platnosci",
+      "methods": "Gotowka / Karta"
+    },
+    "order_status": {
+      "headline": "Status zamowienia",
+      "IN_PREPARATION": "W przygotowaniu",
+      "READY1": "Gotowe do wyslania",
+      "READY2": "Gotowe do odbioru",
+      "SHIPPED1": "Wyslane",
+      "SHIPPED2": "Oczekiwanie na odbior",
+      "RECEIVED": "Odebrane",
+      "CANCELED": "Anulowane",
+      "RETURNED": "Zwrocone"
+    },
+    "discount_included": "znizka wliczona",
+    "delivery_included": "dostawa wliczona",
+    "delivery_and_discount_included": "dostawa i znizka wliczone",
+    "thanks": "Dziekujemy za podanie swojego emaila! Przypominamy, ze co 10 zamowien z podanym emailem otrzymasz kod rabatowy na kolejne zamowienie!",
+    "encourage": "Zachecamy do podania swojego emaila przy kolejnym zamowieniu! Przypominamy, ze co 10 zamowien z podanym emailem otrzymujesz kod rabatowy na kolejne zamowienie!"
+  },
+  "order-management": {
+    "headline": "Zarzadzanie zamowieniami",
+    "paragraph_today": "Dzisiejsze",
+    "paragraph_past": "Z przeszlosci",
+    "no_orders": "Brak zamowien z tej kategorii!",
+    "order_status": {
+      "IN_PREPARATION": "Do przygotowania",
+      "READY": "Gotowe",
+      "SHIPPED": "Wyslane",
+      "RECEIVED": "Odebrane",
+      "CANCELED": "Anulowane",
+      "RETURNED": "Zwrocone",
+      "All": "Wszystkie"
+    },
+    "order_type": {
+      "ON_SITE": "Na miejscu",
+      "TAKEAWAY": "Na wynos"
+    },
+    "card": {
+      "main": {
+        "headline": "Zamowienie",
+        "type": "Typ",
+        "status": "Status",
+        "total_price": "Wartosc zamowienia",
+        "placed_at": "Data zlozenia"
+      },
+      "contact": {
+        "headline": "Kontakt",
+        "phone": "Telefon",
+        "email": "Email"
+      },
+      "meals_headline": "Dania",
+      "beverages_headline": "Napoje",
+      "addons_headline": "Dodatki",
+      "additional_comments_headline": "Dodatkowe komentarze"
+    },
+    "buttons": {
+      "add": "Dodaj zamowienie"
+    }
+  },
+  "discount-code-management": {
+    "headline": "Zarzadzanie kodami rabatowymi",
+    "buttons": {
+      "add": "Dodaj kod rabatowy"
+    },
+    "no_discount_codes": "Brak kodow rabatowych!",
+    "code": "Kod",
+    "code_optional": "Kod (opcjonalnie)",
+    "discount_percentage": "Procent znizki",
+    "expiration_date": "Data wygasniecia",
+    "remaining_uses": "Pozostale uzycia",
+    "new_discount_code": "Nowy kod rabatowy",
+    "update_discount_code": "Aktualizowany kod rabatowy"
+  },
+  "verification_required": {
+    "headline": "Nie jestes upowazniony do przejscia na ta strone!",
+    "paragraph": "Wydaje sie, ze nie posiadasz uprawnien wymaganych do uzyskania dostepu do tej sekcji. Jesli wierzysz, ze to blad, prosze skontaktowac sie z administratorem.",
+    "button": "Wroc"
+  },
+  "work-schedule": {
+    "headline": "Grafik",
+    "employee": "Pracownik",
+    "buttons": {
+      "download": "Pobierz grafik"
+    }
+  },
+  "employee-management": {
+    "headline": "Zarzadzanie pracownikami",
+    "first_name": "Imie",
+    "last_name": "Nazwisko",
+    "password": "Haslo",
+    "phone": "Telefon",
+    "date_of_birth": "Data urodzenia",
+    "job": "Stanowisko",
+    "is_student": "Czy student?",
+    "jobs": {
+      "Cashier": "Kasjer",
+      "Manager": "Manager"
+    },
+    "employment_type": "Typ zatrudnienia",
+    "employment_types": {
+      "PERMANENT": "Umowa o prace",
+      "MANDATE_CONTRACT": "Umowa zlecenie"
+    },
+    "hourly_wage": "Stawka godzinowa brutto",
+    "hired_at": "Zatrudniony dnia",
+    "active": "Aktywny",
+    "buttons": {
+      "add": "Dodaj pracownika"
+    },
+    "new_employee": "Nowy pracownik",
+    "updated_employee": "Aktualizowany pracownik"
+  },
+  "payments": {
+    "headline": "Platnosci",
+    "employee": "Pracownik",
+    "job": "Stanowisko",
+    "employment_type": "Typ zatrudnienia",
+    "hourly_wage": "Stawka godzinowa brutto",
+    "hours": "Godziny pracy",
+    "is_student": "Czy student?",
+    "total": "Lacznie"
+  }
 }

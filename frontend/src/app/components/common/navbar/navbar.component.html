@@ -24,7 +24,7 @@
                routerLink="/"
                routerLinkActive="active"
                [routerLinkActiveOptions]="{ exact: true }">
-               {{ 'common.navbar.home' | translate }}
+               {{ 'common.links.home' | translate }}
             </a>
           </li>
 
@@ -32,7 +32,7 @@
             <a class="nav-link" 
                routerLink="/opening-hours"
                routerLinkActive="active">
-               {{ 'common.navbar.opening_hours' | translate }}
+               {{ 'common.links.opening_hours' | translate }}
             </a>
           </li>
 
@@ -40,7 +40,7 @@
             <a class="nav-link" 
                routerLink="/menu"
                routerLinkActive="active">
-               {{ 'common.navbar.menu' | translate }}
+               {{ 'common.links.menu' | translate }}
             </a>
           </li>
 
@@ -48,7 +48,7 @@
             <a class="nav-link" 
               routerLink="/promotions"
               routerLinkActive="active">
-              {{ 'common.navbar.promotions' | translate }}
+              {{ 'common.links.promotions' | translate }}
             </a>
           </li>
 
@@ -56,7 +56,7 @@
             <a class="nav-link" 
               [routerLink]="['/track-order']"
                routerLinkActive="active">
-               {{ 'common.navbar.track_order' | translate }}
+               {{ 'common.links.track_order' | translate }}
             </a>
           </li>
 
@@ -64,7 +64,7 @@
             <a class="nav-link" 
               [routerLink]="['/contact']"
                routerLinkActive="active">
-               {{ 'common.navbar.contact' | translate }}
+               {{ 'common.links.contact' | translate }}
             </a>
           </li>
         </ul>
@@ -80,7 +80,7 @@
             <a class="btn" 
                [ngClass]="{ 'btn-danger': !doesOrderExist(), 'btn-warning': doesOrderExist() }" 
                (click)="startPlacingOrder()">
-              {{ 'common.navbar.order' | translate }}
+              {{ 'common.links.order' | translate }}
               <span *ngIf="doesOrderExist()">
                 <i class="fas fa-shopping-cart" [ngClass]="{ 'icon-active': doesOrderExist() }"></i> 
               </span>
@@ -88,10 +88,10 @@
           </li>
 
           <li class="nav-item" *ngIf="isManager()">
-            <a class="btn btn-danger" [routerLink]="['/manager-panel']">{{ 'common.navbar.manager' | translate }}</a>
+            <a class="btn btn-danger" [routerLink]="['/manager-panel']">{{ 'common.links.manager' | translate }}</a>
           </li>
           <li class="nav-item" *ngIf="isEmployee()">
-            <a class="btn btn-danger" [routerLink]="['/employee-panel']">{{ 'common.navbar.employee' | translate }}</a>
+            <a class="btn btn-danger" [routerLink]="['/employee-panel']">{{ 'common.links.employee' | translate }}</a>
           </li>
         </ul>
       </div>
