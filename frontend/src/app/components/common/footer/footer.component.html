@@ -1,24 +1,30 @@
 <footer>
-    <section class="top">
-        <a class="logo"><img src="assets/images/logo.png" alt="Logo"></a>
-        <a [routerLink]="['/']">{{ 'common.links.home' | translate }}</a>
-        <a [routerLink]="['/opening-hours']">{{ 'common.links.opening_hours' | translate }}</a>
-        <a [routerLink]="['/menu']">{{ 'common.links.menu' | translate }}</a>
-        <a [routerLink]="['/promotions']">{{ 'common.links.promotions' | translate }}</a>
-        <a [routerLink]="['/jobs']">{{ 'common.links.jobs' | translate }}</a>
-        <a [routerLink]="['/track-order']">{{ 'common.links.track_order' | translate }}</a>
-        <a [routerLink]="['/contact']">{{ 'common.links.contact' | translate }}</a>
+  <section class="top">
+    <a class="logo"><img src="assets/images/logo.png" alt="Logo" /></a>
+    <a [routerLink]="['/']">{{ "common.links.home" | translate }}</a>
+    <a [routerLink]="['/opening-hours']">{{
+      "common.links.opening_hours" | translate
+    }}</a>
+    <a [routerLink]="['/menu']">{{ "common.links.menu" | translate }}</a>
+    <a [routerLink]="['/promotions']">{{
+      "common.links.promotions" | translate
+    }}</a>
+    <a [routerLink]="['/jobs']">{{ "common.links.jobs" | translate }}</a>
+    <a [routerLink]="['/track-order']">{{
+      "common.links.track_order" | translate
+    }}</a>
+    <a [routerLink]="['/contact']">{{ "common.links.contact" | translate }}</a>
+  </section>
+  <hr />
+  <section class="bottom">
+    <section class="icons">
+      <i class="fa-brands fa-facebook-f fa-2xl"></i>
+      <i class="fa-brands fa-instagram fa-2xl"></i>
+      <i class="fa-brands fa-tiktok fa-2xl"></i>
+      <i class="fa-solid fa-envelope fa-2xl"></i>
     </section>
-    <hr>
-    <section class="bottom">
-        <section class="icons">
-            <i class="fa-brands fa-facebook-f fa-2xl"></i>
-            <i class="fa-brands fa-instagram fa-2xl"></i>
-            <i class="fa-brands fa-tiktok fa-2xl"></i>
-            <i class="fa-solid fa-envelope fa-2xl"></i>
-        </section>
-        <section class="copyright">
-            <p>© 2024 Wiktor Chudy. All Rights Reserved.</p>
-        </section>
+    <section class="copyright">
+      <p>© {{ currentYear }} Wiktor Chudy. All Rights Reserved.</p>
     </section>
+  </section>
 </footer>

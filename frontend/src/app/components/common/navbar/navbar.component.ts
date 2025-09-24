@@ -5,7 +5,12 @@ import { LangService } from '../../../services/lang/lang.service';
 import { RouterModule } from '@angular/router';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { CommonModule } from '@angular/common';
-import { AddonResponse, BeverageResponse, IngredientResponse, MealResponse } from '../../../responses/responses';
+import {
+  AddonResponse,
+  BeverageResponse,
+  IngredientResponse,
+  MealResponse,
+} from '../../../responses/responses';
 import { OrderService } from '../../../services/order/order.service';
 
 @Component({
@@ -13,11 +18,11 @@ import { OrderService } from '../../../services/order/order.service';
   standalone: true,
   imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrl: './navbar.component.scss',
 })
-
 export class NavbarComponent implements OnInit {
   currentFlag: string = '🇺🇸';
+
   beverages: BeverageResponse[] = [];
   addons: AddonResponse[] = [];
   meals: MealResponse[] = [];
@@ -52,6 +57,7 @@ export class NavbarComponent implements OnInit {
       this.currentFlag = '🇺🇸';
       this.langService.currentLang = 'pl';
     }
+
     this.langService.notifyLanguageChange();
   }
 
@@ -59,7 +65,7 @@ export class NavbarComponent implements OnInit {
   onWindowScroll() {
     const navbar = document.querySelector('.navbar');
     if (navbar) {
-      if (window.scrollY > 30) { 
+      if (window.scrollY > 30) {
         navbar.classList.add('shrink');
       } else {
         navbar.classList.remove('shrink');
@@ -67,15 +73,11 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  getCurrentFlag(): string {
-    return this.currentFlag;
-  }
-
   doesOrderExist(): boolean {
     const orderData = this.orderService.getOrderData();
     return orderData?.total_price !== undefined && orderData?.total_price > 0;
   }
- 
+
   async startPlacingOrder(): Promise<void> {
     this.orderService.selectNextOrderItem();
   }

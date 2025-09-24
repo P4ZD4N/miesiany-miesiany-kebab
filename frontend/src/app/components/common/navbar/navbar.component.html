@@ -1,99 +1,124 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" routerLink="/">
-        <img src="assets/images/logo.png" alt="Logo">
-      </a>
-      
-      <button class="navbar-toggler collapsed d-flex d-lg-none flex-column justify-content-around" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav" 
-              aria-controls="navbarNav" 
-              aria-expanded="false" 
-              aria-label="Toggle navigation"
-      >
-        <span class="toggler-icon top-bar"></span>
-        <span class="toggler-icon middle-bar"></span>
-        <span class="toggler-icon bottom-bar"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto">
-          <li class="nav-item">
-            <a class="nav-link" 
-               routerLink="/"
-               routerLinkActive="active"
-               [routerLinkActiveOptions]="{ exact: true }">
-               {{ 'common.links.home' | translate }}
-            </a>
-          </li>
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">
+      <img src="assets/images/logo.png" alt="Logo" />
+    </a>
 
-          <li class="nav-item">
-            <a class="nav-link" 
-               routerLink="/opening-hours"
-               routerLinkActive="active">
-               {{ 'common.links.opening_hours' | translate }}
-            </a>
-          </li>
+    <button
+      class="navbar-toggler collapsed d-flex d-lg-none flex-column justify-content-around"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="toggler-icon top-bar"></span>
+      <span class="toggler-icon middle-bar"></span>
+      <span class="toggler-icon bottom-bar"></span>
+    </button>
 
-          <li class="nav-item">
-            <a class="nav-link" 
-               routerLink="/menu"
-               routerLinkActive="active">
-               {{ 'common.links.menu' | translate }}
-            </a>
-          </li>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            {{ "common.links.home" | translate }}
+          </a>
+        </li>
 
-          <li class="nav-item">
-            <a class="nav-link" 
-              routerLink="/promotions"
-              routerLinkActive="active">
-              {{ 'common.links.promotions' | translate }}
-            </a>
-          </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/opening-hours"
+            routerLinkActive="active"
+          >
+            {{ "common.links.opening_hours" | translate }}
+          </a>
+        </li>
 
-          <li class="nav-item">
-            <a class="nav-link" 
-              [routerLink]="['/track-order']"
-               routerLinkActive="active">
-               {{ 'common.links.track_order' | translate }}
-            </a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/menu" routerLinkActive="active">
+            {{ "common.links.menu" | translate }}
+          </a>
+        </li>
 
-          <li class="nav-item">
-            <a class="nav-link" 
-              [routerLink]="['/contact']"
-               routerLinkActive="active">
-               {{ 'common.links.contact' | translate }}
-            </a>
-          </li>
-        </ul>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/promotions"
+            routerLinkActive="active"
+          >
+            {{ "common.links.promotions" | translate }}
+          </a>
+        </li>
 
-        <ul class="navbar-nav d-flex">
-          <li class="nav-item">
-            <button class="btn btn-outline-light" id="languageSwitcher" (click)="switchLanguage()">
-              {{ currentFlag }}
-            </button>
-          </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            [routerLink]="['/track-order']"
+            routerLinkActive="active"
+          >
+            {{ "common.links.track_order" | translate }}
+          </a>
+        </li>
 
-          <li class="nav-item" *ngIf="!isManager() && !isEmployee()">
-            <a class="btn" 
-               [ngClass]="{ 'btn-danger': !doesOrderExist(), 'btn-warning': doesOrderExist() }" 
-               (click)="startPlacingOrder()">
-              {{ 'common.links.order' | translate }}
-              <span *ngIf="doesOrderExist()">
-                <i class="fas fa-shopping-cart" [ngClass]="{ 'icon-active': doesOrderExist() }"></i> 
-              </span>
-            </a>
-          </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            [routerLink]="['/contact']"
+            routerLinkActive="active"
+          >
+            {{ "common.links.contact" | translate }}
+          </a>
+        </li>
+      </ul>
 
-          <li class="nav-item" *ngIf="isManager()">
-            <a class="btn btn-danger" [routerLink]="['/manager-panel']">{{ 'common.links.manager' | translate }}</a>
-          </li>
-          <li class="nav-item" *ngIf="isEmployee()">
-            <a class="btn btn-danger" [routerLink]="['/employee-panel']">{{ 'common.links.employee' | translate }}</a>
-          </li>
-        </ul>
-      </div>
+      <ul class="navbar-nav d-flex">
+        <li class="nav-item">
+          <button
+            class="btn btn-outline-light"
+            id="languageSwitcher"
+            (click)="switchLanguage()"
+          >
+            {{ currentFlag }}
+          </button>
+        </li>
+
+        <li class="nav-item" *ngIf="!isManager() && !isEmployee()">
+          <a
+            class="btn"
+            [ngClass]="{
+              'btn-danger': !doesOrderExist(),
+              'btn-warning': doesOrderExist()
+            }"
+            (click)="startPlacingOrder()"
+          >
+            {{ "common.links.order" | translate }}
+            <span *ngIf="doesOrderExist()">
+              <i
+                class="fas fa-shopping-cart"
+                [ngClass]="{ 'icon-active': doesOrderExist() }"
+              ></i>
+            </span>
+          </a>
+        </li>
+
+        <li class="nav-item" *ngIf="isManager()">
+          <a class="btn btn-danger" [routerLink]="['/manager-panel']">{{
+            "common.links.manager" | translate
+          }}</a>
+        </li>
+        <li class="nav-item" *ngIf="isEmployee()">
+          <a class="btn btn-danger" [routerLink]="['/employee-panel']">{{
+            "common.links.employee" | translate
+          }}</a>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
