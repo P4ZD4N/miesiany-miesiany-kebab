@@ -35,3 +35,14 @@ export interface JobRequirement {
 export interface JobEmploymentType {
   employment_type: EmploymentType  | null;
 }
+
+export interface JobApplicationFormData {
+  positionName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  telephone: string;
+  additionalMessage: string;
+  isStudent: boolean;
+  cvFile: File;
+}

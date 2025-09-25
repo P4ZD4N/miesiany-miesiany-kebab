@@ -46,4 +46,14 @@ export class TranslationHelperService {
 
     return employmentTypeTranslated;
   }
+
+  getTranslatedPosition(position: string): string {
+    let positionTranslated = this.translate.instant('jobs.offers.' + position);
+
+    if (positionTranslated === 'jobs.offers.' + position) {
+      positionTranslated = position;
+    }
+
+    return positionTranslated;
+  }
 }

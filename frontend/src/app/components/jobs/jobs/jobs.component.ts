@@ -1,75 +1,99 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import {  JobOfferGeneralResponse, JobOfferManagerResponse } from '../../../responses/responses';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  JobOfferGeneralResponse,
+  JobOfferManagerResponse,
+} from '../../../responses/responses';
 import { JobsService } from '../../../services/jobs/jobs.service';
 import { LangService } from '../../../services/lang/lang.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { RequirementType } from '../../../enums/requirement-type.enum';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
-import { JobOfferApplicationRequest, NewJobOfferRequest, RemovedJobOfferRequest, UpdatedJobOfferRequest } from '../../../requests/requests';
+import {
+  JobOfferApplicationRequest,
+  NewJobOfferRequest,
+  RemovedJobOfferRequest,
+  UpdatedJobOfferRequest,
+} from '../../../requests/requests';
 import { EmploymentType } from '../../../enums/employment-type.enum';
-import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
-import { JobEmploymentType, JobRequirement } from '../../../util-types/util-types';
+import {
+  JobEmploymentType,
+  JobRequirement,
+} from '../../../util-types/util-types';
+import { HourlyWagePipe } from '../../../pipes/hourly-wage.pipe';
+import { AlertService } from '../../../services/alert/alert.service';
+import { TranslationHelperService } from '../../../services/translation-helper/translation-helper.service';
+import { SortJobOffersByPositionPipe } from '../../../pipes/sort-job-offers-by-position.pipe';
 
 @Component({
   selector: 'app-jobs',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatExpansionModule, FormsModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    ReactiveFormsModule,
+    MatExpansionModule,
+    FormsModule,
+    HourlyWagePipe,
+    SortJobOffersByPositionPipe,
+  ],
   templateUrl: './jobs.component.html',
-  styleUrl: './jobs.component.scss'
+  styleUrl: './jobs.component.scss',
 })
 export class JobsComponent implements OnInit {
-
   languageChangeSubscription: Subscription;
 
-  errorMessages: { [key: string]: string } = {};
   jobs: (JobOfferManagerResponse | JobOfferGeneralResponse)[] = [];
-  requirementTypes = Object.keys(RequirementType);
+  requirementTypes = Object.keys(RequirementType) as RequirementType[];
   employmentTypes = Object.keys(EmploymentType) as EmploymentType[];
 
-  isAdding = false;
-  isEditing = false;
+  isAdding: boolean = false;
+  isEditing: boolean = false;
   showingApplicationsTable: boolean = false;
 
   currentlyUpdatedJobOfferPositionName: string = '';
+
   originalJobOffer: JobOfferGeneralResponse | null = null;
   currentlyUpdatedJobOffer: JobOfferGeneralResponse | null = null;
   selectedJobOffer: JobOfferManagerResponse | null = null;
 
+  errorMessages: { [key: string]: string } = {};
   newJobOffer: NewJobOfferRequest = {
     position_name: '',
     description: '',
     hourly_wage: 0,
     job_employment_types: [],
-    job_requirements: []
-  }
-
+    job_requirements: [],
+  };
   jobOfferRequirement: JobRequirement = {
     requirement_type: null,
-    description: ''
-  }
-
+    description: '',
+  };
   jobOfferEmploymentType: JobEmploymentType = {
-    employment_type: null
-  }
+    employment_type: null,
+  };
 
   constructor(
-    private jobsService: JobsService, 
-    private langService: LangService, 
+    private jobsService: JobsService,
+    private langService: LangService,
     private authenticationService: AuthenticationService,
-    private translate: TranslateService
+    private alertService: AlertService,
+    private translationHelper: TranslationHelperService
   ) {
-    this.languageChangeSubscription = this.langService.languageChanged$.subscribe(() => {
-      this.hideErrorMessages();
-    });
+    this.languageChangeSubscription =
+      this.langService.languageChanged$.subscribe(() => {
+        this.hideErrorMessages();
+      });
   }
 
   ngOnInit(): void {
-    if (this.isManager()) {this.loadJobsWithManagerDetails();
-    }else {this.loadJobsWithGeneralDetails();
+    if (this.isManager()) {
+      this.loadJobsWithManagerDetails();
+    } else {
+      this.loadJobsWithGeneralDetails();
     }
   }
 
@@ -83,44 +107,64 @@ export class JobsComponent implements OnInit {
 
   loadJobsWithGeneralDetails(): void {
     this.jobsService.getJobOffersForOtherUsers().subscribe(
-      (data: JobOfferGeneralResponse[]) => {
-        this.jobs = data;
-      },
-      (error) => {
-        console.log('Error loading jobs for other users');
-      }
-    )
+      (data: JobOfferGeneralResponse[]) => (this.jobs = data),
+      (error) => console.log('Error loading jobs for other users')
+    );
   }
 
   loadJobsWithManagerDetails(): void {
     this.jobsService.getJobOffersForManager().subscribe(
-      (data: JobOfferManagerResponse[]) => {
-        this.jobs = data;
-      },
-      (error) => {
-        console.log('Error loading jobs for manager');
-      }
-    )
+      (data: JobOfferManagerResponse[]) => (this.jobs = data),
+      (error) => console.log('Error loading jobs for manager')
+    );
   }
 
-  getMandatoryRequirements(jobOffer: JobOfferGeneralResponse): JobRequirement[] {
-    return jobOffer.job_requirements.filter(requirement => requirement.requirement_type === RequirementType.MANDATORY);
+  getMandatoryRequirements(
+    jobOffer: JobOfferGeneralResponse
+  ): JobRequirement[] {
+    return jobOffer.job_requirements.filter(
+      (requirement) =>
+        requirement.requirement_type === RequirementType.MANDATORY
+    );
   }
 
-  getNiceToHaveRequirements(jobOffer: JobOfferGeneralResponse): JobRequirement[] {
-    return jobOffer.job_requirements.filter(requirement => requirement.requirement_type === RequirementType.NICE_TO_HAVE);
+  getNiceToHaveRequirements(
+    jobOffer: JobOfferGeneralResponse
+  ): JobRequirement[] {
+    return jobOffer.job_requirements.filter(
+      (requirement) =>
+        requirement.requirement_type === RequirementType.NICE_TO_HAVE
+    );
+  }
+
+  getAvailableEmploymentTypes(jobOffer: {
+    job_employment_types: JobEmploymentType[];
+  }): EmploymentType[] {
+    return this.employmentTypes.filter(
+      (type) =>
+        !this.checkIfEmploymentTypeAlreadyExistInJobOffer(
+          jobOffer,
+          type as EmploymentType
+        )
+    );
   }
 
   getEmploymentTypes(jobOffer: JobOfferGeneralResponse): JobEmploymentType[] {
     return jobOffer.job_employment_types;
   }
 
-  formatHourlyWage(hourlyWage: number | unknown): string {
-    if (typeof hourlyWage === 'number') {
-      return hourlyWage.toFixed(2);
-    } else {
-      return 'Invalid hourly wage';
-    }
+  getTranslatedPosition(position: string): string {
+    return this.translationHelper.getTranslatedPosition(position);
+  }
+
+  getCv(cvId: number): void {
+    this.jobsService.getCv(cvId).subscribe({
+      next: (response: Blob) => {
+        const url = window.URL.createObjectURL(response);
+        window.open(url);
+      },
+      error: (error) => console.error('Error previewing CV:', error),
+    });
   }
 
   showAddJobOfferTable(): void {
@@ -128,73 +172,115 @@ export class JobsComponent implements OnInit {
     this.isAdding = true;
   }
 
+  showApplications(
+    jobOffer: JobOfferGeneralResponse | JobOfferManagerResponse
+  ): void {
+    const managerOffer = jobOffer as JobOfferManagerResponse;
+    this.selectedJobOffer = managerOffer;
+    this.showingApplicationsTable = true;
+  }
+
   hideAddJobOfferTable(): void {
     this.hideErrorMessages();
     this.isAdding = false;
-    this.newJobOffer = { position_name: '',
+    this.newJobOffer = {
+      position_name: '',
       description: '',
       hourly_wage: 0,
       job_employment_types: [],
-      job_requirements: []
-    }
+      job_requirements: [],
+    };
     this.jobOfferRequirement = { requirement_type: null, description: '' };
     this.jobOfferEmploymentType = { employment_type: null };
   }
 
   addJobOffer(): void {
     this.jobsService.addNewJobOffer(this.newJobOffer).subscribe({
-      next: (response) => {
-        Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie dodano oferte pracy na stanowisko '${this.newJobOffer.position_name}'!` : `Successfully added job offer for position '${this.newJobOffer.position_name}'!`,
-          icon: 'success',
-          iconColor: 'green',
-          confirmButtonColor: 'green',
-          background: '#141414',
-          color: 'white',
-          confirmButtonText: 'Ok',
-        });
-
+      next: () => {
+        this.alertService.showSuccessfulJobOfferAddAlert(this.newJobOffer);
         this.loadJobsWithManagerDetails();
-        this.newJobOffer = { position_name: '',
+        this.newJobOffer = {
+          position_name: '',
           description: '',
           hourly_wage: 0,
           job_employment_types: [],
-          job_requirements: []
-        }
+          job_requirements: [],
+        };
         this.hideAddJobOfferTable();
         this.hideErrorMessages();
       },
-      error: (error) => {
-        this.handleError(error);
-      },
+      error: (error) => this.handleError(error),
     });
   }
 
+  addRequirementToJobOffer(jobOffer: {
+    job_requirements: JobRequirement[];
+  }): void {
+    if (this.jobOfferRequirement.requirement_type === null) {
+      this.langService.currentLang === 'pl'
+        ? (this.errorMessages = {
+            requirementType: 'Typ wymagania nie moze byc pusty!',
+          })
+        : (this.errorMessages = {
+            requirementType: 'Requirement type cannot be empty!',
+          });
+      return;
+    }
+
+    if (this.jobOfferRequirement.description.trim() === '') {
+      this.langService.currentLang === 'pl'
+        ? (this.errorMessages = {
+            requirementDescription: 'Opis wymagania nie moze byc pusty!',
+          })
+        : (this.errorMessages = {
+            requirementDescription: 'Requirement description cannot be empty!',
+          });
+      return;
+    }
+
+    jobOffer.job_requirements.push(this.jobOfferRequirement);
+    this.jobOfferRequirement = { requirement_type: null, description: '' };
+    this.hideErrorMessages();
+  }
+
+  addEmploymentTypeToJobOffer(jobOffer: {
+    job_employment_types: JobEmploymentType[];
+  }): void {
+    if (this.jobOfferEmploymentType.employment_type === null) {
+      this.langService.currentLang === 'pl'
+        ? (this.errorMessages = {
+            employmentType: 'Typ zatrudnienia nie moze byc pusty!',
+          })
+        : (this.errorMessages = {
+            employmentType: 'Employment type cannot be empty!',
+          });
+      return;
+    }
+
+    jobOffer.job_employment_types.push(this.jobOfferEmploymentType);
+    this.jobOfferEmploymentType = { employment_type: null };
+    this.hideErrorMessages();
+  }
+
   updateJob(): void {
-    let positionTranslated = this.getTranslatedPosition(this.currentlyUpdatedJobOfferPositionName);
-    
+    let positionTranslated = this.getTranslatedPosition(
+      this.currentlyUpdatedJobOfferPositionName
+    );
+
     const updatedJobOffer: UpdatedJobOfferRequest = {
       position_name: this.currentlyUpdatedJobOfferPositionName,
       updated_position_name: this.currentlyUpdatedJobOffer?.position_name,
       updated_description: this.currentlyUpdatedJobOffer?.description,
       updated_hourly_wage: this.currentlyUpdatedJobOffer?.hourly_wage,
-      updated_employment_types: this.currentlyUpdatedJobOffer?.job_employment_types,
+      updated_employment_types:
+        this.currentlyUpdatedJobOffer?.job_employment_types,
       updated_requirements: this.currentlyUpdatedJobOffer?.job_requirements,
-      is_active: this.currentlyUpdatedJobOffer?.is_active
-    }
+      is_active: this.currentlyUpdatedJobOffer?.is_active,
+    };
 
     this.jobsService.updateJobOffer(updatedJobOffer).subscribe({
-      next: (response) => {
-        Swal.fire({
-          text: this.langService.currentLang === 'pl' ? `Pomyslnie zaktualizowano oferte pracy na pozycji '${positionTranslated}'!` : `Successfully updated job offer on '${positionTranslated}' position!`,
-          icon: 'success',
-          iconColor: 'green',
-          confirmButtonColor: 'green',
-          background: '#141414',
-          color: 'white',
-          confirmButtonText: 'Ok',
-        });
-
+      next: () => {
+        this.alertService.showSuccessfulJobOfferUpdateAlert(positionTranslated);
         this.isEditing = false;
         this.hideErrorMessages();
         this.loadJobsWithManagerDetails();
@@ -206,78 +292,77 @@ export class JobsComponent implements OnInit {
   }
 
   removeJobOffer(jobOffer: JobOfferGeneralResponse): void {
-    let positionNameTranslated = this.getTranslatedPosition(jobOffer.position_name);
+    let positionNameTranslated = this.getTranslatedPosition(
+      jobOffer.position_name
+    );
 
-    const confirmationMessage =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac oferte pracy na stanowisku '${positionNameTranslated}'?`
-        : `Are you sure you want to remove job offer on '${positionNameTranslated}' position?`;
+    this.alertService
+      .showRemoveJobOfferAlert(positionNameTranslated)
+      .then((confirmed) => {
+        if (!confirmed) return;
 
-    Swal.fire({
-      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
-      text: confirmationMessage,
-      icon: 'warning',
-      iconColor: 'red',
-      showCancelButton: true,
-      confirmButtonColor: '#0077ff',
-      cancelButtonColor: 'red',
-      background: '#141414',
-      color: 'white',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.jobsService.removeJobOffer({ position_name: jobOffer.position_name } as RemovedJobOfferRequest).subscribe(() => {
-          Swal.fire({
-            text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto oferte pracy na stanowisku '${positionNameTranslated}'!` : `Successfully removed job offer on '${positionNameTranslated}' position!`,
-            icon: 'success',
-            iconColor: 'green',
-            confirmButtonColor: 'green',
-            background: '#141414',
-            color: 'white',
-            confirmButtonText: 'Ok',
+        this.jobsService
+          .removeJobOffer({
+            position_name: jobOffer.position_name,
+          } as RemovedJobOfferRequest)
+          .subscribe(() => {
+            this.alertService.showSuccessfulJobOfferRemoveAlert(
+              positionNameTranslated
+            );
+            this.loadJobsWithManagerDetails();
           });
-          this.loadJobsWithManagerDetails();
-        });
+      });
+  }
+
+  removeJobApplication(
+    positionName: string | undefined,
+    applicationId: number
+  ): void {
+    let positionTranslated = this.getTranslatedPosition(positionName || '');
+
+    this.alertService.showRemoveJobApplicationAlert().then((result) => {
+      if (!result) return;
+
+      const jobOffer = this.selectedJobOffer;
+
+      if (jobOffer) {
+        jobOffer.job_applications = jobOffer.job_applications.filter(
+          (applicantion) => applicantion.id !== applicationId
+        );
       }
+
+      this.jobsService
+        .removeApplication(positionName || '', applicationId)
+        .subscribe({
+          next: () => {
+            this.alertService.showSuccessfulJobApplicationRemoveAlert(
+              positionTranslated
+            );
+            this.hideErrorMessages();
+            this.loadJobsWithManagerDetails();
+          },
+          error: (error) => this.handleError(error),
+        });
     });
   }
 
-  addRequirementToJobOffer(jobOffer: { job_requirements: JobRequirement[] }): void {
-    if (this.jobOfferRequirement.requirement_type === null) {
-      this.langService.currentLang === 'pl' ? this.errorMessages = { requirementType: 'Typ wymagania nie moze byc pusty!' } : this.errorMessages = { requirementType: 'Requirement type cannot be empty!' };
-      return;
-    } 
-    
-    if (this.jobOfferRequirement.description.trim() === '') {
-      this.langService.currentLang === 'pl' ? this.errorMessages = { requirementDescription: 'Opis wymagania nie moze byc pusty!' } : this.errorMessages = { requirementDescription: 'Requirement description cannot be empty!' };
-      return;
-    }
-
-    jobOffer.job_requirements.push(this.jobOfferRequirement);
-    this.jobOfferRequirement = { requirement_type: null, description: '' };
-    this.hideErrorMessages();
-  }
-
-  addEmploymentTypeToJobOffer(jobOffer: { job_employment_types: JobEmploymentType[] }): void {
-    if (this.jobOfferEmploymentType.employment_type === null) {
-      this.langService.currentLang === 'pl' ? this.errorMessages = { employmentType: "Typ zatrudnienia nie moze byc pusty!" } : this.errorMessages = { employmentType: "Employment type cannot be empty!" }
-      return;
-    }
-    jobOffer.job_employment_types.push(this.jobOfferEmploymentType);
-    this.jobOfferEmploymentType = { employment_type: null };
-    this.hideErrorMessages();
-  }
-
-  removeRequirementFromJobOffer(jobOffer: { job_requirements: JobRequirement[] }, requirement: JobRequirement): void {
+  removeRequirementFromJobOffer(
+    jobOffer: { job_requirements: JobRequirement[] },
+    requirement: JobRequirement
+  ): void {
     const index = jobOffer.job_requirements.findIndex(
-      (req) => req.requirement_type === requirement.requirement_type && req.description === requirement.description
+      (req) =>
+        req.requirement_type === requirement.requirement_type &&
+        req.description === requirement.description
     );
-  
+
     if (index !== -1) jobOffer.job_requirements.splice(index, 1);
   }
 
-  removeEmploymentTypeFromJobOffer(jobOffer: { job_employment_types: JobEmploymentType[] }, employmentType: JobEmploymentType): void {
+  removeEmploymentTypeFromJobOffer(
+    jobOffer: { job_employment_types: JobEmploymentType[] },
+    employmentType: JobEmploymentType
+  ): void {
     const index = jobOffer.job_employment_types.findIndex(
       (empType) => empType.employment_type === employmentType.employment_type
     );
@@ -285,15 +370,12 @@ export class JobsComponent implements OnInit {
     if (index !== -1) jobOffer.job_employment_types.splice(index, 1);
   }
 
-  checkIfEmploymentTypeAlreadyExistInJobOffer(jobOffer: { job_employment_types: JobEmploymentType[] }, employmentType: EmploymentType): boolean {
+  checkIfEmploymentTypeAlreadyExistInJobOffer(
+    jobOffer: { job_employment_types: JobEmploymentType[] },
+    employmentType: EmploymentType
+  ): boolean {
     return jobOffer.job_employment_types.some(
       (empType) => empType.employment_type === employmentType
-    );
-  }
-
-  getAvailableEmploymentTypes(jobOffer: { job_employment_types: JobEmploymentType[] }): EmploymentType[] {
-    return this.employmentTypes.filter(
-      (type) => !this.checkIfEmploymentTypeAlreadyExistInJobOffer(jobOffer, type as EmploymentType)
     );
   }
 
@@ -312,287 +394,53 @@ export class JobsComponent implements OnInit {
     this.loadJobsWithManagerDetails();
   }
 
+  startApplying(jobOffer: JobOfferGeneralResponse): void {
+    this.alertService.showApplyToJobOfferAlert(jobOffer).then((result) => {
+      if (!result) return;
+
+      const jobApplication: JobOfferApplicationRequest = {
+        position_name: result.positionName,
+        applicant_first_name: result.firstName,
+        applicant_last_name: result.lastName,
+        applicant_email: result.email,
+        applicant_telephone: result.telephone,
+        additional_message: result.additionalMessage,
+        is_student: result.isStudent,
+      };
+
+      this.jobsService.addJobApplication(jobApplication).subscribe({
+        next: (response) => {
+          this.jobsService
+            .addCv(response.application_id, result.cvFile)
+            .subscribe({});
+
+          this.alertService.showSuccessfulJobOfferApplyAlert(jobOffer);
+          this.hideErrorMessages();
+          this.loadJobsWithGeneralDetails();
+        },
+        error: (error) => {
+          this.handleError(error);
+          this.alertService.showJobOfferApplyErrorAlert(this.errorMessages);
+        },
+      });
+    });
+
+    document
+      .querySelector('#cv')
+      ?.addEventListener('change', function (event: any) {
+        const fileName = event.target.files[0]
+          ? event.target.files[0].name
+          : '...';
+        document.querySelector('#file-name')!.textContent = fileName;
+      });
+  }
+
   hideErrorMessages(): void {
     this.errorMessages = {};
   }
 
-  getTranslatedPosition(position: string): string {
-    let positionTranslated = this.translate.instant('jobs.offers.' + position);
-
-    if (positionTranslated === 'jobs.offers.' + position) {
-      positionTranslated = position;
-    }
-    
-    return positionTranslated;
-  }
-
   handleError(error: any) {
-    if (error.errorMessages) {
-      this.errorMessages = error.errorMessages;
-      console.log(this.errorMessages);
-    } else this.errorMessages = { general: 'An unexpected error occurred' };
-  }
-
-  sortJobOffersByPosition(jobOffers: JobOfferGeneralResponse[]): JobOfferGeneralResponse[] {
-    return jobOffers.sort((a, b) => {
-      let firstPositionNameTranslated = this.getTranslatedPosition(a.position_name);
-      let secondPositionNameTranslated = this.getTranslatedPosition(b.position_name);
-  
-      return firstPositionNameTranslated.localeCompare(secondPositionNameTranslated);
-    });
-  }
-
-  startApplying(jobOffer: JobOfferGeneralResponse): void {
-
-    let positionNameTranslated = this.getTranslatedPosition(jobOffer.position_name);
-
-    const title = this.langService.currentLang === 'pl' ? 'Aplikuj na stanowisko ' + positionNameTranslated : 'Apply for ' + jobOffer.position_name + ' position';
-    const confirmButtonText = this.langService.currentLang === 'pl' ? 'Aplikuj' : 'Apply';
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-    const areYouStudent = this.langService.currentLang === 'pl' ? "Czy jestes studentem?" : "Are you a student?";
-    const attachCv = this.langService.currentLang === 'pl' ? "Zalacz CV!" : "Attach CV!";
-    const chooseFile = this.langService.currentLang === 'pl' ? "Wybierz plik" : "Choose file";
-    const noFileChosen = this.langService.currentLang === 'pl' ? "Brak pliku" : "No file chosen";
-  
-    const firstNamePlaceholder = this.langService.currentLang === 'pl' ? 'Imie' : 'First Name';
-    const lastNamePlaceholder = this.langService.currentLang === 'pl' ? 'Nazwisko' : 'Last Name';
-    const emailPlaceholder = this.langService.currentLang === 'pl' ? 'Email' : 'Email';
-    const telephonePlaceholder = this.langService.currentLang === 'pl' ? 'Telefon (9 cyfr)' : 'Phone (9 digits)';
-    const additionalMessagePlaceholder = this.langService.currentLang === 'pl' ? 'Wiadomosc dodatkowa' : 'Additional Message';
-  
-    Swal.fire({
-      title: `<span style="color: red;">${title}</span>`,
-      background: '#141414',
-      color: 'white',
-      html: `
-        <style>
-          input[type="text"], input[type="email"], textarea {
-            color: white;
-            text-align: center;
-            background-color: inherit;
-            width: 100%; 
-            max-width: 400px; 
-            padding: 10px; 
-            margin: 10px 0; 
-            border: 1px solid #ccc; 
-            border-radius: 5px;
-            transition: border 0.3s ease;
-            outline: none;
-          }
-
-          input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
-              border: 1px solid red; 
-          }
-
-          input[type="checkbox"] {
-            margin-right: 5px; 
-            accent-color: red;
-          }
-
-          button {
-            margin-top: 10px; 
-            background-color: red; 
-            color: white; 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 5px; 
-            cursor: pointer;
-          }
-        </style>
-        
-        <div>
-          <input type="text" id="firstName" maxlength=25  placeholder="${firstNamePlaceholder}">
-        </div>
-        <div>
-          <input type="text" id="lastName" maxlength=25  placeholder="${lastNamePlaceholder}">
-        </div>
-        <div>
-          <input type="email" id="email" maxlength=30  placeholder="${emailPlaceholder}">
-        </div>
-        <div>
-          <input type="text" id="telephone" maxlength=9 placeholder="${telephonePlaceholder}">
-        </div>
-        <div>
-          <textarea id="additionalMessage" maxlength=200 placeholder="${additionalMessagePlaceholder}"></textarea>
-        </div>
-        <div style="margin-top: 10px;">
-          <input type="checkbox" id="isStudent">
-          <label for="isStudent">${areYouStudent}</label>
-        </div>
-        <div style="margin-top: 10px; display: flex; justify-content: center; flex-direction: column;">
-          <label for="cv" class="swal2-label">${attachCv}</label>
-          <input type="file" id="cv" class="swal2-input" accept=".pdf, .doc, .docx" style="display: none;" />
-          <button type="button" onclick="document.getElementById('cv').click();">
-            ${chooseFile}
-          </button>
-          <div id="file-name" style="margin-top: 10px; color: white;">${noFileChosen}</div>
-        </div>
-      `,
-      confirmButtonText: confirmButtonText,
-      confirmButtonColor: '#198754',
-      cancelButtonText: cancelButtonText,
-      cancelButtonColor: 'red',
-      showCancelButton: true,
-      focusConfirm: false,
-      customClass: {
-        validationMessage: 'custom-validation-message'
-      },
-      preConfirm: () => {
-        const firstName = (document.getElementById('firstName') as HTMLInputElement).value;
-        const lastName = (document.getElementById('lastName') as HTMLInputElement).value;
-        const email = (document.getElementById('email') as HTMLInputElement).value;
-        const telephone = (document.getElementById('telephone') as HTMLInputElement).value;
-        const additionalMessage = (document.getElementById('additionalMessage') as HTMLTextAreaElement).value;
-        const isStudent = (document.getElementById('isStudent') as HTMLInputElement).checked;
-        const cvFile = (document.getElementById('cv') as HTMLInputElement).files?.[0];
-
-        if (!firstName || !lastName || !email || !telephone) {
-          Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Wszystkie pola z wyjatkiem dodatkowej wiadomosci sa wymagane' : 'All fields except additional message are required'
-          );
-          return null;
-        }
-
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailRegex.test(email)) {
-          Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Niepoprawny email!' : 'Invalid email!'
-          );
-          return null;
-        }
-
-        const phoneRegex = /^[0-9]{9}$/;
-        if (!phoneRegex.test(telephone)) {
-          Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Niepoprawny numer telefonu!' : 'Invalid phone number!'
-          );
-          return null;
-        }
-
-        if (cvFile == null) {
-          Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Brak zalaczonego CV!' : 'No CV attached!'
-          );
-          return null;
-        }
-    
-        return { positionName: jobOffer.position_name, firstName, lastName, email, telephone, additionalMessage, isStudent, cvFile };
-      }
-    }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        const jobApplication: JobOfferApplicationRequest = {
-          position_name: result.value.positionName,
-          applicant_first_name: result.value.firstName,
-          applicant_last_name: result.value.lastName, 
-          applicant_email: result.value.email,
-          applicant_telephone: result.value.telephone,
-          additional_message: result.value.additionalMessage,
-          is_student: result.value.isStudent
-        }
-
-        this.jobsService.addJobApplication(jobApplication).subscribe({
-          next: (response) => {
-            this.jobsService.addCv(response.application_id, result.value.cvFile).subscribe({});
-
-            Swal.fire({
-              text: this.langService.currentLang === 'pl' ? `Pomyslnie zaaplikowano na pozycje '${positionNameTranslated}'!` : `Successfully applied for a '${positionNameTranslated}' position!`,
-              icon: 'success',
-              iconColor: 'green',
-              confirmButtonColor: 'green',
-              background: '#141414',
-              color: 'white',
-              confirmButtonText: 'Ok',
-            });
-
-            this.hideErrorMessages();
-            this.loadJobsWithGeneralDetails();
-          },
-          error: (error) => {
-            this.handleError(error);
-            Swal.fire({
-              text: this.errorMessages['message'],
-              icon: 'error',
-              iconColor: 'red',
-              confirmButtonColor: 'red',
-              background: '#141414',
-              color: 'white',
-              confirmButtonText: 'Ok',
-            });
-          },
-        });
-      }
-    });
-
-    document.querySelector('#cv')?.addEventListener('change', function (event: any) {
-      const fileName = event.target.files[0] ? event.target.files[0].name : '...';
-      document.querySelector('#file-name')!.textContent = fileName;
-    });
-  }
-
-  showApplications(jobOffer: JobOfferGeneralResponse | JobOfferManagerResponse): void {
-    const managerOffer = jobOffer as JobOfferManagerResponse;
-    this.selectedJobOffer = managerOffer;
-    this.showingApplicationsTable = true;
-  }
-
-  removeJobApplication(positionName: string | undefined, applicationId: number): void {
-    let positionTranslated = this.getTranslatedPosition(positionName || '');
-    
-    const confirmationMessage =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac aplikacje?`
-        : `Are you sure you want to remove job application?`;
-
-    Swal.fire({
-      title: this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation',
-      text: confirmationMessage,
-      icon: 'warning',
-      iconColor: 'red',
-      showCancelButton: true,
-      confirmButtonColor: '#0077ff',
-      cancelButtonColor: 'red',
-      background: '#141414',
-      color: 'white',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const jobOffer = this.selectedJobOffer;
-        if (jobOffer) {
-          jobOffer.job_applications = jobOffer.job_applications.filter(applicantion => applicantion.id !== applicationId);
-        }
-        this.jobsService.removeApplication(positionName || '', applicationId).subscribe({
-          next: (response) => {
-            Swal.fire({
-              text: this.langService.currentLang === 'pl' ? `Pomyslnie usunieto aplikacje na oferte pracy na pozycji '${positionTranslated}'!` : `Successfully removed job application to job offer on '${positionTranslated}' position!`,
-              icon: 'success',
-              iconColor: 'green',
-              confirmButtonColor: 'green',
-              background: '#141414',
-              color: 'white',
-              confirmButtonText: 'Ok',
-            });
-
-            this.hideErrorMessages();
-            this.loadJobsWithManagerDetails();
-          },
-          error: (error) => {
-            this.handleError(error);
-          },
-        });
-      }
-    });
-  }
-
-  getCv(cvId: number): void {
-    this.jobsService.getCv(cvId).subscribe({
-      next: (response: Blob) => {
-        const url = window.URL.createObjectURL(response);
-        window.open(url);
-      },
-      error: (error) => {
-        console.error('Error previewing CV:', error);
-      },
-    });
+    if (error.errorMessages) this.errorMessages = error.errorMessages;
+    else this.errorMessages = { general: 'An unexpected error occurred' };
   }
 }

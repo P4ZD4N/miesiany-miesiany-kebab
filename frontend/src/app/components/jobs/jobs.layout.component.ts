@@ -6,17 +6,11 @@ import { FooterComponent } from '../common/footer/footer.component';
 @Component({
   selector: 'app-jobs-layout',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    NavbarComponent,
-    FooterComponent,
-  ],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent],
   template: `
-      <app-navbar></app-navbar>
-      <router-outlet></router-outlet>
-      <app-footer></app-footer>
-    `
+    <app-navbar></app-navbar>
+    <router-outlet></router-outlet>
+    <app-footer></app-footer>
+  `,
 })
-export class JobsLayoutComponent {
-
-}
+export class JobsLayoutComponent {}

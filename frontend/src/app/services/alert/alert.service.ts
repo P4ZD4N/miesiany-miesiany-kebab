@@ -1,14 +1,25 @@
 import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 import { LangService } from '../lang/lang.service';
-import { AuthenticationRequest } from '../../requests/requests';
-import { EmployeeResponse } from '../../responses/responses';
+import {
+  AuthenticationRequest,
+  NewJobOfferRequest,
+} from '../../requests/requests';
+import {
+  EmployeeResponse,
+  JobOfferGeneralResponse,
+} from '../../responses/responses';
+import { TranslationHelperService } from '../translation-helper/translation-helper.service';
+import { JobApplicationFormData } from '../../util-types/util-types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AlertService {
-  constructor(private langService: LangService) {}
+  constructor(
+    private langService: LangService,
+    private translationHelper: TranslationHelperService
+  ) {}
 
   showSuccessfulLoginAlert(authData: AuthenticationRequest): void {
     Swal.fire({
@@ -342,6 +353,336 @@ export class AlertService {
       icon: 'error',
       iconColor: 'red',
       confirmButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulJobOfferAddAlert(newJobOffer: NewJobOfferRequest): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie dodano oferte pracy na stanowisko '${newJobOffer.position_name}'!`
+          : `Successfully added job offer for position '${newJobOffer.position_name}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulJobOfferUpdateAlert(position: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zaktualizowano oferte pracy na pozycji '${position}'!`
+          : `Successfully updated job offer on '${position}' position!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveJobOfferAlert(position: string): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac oferte pracy na stanowisku '${position}'?`
+          : `Are you sure you want to remove job offer on '${position}' position?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulJobOfferRemoveAlert(position: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto oferte pracy na stanowisku '${position}'!`
+          : `Successfully removed job offer on '${position}' position!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showApplyToJobOfferAlert(
+    jobOffer: JobOfferGeneralResponse
+  ): Promise<JobApplicationFormData> {
+    let positionNameTranslated = this.translationHelper.getTranslatedPosition(
+      jobOffer.position_name
+    );
+
+    const title =
+      this.langService.currentLang === 'pl'
+        ? 'Aplikuj na stanowisko ' + positionNameTranslated
+        : 'Apply for ' + jobOffer.position_name + ' position';
+    const confirmButtonText =
+      this.langService.currentLang === 'pl' ? 'Aplikuj' : 'Apply';
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const areYouStudent =
+      this.langService.currentLang === 'pl'
+        ? 'Czy jestes studentem?'
+        : 'Are you a student?';
+    const attachCv =
+      this.langService.currentLang === 'pl' ? 'Zalacz CV!' : 'Attach CV!';
+    const chooseFile =
+      this.langService.currentLang === 'pl' ? 'Wybierz plik' : 'Choose file';
+    const noFileChosen =
+      this.langService.currentLang === 'pl' ? 'Brak pliku' : 'No file chosen';
+
+    const firstNamePlaceholder =
+      this.langService.currentLang === 'pl' ? 'Imie' : 'First Name';
+    const lastNamePlaceholder =
+      this.langService.currentLang === 'pl' ? 'Nazwisko' : 'Last Name';
+    const emailPlaceholder =
+      this.langService.currentLang === 'pl' ? 'Email' : 'Email';
+    const telephonePlaceholder =
+      this.langService.currentLang === 'pl'
+        ? 'Telefon (9 cyfr)'
+        : 'Phone (9 digits)';
+    const additionalMessagePlaceholder =
+      this.langService.currentLang === 'pl'
+        ? 'Wiadomosc dodatkowa'
+        : 'Additional Message';
+
+    const html = `
+      <style>
+        input[type="text"], input[type="email"], textarea {
+          color: white;
+          text-align: center;
+          background-color: inherit;
+          width: 100%; 
+          max-width: 400px; 
+          padding: 10px; 
+          margin: 10px 0; 
+          border: 1px solid #ccc; 
+          border-radius: 5px;
+          transition: border 0.3s ease;
+          outline: none;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+            border: 1px solid red; 
+        }
+
+        input[type="checkbox"] {
+          margin-right: 5px; 
+          accent-color: red;
+        }
+
+        button {
+          margin-top: 10px; 
+          background-color: red; 
+          color: white; 
+          border: none; 
+          padding: 10px 20px; 
+          border-radius: 5px; 
+          cursor: pointer;
+        }
+      </style>
+      
+      <div>
+        <input type="text" id="firstName" maxlength=25  placeholder="${firstNamePlaceholder}">
+      </div>
+      <div>
+        <input type="text" id="lastName" maxlength=25  placeholder="${lastNamePlaceholder}">
+      </div>
+      <div>
+        <input type="email" id="email" maxlength=30  placeholder="${emailPlaceholder}">
+      </div>
+      <div>
+        <input type="text" id="telephone" maxlength=9 placeholder="${telephonePlaceholder}">
+      </div>
+      <div>
+        <textarea id="additionalMessage" maxlength=200 placeholder="${additionalMessagePlaceholder}"></textarea>
+      </div>
+      <div style="margin-top: 10px;">
+        <input type="checkbox" id="isStudent">
+        <label for="isStudent">${areYouStudent}</label>
+      </div>
+      <div style="margin-top: 10px; display: flex; justify-content: center; flex-direction: column;">
+        <label for="cv" class="swal2-label">${attachCv}</label>
+        <input type="file" id="cv" class="swal2-input" accept=".pdf, .doc, .docx" style="display: none;" />
+        <button type="button" onclick="document.getElementById('cv').click();">
+          ${chooseFile}
+        </button>
+        <div id="file-name" style="margin-top: 10px; color: white;">${noFileChosen}</div>
+      </div>
+    `;
+
+    return Swal.fire({
+      title: `<span style="color: red;">${title}</span>`,
+      background: '#141414',
+      color: 'white',
+      html: html,
+      confirmButtonText: confirmButtonText,
+      confirmButtonColor: '#198754',
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+      showCancelButton: true,
+      focusConfirm: false,
+      customClass: {
+        validationMessage: 'custom-validation-message',
+      },
+      preConfirm: () => {
+        const firstName = (
+          document.getElementById('firstName') as HTMLInputElement
+        ).value;
+        const lastName = (
+          document.getElementById('lastName') as HTMLInputElement
+        ).value;
+        const email = (document.getElementById('email') as HTMLInputElement)
+          .value;
+        const telephone = (
+          document.getElementById('telephone') as HTMLInputElement
+        ).value;
+        const additionalMessage = (
+          document.getElementById('additionalMessage') as HTMLTextAreaElement
+        ).value;
+        const isStudent = (
+          document.getElementById('isStudent') as HTMLInputElement
+        ).checked;
+        const cvFile = (document.getElementById('cv') as HTMLInputElement)
+          .files?.[0];
+
+        if (!firstName || !lastName || !email || !telephone) {
+          Swal.showValidationMessage(
+            this.langService.currentLang === 'pl'
+              ? 'Wszystkie pola z wyjatkiem dodatkowej wiadomosci sa wymagane'
+              : 'All fields except additional message are required'
+          );
+          return null;
+        }
+
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) {
+          Swal.showValidationMessage(
+            this.langService.currentLang === 'pl'
+              ? 'Niepoprawny email!'
+              : 'Invalid email!'
+          );
+          return null;
+        }
+
+        const phoneRegex = /^[0-9]{9}$/;
+        if (!phoneRegex.test(telephone)) {
+          Swal.showValidationMessage(
+            this.langService.currentLang === 'pl'
+              ? 'Niepoprawny numer telefonu!'
+              : 'Invalid phone number!'
+          );
+          return null;
+        }
+
+        if (cvFile == null) {
+          Swal.showValidationMessage(
+            this.langService.currentLang === 'pl'
+              ? 'Brak zalaczonego CV!'
+              : 'No CV attached!'
+          );
+          return null;
+        }
+
+        return {
+          positionName: jobOffer.position_name,
+          firstName,
+          lastName,
+          email,
+          telephone,
+          additionalMessage,
+          isStudent,
+          cvFile,
+        };
+      },
+    }).then((result) => (result.isConfirmed ? result.value : null));
+  }
+
+  showSuccessfulJobOfferApplyAlert(jobOffer: JobOfferGeneralResponse): void {
+    let positionNameTranslated = this.translationHelper.getTranslatedPosition(
+      jobOffer.position_name
+    );
+
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zaaplikowano na pozycje '${positionNameTranslated}'!`
+          : `Successfully applied for a '${positionNameTranslated}' position!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showJobOfferApplyErrorAlert(errorMessages: { [key: string]: string }): void {
+    Swal.fire({
+      text: errorMessages['message'],
+      icon: 'error',
+      iconColor: 'red',
+      confirmButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveJobApplicationAlert(): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text: 
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac aplikacje?`
+          : `Are you sure you want to remove job application?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) =>  result.isConfirmed);
+  }
+
+  showSuccessfulJobApplicationRemoveAlert(position: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto aplikacje na oferte pracy na pozycji '${position}'!`
+          : `Successfully removed job application to job offer on '${position}' position!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
       background: '#141414',
       color: 'white',
       confirmButtonText: 'Ok',
