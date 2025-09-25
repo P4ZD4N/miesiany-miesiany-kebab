@@ -9,24 +9,21 @@ import { environment } from '../../../../environments/environment.development';
   imports: [TranslateModule],
   templateUrl: './location-section.component.html',
   styleUrl: './location-section.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class LocationSectionComponent implements OnInit {
-
-  kebabCoordinates: [number, number] = [18.978145609677117, 50.73271996898827]
+  kebabCoordinates: [number, number] = [18.978145609677117, 50.73271996898827];
 
   ngOnInit() {
     const map = tt.map({
       key: environment.MAP_API_KEY,
-      container: "map",
+      container: 'map',
       center: this.kebabCoordinates,
-      zoom: 15
-    })
+      zoom: 15,
+    });
 
-    map.addControl(new tt.NavigationControl())
+    map.addControl(new tt.NavigationControl());
 
-    new tt.Marker()
-      .setLngLat(this.kebabCoordinates)
-      .addTo(map);
+    new tt.Marker().setLngLat(this.kebabCoordinates).addTo(map);
   }
 }

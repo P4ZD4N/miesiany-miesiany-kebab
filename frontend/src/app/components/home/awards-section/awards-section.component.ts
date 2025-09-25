@@ -6,8 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [TranslateModule],
   templateUrl: './awards-section.component.html',
-  styleUrl: './awards-section.component.scss'
+  styleUrl: './awards-section.component.scss',
 })
-export class AwardsSectionComponent {
-
-}
+export class AwardsSectionComponent {}
