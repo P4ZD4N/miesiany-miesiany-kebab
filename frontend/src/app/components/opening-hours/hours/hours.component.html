@@ -1,40 +1,65 @@
 <section class="opening-hours">
-    <h1>{{ 'opening-hours.headline' | translate }}</h1>
-    <p>{{ 'opening-hours.paragraph_top' | translate }}</p>
-    <p class="highlight-today-open">{{ 'opening-hours.status.open' | translate }}</p>
-    <p class="highlight-today-closed">{{ 'opening-hours.status.closed' | translate }}</p>
-    <p *ngIf="errorMessages['closingTimeAfterOpeningTime']" class="error">{{ errorMessages['closingTimeAfterOpeningTime'] }}</p>
-    <table>
-        <thead>
-            <tr>
-                <th *ngIf="isManager()"></th>
-                <th>{{ 'opening-hours.table.day' | translate }}</th>
-                <th>{{ 'opening-hours.table.opening' | translate }}</th>
-                <th>{{ 'opening-hours.table.closing' | translate }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let hour of openingHours" 
-                [ngClass]="getRowClass(hour)"
-                [formGroup]="hourForms[hour.day_of_week]"
-            >
-                <td *ngIf="isManager()">
-                    <button class="button-update" *ngIf="!hour.isEditing && !isEditing" (click)="editRow(hour)">{{ 'common.buttons.update' | translate }}</button>
-                    <button class="button-accept" *ngIf="hour.isEditing" (click)="saveRow(hour)">{{ 'common.buttons.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="hour.isEditing" (click)="hideRow(hour)">{{ 'common.buttons.cancel' | translate }}</button>
-                </td>
-                <td>{{ 'opening-hours.days.' + hour.day_of_week | translate }}</td>
+  <h1>{{ "opening-hours.headline" | translate }}</h1>
+  <p>{{ "opening-hours.paragraph_top" | translate }}</p>
+  <p class="highlight-today-open">
+    {{ "opening-hours.status.open" | translate }}
+  </p>
+  <p class="highlight-today-closed">
+    {{ "opening-hours.status.closed" | translate }}
+  </p>
+  <p *ngIf="errorMessages['closingTimeAfterOpeningTime']" class="error">
+    {{ errorMessages["closingTimeAfterOpeningTime"] }}
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th *ngIf="isManager()"></th>
+        <th>{{ "opening-hours.table.day" | translate }}</th>
+        <th>{{ "opening-hours.table.opening" | translate }}</th>
+        <th>{{ "opening-hours.table.closing" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let hour of openingHours"
+        [ngClass]="getRowClass(hour)"
+        [formGroup]="hourForms[hour.day_of_week]"
+      >
+        <td *ngIf="isManager()">
+          <button
+            class="button-update"
+            *ngIf="!hour.isEditing && !isEditing"
+            (click)="startUpdatingOpeningHour(hour)"
+          >
+            {{ "common.buttons.update" | translate }}
+          </button>
+          <button
+            class="button-accept"
+            *ngIf="hour.isEditing"
+            (click)="updateOpeningHour(hour)"
+          >
+            {{ "common.buttons.accept" | translate }}
+          </button>
+          <button
+            class="button-cancel"
+            *ngIf="hour.isEditing"
+            (click)="stopUpdatingOpeningHour(hour)"
+          >
+            {{ "common.buttons.cancel" | translate }}
+          </button>
+        </td>
+        <td>{{ "opening-hours.days." + hour.day_of_week | translate }}</td>
 
-                <td *ngIf="!hour.isEditing">{{ formatTime(hour.opening_time) }}</td>
-                <td *ngIf="hour.isEditing">
-                    <input type="time" formControlName="opening_time" />
-                </td>
+        <td *ngIf="!hour.isEditing">{{ hour.opening_time | timeFormat }}</td>
+        <td *ngIf="hour.isEditing">
+          <input type="time" formControlName="opening_time" />
+        </td>
 
-                <td *ngIf="!hour.isEditing">{{ formatTime(hour.closing_time) }}</td>
-                <td *ngIf="hour.isEditing">
-                    <input type="time" formControlName="closing_time" />
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <td *ngIf="!hour.isEditing">{{ hour.closing_time | timeFormat }}</td>
+        <td *ngIf="hour.isEditing">
+          <input type="time" formControlName="closing_time" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </section>

@@ -1,143 +1,144 @@
 .opening-hours {
-    padding: 3rem 1rem 3rem 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  padding: 3rem 1rem 3rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
-    color: red;
-    text-align: center;
+  color: red;
+  text-align: center;
 }
 
 p {
-    width: 40%;
-    text-align: center;
-    color: white;
-    font-size: 24px;
+  width: 40%;
+  text-align: center;
+  color: white;
+  font-size: 24px;
 }
 
 thead {
-    border-bottom: 3px solid red;
+  border-bottom: 3px solid red;
 }
 
 table {
-    margin-top: 5rem;
-    margin-bottom: 2rem;
-    font-size: 24px;
-    text-align: center;
-    width: 60%;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+  font-size: 24px;
+  text-align: center;
+  width: 60%;
 }
 
 th {
-    background-color: black;
-    color: red;
-    padding: 1rem;
+  background-color: black;
+  color: red;
+  padding: 1rem;
 }
 
 td {
-    color: white;
-    background: none;
+  color: white;
+  background: none;
 }
 
 button {
-    color: white;
-    background: none;
-    border: none;
-    transition: color 0.3s ease;
+  color: white;
+  background: none;
+  border: none;
+  transition: color 0.3s ease;
 
-    &:hover {
-        color: red;
-    }
+  &:hover {
+    color: red;
+  }
 }
 
 input[type="time"] {
-    background-color: inherit;
-    color: white;
-    border: none;
-    outline: none;
+  background-color: inherit;
+  color: white;
+  border: none;
+  outline: none;
 
-    &::-webkit-calendar-picker-indicator {
-        filter: invert(1);
-    }
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
 }
 
 .highlight-today-open {
-    background-color: rgb(13, 102, 25);
+  background-color: rgb(13, 102, 25);
 }
 
-
 .highlight-today-closed {
-    background-color: rgb(56, 56, 56);
+  background-color: rgb(56, 56, 56);
 }
 
 .error {
-    font-size: 24px;
-    margin-top: 1rem;
-    color: rgb(126, 15, 15);
+  font-size: 24px;
+  margin-top: 1rem;
+  color: rgb(126, 15, 15);
 }
 
-.button-update,.button-cancel, .button-accept {
-    background: none;
-    border: none;
-    transition: color 0.3s ease;
+.button-update,
+.button-cancel,
+.button-accept {
+  background: none;
+  border: none;
+  transition: color 0.3s ease;
 }
 
 .button-update {
-    color: rgb(0, 195, 255);
+  color: rgb(0, 195, 255);
 
-    &:hover {
-        color: rgb(0, 59, 126);
-    }
+  &:hover {
+    color: rgb(0, 59, 126);
+  }
 }
 
 .button-accept {
-    color: rgb(0, 255, 85);
+  color: rgb(0, 255, 85);
 
-    &:hover {
-        color: rgb(0, 102, 34);
-    }
+  &:hover {
+    color: rgb(0, 102, 34);
+  }
 }
 
 .button-cancel {
-    color: rgb(255, 0, 0);
+  color: rgb(255, 0, 0);
 
-    &:hover {
-        color: #b90909;
-    }
+  &:hover {
+    color: #b90909;
+  }
 }
 
 @media (max-width: 1000px) {
-    table {
-        width: 80%;
-    }
+  table {
+    width: 80%;
+  }
 }
 
 @media (max-width: 800px) {
-    p {
-        width: 60%;
-    }
+  p {
+    width: 60%;
+  }
 
-    table {
-        width: 80%;
-        font-size: 20px;
-    }
+  table {
+    width: 80%;
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 500px) {
-    table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 
-    table {
-        scrollbar-color: #ff0000 #f1f1f1; 
-        scrollbar-width: thin; 
-    }
+  table {
+    scrollbar-color: #ff0000 #f1f1f1;
+    scrollbar-width: thin;
+  }
 
-    p {
-        width: 80%;
-    }
+  p {
+    width: 80%;
+  }
 }

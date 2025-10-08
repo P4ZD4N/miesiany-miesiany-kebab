@@ -950,4 +950,19 @@ export class AlertService {
       confirmButtonText: 'Ok',
     });
   }
+
+  showSuccessfulOpeningHourUpdateAlert(translatedDayOfWeek: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zapisano godziny otwarcia w ${translatedDayOfWeek}!`
+          : `Successfully saved opening hours on ${translatedDayOfWeek}!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
 }
