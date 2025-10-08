@@ -10,14 +10,13 @@ import com.p4zd4n.kebab.responses.workschedule.WorkScheduleEntryResponse;
 import com.p4zd4n.kebab.services.workschedule.WorkScheduleService;
 import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/work-schedule")
@@ -25,66 +24,66 @@ import java.util.List;
 @Slf4j
 public class WorkScheduleController {
 
-    private final WorkScheduleService workScheduleService;
+  private final WorkScheduleService workScheduleService;
 
-    public WorkScheduleController(WorkScheduleService workScheduleService) {
-        this.workScheduleService = workScheduleService;
-    }
+  public WorkScheduleController(WorkScheduleService workScheduleService) {
+    this.workScheduleService = workScheduleService;
+  }
 
-    @GetMapping("/all-entries")
-    public ResponseEntity<List<WorkScheduleEntryResponse>> getWorkScheduleEntries() {
-        log.info("Received get work schedule entries request");
-        return ResponseEntity.ok(workScheduleService.getWorkScheduleEntries());
-    }
+  @GetMapping("/all-entries")
+  public ResponseEntity<List<WorkScheduleEntryResponse>> getWorkScheduleEntries() {
+    log.info("Received get work schedule entries request");
+    return ResponseEntity.ok(workScheduleService.getWorkScheduleEntries());
+  }
 
-    @GetMapping("/get-work-schedule-pdf")
-    public ResponseEntity<byte[]> getWorkSchedulePDF(
-            @RequestHeader(value = "Accept-Language") String language,
-            @RequestParam("startDate") LocalDate startDate,
-            @RequestParam("endDate") LocalDate endDate
-    ) throws DocumentException {
-        LanguageValidator.validateLanguage(language);
+  @GetMapping("/get-work-schedule-pdf")
+  public ResponseEntity<byte[]> getWorkSchedulePDF(
+      @RequestHeader(value = "Accept-Language") String language,
+      @RequestParam("startDate") LocalDate startDate,
+      @RequestParam("endDate") LocalDate endDate)
+      throws DocumentException {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received get work schedule pdf request");
+    log.info("Received get work schedule pdf request");
 
-        byte[] pdfBytes = workScheduleService.generateWorkSchedulePDF(startDate, endDate, language);
+    byte[] pdfBytes = workScheduleService.generateWorkSchedulePDF(startDate, endDate, language);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", "work-schedule.pdf");
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentDispositionFormData("attachment", "work-schedule.pdf");
 
-        log.info("Successfully returned work schedule pdf");
+    log.info("Successfully returned work schedule pdf");
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(pdfBytes);
-    }
+    return ResponseEntity.ok()
+        .headers(headers)
+        .contentType(MediaType.APPLICATION_PDF)
+        .body(pdfBytes);
+  }
 
-    @PostMapping("/add-entry")
-    public ResponseEntity<NewWorkScheduleEntryResponse> addWorkScheduleEntry(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody NewWorkScheduleEntryRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PostMapping("/add-entry")
+  public ResponseEntity<NewWorkScheduleEntryResponse> addWorkScheduleEntry(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody NewWorkScheduleEntryRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received add work schedule entry request");
+    log.info("Received add work schedule entry request");
 
-        NewWorkScheduleEntryResponse response = workScheduleService.addWorkScheduleEntry(request);
+    NewWorkScheduleEntryResponse response = workScheduleService.addWorkScheduleEntry(request);
 
-        log.info("Successfully added new work schedule entry");
+    log.info("Successfully added new work schedule entry");
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @DeleteMapping("/remove-entry")
-    public ResponseEntity<RemovedWorkScheduleEntryResponse> removeWorkScheduleEntry(
-            @Valid @RequestBody RemovedWorkScheduleEntryRequest request
-    ) {
-        log.info("Received remove work schedule entry request");
+  @DeleteMapping("/remove-entry")
+  public ResponseEntity<RemovedWorkScheduleEntryResponse> removeWorkScheduleEntry(
+      @Valid @RequestBody RemovedWorkScheduleEntryRequest request) {
+    log.info("Received remove work schedule entry request");
 
-        WorkScheduleEntry existingWorkScheduleEntry = workScheduleService.findWorkScheduleEntryById(request.id());
-        RemovedWorkScheduleEntryResponse response = workScheduleService.removeWorkScheduleEntry(existingWorkScheduleEntry);
+    WorkScheduleEntry existingWorkScheduleEntry =
+        workScheduleService.findWorkScheduleEntryById(request.id());
+    RemovedWorkScheduleEntryResponse response =
+        workScheduleService.removeWorkScheduleEntry(existingWorkScheduleEntry);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 }

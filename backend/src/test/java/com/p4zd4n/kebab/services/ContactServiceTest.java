@@ -25,117 +25,109 @@ import static org.mockito.Mockito.*;
 
 public class ContactServiceTest {
 
-    @Mock
-    private ContactRepository contactRepository;
+  @Mock private ContactRepository contactRepository;
 
-    @InjectMocks
-    private ContactService contactService;
+  @InjectMocks private ContactService contactService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    public void getContacts_ShouldReturnContacts_WhenCalled() {
+  @Test
+  public void getContacts_ShouldReturnContacts_WhenCalled() {
 
-        List<Contact> contactList = Arrays.asList(
-                Contact.builder()
-                        .contactType(ContactType.EMAIL)
-                        .value("email@example.com")
-                        .build(),
-                Contact.builder()
-                        .contactType(ContactType.TELEPHONE)
-                        .value("123456789")
-                        .build()
-        );
+    List<Contact> contactList =
+        Arrays.asList(
+            Contact.builder().contactType(ContactType.EMAIL).value("email@example.com").build(),
+            Contact.builder().contactType(ContactType.TELEPHONE).value("123456789").build());
 
-        when(contactRepository.findAll()).thenReturn(contactList);
+    when(contactRepository.findAll()).thenReturn(contactList);
 
-        List<ContactResponse> result = contactService.getContacts();
+    List<ContactResponse> result = contactService.getContacts();
 
-        assertEquals(2, result.size());
+    assertEquals(2, result.size());
 
-        assertEquals(ContactType.EMAIL, result.getFirst().contactType());
-        assertEquals("email@example.com", result.getFirst().value());
+    assertEquals(ContactType.EMAIL, result.getFirst().contactType());
+    assertEquals("email@example.com", result.getFirst().value());
 
-        assertEquals(ContactType.TELEPHONE, result.getLast().contactType());
-        assertEquals("123456789", result.getLast().value());
+    assertEquals(ContactType.TELEPHONE, result.getLast().contactType());
+    assertEquals("123456789", result.getLast().value());
 
-        verify(contactRepository, times(1)).findAll();
-    }
+    verify(contactRepository, times(1)).findAll();
+  }
 
-    @Test
-    public void findByContactType_ShouldReturnContact_WhenContactExists() {
+  @Test
+  public void findByContactType_ShouldReturnContact_WhenContactExists() {
 
-        Contact contact = Contact.builder()
-                .contactType(ContactType.EMAIL)
-                .value("email@example.com")
-                .build();
+    Contact contact =
+        Contact.builder().contactType(ContactType.EMAIL).value("email@example.com").build();
 
-        when(contactRepository.findByContactType(ContactType.EMAIL)).thenReturn(Optional.of(contact));
+    when(contactRepository.findByContactType(ContactType.EMAIL)).thenReturn(Optional.of(contact));
 
-        Contact foundContact = contactService.findContactByType(ContactType.EMAIL);
+    Contact foundContact = contactService.findContactByType(ContactType.EMAIL);
 
-        assertNotNull(foundContact);
-        assertEquals(ContactType.EMAIL, foundContact.getContactType());
-        assertEquals("email@example.com", foundContact.getValue());
+    assertNotNull(foundContact);
+    assertEquals(ContactType.EMAIL, foundContact.getContactType());
+    assertEquals("email@example.com", foundContact.getValue());
 
-        verify(contactRepository, times(1)).findByContactType(ContactType.EMAIL);
-    }
+    verify(contactRepository, times(1)).findByContactType(ContactType.EMAIL);
+  }
 
-    @Test
-    public void findByContactType_ShouldThrowContactNotFoundException_WhenContactNotExists() {
+  @Test
+  public void findByContactType_ShouldThrowContactNotFoundException_WhenContactNotExists() {
 
-        when(contactRepository.findByContactType(ContactType.EMAIL)).thenReturn(Optional.empty());
+    when(contactRepository.findByContactType(ContactType.EMAIL)).thenReturn(Optional.empty());
 
-        assertThrows(ContactNotFoundException.class, () -> {
-            contactService.findContactByType(ContactType.EMAIL);
+    assertThrows(
+        ContactNotFoundException.class,
+        () -> {
+          contactService.findContactByType(ContactType.EMAIL);
         });
 
-        verify(contactRepository, times(1)).findByContactType(ContactType.EMAIL);
-    }
+    verify(contactRepository, times(1)).findByContactType(ContactType.EMAIL);
+  }
 
-    @Test
-    public void updateContact_ShouldUpdateEmail_WhenNewEmailValid() {
+  @Test
+  public void updateContact_ShouldUpdateEmail_WhenNewEmailValid() {
 
-        Contact existingContact = Contact.builder()
-                .contactType(ContactType.EMAIL)
-                .value("email@example.com")
-                .build();
+    Contact existingContact =
+        Contact.builder().contactType(ContactType.EMAIL).value("email@example.com").build();
 
-        UpdatedContactRequest request = UpdatedContactRequest.builder()
-                .contactType(ContactType.EMAIL)
-                .newValue("email@gmail.com")
-                .build();
+    UpdatedContactRequest request =
+        UpdatedContactRequest.builder()
+            .contactType(ContactType.EMAIL)
+            .newValue("email@gmail.com")
+            .build();
 
-        when(contactRepository.save(any(Contact.class))).thenReturn(existingContact);
+    when(contactRepository.save(any(Contact.class))).thenReturn(existingContact);
 
-        UpdatedContactResponse response = contactService.updateContact(existingContact, request);
+    UpdatedContactResponse response = contactService.updateContact(existingContact, request);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully updated contact of type 'EMAIL'", response.message());
-        assertEquals("email@gmail.com", existingContact.getValue());
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully updated contact of type 'EMAIL'", response.message());
+    assertEquals("email@gmail.com", existingContact.getValue());
 
-        verify(contactRepository, times(1)).save(any(Contact.class));
-    }
+    verify(contactRepository, times(1)).save(any(Contact.class));
+  }
 
-    @Test
-    public void updateContact_ShouldThrowInvalidPhoneException_WhenNewTelephoneInvalid() {
+  @Test
+  public void updateContact_ShouldThrowInvalidPhoneException_WhenNewTelephoneInvalid() {
 
-        Contact existingContact = Contact.builder()
-                .contactType(ContactType.TELEPHONE)
-                .value("123456789")
-                .build();
+    Contact existingContact =
+        Contact.builder().contactType(ContactType.TELEPHONE).value("123456789").build();
 
-        UpdatedContactRequest request = UpdatedContactRequest.builder()
-                .contactType(ContactType.TELEPHONE)
-                .newValue("123AAA123")
-                .build();
+    UpdatedContactRequest request =
+        UpdatedContactRequest.builder()
+            .contactType(ContactType.TELEPHONE)
+            .newValue("123AAA123")
+            .build();
 
-        assertThrows(InvalidPhoneException.class, () -> {
-            contactService.updateContact(existingContact, request);
+    assertThrows(
+        InvalidPhoneException.class,
+        () -> {
+          contactService.updateContact(existingContact, request);
         });
-    }
+  }
 }

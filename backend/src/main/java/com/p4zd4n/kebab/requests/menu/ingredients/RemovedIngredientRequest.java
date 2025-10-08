@@ -5,7 +5,4 @@ import lombok.Builder;
 
 @Builder
 public record RemovedIngredientRequest(
-
-        @Size(min = 1, message = "{name.greaterThanZero}")
-        String name
-) {}
+    @Size(min = 1, message = "{name.greaterThanZero}") String name) {}

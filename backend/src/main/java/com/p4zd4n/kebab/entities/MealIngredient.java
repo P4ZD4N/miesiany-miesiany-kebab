@@ -13,17 +13,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MealIngredient extends WithTimestamp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "meal_id")
-    @JsonIgnore
-    private Meal meal;
+  @ManyToOne
+  @JoinColumn(name = "meal_id")
+  @JsonIgnore
+  private Meal meal;
 
-    @ManyToOne
-    @JoinColumn(name = "ingredient_id")
-    private Ingredient ingredient;
+  @ManyToOne
+  @JoinColumn(name = "ingredient_id")
+  private Ingredient ingredient;
 }

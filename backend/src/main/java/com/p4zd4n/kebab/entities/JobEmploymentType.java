@@ -17,19 +17,19 @@ import lombok.Setter;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class JobEmploymentType extends WithTimestamp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private EmploymentType employmentType;
+  @Enumerated(EnumType.STRING)
+  private EmploymentType employmentType;
 
-    @ManyToOne
-    @JoinColumn(name = "job_offer_id")
-    @JsonIgnore
-    private JobOffer jobOffer;
+  @ManyToOne
+  @JoinColumn(name = "job_offer_id")
+  @JsonIgnore
+  private JobOffer jobOffer;
 
-    public JobEmploymentType(EmploymentType employmentType) {
-        this.employmentType = employmentType;
-    }
+  public JobEmploymentType(EmploymentType employmentType) {
+    this.employmentType = employmentType;
+  }
 }

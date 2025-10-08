@@ -18,26 +18,26 @@ import lombok.Setter;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class JobRequirement extends WithTimestamp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "requirement_type", nullable = false)
-    private JobRequirementType requirementType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "requirement_type", nullable = false)
+  private JobRequirementType requirementType;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+  @Column(name = "description", nullable = false)
+  private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "job_offer_id")
-    @JsonIgnore
-    private JobOffer jobOffer;
+  @ManyToOne
+  @JoinColumn(name = "job_offer_id")
+  @JsonIgnore
+  private JobOffer jobOffer;
 
-    @Builder
-    public JobRequirement(JobRequirementType requirementType, String description) {
-        this.requirementType = requirementType;
-        this.description = description;
-    }
+  @Builder
+  public JobRequirement(JobRequirementType requirementType, String description) {
+    this.requirementType = requirementType;
+    this.description = description;
+  }
 }

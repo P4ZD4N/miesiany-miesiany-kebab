@@ -24,90 +24,87 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class RateLimitFilter implements Filter {
 
-    private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
-    private final MessageSource messageSource;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+  private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
+  private final MessageSource messageSource;
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public RateLimitFilter(MessageSource messageSource) {
-        this.messageSource = messageSource;
+  public RateLimitFilter(MessageSource messageSource) {
+    this.messageSource = messageSource;
+  }
+
+  @Override
+  public void doFilter(
+      ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+      throws IOException, ServletException {
+
+    HttpServletRequest request = (HttpServletRequest) servletRequest;
+    HttpServletResponse response = (HttpServletResponse) servletResponse;
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication != null
+        && authentication.isAuthenticated()
+        && isManagerOrEmployee(authentication)) {
+      filterChain.doFilter(request, servletResponse);
+      return;
     }
 
-    @Override
-    public void doFilter(
-            ServletRequest servletRequest,
-            ServletResponse servletResponse,
-            FilterChain filterChain
-    ) throws IOException, ServletException {
+    String ip = request.getRemoteAddr();
+    Bucket bucket = cache.computeIfAbsent(ip, this::newBucket);
 
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (bucket.tryConsume(1)) {
+      filterChain.doFilter(request, servletResponse);
+    } else {
+      Locale locale = getLocaleFromRequest(request);
+      String messageKey = getMessageKeyForEndpoint(request.getRequestURI());
+      String message = messageSource.getMessage(messageKey, null, locale);
 
-        if (authentication != null && authentication.isAuthenticated() && isManagerOrEmployee(authentication)) {
-            filterChain.doFilter(request, servletResponse);
-            return;
-        }
+      log.info(
+          "Received request to {} from IP {} with rate limit exceeded",
+          request.getRequestURI(),
+          ip);
 
-        String ip = request.getRemoteAddr();
-        Bucket bucket = cache.computeIfAbsent(ip, this::newBucket);
+      response.setContentType("application/json");
+      response.setStatus(429);
+      response
+          .getWriter()
+          .write(
+              objectMapper.writeValueAsString(
+                  ExceptionResponse.builder().statusCode(429).message(message).build()));
+    }
+  }
 
-        if (bucket.tryConsume(1)) {
-            filterChain.doFilter(request, servletResponse);
-        } else {
-            Locale locale = getLocaleFromRequest(request);
-            String messageKey = getMessageKeyForEndpoint(request.getRequestURI());
-            String message = messageSource.getMessage(messageKey, null, locale);
+  private Bucket newBucket(String key) {
+    return Bucket.builder()
+        .addLimit(Bandwidth.builder().capacity(1).refillGreedy(1, Duration.ofMinutes(5)).build())
+        .build();
+  }
 
-            log.info("Received request to {} from IP {} with rate limit exceeded", request.getRequestURI(), ip);
+  private boolean isManagerOrEmployee(Authentication authentication) {
+    return authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority)
+        .anyMatch(role -> role.equals("ROLE_MANAGER") || role.equals("ROLE_EMPLOYEE"));
+  }
 
-            response.setContentType("application/json");
-            response.setStatus(429);
-            response.getWriter().write(objectMapper.writeValueAsString(
-                    ExceptionResponse.builder()
-                            .statusCode(429)
-                            .message(message)
-                            .build()
-            ));
-        }
+  private Locale getLocaleFromRequest(HttpServletRequest request) {
+    String langHeader = request.getHeader("Accept-Language");
+
+    if (langHeader == null || langHeader.isBlank()) {
+      return Locale.forLanguageTag("en");
     }
 
-    private Bucket newBucket(String key) {
-        return Bucket.builder()
-                .addLimit(
-                    Bandwidth.builder()
-                        .capacity(1)
-                        .refillGreedy(1, Duration.ofMinutes(5))
-                        .build()
-                )
-                .build();
-    }
+    Locale locale = Locale.forLanguageTag(langHeader);
 
-    private boolean isManagerOrEmployee(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch(role -> role.equals("ROLE_MANAGER") || role.equals("ROLE_EMPLOYEE"));
-    }
+    LanguageValidator.validateLanguage(locale.getLanguage());
 
-    private Locale getLocaleFromRequest(HttpServletRequest request) {
-        String langHeader = request.getHeader("Accept-Language");
+    return locale;
+  }
 
-        if (langHeader == null || langHeader.isBlank()) {
-            return Locale.forLanguageTag("en");
-        }
-
-        Locale locale = Locale.forLanguageTag(langHeader);
-
-        LanguageValidator.validateLanguage(locale.getLanguage());
-
-        return locale;
-    }
-
-    private String getMessageKeyForEndpoint(String uri) {
-        return switch (uri) {
-            case "/api/v1/orders/add-order" -> "addOrder.rateLimitExceeded";
-            case "/api/v1/jobs/add-job-offer-application" -> "addJobOfferApplication.rateLimitExceeded";
-            case "/api/v1/newsletter/subscribe" -> "subscribe.rateLimitExceeded";
-            default -> "";
-        };
-    }
+  private String getMessageKeyForEndpoint(String uri) {
+    return switch (uri) {
+      case "/api/v1/orders/add-order" -> "addOrder.rateLimitExceeded";
+      case "/api/v1/jobs/add-job-offer-application" -> "addJobOfferApplication.rateLimitExceeded";
+      case "/api/v1/newsletter/subscribe" -> "subscribe.rateLimitExceeded";
+      default -> "";
+    };
+  }
 }

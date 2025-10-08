@@ -13,20 +13,20 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Customer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
 
-    @Column(name = "email")
-    private String email;
+  @Column(name = "email")
+  private String email;
 
-    @Column(name = "orders_count")
-    private Long orderCount;
+  @Column(name = "orders_count")
+  private Long orderCount;
 
-    @Builder
-    public Customer(String email) {
-        this.email = email;
-        orderCount = 1L;
-    }
+  @Builder
+  public Customer(String email) {
+    this.email = email;
+    orderCount = 1L;
+  }
 }

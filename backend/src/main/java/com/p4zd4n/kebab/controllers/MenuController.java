@@ -36,11 +36,10 @@ import com.p4zd4n.kebab.services.menu.IngredientService;
 import com.p4zd4n.kebab.services.menu.MealService;
 import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/menu")
@@ -48,211 +47,202 @@ import java.util.List;
 @Slf4j
 public class MenuController {
 
-    private final BeverageService beverageService;
-    private final AddonService addonService;
-    private final MealService mealService;
-    private final IngredientService ingredientService;
+  private final BeverageService beverageService;
+  private final AddonService addonService;
+  private final MealService mealService;
+  private final IngredientService ingredientService;
 
-    public MenuController(BeverageService beverageService,
-                          AddonService addonService,
-                          MealService mealService,
-                          IngredientService ingredientService
-    ) {
-        this.beverageService = beverageService;
-        this.addonService = addonService;
-        this.mealService = mealService;
-        this.ingredientService = ingredientService;
-    }
+  public MenuController(
+      BeverageService beverageService,
+      AddonService addonService,
+      MealService mealService,
+      IngredientService ingredientService) {
+    this.beverageService = beverageService;
+    this.addonService = addonService;
+    this.mealService = mealService;
+    this.ingredientService = ingredientService;
+  }
 
-    @GetMapping("/beverages")
-    public ResponseEntity<List<BeverageResponse>> getBeverages() {
-        log.info("Received get beverages request");
+  @GetMapping("/beverages")
+  public ResponseEntity<List<BeverageResponse>> getBeverages() {
+    log.info("Received get beverages request");
 
-        return ResponseEntity.ok(beverageService.getBeverages());
-    }
+    return ResponseEntity.ok(beverageService.getBeverages());
+  }
 
-    @PostMapping("/add-beverage")
-    public ResponseEntity<NewBeverageResponse> addBeverage(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody NewBeverageRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PostMapping("/add-beverage")
+  public ResponseEntity<NewBeverageResponse> addBeverage(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody NewBeverageRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received add beverage request");
+    log.info("Received add beverage request");
 
-        NewBeverageResponse response = beverageService.addBeverage(request);
+    NewBeverageResponse response = beverageService.addBeverage(request);
 
-        log.info("Successfully added new beverage: {}", request.newBeverageName());
+    log.info("Successfully added new beverage: {}", request.newBeverageName());
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @PutMapping("/update-beverage")
-    public ResponseEntity<UpdatedBeverageResponse> updateBeverage(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody UpdatedBeverageRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PutMapping("/update-beverage")
+  public ResponseEntity<UpdatedBeverageResponse> updateBeverage(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody UpdatedBeverageRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received update beverage request");
+    log.info("Received update beverage request");
 
-        Beverage existingBeverage = beverageService.findBeverageByNameAndCapacity(
-                request.updatedBeverageName(), request.updatedBeverageOldCapacity());
-        UpdatedBeverageResponse response = beverageService.updateBeverage(existingBeverage, request);
+    Beverage existingBeverage =
+        beverageService.findBeverageByNameAndCapacity(
+            request.updatedBeverageName(), request.updatedBeverageOldCapacity());
+    UpdatedBeverageResponse response = beverageService.updateBeverage(existingBeverage, request);
 
-        log.info("Successfully updated beverage: {}", existingBeverage.getName());
+    log.info("Successfully updated beverage: {}", existingBeverage.getName());
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @DeleteMapping("/remove-beverage")
-    public ResponseEntity<RemovedBeverageResponse> removeBeverage(
-            @Valid @RequestBody RemovedBeverageRequest request
-    ) {
-        log.info("Received remove beverage request");
+  @DeleteMapping("/remove-beverage")
+  public ResponseEntity<RemovedBeverageResponse> removeBeverage(
+      @Valid @RequestBody RemovedBeverageRequest request) {
+    log.info("Received remove beverage request");
 
-        Beverage existingBeverage = beverageService.findBeverageByNameAndCapacity(request.name(), request.capacity());
-        RemovedBeverageResponse response = beverageService.removeBeverage(existingBeverage);
+    Beverage existingBeverage =
+        beverageService.findBeverageByNameAndCapacity(request.name(), request.capacity());
+    RemovedBeverageResponse response = beverageService.removeBeverage(existingBeverage);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @GetMapping("/addons")
-    public ResponseEntity<List<AddonResponse>> getAddons() {
-        log.info("Received get addons request");
+  @GetMapping("/addons")
+  public ResponseEntity<List<AddonResponse>> getAddons() {
+    log.info("Received get addons request");
 
-        return ResponseEntity.ok(addonService.getAddons());
-    }
+    return ResponseEntity.ok(addonService.getAddons());
+  }
 
-    @PostMapping("/add-addon")
-    public ResponseEntity<NewAddonResponse> addAddon(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody NewAddonRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PostMapping("/add-addon")
+  public ResponseEntity<NewAddonResponse> addAddon(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody NewAddonRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received add addon request");
+    log.info("Received add addon request");
 
-        NewAddonResponse response = addonService.addAddon(request);
+    NewAddonResponse response = addonService.addAddon(request);
 
-        log.info("Successfully added new addon: {}", request.newAddonName());
+    log.info("Successfully added new addon: {}", request.newAddonName());
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @PutMapping("/update-addon")
-    public ResponseEntity<UpdatedAddonResponse> updateAddon(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody UpdatedAddonRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PutMapping("/update-addon")
+  public ResponseEntity<UpdatedAddonResponse> updateAddon(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody UpdatedAddonRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received update addon request");
+    log.info("Received update addon request");
 
-        Addon existingAddon = addonService.findAddonByName(request.updatedAddonName());
-        UpdatedAddonResponse response = addonService.updateAddon(existingAddon, request);
+    Addon existingAddon = addonService.findAddonByName(request.updatedAddonName());
+    UpdatedAddonResponse response = addonService.updateAddon(existingAddon, request);
 
-        log.info("Successfully updated addon: {}", existingAddon.getName());
+    log.info("Successfully updated addon: {}", existingAddon.getName());
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @DeleteMapping("/remove-addon")
-    public ResponseEntity<RemovedAddonResponse> removeAddon(
-            @Valid @RequestBody RemovedAddonRequest request
-    ) {
-        log.info("Received remove addon request");
+  @DeleteMapping("/remove-addon")
+  public ResponseEntity<RemovedAddonResponse> removeAddon(
+      @Valid @RequestBody RemovedAddonRequest request) {
+    log.info("Received remove addon request");
 
-        Addon existingAddon = addonService.findAddonByName(request.name());
-        RemovedAddonResponse response = addonService.removeAddon(existingAddon);
+    Addon existingAddon = addonService.findAddonByName(request.name());
+    RemovedAddonResponse response = addonService.removeAddon(existingAddon);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @GetMapping("/meals")
-    public ResponseEntity<List<MealResponse>> getMeals() {
-        log.info("Received get meals request");
+  @GetMapping("/meals")
+  public ResponseEntity<List<MealResponse>> getMeals() {
+    log.info("Received get meals request");
 
-        return ResponseEntity.ok(mealService.getMeals());
-    }
+    return ResponseEntity.ok(mealService.getMeals());
+  }
 
-    @PostMapping("/add-meal")
-    public ResponseEntity<NewMealResponse> addMeal(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody NewMealRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PostMapping("/add-meal")
+  public ResponseEntity<NewMealResponse> addMeal(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody NewMealRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received add meal request");
+    log.info("Received add meal request");
 
-        NewMealResponse response = mealService.addMeal(request);
+    NewMealResponse response = mealService.addMeal(request);
 
-        log.info("Successfully added new meal: {}", request.newMealName());
+    log.info("Successfully added new meal: {}", request.newMealName());
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @PutMapping("/update-meal")
-    public ResponseEntity<UpdatedMealResponse> updateMeal(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody UpdatedMealRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PutMapping("/update-meal")
+  public ResponseEntity<UpdatedMealResponse> updateMeal(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody UpdatedMealRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received update meal request");
+    log.info("Received update meal request");
 
-        Meal existingMeal = mealService.findMealByName(request.updatedMealName());
-        UpdatedMealResponse response = mealService.updateMeal(existingMeal, request);
+    Meal existingMeal = mealService.findMealByName(request.updatedMealName());
+    UpdatedMealResponse response = mealService.updateMeal(existingMeal, request);
 
-        log.info("Successfully updated meal: {}", existingMeal.getName());
+    log.info("Successfully updated meal: {}", existingMeal.getName());
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @DeleteMapping("/remove-meal")
-    public ResponseEntity<RemovedMealResponse> removeMeal(
-            @Valid @RequestBody RemovedMealRequest request
-    ) {
-        log.info("Received remove meal request");
+  @DeleteMapping("/remove-meal")
+  public ResponseEntity<RemovedMealResponse> removeMeal(
+      @Valid @RequestBody RemovedMealRequest request) {
+    log.info("Received remove meal request");
 
-        Meal existingMeal = mealService.findMealByName(request.name());
-        RemovedMealResponse response = mealService.removeMeal(existingMeal);
+    Meal existingMeal = mealService.findMealByName(request.name());
+    RemovedMealResponse response = mealService.removeMeal(existingMeal);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @GetMapping("/ingredients")
-    public ResponseEntity<List<IngredientResponse>> getIngredients() {
-        log.info("Received get ingredients request");
+  @GetMapping("/ingredients")
+  public ResponseEntity<List<IngredientResponse>> getIngredients() {
+    log.info("Received get ingredients request");
 
-        return ResponseEntity.ok(ingredientService.getIngredients());
-    }
+    return ResponseEntity.ok(ingredientService.getIngredients());
+  }
 
-    @PostMapping("/add-ingredient")
-    public ResponseEntity<NewIngredientResponse> addIngredient(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody NewIngredientRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PostMapping("/add-ingredient")
+  public ResponseEntity<NewIngredientResponse> addIngredient(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody NewIngredientRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received add ingredient request");
+    log.info("Received add ingredient request");
 
-        NewIngredientResponse response = ingredientService.addIngredient(request);
+    NewIngredientResponse response = ingredientService.addIngredient(request);
 
-        log.info("Successfully added new ingredient: {}", request.newIngredientName());
+    log.info("Successfully added new ingredient: {}", request.newIngredientName());
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @DeleteMapping("/remove-ingredient")
-    public ResponseEntity<RemovedIngredientResponse> removeIngredient(
-            @Valid @RequestBody RemovedIngredientRequest request
-    ) {
-        log.info("Received remove ingredient request");
+  @DeleteMapping("/remove-ingredient")
+  public ResponseEntity<RemovedIngredientResponse> removeIngredient(
+      @Valid @RequestBody RemovedIngredientRequest request) {
+    log.info("Received remove ingredient request");
 
-        Ingredient existingIngredient = ingredientService.findIngredientByName(request.name());
-        RemovedIngredientResponse response = ingredientService.removeIngredient(existingIngredient);
+    Ingredient existingIngredient = ingredientService.findIngredientByName(request.name());
+    RemovedIngredientResponse response = ingredientService.removeIngredient(existingIngredient);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 }

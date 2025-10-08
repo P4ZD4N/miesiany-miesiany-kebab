@@ -1,9 +1,8 @@
 package com.p4zd4n.kebab.exceptions.overlap;
 
-import lombok.Getter;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import lombok.Getter;
 
 @Getter
 public class WorkScheduleTimeOverlapException extends RuntimeException {

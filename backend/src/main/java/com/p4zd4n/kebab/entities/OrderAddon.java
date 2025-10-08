@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_addons")
@@ -19,36 +18,31 @@ import java.math.BigDecimal;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class OrderAddon {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    @JsonIgnore
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
+  @JsonIgnore
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    @JsonIgnore
-    private Order order;
+  @ManyToOne
+  @JoinColumn(name = "order_id", nullable = false)
+  @JsonIgnore
+  private Order order;
 
-    @Column(name = "addon_name", nullable = false)
-    private String addonName;
+  @Column(name = "addon_name", nullable = false)
+  private String addonName;
 
-    @Column(name = "final_price", nullable = false)
-    private BigDecimal finalPrice;
+  @Column(name = "final_price", nullable = false)
+  private BigDecimal finalPrice;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+  @Column(name = "quantity", nullable = false)
+  private Integer quantity;
 
-    @Builder
-    public OrderAddon(
-            Order order,
-            String addonName,
-            BigDecimal finalPrice,
-            Integer quantity
-    ) {
-        this.order = order;
-        this.addonName = addonName;
-        this.finalPrice = finalPrice;
-        this.quantity = quantity;
-    }
+  @Builder
+  public OrderAddon(Order order, String addonName, BigDecimal finalPrice, Integer quantity) {
+    this.order = order;
+    this.addonName = addonName;
+    this.finalPrice = finalPrice;
+    this.quantity = quantity;
+  }
 }

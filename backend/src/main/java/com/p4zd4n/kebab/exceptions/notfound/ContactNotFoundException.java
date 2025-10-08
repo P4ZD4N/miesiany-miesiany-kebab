@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class ContactNotFoundException extends RuntimeException {
 
-    private final ContactType contactType;
+  private final ContactType contactType;
 
-    public ContactNotFoundException(ContactType contactType) {
-      super("Contact of type '" + contactType + "' not found!");
-      this.contactType = contactType;
-    }
+  public ContactNotFoundException(ContactType contactType) {
+    super("Contact of type '" + contactType + "' not found!");
+    this.contactType = contactType;
+  }
 }

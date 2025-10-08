@@ -27,170 +27,180 @@ import static org.mockito.Mockito.*;
 
 public class AddonPromotionsServiceTest {
 
-    @Mock
-    private AddonRepository addonRepository;
+  @Mock private AddonRepository addonRepository;
 
-    @Mock
-    private AddonPromotionsRepository addonPromotionsRepository;
+  @Mock private AddonPromotionsRepository addonPromotionsRepository;
 
-    @InjectMocks
-    private AddonPromotionsService addonPromotionsService;
+  @InjectMocks private AddonPromotionsService addonPromotionsService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    public void getAddonPromotions_ShouldReturnAddonPromotions_WhenCalled() {
+  @Test
+  public void getAddonPromotions_ShouldReturnAddonPromotions_WhenCalled() {
 
-        List<AddonPromotion> addonPromotionsList = Arrays.asList(
-                AddonPromotion.builder()
-                        .description("-20%")
-                        .discountPercentage(BigDecimal.valueOf(20))
-                        .build(),
-                AddonPromotion.builder()
-                        .description("-10%")
-                        .discountPercentage(BigDecimal.valueOf(10))
-                        .build()
-        );
-
-        when(addonPromotionsRepository.findAll()).thenReturn(addonPromotionsList);
-
-        List<AddonPromotionResponse> result = addonPromotionsService.getAddonPromotions();
-
-        assertEquals(2, result.size());
-        assertEquals("-20%", result.getFirst().description());
-        assertEquals(BigDecimal.valueOf(10), result.getLast().discountPercentage());
-
-        verify(addonPromotionsRepository, times(1)).findAll();
-    }
-
-    @Test
-    public void addAddonPromotion_ShouldAddAddonPromotion_WhenValidRequestWithNullSetInRequest() throws MessagingException {
-
-        NewAddonPromotionRequest request = NewAddonPromotionRequest.builder()
+    List<AddonPromotion> addonPromotionsList =
+        Arrays.asList(
+            AddonPromotion.builder()
+                .description("-20%")
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build(),
+            AddonPromotion.builder()
                 .description("-10%")
                 .discountPercentage(BigDecimal.valueOf(10))
-                .build();
+                .build());
 
-        AddonPromotion newAddonPromotion = AddonPromotion.builder()
-                .description(request.description())
-                .discountPercentage(request.discountPercentage())
-                .build();
-        newAddonPromotion.setId(1L);
+    when(addonPromotionsRepository.findAll()).thenReturn(addonPromotionsList);
 
-        when(addonPromotionsRepository.save(any(AddonPromotion.class))).thenReturn(newAddonPromotion);
+    List<AddonPromotionResponse> result = addonPromotionsService.getAddonPromotions();
 
-        NewAddonPromotionResponse response = addonPromotionsService.addAddonPromotion(request);
+    assertEquals(2, result.size());
+    assertEquals("-20%", result.getFirst().description());
+    assertEquals(BigDecimal.valueOf(10), result.getLast().discountPercentage());
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully added new addon promotion with id '1'", response.message());
+    verify(addonPromotionsRepository, times(1)).findAll();
+  }
 
-        verify(addonPromotionsRepository, times(1)).save(any(AddonPromotion.class));
-    }
+  @Test
+  public void addAddonPromotion_ShouldAddAddonPromotion_WhenValidRequestWithNullSetInRequest()
+      throws MessagingException {
 
-    @Test
-    public void addAddonPromotion_ShouldAddAddonPromotion_WhenValidRequestWithNotNullSetInRequest() throws MessagingException {
+    NewAddonPromotionRequest request =
+        NewAddonPromotionRequest.builder()
+            .description("-10%")
+            .discountPercentage(BigDecimal.valueOf(10))
+            .build();
 
-        NewAddonPromotionRequest request = NewAddonPromotionRequest.builder()
-                .description("-10%")
-                .discountPercentage(BigDecimal.valueOf(10))
-                .addonNames(Set.of("Jalapeno"))
-                .build();
+    AddonPromotion newAddonPromotion =
+        AddonPromotion.builder()
+            .description(request.description())
+            .discountPercentage(request.discountPercentage())
+            .build();
+    newAddonPromotion.setId(1L);
 
-        AddonPromotion newAddonPromotion = AddonPromotion.builder()
-                .description(request.description())
-                .discountPercentage(request.discountPercentage())
-                .build();
-        newAddonPromotion.setId(1L);
+    when(addonPromotionsRepository.save(any(AddonPromotion.class))).thenReturn(newAddonPromotion);
 
-        when(addonPromotionsRepository.save(any(AddonPromotion.class))).thenReturn(newAddonPromotion);
+    NewAddonPromotionResponse response = addonPromotionsService.addAddonPromotion(request);
 
-        NewAddonPromotionResponse response = addonPromotionsService.addAddonPromotion(request);
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully added new addon promotion with id '1'", response.message());
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully added new addon promotion with id '1'", response.message());
+    verify(addonPromotionsRepository, times(1)).save(any(AddonPromotion.class));
+  }
 
-        verify(addonPromotionsRepository, times(1)).save(any(AddonPromotion.class));
-    }
+  @Test
+  public void addAddonPromotion_ShouldAddAddonPromotion_WhenValidRequestWithNotNullSetInRequest()
+      throws MessagingException {
 
-    @Test
-    public void findAddonPromotionById_ShouldReturnAddonPromotion_IfExists() {
+    NewAddonPromotionRequest request =
+        NewAddonPromotionRequest.builder()
+            .description("-10%")
+            .discountPercentage(BigDecimal.valueOf(10))
+            .addonNames(Set.of("Jalapeno"))
+            .build();
 
-        AddonPromotion addonPromotion = AddonPromotion.builder()
-                .description("-20%")
-                .discountPercentage(BigDecimal.valueOf(20))
-                .build();
+    AddonPromotion newAddonPromotion =
+        AddonPromotion.builder()
+            .description(request.description())
+            .discountPercentage(request.discountPercentage())
+            .build();
+    newAddonPromotion.setId(1L);
 
-        when(addonPromotionsRepository.findById(1L)).thenReturn(Optional.of(addonPromotion));
+    when(addonPromotionsRepository.save(any(AddonPromotion.class))).thenReturn(newAddonPromotion);
 
-        AddonPromotion foundAddonPromotion = addonPromotionsService.findAddonPromotionById(1L);
+    NewAddonPromotionResponse response = addonPromotionsService.addAddonPromotion(request);
 
-        assertNotNull(foundAddonPromotion);
-        assertEquals("-20%", foundAddonPromotion.getDescription());
-        assertEquals(BigDecimal.valueOf(20), foundAddonPromotion.getDiscountPercentage());
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully added new addon promotion with id '1'", response.message());
 
-        verify(addonPromotionsRepository, times(1)).findById(1L);
-    }
+    verify(addonPromotionsRepository, times(1)).save(any(AddonPromotion.class));
+  }
 
-    @Test
-    public void findAddonPromotionById_ShouldThrowAddonPromotionNotFoundException_IfDoesNotExists() {
+  @Test
+  public void findAddonPromotionById_ShouldReturnAddonPromotion_IfExists() {
 
-        when(addonPromotionsRepository.findById(100L)).thenThrow(new AddonPromotionNotFoundException(100L));
+    AddonPromotion addonPromotion =
+        AddonPromotion.builder()
+            .description("-20%")
+            .discountPercentage(BigDecimal.valueOf(20))
+            .build();
 
-        AddonPromotionNotFoundException exception = assertThrows(AddonPromotionNotFoundException.class, () -> {
-            addonPromotionsService.findAddonPromotionById(100L);
-        });
+    when(addonPromotionsRepository.findById(1L)).thenReturn(Optional.of(addonPromotion));
 
-        assertEquals("Addon promotion with id '100' not found!", exception.getMessage());
+    AddonPromotion foundAddonPromotion = addonPromotionsService.findAddonPromotionById(1L);
 
-        verify(addonPromotionsRepository, times(1)).findById(100L);
-    }
+    assertNotNull(foundAddonPromotion);
+    assertEquals("-20%", foundAddonPromotion.getDescription());
+    assertEquals(BigDecimal.valueOf(20), foundAddonPromotion.getDiscountPercentage());
 
-    @Test
-    public void updateAddonPromotion_ShouldUpdateAddonPromotion_WhenValidRequest() {
+    verify(addonPromotionsRepository, times(1)).findById(1L);
+  }
 
-        AddonPromotion addonPromotion = AddonPromotion.builder()
-                .description("-20%")
-                .discountPercentage(BigDecimal.valueOf(20))
-                .build();
-        addonPromotion.setId(1L);
+  @Test
+  public void findAddonPromotionById_ShouldThrowAddonPromotionNotFoundException_IfDoesNotExists() {
 
-        UpdatedAddonPromotionRequest request = UpdatedAddonPromotionRequest.builder()
-                .id(1L)
-                .updatedDescription("Siema")
-                .build();
+    when(addonPromotionsRepository.findById(100L))
+        .thenThrow(new AddonPromotionNotFoundException(100L));
 
-        when(addonPromotionsRepository.save(any(AddonPromotion.class))).thenReturn(addonPromotion);
+    AddonPromotionNotFoundException exception =
+        assertThrows(
+            AddonPromotionNotFoundException.class,
+            () -> {
+              addonPromotionsService.findAddonPromotionById(100L);
+            });
 
-        UpdatedAddonPromotionResponse response = addonPromotionsService.updateAddonPromotion(addonPromotion, request);
+    assertEquals("Addon promotion with id '100' not found!", exception.getMessage());
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully updated addon promotion with id '1'", response.message());
-        assertEquals("Siema", addonPromotion.getDescription());
+    verify(addonPromotionsRepository, times(1)).findById(100L);
+  }
 
-        verify(addonPromotionsRepository, times(1)).save(addonPromotion);
-    }
+  @Test
+  public void updateAddonPromotion_ShouldUpdateAddonPromotion_WhenValidRequest() {
 
-    @Test
-    public void removeAddonPromotion_ShouldRemoveAddonPromotion_WhenValidRequest() {
+    AddonPromotion addonPromotion =
+        AddonPromotion.builder()
+            .description("-20%")
+            .discountPercentage(BigDecimal.valueOf(20))
+            .build();
+    addonPromotion.setId(1L);
 
-        AddonPromotion addonPromotion = AddonPromotion.builder()
-                .description("-20%")
-                .discountPercentage(BigDecimal.valueOf(20))
-                .build();
-        addonPromotion.setId(2L);
+    UpdatedAddonPromotionRequest request =
+        UpdatedAddonPromotionRequest.builder().id(1L).updatedDescription("Siema").build();
 
-        doNothing().when(addonPromotionsRepository).delete(addonPromotion);
+    when(addonPromotionsRepository.save(any(AddonPromotion.class))).thenReturn(addonPromotion);
 
-        RemovedAddonPromotionResponse response = addonPromotionsService.removeAddonPromotion(addonPromotion);
+    UpdatedAddonPromotionResponse response =
+        addonPromotionsService.updateAddonPromotion(addonPromotion, request);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully removed addon promotion with id '2'", response.message());
-    }
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully updated addon promotion with id '1'", response.message());
+    assertEquals("Siema", addonPromotion.getDescription());
+
+    verify(addonPromotionsRepository, times(1)).save(addonPromotion);
+  }
+
+  @Test
+  public void removeAddonPromotion_ShouldRemoveAddonPromotion_WhenValidRequest() {
+
+    AddonPromotion addonPromotion =
+        AddonPromotion.builder()
+            .description("-20%")
+            .discountPercentage(BigDecimal.valueOf(20))
+            .build();
+    addonPromotion.setId(2L);
+
+    doNothing().when(addonPromotionsRepository).delete(addonPromotion);
+
+    RemovedAddonPromotionResponse response =
+        addonPromotionsService.removeAddonPromotion(addonPromotion);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully removed addon promotion with id '2'", response.message());
+  }
 }

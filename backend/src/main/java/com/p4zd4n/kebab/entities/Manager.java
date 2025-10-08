@@ -13,18 +13,29 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Manager extends Employee {
 
-    public Manager(
-        String firstName,
-        String lastName,
-        String email,
-        String password,
-        LocalDate dateOfBirth,
-        String phoneNumber,
-        BigDecimal hourlyWage,
-        boolean isActive,
-        boolean isStudent,
-        LocalDate hiredAt
-    ) {
-        super(firstName, lastName, email, password, dateOfBirth, "Manager", phoneNumber, EmploymentType.PERMANENT, hourlyWage, isActive, isStudent, hiredAt);
-    }
+  public Manager(
+      String firstName,
+      String lastName,
+      String email,
+      String password,
+      LocalDate dateOfBirth,
+      String phoneNumber,
+      BigDecimal hourlyWage,
+      boolean isActive,
+      boolean isStudent,
+      LocalDate hiredAt) {
+    super(
+        firstName,
+        lastName,
+        email,
+        password,
+        dateOfBirth,
+        "Manager",
+        phoneNumber,
+        EmploymentType.PERMANENT,
+        hourlyWage,
+        isActive,
+        isStudent,
+        hiredAt);
+  }
 }

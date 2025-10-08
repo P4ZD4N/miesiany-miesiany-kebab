@@ -8,12 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record NewIngredientRequest(
-
-        @JsonProperty("new_ingredient_name")
-        @Size(min = 1, message = "{name.greaterThanZero}")
+    @JsonProperty("new_ingredient_name") @Size(min = 1, message = "{name.greaterThanZero}")
         String newIngredientName,
-
-        @JsonProperty("new_ingredient_type")
-        @NotNull(message = "{ingredientType.notNull}")
-        IngredientType newIngredientType
-) {}
+    @JsonProperty("new_ingredient_type") @NotNull(message = "{ingredientType.notNull}")
+        IngredientType newIngredientType) {}

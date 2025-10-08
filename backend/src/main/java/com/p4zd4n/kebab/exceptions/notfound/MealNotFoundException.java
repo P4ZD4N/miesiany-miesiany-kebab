@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class MealNotFoundException extends RuntimeException {
 
-    private final String mealName;
+  private final String mealName;
 
-    public MealNotFoundException(String name) {
-        super("Meal with name '" + name + "' not found!");
-        mealName = name;
-    }
+  public MealNotFoundException(String name) {
+    super("Meal with name '" + name + "' not found!");
+    mealName = name;
+  }
 }

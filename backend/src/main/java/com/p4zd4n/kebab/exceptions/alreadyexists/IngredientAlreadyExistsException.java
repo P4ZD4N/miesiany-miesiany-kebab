@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class IngredientAlreadyExistsException extends RuntimeException {
 
-    private final String ingredientName;
+  private final String ingredientName;
 
-    public IngredientAlreadyExistsException(String name) {
-        super("Ingredient with name '" + name + "' already exists!");
-        ingredientName = name;
-    }
+  public IngredientAlreadyExistsException(String name) {
+    super("Ingredient with name '" + name + "' already exists!");
+    ingredientName = name;
+  }
 }

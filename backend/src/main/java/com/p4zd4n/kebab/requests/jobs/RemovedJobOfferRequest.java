@@ -6,8 +6,5 @@ import lombok.Builder;
 
 @Builder
 public record RemovedJobOfferRequest(
-
-        @JsonProperty("position_name")
-        @Size(min = 1, message = "{name.greaterThanZero}")
-        String positionName
-) {}
+    @JsonProperty("position_name") @Size(min = 1, message = "{name.greaterThanZero}")
+        String positionName) {}

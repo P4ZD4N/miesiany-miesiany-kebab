@@ -13,11 +13,10 @@ import com.p4zd4n.kebab.services.orders.OrdersService;
 import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -25,76 +24,73 @@ import java.util.List;
 @Slf4j
 public class OrdersController {
 
-    private final OrdersService ordersService;
+  private final OrdersService ordersService;
 
-    public OrdersController(OrdersService ordersService) {
-        this.ordersService = ordersService;
-    }
+  public OrdersController(OrdersService ordersService) {
+    this.ordersService = ordersService;
+  }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<OrderResponse>> getOrders() {
-        log.info("Received get orders request");
-        return ResponseEntity.ok(ordersService.getOrders());
-    }
+  @GetMapping("/all")
+  public ResponseEntity<List<OrderResponse>> getOrders() {
+    log.info("Received get orders request");
+    return ResponseEntity.ok(ordersService.getOrders());
+  }
 
-    @PostMapping("/add-order")
-    public ResponseEntity<NewOrderResponse> addOrder(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody NewOrderRequest request
-    ) throws MessagingException {
-        LanguageValidator.validateLanguage(language);
+  @PostMapping("/add-order")
+  public ResponseEntity<NewOrderResponse> addOrder(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody NewOrderRequest request)
+      throws MessagingException {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received add order request");
+    log.info("Received add order request");
 
-        NewOrderResponse response = ordersService.addOrder(request, language);
+    NewOrderResponse response = ordersService.addOrder(request, language);
 
-        log.info("Successfully added new order");
+    log.info("Successfully added new order");
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @PostMapping("/track-order")
-    public ResponseEntity<OrderResponse> trackOrder(
-        @RequestHeader(value = "Accept-Language") String language,
-        @Valid @RequestBody TrackOrderRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PostMapping("/track-order")
+  public ResponseEntity<OrderResponse> trackOrder(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody TrackOrderRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received track order request");
+    log.info("Received track order request");
 
-        OrderResponse response = ordersService.trackOrder(request);
+    OrderResponse response = ordersService.trackOrder(request);
 
-        log.info("Successfully started tracking order");
+    log.info("Successfully started tracking order");
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @PutMapping("/update-order")
-    public ResponseEntity<UpdatedOrderResponse> updateOrder(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody UpdatedOrderRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PutMapping("/update-order")
+  public ResponseEntity<UpdatedOrderResponse> updateOrder(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody UpdatedOrderRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received update order request");
+    log.info("Received update order request");
 
-        Order existingOrder = ordersService.findOrderById(request.id());
-        UpdatedOrderResponse response = ordersService.updateOrder(existingOrder, request);
+    Order existingOrder = ordersService.findOrderById(request.id());
+    UpdatedOrderResponse response = ordersService.updateOrder(existingOrder, request);
 
-        log.info("Successfully updated order");
+    log.info("Successfully updated order");
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @DeleteMapping("/remove-order")
-    public ResponseEntity<RemovedOrderResponse> removeOrder(
-            @Valid @RequestBody RemovedOrderRequest request
-    ) {
-        log.info("Received remove order request");
+  @DeleteMapping("/remove-order")
+  public ResponseEntity<RemovedOrderResponse> removeOrder(
+      @Valid @RequestBody RemovedOrderRequest request) {
+    log.info("Received remove order request");
 
-        Order existingOrder = ordersService.findOrderById(request.id());
-        RemovedOrderResponse response = ordersService.removeOrder(existingOrder);
+    Order existingOrder = ordersService.findOrderById(request.id());
+    RemovedOrderResponse response = ordersService.removeOrder(existingOrder);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 }

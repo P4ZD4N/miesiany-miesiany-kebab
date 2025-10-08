@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class InvalidEmailException extends RuntimeException {
 
-    private final String email;
+  private final String email;
 
-    public InvalidEmailException(String invalidEmail) {
-        super("Invalid email: " + invalidEmail);
-        email = invalidEmail;
-    }
+  public InvalidEmailException(String invalidEmail) {
+    super("Invalid email: " + invalidEmail);
+    email = invalidEmail;
+  }
 }

@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class OpeningHourNotFoundException extends RuntimeException {
 
-    private final DayOfWeek dayOfWeek;
+  private final DayOfWeek dayOfWeek;
 
-    public OpeningHourNotFoundException(DayOfWeek dayOfWeek) {
-        super("Opening hour for day: " + dayOfWeek + " not found!");
-        this.dayOfWeek = dayOfWeek;
-    }
+  public OpeningHourNotFoundException(DayOfWeek dayOfWeek) {
+    super("Opening hour for day: " + dayOfWeek + " not found!");
+    this.dayOfWeek = dayOfWeek;
+  }
 }

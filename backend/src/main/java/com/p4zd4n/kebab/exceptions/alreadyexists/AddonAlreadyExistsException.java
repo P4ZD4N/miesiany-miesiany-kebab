@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class AddonAlreadyExistsException extends RuntimeException {
 
-    private final String addonName;
+  private final String addonName;
 
-    public AddonAlreadyExistsException(String name) {
-        super("Addon with name '" + name + "' already exists!");
-        addonName = name;
-    }
+  public AddonAlreadyExistsException(String name) {
+    super("Addon with name '" + name + "' already exists!");
+    addonName = name;
+  }
 }

@@ -6,12 +6,18 @@ import lombok.Getter;
 @Getter
 public class InvalidIngredientException extends RuntimeException {
 
-    private final IngredientType invalidIngredientType;
-    private final IngredientType validIngredientType;
+  private final IngredientType invalidIngredientType;
+  private final IngredientType validIngredientType;
 
-    public InvalidIngredientException(IngredientType invalidIngredientType, IngredientType validIngredientType) {
-        super("Invalid ingredient type: '" + invalidIngredientType + "' where valid ingredient type is: '" + validIngredientType + "'");
-        this.invalidIngredientType = invalidIngredientType;
-        this.validIngredientType = validIngredientType;
-    }
+  public InvalidIngredientException(
+      IngredientType invalidIngredientType, IngredientType validIngredientType) {
+    super(
+        "Invalid ingredient type: '"
+            + invalidIngredientType
+            + "' where valid ingredient type is: '"
+            + validIngredientType
+            + "'");
+    this.invalidIngredientType = invalidIngredientType;
+    this.validIngredientType = validIngredientType;
+  }
 }

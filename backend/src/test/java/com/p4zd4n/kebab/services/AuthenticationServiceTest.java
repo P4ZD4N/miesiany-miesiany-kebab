@@ -1,10 +1,15 @@
 package com.p4zd4n.kebab.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.p4zd4n.kebab.entities.Employee;
 import com.p4zd4n.kebab.enums.Role;
+import com.p4zd4n.kebab.exceptions.invalid.InvalidCredentialsException;
 import com.p4zd4n.kebab.exceptions.notactive.EmployeeNotActiveException;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
-import com.p4zd4n.kebab.exceptions.invalid.InvalidCredentialsException;
 import com.p4zd4n.kebab.repositories.EmployeesRepository;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
@@ -12,6 +17,7 @@ import com.p4zd4n.kebab.responses.auth.LogoutResponse;
 import com.p4zd4n.kebab.services.auth.AuthenticationService;
 import com.p4zd4n.kebab.utils.PasswordEncoder;
 import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -19,122 +25,124 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 public class AuthenticationServiceTest {
 
-    private AuthenticationManager authenticationManager;
-    private AuthenticationService authenticationService;
-    private EmployeesRepository employeeRepository;
-    private HttpSession session;
+  private AuthenticationManager authenticationManager;
+  private AuthenticationService authenticationService;
+  private EmployeesRepository employeeRepository;
+  private HttpSession session;
 
-    @BeforeEach
-    void setUp() {
-        authenticationManager = mock(AuthenticationManager.class);
-        employeeRepository = mock(EmployeesRepository.class);
-        session = mock(HttpSession.class);
-        authenticationService = new AuthenticationService(authenticationManager, employeeRepository);
-    }
+  @BeforeEach
+  void setUp() {
+    authenticationManager = mock(AuthenticationManager.class);
+    employeeRepository = mock(EmployeesRepository.class);
+    session = mock(HttpSession.class);
+    authenticationService = new AuthenticationService(authenticationManager, employeeRepository);
+  }
 
-    @Test
-    public void authenticate_ShouldReturnOk_WhenValidRequest() {
+  @Test
+  public void authenticate_ShouldReturnOk_WhenValidRequest() {
 
-        Employee testEmployee = Employee.builder()
-                .email("emp@example.com")
-                .password(PasswordEncoder.encodePassword("password123"))
-                .isActive(true)
-                .build();
+    Employee testEmployee =
+        Employee.builder()
+            .email("emp@example.com")
+            .password(PasswordEncoder.encodePassword("password123"))
+            .isActive(true)
+            .build();
 
-        AuthenticationRequest request = AuthenticationRequest.builder()
-                .email(testEmployee.getEmail())
-                .password("password123")
-                .build();
+    AuthenticationRequest request =
+        AuthenticationRequest.builder()
+            .email(testEmployee.getEmail())
+            .password("password123")
+            .build();
 
-        AuthenticationResponse expectedResponse = AuthenticationResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Authenticated employee with email '" + request.email() + "'!")
-                .role(Role.EMPLOYEE)
-                .build();
+    AuthenticationResponse expectedResponse =
+        AuthenticationResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message("Authenticated employee with email '" + request.email() + "'!")
+            .role(Role.EMPLOYEE)
+            .build();
 
-        when(employeeRepository.findByEmail("emp@example.com")).thenReturn(Optional.of(testEmployee));
+    when(employeeRepository.findByEmail("emp@example.com")).thenReturn(Optional.of(testEmployee));
 
-        Authentication authentication = mock(Authentication.class);
+    Authentication authentication = mock(Authentication.class);
 
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenReturn(authentication);
+    when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+        .thenReturn(authentication);
 
-        AuthenticationResponse response = authenticationService.authenticate(request, session);
+    AuthenticationResponse response = authenticationService.authenticate(request, session);
 
-        assertEquals(expectedResponse, response);
-    }
+    assertEquals(expectedResponse, response);
+  }
 
-    @Test
-    public void authenticate_ShouldThrowInvalidCredentialsException_WhenInvalidPassword() {
+  @Test
+  public void authenticate_ShouldThrowInvalidCredentialsException_WhenInvalidPassword() {
 
-        Employee testEmployee = Employee.builder()
-                .email("emp@example.com")
-                .password(PasswordEncoder.encodePassword("password123"))
-                .isActive(true)
-                .build();
+    Employee testEmployee =
+        Employee.builder()
+            .email("emp@example.com")
+            .password(PasswordEncoder.encodePassword("password123"))
+            .isActive(true)
+            .build();
 
-        AuthenticationRequest request = AuthenticationRequest.builder()
-                .email(testEmployee.getEmail())
-                .password("admin123")
-                .build();
+    AuthenticationRequest request =
+        AuthenticationRequest.builder().email(testEmployee.getEmail()).password("admin123").build();
 
-        when(employeeRepository.findByEmail(testEmployee.getEmail())).thenReturn(Optional.of(testEmployee));
+    when(employeeRepository.findByEmail(testEmployee.getEmail()))
+        .thenReturn(Optional.of(testEmployee));
 
-        assertThrows(InvalidCredentialsException.class, () -> authenticationService.authenticate(request, session));
-    }
+    assertThrows(
+        InvalidCredentialsException.class,
+        () -> authenticationService.authenticate(request, session));
+  }
 
+  @Test
+  public void authenticate_ShouldThrowEmployeeNotActiveException_WhenInactiveEmployee() {
 
-    @Test
-    public void authenticate_ShouldThrowEmployeeNotActiveException_WhenInactiveEmployee() {
+    Employee testEmployee =
+        Employee.builder()
+            .email("emp@example.com")
+            .password(PasswordEncoder.encodePassword("password123"))
+            .isActive(false)
+            .build();
 
-        Employee testEmployee = Employee.builder()
-                .email("emp@example.com")
-                .password(PasswordEncoder.encodePassword("password123"))
-                .isActive(false)
-                .build();
+    AuthenticationRequest request =
+        AuthenticationRequest.builder()
+            .email(testEmployee.getEmail())
+            .password("password123")
+            .build();
 
-        AuthenticationRequest request = AuthenticationRequest.builder()
-                .email(testEmployee.getEmail())
-                .password("password123")
-                .build();
+    when(employeeRepository.findByEmail(testEmployee.getEmail()))
+        .thenReturn(Optional.of(testEmployee));
 
-        when(employeeRepository.findByEmail(testEmployee.getEmail())).thenReturn(Optional.of(testEmployee));
+    assertThrows(
+        EmployeeNotActiveException.class,
+        () -> authenticationService.authenticate(request, session));
+  }
 
-        assertThrows(EmployeeNotActiveException.class, () -> authenticationService.authenticate(request, session));
-    }
+  @Test
+  public void authenticate_ShouldThrowEmployeeNotFoundException_WhenEmployeeNotFound() {
 
-    @Test
-    public void authenticate_ShouldThrowEmployeeNotFoundException_WhenEmployeeNotFound() {
+    AuthenticationRequest request =
+        AuthenticationRequest.builder().email("emp@example.com").password("password123").build();
 
-        AuthenticationRequest request = AuthenticationRequest.builder()
-                .email("emp@example.com")
-                .password("password123")
-                .build();
+    when(employeeRepository.findByEmail("emp@example.com")).thenReturn(Optional.empty());
 
-        when(employeeRepository.findByEmail("emp@example.com")).thenReturn(Optional.empty());
+    assertThrows(
+        EmployeeNotFoundException.class,
+        () -> authenticationService.authenticate(request, session));
+  }
 
-        assertThrows(EmployeeNotFoundException.class, () -> authenticationService.authenticate(request, session));
-    }
+  @Test
+  public void logout_ShouldInvalidateSession_WhenCalled() throws Exception {
 
-    @Test
-    public void logout_ShouldInvalidateSession_WhenCalled() throws Exception {
+    when(session.getAttribute("userEmail")).thenReturn("test@example.com");
 
-        when(session.getAttribute("userEmail")).thenReturn("test@example.com");
+    LogoutResponse logoutResponse = authenticationService.logout(session);
 
-        LogoutResponse logoutResponse = authenticationService.logout(session);
+    assertEquals(HttpStatus.OK.value(), logoutResponse.statusCode());
+    assertEquals("Logged out successfully", logoutResponse.message());
 
-        assertEquals(HttpStatus.OK.value(), logoutResponse.statusCode());
-        assertEquals("Logged out successfully", logoutResponse.message());
-
-        verify(session).invalidate();
-    }
+    verify(session).invalidate();
+  }
 }

@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @AllArgsConstructor
 @EnableAsync(proxyTargetClass = true)
 public class KebabApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(KebabApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(KebabApplication.class, args);
+  }
 }

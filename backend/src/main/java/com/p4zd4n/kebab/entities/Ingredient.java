@@ -14,21 +14,21 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Ingredient extends WithTimestamp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
+  private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+  @Column(name = "name", nullable = false, unique = true)
+  private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ingredient_type", nullable = false)
-    private IngredientType ingredientType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "ingredient_type", nullable = false)
+  private IngredientType ingredientType;
 
-    @Builder
-    public Ingredient(String name, IngredientType ingredientType) {
-        this.name = name;
-        this.ingredientType = ingredientType;
-    }
+  @Builder
+  public Ingredient(String name, IngredientType ingredientType) {
+    this.name = name;
+    this.ingredientType = ingredientType;
+  }
 }

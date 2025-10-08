@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class MealAlreadyExistsException extends RuntimeException {
 
-    private final String mealName;
+  private final String mealName;
 
-    public MealAlreadyExistsException(String name) {
-        super("Meal with name '" + name + "' already exists!");
-        mealName = name;
-    }
+  public MealAlreadyExistsException(String name) {
+    super("Meal with name '" + name + "' already exists!");
+    mealName = name;
+  }
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface OpeningHoursRepository extends JpaRepository<OpeningHour, Long> {
 
-    Optional<OpeningHour> findByDayOfWeek(DayOfWeek dayOfWeek);
+  Optional<OpeningHour> findByDayOfWeek(DayOfWeek dayOfWeek);
 }

@@ -8,17 +8,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FilterConfig {
 
-    @Bean
-    public FilterRegistrationBean<RateLimitFilter> rateLimitFilter(MessageSource messageSource) {
-        FilterRegistrationBean<RateLimitFilter> bean = new FilterRegistrationBean<>();
+  @Bean
+  public FilterRegistrationBean<RateLimitFilter> rateLimitFilter(MessageSource messageSource) {
+    FilterRegistrationBean<RateLimitFilter> bean = new FilterRegistrationBean<>();
 
-        bean.setFilter(new RateLimitFilter(messageSource));
-        bean.addUrlPatterns(
-                "/api/v1/orders/add-order",
-                "/api/v1/jobs/add-job-offer-application",
-                "/api/v1/newsletter/subscribe"
-        );
+    bean.setFilter(new RateLimitFilter(messageSource));
+    bean.addUrlPatterns(
+        "/api/v1/orders/add-order",
+        "/api/v1/jobs/add-job-offer-application",
+        "/api/v1/newsletter/subscribe");
 
-        return bean;
-    }
+    return bean;
+  }
 }

@@ -6,8 +6,6 @@ import lombok.Builder;
 
 @Builder
 public record RemovedEmployeeRequest(
-
-        @Email(message = "{email.invalidFormat}")
+    @Email(message = "{email.invalidFormat}")
         @Size(min = 1, max = 35, message = "{email.between1And35}")
-        String email
-) {}
+        String email) {}

@@ -4,8 +4,4 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record RemovedAddonPromotionRequest(
-
-        @NotNull(message = "{id.notNull}")
-        Long id
-) {}
+public record RemovedAddonPromotionRequest(@NotNull(message = "{id.notNull}") Long id) {}

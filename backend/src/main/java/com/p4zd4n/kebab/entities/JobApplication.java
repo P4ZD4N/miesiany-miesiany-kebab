@@ -16,50 +16,49 @@ import lombok.Setter;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class JobApplication extends WithTimestamp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
 
-    @Column(name = "applicant_first_name", nullable = false)
-    private String applicantFirstName;
+  @Column(name = "applicant_first_name", nullable = false)
+  private String applicantFirstName;
 
-    @Column(name = "applicant_last_name", nullable = false)
-    private String applicantLastName;
+  @Column(name = "applicant_last_name", nullable = false)
+  private String applicantLastName;
 
-    @Column(name = "applicant_email", nullable = false)
-    private String applicantEmail;
+  @Column(name = "applicant_email", nullable = false)
+  private String applicantEmail;
 
-    @Column(name = "applicant_telephone", nullable = false)
-    private String applicantTelephone;
+  @Column(name = "applicant_telephone", nullable = false)
+  private String applicantTelephone;
 
-    @Column(name = "additional_message")
-    private String additionalMessage;
+  @Column(name = "additional_message")
+  private String additionalMessage;
 
-    @Column(name = "is_student")
-    private boolean isStudent;
+  @Column(name = "is_student")
+  private boolean isStudent;
 
-    @OneToOne(mappedBy = "jobApplication", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cv cv;
+  @OneToOne(mappedBy = "jobApplication", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Cv cv;
 
-    @ManyToOne
-    @JoinColumn(name = "job_offer_id")
-    private JobOffer jobOffer;
+  @ManyToOne
+  @JoinColumn(name = "job_offer_id")
+  private JobOffer jobOffer;
 
-    @Builder
-    public JobApplication(
-            String applicantFirstName,
-            String applicantLastName,
-            String applicantEmail,
-            String applicantTelephone,
-            String additionalMessage,
-            boolean isStudent
-    ) {
-        this.applicantFirstName = applicantFirstName;
-        this.applicantLastName = applicantLastName;
-        this.applicantEmail = applicantEmail;
-        this.applicantTelephone = applicantTelephone;
-        this.additionalMessage = additionalMessage;
-        this.isStudent = isStudent;
-    }
+  @Builder
+  public JobApplication(
+      String applicantFirstName,
+      String applicantLastName,
+      String applicantEmail,
+      String applicantTelephone,
+      String additionalMessage,
+      boolean isStudent) {
+    this.applicantFirstName = applicantFirstName;
+    this.applicantLastName = applicantLastName;
+    this.applicantEmail = applicantEmail;
+    this.applicantTelephone = applicantTelephone;
+    this.additionalMessage = additionalMessage;
+    this.isStudent = isStudent;
+  }
 }

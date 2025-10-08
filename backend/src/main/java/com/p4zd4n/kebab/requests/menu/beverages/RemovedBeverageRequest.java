@@ -9,11 +9,7 @@ import java.math.BigDecimal;
 
 @Builder
 public record RemovedBeverageRequest(
-
-        @Size(min = 1, message = "{name.greaterThanZero}")
-        String name,
-
-        @NotNull(message = "{price.notNull}")
+    @Size(min = 1, message = "{name.greaterThanZero}") String name,
+    @NotNull(message = "{price.notNull}")
         @DecimalMin(value = "0.0", inclusive = false, message = "{price.greaterThanZero}")
-        BigDecimal capacity
-) {}
+        BigDecimal capacity) {}

@@ -22,124 +22,132 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MealService {
 
-    private final MealRepository mealRepository;
-    private final IngredientRepository ingredientRepository;
+  private final MealRepository mealRepository;
+  private final IngredientRepository ingredientRepository;
 
-    public MealService(MealRepository mealRepository, IngredientRepository ingredientRepository) {
-        this.mealRepository = mealRepository;
-        this.ingredientRepository = ingredientRepository;
-    }
+  public MealService(MealRepository mealRepository, IngredientRepository ingredientRepository) {
+    this.mealRepository = mealRepository;
+    this.ingredientRepository = ingredientRepository;
+  }
 
-    public List<MealResponse> getMeals() {
+  public List<MealResponse> getMeals() {
 
-        log.info("Started retrieving meals");
+    log.info("Started retrieving meals");
 
-        List<Meal> meals = mealRepository.findAll();
+    List<Meal> meals = mealRepository.findAll();
 
-        List<MealResponse> response = meals.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    List<MealResponse> response =
+        meals.stream().map(this::mapToResponse).collect(Collectors.toList());
 
-        log.info("Successfully retrieved meals");
+    log.info("Successfully retrieved meals");
 
-        return response;
-    }
+    return response;
+  }
 
-    private MealResponse mapToResponse(Meal meal) {
+  private MealResponse mapToResponse(Meal meal) {
 
-        EnumMap<Size, BigDecimal> prices = new EnumMap<>(meal.getPrices());
+    EnumMap<Size, BigDecimal> prices = new EnumMap<>(meal.getPrices());
 
-        List<SimpleMealIngredient> ingredientResponses = meal.getMealIngredients().stream()
-                .map(mealIngredient -> SimpleMealIngredient.builder()
+    List<SimpleMealIngredient> ingredientResponses =
+        meal.getMealIngredients().stream()
+            .map(
+                mealIngredient ->
+                    SimpleMealIngredient.builder()
                         .id(mealIngredient.getId())
                         .name(mealIngredient.getIngredient().getName())
                         .ingredientType(mealIngredient.getIngredient().getIngredientType())
-                        .build()
-                )
-                .toList();
+                        .build())
+            .toList();
 
-        return MealResponse.builder()
-                .name(meal.getName())
-                .prices(prices)
-                .ingredients(ingredientResponses)
-                .mealPromotions(meal.getPromotions())
-                .build();
+    return MealResponse.builder()
+        .name(meal.getName())
+        .prices(prices)
+        .ingredients(ingredientResponses)
+        .mealPromotions(meal.getPromotions())
+        .build();
+  }
+
+  public NewMealResponse addMeal(NewMealRequest request) {
+
+    Optional<Meal> meal = mealRepository.findByName(request.newMealName());
+
+    if (meal.isPresent()) {
+      throw new MealAlreadyExistsException(request.newMealName());
     }
 
-    public NewMealResponse addMeal(NewMealRequest request) {
+    Meal newMeal = Meal.builder().name(request.newMealName()).prices(request.prices()).build();
 
-        Optional<Meal> meal = mealRepository.findByName(request.newMealName());
+    request
+        .ingredients()
+        .forEach(
+            ingredient ->
+                newMeal.addIngredient(
+                    ingredientRepository
+                        .findByName(ingredient.name())
+                        .orElseThrow(() -> new IngredientNotFoundException(ingredient.name()))));
 
-        if (meal.isPresent()) {
-            throw new MealAlreadyExistsException(request.newMealName());
-        }
+    Meal savedMeal = mealRepository.save(newMeal);
+    NewMealResponse response =
+        NewMealResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully added new meal with name '" + savedMeal.getName() + "'")
+            .build();
 
-        Meal newMeal = Meal.builder()
-                .name(request.newMealName())
-                .prices(request.prices())
-                .build();
+    log.info("Successfully added new meal with name '{}'", savedMeal.getName());
 
-        request.ingredients().forEach(ingredient -> newMeal.addIngredient(
-                ingredientRepository.findByName(ingredient.name()).orElseThrow(
-                        () -> new IngredientNotFoundException(ingredient.name()))
-        ));
+    return response;
+  }
 
-        Meal savedMeal = mealRepository.save(newMeal);
-        NewMealResponse response = NewMealResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully added new meal with name '" + savedMeal.getName() + "'")
-                .build();
+  public Meal findMealByName(String name) {
 
-        log.info("Successfully added new meal with name '{}'", savedMeal.getName());
+    log.info("Started finding meal with name '{}'", name);
 
-        return response;
-    }
+    Meal meal = mealRepository.findByName(name).orElseThrow(() -> new MealNotFoundException(name));
 
-    public Meal findMealByName(String name) {
+    log.info("Successfully found meal with name '{}'", name);
 
-        log.info("Started finding meal with name '{}'", name);
+    return meal;
+  }
 
-        Meal meal = mealRepository.findByName(name)
-                .orElseThrow(() -> new MealNotFoundException(name));
+  public UpdatedMealResponse updateMeal(Meal meal, UpdatedMealRequest request) {
 
-        log.info("Successfully found meal with name '{}'", name);
+    UpdatedMealResponse response =
+        UpdatedMealResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully updated meal with name '" + meal.getName() + "'")
+            .build();
 
-        return meal;
-    }
+    meal.setName(request.updatedMealName());
+    meal.setPrices(request.updatedPrices());
+    meal.getMealIngredients().clear();
 
-    public UpdatedMealResponse updateMeal(Meal meal, UpdatedMealRequest request) {
+    request
+        .updatedIngredients()
+        .forEach(
+            ingredient ->
+                meal.addIngredient(
+                    ingredientRepository
+                        .findByName(ingredient.name())
+                        .orElseThrow(() -> new IngredientNotFoundException(ingredient.name()))));
 
-        UpdatedMealResponse response = UpdatedMealResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully updated meal with name '" + meal.getName() + "'")
-                .build();
+    mealRepository.save(meal);
 
-        meal.setName(request.updatedMealName());
-        meal.setPrices(request.updatedPrices());
-        meal.getMealIngredients().clear();
+    return response;
+  }
 
-        request.updatedIngredients().forEach(ingredient -> meal.addIngredient(
-                ingredientRepository.findByName(ingredient.name()).orElseThrow(
-                        () -> new IngredientNotFoundException(ingredient.name()))
-        ));
+  public RemovedMealResponse removeMeal(Meal meal) {
+    log.info("Started removing meal with name '{}'", meal.getName());
 
-        mealRepository.save(meal);
+    mealRepository.delete(meal);
 
-        return response;
-    }
+    RemovedMealResponse response =
+        RemovedMealResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully removed meal with name '" + meal.getName() + "'")
+            .build();
 
-    public RemovedMealResponse removeMeal(Meal meal) {
-        log.info("Started removing meal with name '{}'", meal.getName());
+    log.info("Successfully removed meal with name '{}'", meal.getName());
 
-        mealRepository.delete(meal);
-
-        RemovedMealResponse response = RemovedMealResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully removed meal with name '" + meal.getName() + "'")
-                .build();
-
-        log.info("Successfully removed meal with name '{}'", meal.getName());
-
-        return response;
-    }
+    return response;
+  }
 }

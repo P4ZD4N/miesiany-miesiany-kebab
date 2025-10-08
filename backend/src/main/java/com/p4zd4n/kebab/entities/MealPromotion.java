@@ -26,54 +26,52 @@ import java.util.*;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class MealPromotion extends WithTimestamp implements Promotion, Observable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
+  private Long id;
 
-    @Column(name = "description")
-    private String description;
+  @Column(name = "description")
+  private String description;
 
-    @ElementCollection(targetClass = Size.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "promotion_sizes", joinColumns = @JoinColumn(name = "promotion_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "size")
-    private Set<Size> sizes;
+  @ElementCollection(targetClass = Size.class, fetch = FetchType.EAGER)
+  @CollectionTable(name = "promotion_sizes", joinColumns = @JoinColumn(name = "promotion_id"))
+  @Enumerated(EnumType.STRING)
+  @Column(name = "size")
+  private Set<Size> sizes;
 
-    @Column(name = "discount_percentage")
-    private BigDecimal discountPercentage;
+  @Column(name = "discount_percentage")
+  private BigDecimal discountPercentage;
 
-    @ManyToMany(mappedBy = "promotions")
-    @JsonIgnore
-    private List<Meal> meals = new ArrayList<>();
+  @ManyToMany(mappedBy = "promotions")
+  @JsonIgnore
+  private List<Meal> meals = new ArrayList<>();
 
-    @Transient
-    @JsonIgnore
-    private List<Observer> observers = new ArrayList<>();
+  @Transient @JsonIgnore private List<Observer> observers = new ArrayList<>();
 
-    @Builder
-    public MealPromotion(String description, Set<Size> sizes, BigDecimal discountPercentage) {
-        this.description = description;
-        this.sizes = sizes;
-        this.discountPercentage = discountPercentage;
+  @Builder
+  public MealPromotion(String description, Set<Size> sizes, BigDecimal discountPercentage) {
+    this.description = description;
+    this.sizes = sizes;
+    this.discountPercentage = discountPercentage;
+  }
+
+  @Override
+  public void registerObserver(Observer observer) {
+    if (observer != null && !observers.contains(observer)) {
+      observers.add(observer);
     }
+  }
 
-    @Override
-    public void registerObserver(Observer observer) {
-        if (observer != null && !observers.contains(observer)) {
-            observers.add(observer);
-        }
-    }
+  @Override
+  public void unregisterObserver(Observer observer) {
+    observers.remove(observer);
+  }
 
-    @Override
-    public void unregisterObserver(Observer observer) {
-        observers.remove(observer);
+  @Override
+  public void notifyObservers() throws MessagingException {
+    for (Observer observer : observers) {
+      observer.update(this);
     }
-
-    @Override
-    public void notifyObservers() throws MessagingException {
-        for (Observer observer : observers) {
-            observer.update(this);
-        }
-    }
+  }
 }

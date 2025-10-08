@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class InvalidMealKeyFormatException extends RuntimeException {
 
-    private final String mealKey;
+  private final String mealKey;
 
-    public InvalidMealKeyFormatException(String mealKey) {
-        super("Invalid meal key format: " + mealKey);
-        this.mealKey = mealKey;
-    }
+  public InvalidMealKeyFormatException(String mealKey) {
+    super("Invalid meal key format: " + mealKey);
+    this.mealKey = mealKey;
+  }
 }

@@ -25,95 +25,94 @@ import static org.mockito.Mockito.*;
 
 public class HoursServiceTest {
 
-    @Mock
-    private OpeningHoursRepository openingHoursRepository;
+  @Mock private OpeningHoursRepository openingHoursRepository;
 
-    @InjectMocks
-    private HoursService hoursService;
+  @InjectMocks private HoursService hoursService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    public void getOpeningHours_ShouldReturnOpeningHours_WhenCalled() {
+  @Test
+  public void getOpeningHours_ShouldReturnOpeningHours_WhenCalled() {
 
-        List<OpeningHour> openingHoursList = Arrays.asList(
-                new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0)),
-                new OpeningHour(DayOfWeek.TUESDAY, LocalTime.of(10, 0), LocalTime.of(15, 0))
-        );
+    List<OpeningHour> openingHoursList =
+        Arrays.asList(
+            new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0)),
+            new OpeningHour(DayOfWeek.TUESDAY, LocalTime.of(10, 0), LocalTime.of(15, 0)));
 
-        when(openingHoursRepository.findAll()).thenReturn(openingHoursList);
+    when(openingHoursRepository.findAll()).thenReturn(openingHoursList);
 
-        List<OpeningHoursResponse> result = hoursService.getOpeningHours();
+    List<OpeningHoursResponse> result = hoursService.getOpeningHours();
 
-        assertEquals(2, result.size());
+    assertEquals(2, result.size());
 
-        assertEquals(DayOfWeek.MONDAY, result.getFirst().dayOfWeek());
-        assertEquals(LocalTime.of(9, 0), result.getFirst().openingTime());
-        assertEquals(LocalTime.of(18, 0), result.getFirst().closingTime());
+    assertEquals(DayOfWeek.MONDAY, result.getFirst().dayOfWeek());
+    assertEquals(LocalTime.of(9, 0), result.getFirst().openingTime());
+    assertEquals(LocalTime.of(18, 0), result.getFirst().closingTime());
 
-        assertEquals(DayOfWeek.TUESDAY, result.get(1).dayOfWeek());
-        assertEquals(LocalTime.of(10, 0), result.get(1).openingTime());
-        assertEquals(LocalTime.of(15, 0), result.get(1).closingTime());
+    assertEquals(DayOfWeek.TUESDAY, result.get(1).dayOfWeek());
+    assertEquals(LocalTime.of(10, 0), result.get(1).openingTime());
+    assertEquals(LocalTime.of(15, 0), result.get(1).closingTime());
 
-        verify(openingHoursRepository, times(1)).findAll();
-    }
+    verify(openingHoursRepository, times(1)).findAll();
+  }
 
-    @Test
-    public void findByDayOfWeek_ShouldReturnOpeningHourByDayOfWeek_WhenCalled() {
+  @Test
+  public void findByDayOfWeek_ShouldReturnOpeningHourByDayOfWeek_WhenCalled() {
 
-        OpeningHour openingHour = new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(19, 0));
+    OpeningHour openingHour =
+        new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(19, 0));
 
-        when(openingHoursRepository.findByDayOfWeek(DayOfWeek.MONDAY)).thenReturn(Optional.of(openingHour));
+    when(openingHoursRepository.findByDayOfWeek(DayOfWeek.MONDAY))
+        .thenReturn(Optional.of(openingHour));
 
-        OpeningHour foundOpeningHour = hoursService.findOpeningHourByDayOfWeek(DayOfWeek.MONDAY);
+    OpeningHour foundOpeningHour = hoursService.findOpeningHourByDayOfWeek(DayOfWeek.MONDAY);
 
-        assertNotNull(foundOpeningHour);
-        assertEquals(DayOfWeek.MONDAY, foundOpeningHour.getDayOfWeek());
-        assertEquals(LocalTime.of(9, 0), foundOpeningHour.getOpeningTime());
-        assertEquals(LocalTime.of(19, 0), foundOpeningHour.getClosingTime());
+    assertNotNull(foundOpeningHour);
+    assertEquals(DayOfWeek.MONDAY, foundOpeningHour.getDayOfWeek());
+    assertEquals(LocalTime.of(9, 0), foundOpeningHour.getOpeningTime());
+    assertEquals(LocalTime.of(19, 0), foundOpeningHour.getClosingTime());
 
-        verify(openingHoursRepository, times(1)).findByDayOfWeek(DayOfWeek.MONDAY);
-    }
+    verify(openingHoursRepository, times(1)).findByDayOfWeek(DayOfWeek.MONDAY);
+  }
 
-    @Test
-    public void saveOpeningHour_ShouldSaveOpeningHour_WhenCalled() {
+  @Test
+  public void saveOpeningHour_ShouldSaveOpeningHour_WhenCalled() {
 
-        OpeningHour openingHour = new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0));
+    OpeningHour openingHour =
+        new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0));
 
-        when(openingHoursRepository.save(openingHour)).thenReturn(openingHour);
+    when(openingHoursRepository.save(openingHour)).thenReturn(openingHour);
 
-        OpeningHour result = hoursService.saveOpeningHour(openingHour);
+    OpeningHour result = hoursService.saveOpeningHour(openingHour);
 
-        assertNotNull(result);
-        assertEquals(DayOfWeek.MONDAY, result.getDayOfWeek());
-        assertEquals(LocalTime.of(9, 0), result.getOpeningTime());
-        assertEquals(LocalTime.of(18, 0), result.getClosingTime());
+    assertNotNull(result);
+    assertEquals(DayOfWeek.MONDAY, result.getDayOfWeek());
+    assertEquals(LocalTime.of(9, 0), result.getOpeningTime());
+    assertEquals(LocalTime.of(18, 0), result.getClosingTime());
 
-        verify(openingHoursRepository, times(1)).save(openingHour);
-    }
+    verify(openingHoursRepository, times(1)).save(openingHour);
+  }
 
-    @Test
-    public void updateOpeningHour_ShouldUpdateOpeningHour_WhenCalled() {
+  @Test
+  public void updateOpeningHour_ShouldUpdateOpeningHour_WhenCalled() {
 
-        OpeningHour openingHour = new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0));
-        UpdatedHourRequest request = new UpdatedHourRequest(
-                DayOfWeek.MONDAY,
-                LocalTime.of(10, 0),
-                LocalTime.of(20, 0)
-        );
+    OpeningHour openingHour =
+        new OpeningHour(DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(18, 0));
+    UpdatedHourRequest request =
+        new UpdatedHourRequest(DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(20, 0));
 
-        when(openingHoursRepository.save(any(OpeningHour.class))).thenReturn(openingHour);
+    when(openingHoursRepository.save(any(OpeningHour.class))).thenReturn(openingHour);
 
-        UpdatedHourResponse response = hoursService.updateOpeningHour(openingHour, request);
+    UpdatedHourResponse response = hoursService.updateOpeningHour(openingHour, request);
 
-        verify(openingHoursRepository, times(1)).save(openingHour);
+    verify(openingHoursRepository, times(1)).save(openingHour);
 
-        assertEquals(LocalTime.of(10, 0), openingHour.getOpeningTime());
-        assertEquals(LocalTime.of(20, 0), openingHour.getClosingTime());
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully updated opening hours on MONDAY", response.message());
-    }
+    assertEquals(LocalTime.of(10, 0), openingHour.getOpeningTime());
+    assertEquals(LocalTime.of(20, 0), openingHour.getClosingTime());
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully updated opening hours on MONDAY", response.message());
+  }
 }

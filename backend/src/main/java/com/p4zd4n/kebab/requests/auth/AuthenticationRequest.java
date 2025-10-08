@@ -6,11 +6,5 @@ import lombok.Builder;
 
 @Builder
 public record AuthenticationRequest(
-
-        @NotBlank(message = "{email.notBlank}")
-        @Email(message = "{email.invalidFormat}")
-        String email,
-
-        @NotBlank(message = "{password.notBlank}")
-        String password
-) {}
+    @NotBlank(message = "{email.notBlank}") @Email(message = "{email.invalidFormat}") String email,
+    @NotBlank(message = "{password.notBlank}") String password) {}

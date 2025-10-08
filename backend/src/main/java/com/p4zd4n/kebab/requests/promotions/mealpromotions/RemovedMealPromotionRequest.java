@@ -6,8 +6,4 @@ import lombok.Builder;
 
 @Builder
 public record RemovedMealPromotionRequest(
-
-        @JsonProperty("id")
-        @NotNull(message = "{id.notNull}")
-        Long id
-) {}
+    @JsonProperty("id") @NotNull(message = "{id.notNull}") Long id) {}

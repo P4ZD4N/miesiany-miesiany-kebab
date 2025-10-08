@@ -7,12 +7,6 @@ import lombok.Builder;
 
 @Builder
 public record RemovedApplicationRequest(
-
-        @JsonProperty("position_name")
-        @Size(min = 1, message = "{name.greaterThanZero}")
+    @JsonProperty("position_name") @Size(min = 1, message = "{name.greaterThanZero}")
         String positionName,
-
-        @JsonProperty("application_id")
-        @NotNull(message = "{id.notNull}")
-        Long applicationId
-) {}
+    @JsonProperty("application_id") @NotNull(message = "{id.notNull}") Long applicationId) {}

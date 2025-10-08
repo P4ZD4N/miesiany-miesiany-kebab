@@ -36,327 +36,352 @@ import static org.mockito.Mockito.*;
 
 public class NewsletterServiceTest {
 
-    @Mock
-    private NewsletterRepository newsletterRepository;
+  @Mock private NewsletterRepository newsletterRepository;
 
-    @Mock
-    private OtpUtil otpUtil;
+  @Mock private OtpUtil otpUtil;
 
-    @Mock
-    private VerificationMailUtil verificationMailUtil;
+  @Mock private VerificationMailUtil verificationMailUtil;
 
-    @Mock
-    private WelcomeMailUtil welcomeMailUtil;
+  @Mock private WelcomeMailUtil welcomeMailUtil;
 
-    @Mock
-    private GoodbyeMailUtil goodbyeMailUtil;
+  @Mock private GoodbyeMailUtil goodbyeMailUtil;
 
-    @InjectMocks
-    private NewsletterService newsletterService;
+  @InjectMocks private NewsletterService newsletterService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    public void getSubscribers_ShouldReturnSubscribers_WhenCalled() {
+  @Test
+  public void getSubscribers_ShouldReturnSubscribers_WhenCalled() {
 
-        List<NewsletterSubscriber> subscribers = List.of(
-                NewsletterSubscriber.builder()
-                        .subscriberFirstName("John")
-                        .email("johndoe@example.com")
-                        .isActive(true)
-                        .build(),
-                NewsletterSubscriber.builder()
-                        .subscriberFirstName("Sarah")
-                        .email("sarahdoe@example.com")
-                        .isActive(true)
-                        .build()
-        );
+    List<NewsletterSubscriber> subscribers =
+        List.of(
+            NewsletterSubscriber.builder()
+                .subscriberFirstName("John")
+                .email("johndoe@example.com")
+                .isActive(true)
+                .build(),
+            NewsletterSubscriber.builder()
+                .subscriberFirstName("Sarah")
+                .email("sarahdoe@example.com")
+                .isActive(true)
+                .build());
 
-        when(newsletterRepository.findAll()).thenReturn(subscribers);
+    when(newsletterRepository.findAll()).thenReturn(subscribers);
 
-        List<NewsletterSubscriberResponse> result = newsletterService.getSubscribers();
+    List<NewsletterSubscriberResponse> result = newsletterService.getSubscribers();
 
-        assertEquals(2, result.size());
+    assertEquals(2, result.size());
 
-        assertEquals("John", result.getFirst().firstName());
-        assertEquals(true, result.getFirst().isActive());
+    assertEquals("John", result.getFirst().firstName());
+    assertEquals(true, result.getFirst().isActive());
 
-        assertEquals("sarahdoe@example.com", result.getLast().email());
-        assertEquals(true, result.getLast().isActive());
+    assertEquals("sarahdoe@example.com", result.getLast().email());
+    assertEquals(true, result.getLast().isActive());
 
-        verify(newsletterRepository, times(1)).findAll();
-    }
+    verify(newsletterRepository, times(1)).findAll();
+  }
 
-    @Test
-    public void addNewsletterSubscriber_ShouldAddSubscriber_WhenSubscriberWithTheSameEmailDoesNotExist() throws MessagingException {
+  @Test
+  public void
+      addNewsletterSubscriber_ShouldAddSubscriber_WhenSubscriberWithTheSameEmailDoesNotExist()
+          throws MessagingException {
 
-        NewNewsletterSubscriberRequest request = NewNewsletterSubscriberRequest.builder()
-                .firstName("Wiktor")
-                .email("example@example.com")
-                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
-                .build();
+    NewNewsletterSubscriberRequest request =
+        NewNewsletterSubscriberRequest.builder()
+            .firstName("Wiktor")
+            .email("example@example.com")
+            .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+            .build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
 
-        NewsletterSubscriber newSubscriber = NewsletterSubscriber.builder()
-                .subscriberFirstName(request.firstName())
-                .email(request.email())
-                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
-                .isActive(false)
-                .build();
+    NewsletterSubscriber newSubscriber =
+        NewsletterSubscriber.builder()
+            .subscriberFirstName(request.firstName())
+            .email(request.email())
+            .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+            .isActive(false)
+            .build();
 
-        when(newsletterRepository.save(any(NewsletterSubscriber.class))).thenReturn(newSubscriber);
+    when(newsletterRepository.save(any(NewsletterSubscriber.class))).thenReturn(newSubscriber);
 
-        NewNewsletterSubscriberResponse response = newsletterService.addNewsletterSubscriber(request);
+    NewNewsletterSubscriberResponse response = newsletterService.addNewsletterSubscriber(request);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully added new newsletter subscriber with email 'example@example.com'", response.message());
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals(
+        "Successfully added new newsletter subscriber with email 'example@example.com'",
+        response.message());
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(newsletterRepository, times(1)).save(any(NewsletterSubscriber.class));
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(newsletterRepository, times(1)).save(any(NewsletterSubscriber.class));
+  }
 
-    @Test
-    public void addNewsletterSubscriber_ShouldThrowSubscriberAlreadyExistsException_WhenSubscriberWithTheSameEmailExists() {
+  @Test
+  public void
+      addNewsletterSubscriber_ShouldThrowSubscriberAlreadyExistsException_WhenSubscriberWithTheSameEmailExists() {
 
-        NewNewsletterSubscriberRequest request = NewNewsletterSubscriberRequest.builder()
-                .firstName("Wiktor")
-                .email("example@example.com")
-                .build();
+    NewNewsletterSubscriberRequest request =
+        NewNewsletterSubscriberRequest.builder()
+            .firstName("Wiktor")
+            .email("example@example.com")
+            .build();
 
-        NewsletterSubscriber existingSubscriber = NewsletterSubscriber.builder()
-                .subscriberFirstName("Michael")
-                .email(request.email())
-                .isActive(false)
-                .build();
+    NewsletterSubscriber existingSubscriber =
+        NewsletterSubscriber.builder()
+            .subscriberFirstName("Michael")
+            .email(request.email())
+            .isActive(false)
+            .build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(existingSubscriber));
+    when(newsletterRepository.findByEmail(request.email()))
+        .thenReturn(Optional.of(existingSubscriber));
 
-        assertThrows(SubscriberAlreadyExistsException.class, () -> {
-            newsletterService.addNewsletterSubscriber(request);
+    assertThrows(
+        SubscriberAlreadyExistsException.class,
+        () -> {
+          newsletterService.addNewsletterSubscriber(request);
         });
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+  }
 
-    @Test
-    public void verifySubscription_ShouldActivateSubscriber_WhenOtpValidAndSubscriberExists() throws MessagingException {
+  @Test
+  public void verifySubscription_ShouldActivateSubscriber_WhenOtpValidAndSubscriberExists()
+      throws MessagingException {
 
-        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
-                .subscriberFirstName("Wiktor")
-                .email("example@example.com")
-                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
-                .isActive(false)
-                .otp(123456)
-                .otpGeneratedTime(LocalDateTime.now())
-                .build();
+    NewsletterSubscriber subscriber =
+        NewsletterSubscriber.builder()
+            .subscriberFirstName("Wiktor")
+            .email("example@example.com")
+            .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+            .isActive(false)
+            .otp(123456)
+            .otpGeneratedTime(LocalDateTime.now())
+            .build();
 
-        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
-                .email("example@example.com")
-                .otp(123456)
-                .build();
+    VerifyNewsletterSubscriptionRequest request =
+        VerifyNewsletterSubscriptionRequest.builder()
+            .email("example@example.com")
+            .otp(123456)
+            .build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
-        VerifyNewsletterSubscriptionResponse response = newsletterService.verifySubscription(request);
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+    VerifyNewsletterSubscriptionResponse response = newsletterService.verifySubscription(request);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully verified newsletter subscriber with 'example@example.com' email!", response.message());
-        assertTrue(subscriber.isActive());
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals(
+        "Successfully verified newsletter subscriber with 'example@example.com' email!",
+        response.message());
+    assertTrue(subscriber.isActive());
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(newsletterRepository, times(1)).save(subscriber);
-        verify(welcomeMailUtil, times(1)).sendPl(subscriber);
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(newsletterRepository, times(1)).save(subscriber);
+    verify(welcomeMailUtil, times(1)).sendPl(subscriber);
+  }
 
-    @Test
-    public void verifySubscription_ShouldThrowOtpNotMatchesException_WhenOtpNotMatches() throws MessagingException {
+  @Test
+  public void verifySubscription_ShouldThrowOtpNotMatchesException_WhenOtpNotMatches()
+      throws MessagingException {
 
-        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
-                .subscriberFirstName("Wiktor")
-                .email("example@example.com")
-                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
-                .isActive(false)
-                .otp(123456)
-                .otpGeneratedTime(LocalDateTime.now())
-                .build();
+    NewsletterSubscriber subscriber =
+        NewsletterSubscriber.builder()
+            .subscriberFirstName("Wiktor")
+            .email("example@example.com")
+            .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+            .isActive(false)
+            .otp(123456)
+            .otpGeneratedTime(LocalDateTime.now())
+            .build();
 
-        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
-                .email("example@example.com")
-                .otp(123457)
-                .build();
+    VerifyNewsletterSubscriptionRequest request =
+        VerifyNewsletterSubscriptionRequest.builder()
+            .email("example@example.com")
+            .otp(123457)
+            .build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
 
-        assertThrows(OtpNotMatchesException.class, () -> newsletterService.verifySubscription(request));
+    assertThrows(OtpNotMatchesException.class, () -> newsletterService.verifySubscription(request));
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(newsletterRepository, never()).save(any());
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(newsletterRepository, never()).save(any());
+  }
 
-    @Test
-    public void verifySubscription_ShouldThrowOtpExpired_WhenOtpExpired() throws MessagingException {
+  @Test
+  public void verifySubscription_ShouldThrowOtpExpired_WhenOtpExpired() throws MessagingException {
 
-        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
-                .subscriberFirstName("Wiktor")
-                .email("example@example.com")
-                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
-                .isActive(false)
-                .otp(123456)
-                .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_EXPIRATION_SECONDS + 10))
-                .build();
+    NewsletterSubscriber subscriber =
+        NewsletterSubscriber.builder()
+            .subscriberFirstName("Wiktor")
+            .email("example@example.com")
+            .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+            .isActive(false)
+            .otp(123456)
+            .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_EXPIRATION_SECONDS + 10))
+            .build();
 
-        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
-                .email("example@example.com")
-                .otp(123456)
-                .build();
+    VerifyNewsletterSubscriptionRequest request =
+        VerifyNewsletterSubscriptionRequest.builder()
+            .email("example@example.com")
+            .otp(123456)
+            .build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
 
-        assertThrows(OtpExpiredException.class, () -> newsletterService.verifySubscription(request));
+    assertThrows(OtpExpiredException.class, () -> newsletterService.verifySubscription(request));
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(newsletterRepository, never()).save(any());
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(newsletterRepository, never()).save(any());
+  }
 
-    @Test
-    public void verifySubscription_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist() throws MessagingException {
+  @Test
+  public void verifySubscription_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist()
+      throws MessagingException {
 
-        VerifyNewsletterSubscriptionRequest request = VerifyNewsletterSubscriptionRequest.builder()
-                .email("aaaa@example.com")
-                .otp(123456)
-                .build();
+    VerifyNewsletterSubscriptionRequest request =
+        VerifyNewsletterSubscriptionRequest.builder().email("aaaa@example.com").otp(123456).build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
 
-        assertThrows(SubscriberNotFoundException.class, () -> newsletterService.verifySubscription(request));
+    assertThrows(
+        SubscriberNotFoundException.class, () -> newsletterService.verifySubscription(request));
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(newsletterRepository, never()).save(any());
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(newsletterRepository, never()).save(any());
+  }
 
-    @Test
-    public void regenerateOtp_ShouldRegenerateOtp_WhenSubscriberExistsAndTimeIsValid() throws MessagingException {
+  @Test
+  public void regenerateOtp_ShouldRegenerateOtp_WhenSubscriberExistsAndTimeIsValid()
+      throws MessagingException {
 
-        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
-                .subscriberFirstName("Wiktor")
-                .email("example@example.com")
-                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
-                .isActive(false)
-                .otp(123456)
-                .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS + 10))
-                .build();
+    NewsletterSubscriber subscriber =
+        NewsletterSubscriber.builder()
+            .subscriberFirstName("Wiktor")
+            .email("example@example.com")
+            .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+            .isActive(false)
+            .otp(123456)
+            .otpGeneratedTime(
+                LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS + 10))
+            .build();
 
-        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
-                .email("example@example.com")
-                .build();
+    RegenerateOtpRequest request =
+        RegenerateOtpRequest.builder().email("example@example.com").build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
-        when(otpUtil.generateOtp()).thenReturn(123457);
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+    when(otpUtil.generateOtp()).thenReturn(123457);
 
-        RegenerateOtpResponse response = newsletterService.regenerateOtp(request);
+    RegenerateOtpResponse response = newsletterService.regenerateOtp(request);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully regenerated otp for subscriber with email '" + request.email() + "'!", response.message());
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals(
+        "Successfully regenerated otp for subscriber with email '" + request.email() + "'!",
+        response.message());
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(otpUtil, times(1)).generateOtp();
-        verify(verificationMailUtil, times(1)).sendPl(subscriber.getEmail(), 123457);
-        verify(newsletterRepository, times(1)).save(subscriber);
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(otpUtil, times(1)).generateOtp();
+    verify(verificationMailUtil, times(1)).sendPl(subscriber.getEmail(), 123457);
+    verify(newsletterRepository, times(1)).save(subscriber);
+  }
 
-    @Test
-    public void regenerateOtp_ShouldThrowOtpRegenerationFailedException_WhenRegenerationTimeNotPassed() throws MessagingException {
+  @Test
+  public void
+      regenerateOtp_ShouldThrowOtpRegenerationFailedException_WhenRegenerationTimeNotPassed()
+          throws MessagingException {
 
-        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
-                .subscriberFirstName("Wiktor")
-                .email("example@example.com")
-                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
-                .isActive(false)
-                .otp(123456)
-                .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS - 10))
-                .build();
+    NewsletterSubscriber subscriber =
+        NewsletterSubscriber.builder()
+            .subscriberFirstName("Wiktor")
+            .email("example@example.com")
+            .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+            .isActive(false)
+            .otp(123456)
+            .otpGeneratedTime(
+                LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS - 10))
+            .build();
 
-        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
-                .email("example@example.com")
-                .build();
+    RegenerateOtpRequest request =
+        RegenerateOtpRequest.builder().email("example@example.com").build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
 
-        assertThrows(OtpRegenerationFailedException.class, () -> newsletterService.regenerateOtp(request));
+    assertThrows(
+        OtpRegenerationFailedException.class, () -> newsletterService.regenerateOtp(request));
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(otpUtil, never()).generateOtp();
-        verify(verificationMailUtil, never()).sendEng(subscriber.getEmail(), 132543);
-        verify(newsletterRepository, never()).save(any());
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(otpUtil, never()).generateOtp();
+    verify(verificationMailUtil, never()).sendEng(subscriber.getEmail(), 132543);
+    verify(newsletterRepository, never()).save(any());
+  }
 
-    @Test
-    public void regenerateOtp_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist() throws MessagingException {
+  @Test
+  public void regenerateOtp_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist()
+      throws MessagingException {
 
-        RegenerateOtpRequest request = RegenerateOtpRequest.builder()
-                .email("example@example.com")
-                .build();
+    RegenerateOtpRequest request =
+        RegenerateOtpRequest.builder().email("example@example.com").build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
 
-        assertThrows(SubscriberNotFoundException.class, () -> newsletterService.regenerateOtp(request));
+    assertThrows(SubscriberNotFoundException.class, () -> newsletterService.regenerateOtp(request));
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(otpUtil, never()).generateOtp();
-        verify(verificationMailUtil, never()).sendEng(request.email(), 132543);
-        verify(newsletterRepository, never()).save(any());
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(otpUtil, never()).generateOtp();
+    verify(verificationMailUtil, never()).sendEng(request.email(), 132543);
+    verify(newsletterRepository, never()).save(any());
+  }
 
-    //
+  //
 
-    @Test
-    public void unsubscribe_ShouldDeleteSubscriber_WhenSubscriberExists() throws MessagingException {
+  @Test
+  public void unsubscribe_ShouldDeleteSubscriber_WhenSubscriberExists() throws MessagingException {
 
-        NewsletterSubscriber subscriber = NewsletterSubscriber.builder()
-                .subscriberFirstName("Wiktor")
-                .email("example@example.com")
-                .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
-                .isActive(false)
-                .otp(123456)
-                .otpGeneratedTime(LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS + 10))
-                .build();
+    NewsletterSubscriber subscriber =
+        NewsletterSubscriber.builder()
+            .subscriberFirstName("Wiktor")
+            .email("example@example.com")
+            .newsletterMessagesLanguage(NewsletterMessagesLanguage.POLISH)
+            .isActive(false)
+            .otp(123456)
+            .otpGeneratedTime(
+                LocalDateTime.now().minusSeconds(OtpUtil.OTP_REGENERATION_TIME_SECONDS + 10))
+            .build();
 
-        UnsubscribeRequest request = UnsubscribeRequest.builder()
-                .email("example@example.com")
-                .build();
+    UnsubscribeRequest request = UnsubscribeRequest.builder().email("example@example.com").build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.of(subscriber));
 
-        UnsubscribeResponse response = newsletterService.unsubscribe(request);
+    UnsubscribeResponse response = newsletterService.unsubscribe(request);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully deleted subscriber with email '" + request.email() + "'!", response.message());
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals(
+        "Successfully deleted subscriber with email '" + request.email() + "'!",
+        response.message());
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(goodbyeMailUtil, times(1)).sendPl(subscriber);
-        verify(newsletterRepository, times(1)).delete(subscriber);
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(goodbyeMailUtil, times(1)).sendPl(subscriber);
+    verify(newsletterRepository, times(1)).delete(subscriber);
+  }
 
-    @Test
-    public void unsubscribe_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist() throws MessagingException {
+  @Test
+  public void unsubscribe_ShouldThrowSubscriberNotFoundException_WhenSubscriberDoesNotExist()
+      throws MessagingException {
 
-        UnsubscribeRequest request = UnsubscribeRequest.builder()
-                .email("example@example.com")
-                .build();
+    UnsubscribeRequest request = UnsubscribeRequest.builder().email("example@example.com").build();
 
-        when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+    when(newsletterRepository.findByEmail(request.email())).thenReturn(Optional.empty());
 
-        assertThrows(SubscriberNotFoundException.class, () -> newsletterService.unsubscribe(request));
+    assertThrows(SubscriberNotFoundException.class, () -> newsletterService.unsubscribe(request));
 
-        verify(newsletterRepository, times(1)).findByEmail(request.email());
-        verify(goodbyeMailUtil, never()).sendEng(any());
-        verify(newsletterRepository, never()).save(any());
-    }
+    verify(newsletterRepository, times(1)).findByEmail(request.email());
+    verify(goodbyeMailUtil, never()).sendEng(any());
+    verify(newsletterRepository, never()).save(any());
+  }
 }

@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class DiscountCodeNotFoundException extends RuntimeException {
 
-    private final String code;
+  private final String code;
 
-    public DiscountCodeNotFoundException(String code) {
-        super("Discount code '" + code + "' not found!");
-        this.code = code;
-    }
+  public DiscountCodeNotFoundException(String code) {
+    super("Discount code '" + code + "' not found!");
+    this.code = code;
+  }
 }

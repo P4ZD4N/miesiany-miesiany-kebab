@@ -8,12 +8,8 @@ import lombok.Builder;
 
 @Builder
 public record TrackOrderRequest(
-
-        @NotNull(message = "{id.notNull}")
-        Long id,
-
-        @JsonProperty("customer_phone")
+    @NotNull(message = "{id.notNull}") Long id,
+    @JsonProperty("customer_phone")
         @NotBlank(message = "{phone.notBlank}")
         @Pattern(regexp = "^[0-9]{9}$", message = "{phone.invalidFormat}")
-        String customerPhone
-) {}
+        String customerPhone) {}

@@ -22,102 +22,104 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+  private final CustomUserDetailsService userDetailsService;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+  public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    this.userDetailsService = userDetailsService;
+  }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/login").permitAll()
-                        .requestMatchers(
-                                "/api/v1/hours/update-opening-hour",
-                                "/api/v1/menu/update-beverage",
-                                "/api/v1/menu/remove-beverage",
-                                "/api/v1/menu/add-beverage",
-                                "/api/v1/menu/add-addon",
-                                "/api/v1/menu/update-addon",
-                                "/api/v1/menu/remove-addon",
-                                "/api/v1/menu/add-meal",
-                                "/api/v1/menu/update-meal",
-                                "/api/v1/menu/remove-meal",
-                                "/api/v1/menu/add-ingredient",
-                                "/api/v1/menu/remove-ingredient",
-                                "/api/v1/contact/update-contact",
-                                "/api/v1/jobs/job-offers/manager",
-                                "/api/v1/jobs/add-job-offer",
-                                "/api/v1/jobs/update-job-offer",
-                                "/api/v1/jobs/remove-job-offer",
-                                "/api/v1/jobs/download-cv/**",
-                                "/api/v1/jobs/remove-job-application",
-                                "/api/v1/promotions/add-meal-promotion",
-                                "/api/v1/promotions/update-meal-promotion",
-                                "/api/v1/promotions/remove-meal-promotion",
-                                "/api/v1/promotions/add-beverage-promotion",
-                                "/api/v1/promotions/update-beverage-promotion",
-                                "/api/v1/promotions/remove-beverage-promotion",
-                                "/api/v1/promotions/add-addon-promotion",
-                                "/api/v1/promotions/update-addon-promotion",
-                                "/api/v1/promotions/remove-addon-promotion",
-                                "/api/v1/newsletter/subscribers",
-                                "/api/v1/discount-codes/all",
-                                "/api/v1/discount-codes/add-discount-code",
-                                "/api/v1/discount-codes/update-discount-code",
-                                "/api/v1/discount-codes/remove-discount-code",
-                                "/api/v1/newsletter/subscribers",
-                                "/api/v1/work-schedule/add-entry",
-                                "/api/v1/work-schedule/remove-entry",
-                                "/api/v1/employees/add-employee",
-                                "/api/v1/employees/update-employee",
-                                "/api/v1/employees/remove-employee"
-                        ).hasRole("MANAGER")
-                        .requestMatchers(
-                                "api/v1/auth/logout",
-                                "/api/v1/orders/all",
-                                "/api/v1/orders/update-order",
-                                "/api/v1/orders/remove-order",
-                                "/api/v1/work-schedule/all-entries",
-                                "/api/v1/employees/all",
-                                "/api/v1/employees/update-credentials",
-                                "/api/v1/work-schedule/get-work-schedule-pdf"
-                        ).hasAnyRole("MANAGER", "EMPLOYEE")
-                        .anyRequest().permitAll()
-                )
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
-                .build();
-    }
+    return http.csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(
+            authorize ->
+                authorize
+                    .requestMatchers("/api/v1/auth/login")
+                    .permitAll()
+                    .requestMatchers(
+                        "/api/v1/hours/update-opening-hour",
+                        "/api/v1/menu/update-beverage",
+                        "/api/v1/menu/remove-beverage",
+                        "/api/v1/menu/add-beverage",
+                        "/api/v1/menu/add-addon",
+                        "/api/v1/menu/update-addon",
+                        "/api/v1/menu/remove-addon",
+                        "/api/v1/menu/add-meal",
+                        "/api/v1/menu/update-meal",
+                        "/api/v1/menu/remove-meal",
+                        "/api/v1/menu/add-ingredient",
+                        "/api/v1/menu/remove-ingredient",
+                        "/api/v1/contact/update-contact",
+                        "/api/v1/jobs/job-offers/manager",
+                        "/api/v1/jobs/add-job-offer",
+                        "/api/v1/jobs/update-job-offer",
+                        "/api/v1/jobs/remove-job-offer",
+                        "/api/v1/jobs/download-cv/**",
+                        "/api/v1/jobs/remove-job-application",
+                        "/api/v1/promotions/add-meal-promotion",
+                        "/api/v1/promotions/update-meal-promotion",
+                        "/api/v1/promotions/remove-meal-promotion",
+                        "/api/v1/promotions/add-beverage-promotion",
+                        "/api/v1/promotions/update-beverage-promotion",
+                        "/api/v1/promotions/remove-beverage-promotion",
+                        "/api/v1/promotions/add-addon-promotion",
+                        "/api/v1/promotions/update-addon-promotion",
+                        "/api/v1/promotions/remove-addon-promotion",
+                        "/api/v1/newsletter/subscribers",
+                        "/api/v1/discount-codes/all",
+                        "/api/v1/discount-codes/add-discount-code",
+                        "/api/v1/discount-codes/update-discount-code",
+                        "/api/v1/discount-codes/remove-discount-code",
+                        "/api/v1/newsletter/subscribers",
+                        "/api/v1/work-schedule/add-entry",
+                        "/api/v1/work-schedule/remove-entry",
+                        "/api/v1/employees/add-employee",
+                        "/api/v1/employees/update-employee",
+                        "/api/v1/employees/remove-employee")
+                    .hasRole("MANAGER")
+                    .requestMatchers(
+                        "api/v1/auth/logout",
+                        "/api/v1/orders/all",
+                        "/api/v1/orders/update-order",
+                        "/api/v1/orders/remove-order",
+                        "/api/v1/work-schedule/all-entries",
+                        "/api/v1/employees/all",
+                        "/api/v1/employees/update-credentials",
+                        "/api/v1/work-schedule/get-work-schedule-pdf")
+                    .hasAnyRole("MANAGER", "EMPLOYEE")
+                    .anyRequest()
+                    .permitAll())
+        .formLogin(AbstractHttpConfigurer::disable)
+        .logout(AbstractHttpConfigurer::disable)
+        .build();
+  }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        configuration.setAllowedMethods(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+    configuration.setAllowedMethods(List.of("*"));
+    configuration.setAllowedHeaders(List.of("*"));
+    configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
 
-        return source;
-    }
+    return source;
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        return builder.build();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+    builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    return builder.build();
+  }
 }

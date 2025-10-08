@@ -10,110 +10,109 @@ import com.p4zd4n.kebab.responses.menu.addons.AddonResponse;
 import com.p4zd4n.kebab.responses.menu.addons.NewAddonResponse;
 import com.p4zd4n.kebab.responses.menu.addons.RemovedAddonResponse;
 import com.p4zd4n.kebab.responses.menu.addons.UpdatedAddonResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class AddonService {
 
-    private final AddonRepository addonRepository;
+  private final AddonRepository addonRepository;
 
-    public AddonService(AddonRepository addonRepository) {
-        this.addonRepository = addonRepository;
+  public AddonService(AddonRepository addonRepository) {
+    this.addonRepository = addonRepository;
+  }
+
+  public List<AddonResponse> getAddons() {
+
+    log.info("Started retrieving addons");
+
+    List<Addon> addons = addonRepository.findAll();
+
+    List<AddonResponse> response =
+        addons.stream().map(this::mapToResponse).collect(Collectors.toList());
+
+    log.info("Successfully retrieved addons");
+
+    return response;
+  }
+
+  private AddonResponse mapToResponse(Addon addon) {
+
+    return AddonResponse.builder()
+        .name(addon.getName())
+        .price(addon.getPrice())
+        .promotion(addon.getPromotion())
+        .build();
+  }
+
+  public NewAddonResponse addAddon(NewAddonRequest request) {
+
+    Optional<Addon> addon = addonRepository.findByName(request.newAddonName());
+
+    if (addon.isPresent()) {
+      throw new AddonAlreadyExistsException(request.newAddonName());
     }
 
-    public List<AddonResponse> getAddons() {
+    Addon newAddon =
+        Addon.builder().name(request.newAddonName()).price(request.newAddonPrice()).build();
+    Addon savedAddon = addonRepository.save(newAddon);
+    NewAddonResponse response =
+        NewAddonResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully added new addon with name '" + savedAddon.getName() + "'")
+            .build();
 
-        log.info("Started retrieving addons");
+    log.info("Successfully added new addon with name '{}'", savedAddon.getName());
 
-        List<Addon> addons = addonRepository.findAll();
+    return response;
+  }
 
-        List<AddonResponse> response = addons.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+  public Addon findAddonByName(String name) {
 
-        log.info("Successfully retrieved addons");
+    log.info("Started finding addon with name '{}'", name);
 
-        return response;
-    }
+    Addon addon =
+        addonRepository.findByName(name).orElseThrow(() -> new AddonNotFoundException(name));
 
-    private AddonResponse mapToResponse(Addon addon) {
+    log.info("Successfully found addon with name '{}'", name);
 
-        return AddonResponse.builder()
-                .name(addon.getName())
-                .price(addon.getPrice())
-                .promotion(addon.getPromotion())
-                .build();
-    }
+    return addon;
+  }
 
-    public NewAddonResponse addAddon(NewAddonRequest request) {
+  public UpdatedAddonResponse updateAddon(Addon addon, UpdatedAddonRequest request) {
 
-        Optional<Addon> addon = addonRepository.findByName(request.newAddonName());
+    UpdatedAddonResponse response =
+        UpdatedAddonResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully updated addon with name '" + addon.getName() + "'")
+            .build();
 
-        if (addon.isPresent()) {
-            throw new AddonAlreadyExistsException(request.newAddonName());
-        }
+    addon.setName(request.updatedAddonName());
+    addon.setPrice(request.updatedAddonPrice());
 
-        Addon newAddon = Addon.builder()
-                .name(request.newAddonName())
-                .price(request.newAddonPrice())
-                .build();
-        Addon savedAddon = addonRepository.save(newAddon);
-        NewAddonResponse response = NewAddonResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully added new addon with name '" + savedAddon.getName() + "'")
-                .build();
+    addonRepository.save(addon);
 
-        log.info("Successfully added new addon with name '{}'", savedAddon.getName());
+    return response;
+  }
 
-        return response;
-    }
+  public RemovedAddonResponse removeAddon(Addon addon) {
+    log.info("Started removing addon with name '{}'", addon.getName());
 
-    public Addon findAddonByName(String name) {
+    addonRepository.delete(addon);
 
-        log.info("Started finding addon with name '{}'", name);
+    RemovedAddonResponse response =
+        RemovedAddonResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully removed addon with name '" + addon.getName() + "'")
+            .build();
 
-        Addon addon = addonRepository.findByName(name)
-                .orElseThrow(() -> new AddonNotFoundException(name));
+    log.info("Successfully removed addon with name '{}'", addon.getName());
 
-        log.info("Successfully found addon with name '{}'", name);
-
-        return addon;
-    }
-
-    public UpdatedAddonResponse updateAddon(Addon addon, UpdatedAddonRequest request) {
-
-        UpdatedAddonResponse response = UpdatedAddonResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully updated addon with name '" + addon.getName() + "'")
-                .build();
-
-        addon.setName(request.updatedAddonName());
-        addon.setPrice(request.updatedAddonPrice());
-
-        addonRepository.save(addon);
-
-        return response;
-    }
-
-    public RemovedAddonResponse removeAddon(Addon addon) {
-        log.info("Started removing addon with name '{}'", addon.getName());
-
-        addonRepository.delete(addon);
-
-        RemovedAddonResponse response = RemovedAddonResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully removed addon with name '" + addon.getName() + "'")
-                .build();
-
-        log.info("Successfully removed addon with name '{}'", addon.getName());
-
-        return response;
-    }
+    return response;
+  }
 }

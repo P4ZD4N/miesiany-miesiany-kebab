@@ -14,21 +14,21 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Contact extends WithTimestamp {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private Long id;
 
-    @Column(name = "contact_type", nullable = false, unique = true)
-    @Enumerated(EnumType.STRING)
-    private ContactType contactType;
+  @Column(name = "contact_type", nullable = false, unique = true)
+  @Enumerated(EnumType.STRING)
+  private ContactType contactType;
 
-    @Column(name = "value", nullable = false)
-    private String value;
+  @Column(name = "value", nullable = false)
+  private String value;
 
-    @Builder
-    public Contact(ContactType contactType, String value) {
-        this.contactType = contactType;
-        this.value = value;
-    }
+  @Builder
+  public Contact(ContactType contactType, String value) {
+    this.contactType = contactType;
+    this.value = value;
+  }
 }

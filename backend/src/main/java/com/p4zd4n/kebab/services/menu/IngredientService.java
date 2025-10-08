@@ -10,105 +10,113 @@ import com.p4zd4n.kebab.requests.menu.ingredients.NewIngredientRequest;
 import com.p4zd4n.kebab.responses.menu.ingredients.IngredientResponse;
 import com.p4zd4n.kebab.responses.menu.ingredients.NewIngredientResponse;
 import com.p4zd4n.kebab.responses.menu.ingredients.RemovedIngredientResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class IngredientService {
 
-    private final IngredientRepository ingredientRepository;
-    private final MealRepository mealRepository;
+  private final IngredientRepository ingredientRepository;
+  private final MealRepository mealRepository;
 
-    public IngredientService(IngredientRepository ingredientRepository, MealRepository mealRepository) {
-        this.ingredientRepository = ingredientRepository;
-        this.mealRepository = mealRepository;
+  public IngredientService(
+      IngredientRepository ingredientRepository, MealRepository mealRepository) {
+    this.ingredientRepository = ingredientRepository;
+    this.mealRepository = mealRepository;
+  }
+
+  public List<IngredientResponse> getIngredients() {
+
+    log.info("Started retrieving ingredients");
+
+    List<Ingredient> ingredients = ingredientRepository.findAll();
+
+    List<IngredientResponse> response =
+        ingredients.stream().map(this::mapToResponse).collect(Collectors.toList());
+
+    log.info("Successfully retrieved ingredients");
+
+    return response;
+  }
+
+  private IngredientResponse mapToResponse(Ingredient ingredient) {
+
+    return IngredientResponse.builder()
+        .name(ingredient.getName())
+        .ingredientType(ingredient.getIngredientType())
+        .build();
+  }
+
+  public NewIngredientResponse addIngredient(NewIngredientRequest request) {
+
+    Optional<Ingredient> ingredient = ingredientRepository.findByName(request.newIngredientName());
+
+    if (ingredient.isPresent()) {
+      throw new IngredientAlreadyExistsException(request.newIngredientName());
     }
 
-    public List<IngredientResponse> getIngredients() {
+    Ingredient newIngredient =
+        Ingredient.builder()
+            .name(request.newIngredientName())
+            .ingredientType(request.newIngredientType())
+            .build();
+    Ingredient savedIngredient = ingredientRepository.save(newIngredient);
+    NewIngredientResponse response =
+        NewIngredientResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message(
+                "Successfully added new ingredient with name '" + savedIngredient.getName() + "'")
+            .build();
 
-        log.info("Started retrieving ingredients");
+    log.info("Successfully added new ingredient with name '{}'", savedIngredient.getName());
 
-        List<Ingredient> ingredients = ingredientRepository.findAll();
+    return response;
+  }
 
-        List<IngredientResponse> response = ingredients.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+  public Ingredient findIngredientByName(String name) {
 
-        log.info("Successfully retrieved ingredients");
+    log.info("Started finding ingredient with name '{}'", name);
 
-        return response;
-    }
+    Ingredient ingredient =
+        ingredientRepository
+            .findByName(name)
+            .orElseThrow(() -> new IngredientNotFoundException(name));
 
-    private IngredientResponse mapToResponse(Ingredient ingredient) {
+    log.info("Successfully found ingredient with name '{}'", name);
 
-        return IngredientResponse.builder()
-                .name(ingredient.getName())
-                .ingredientType(ingredient.getIngredientType())
-                .build();
-    }
+    return ingredient;
+  }
 
-    public NewIngredientResponse addIngredient(NewIngredientRequest request) {
+  public RemovedIngredientResponse removeIngredient(Ingredient ingredient) {
+    log.info("Started removing ingredient with name '{}'", ingredient.getName());
 
-        Optional<Ingredient> ingredient = ingredientRepository.findByName(request.newIngredientName());
+    List<Meal> allMeals = mealRepository.findAll();
 
-        if (ingredient.isPresent()) {
-            throw new IngredientAlreadyExistsException(request.newIngredientName());
-        }
+    allMeals.stream()
+        .filter(
+            meal ->
+                meal.getMealIngredients().stream()
+                    .anyMatch(ing -> ing.getIngredient().equals(ingredient)))
+        .forEach(
+            meal -> {
+              meal.removeIngredient(ingredient);
+            });
 
-        Ingredient newIngredient = Ingredient.builder()
-                .name(request.newIngredientName())
-                .ingredientType(request.newIngredientType())
-                .build();
-        Ingredient savedIngredient = ingredientRepository.save(newIngredient);
-        NewIngredientResponse response = NewIngredientResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully added new ingredient with name '" + savedIngredient.getName() + "'")
-                .build();
+    ingredientRepository.delete(ingredient);
 
-        log.info("Successfully added new ingredient with name '{}'", savedIngredient.getName());
+    RemovedIngredientResponse response =
+        RemovedIngredientResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message("Successfully removed ingredient with name '" + ingredient.getName() + "'")
+            .build();
 
-        return response;
-    }
+    log.info("Successfully removed ingredient with name '{}'", ingredient.getName());
 
-    public Ingredient findIngredientByName(String name) {
-
-        log.info("Started finding ingredient with name '{}'", name);
-
-        Ingredient ingredient = ingredientRepository.findByName(name)
-                .orElseThrow(() -> new IngredientNotFoundException(name));
-
-        log.info("Successfully found ingredient with name '{}'", name);
-
-        return ingredient;
-    }
-
-    public RemovedIngredientResponse removeIngredient(Ingredient ingredient) {
-        log.info("Started removing ingredient with name '{}'", ingredient.getName());
-
-        List<Meal> allMeals = mealRepository.findAll();
-
-        allMeals.stream()
-                .filter(meal -> meal.getMealIngredients().stream()
-                        .anyMatch(ing -> ing.getIngredient().equals(ingredient)))
-                .forEach(meal -> {
-                    meal.removeIngredient(ingredient);
-                });
-
-        ingredientRepository.delete(ingredient);
-
-        RemovedIngredientResponse response = RemovedIngredientResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully removed ingredient with name '" + ingredient.getName() + "'")
-                .build();
-
-        log.info("Successfully removed ingredient with name '{}'", ingredient.getName());
-
-        return response;
-    }
+    return response;
+  }
 }

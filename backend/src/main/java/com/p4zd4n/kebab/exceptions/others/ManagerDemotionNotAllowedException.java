@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public class ManagerDemotionNotAllowedException extends RuntimeException {
 
-    public ManagerDemotionNotAllowedException() {
-        super("Changing position of manager to another role is not allowed!");
-    }
+  public ManagerDemotionNotAllowedException() {
+    super("Changing position of manager to another role is not allowed!");
+  }
 }

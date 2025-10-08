@@ -17,34 +17,33 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AuthenticationController {
 
-    private final AuthenticationService authenticationService;
+  private final AuthenticationService authenticationService;
 
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
-    }
+  public AuthenticationController(AuthenticationService authenticationService) {
+    this.authenticationService = authenticationService;
+  }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody AuthenticationRequest request,
-            HttpSession session
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @PostMapping("/login")
+  public ResponseEntity<AuthenticationResponse> authenticate(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody AuthenticationRequest request,
+      HttpSession session) {
+    LanguageValidator.validateLanguage(language);
 
-        log.info("Received login request for email '{}'", request.email());
-        AuthenticationResponse response = authenticationService.authenticate(request, session);
+    log.info("Received login request for email '{}'", request.email());
+    AuthenticationResponse response = authenticationService.authenticate(request, session);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
-        String email = (String) session.getAttribute("userEmail");
+  @PostMapping("/logout")
+  public ResponseEntity<?> logout(HttpSession session) {
+    String email = (String) session.getAttribute("userEmail");
 
-        log.info("Received logout request for email '{}'", email);
+    log.info("Received logout request for email '{}'", email);
 
-        LogoutResponse response = authenticationService.logout(session);
+    LogoutResponse response = authenticationService.logout(session);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+  }
 }

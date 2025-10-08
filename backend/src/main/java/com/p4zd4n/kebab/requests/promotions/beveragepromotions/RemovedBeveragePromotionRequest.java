@@ -4,8 +4,4 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record RemovedBeveragePromotionRequest(
-
-        @NotNull(message = "{id.notNull}")
-        Long id
-) {}
+public record RemovedBeveragePromotionRequest(@NotNull(message = "{id.notNull}") Long id) {}

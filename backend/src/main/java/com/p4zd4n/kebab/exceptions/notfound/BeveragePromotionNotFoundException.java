@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class BeveragePromotionNotFoundException extends RuntimeException {
 
-    private final Long id;
+  private final Long id;
 
-    public BeveragePromotionNotFoundException(Long id) {
-        super("Beverage promotion with id '" + id + "' not found!");
-        this.id = id;
-    }
+  public BeveragePromotionNotFoundException(Long id) {
+    super("Beverage promotion with id '" + id + "' not found!");
+    this.id = id;
+  }
 }

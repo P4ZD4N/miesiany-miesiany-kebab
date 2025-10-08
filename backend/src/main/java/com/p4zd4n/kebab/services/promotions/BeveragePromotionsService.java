@@ -13,173 +13,200 @@ import com.p4zd4n.kebab.responses.promotions.beveragepromotions.RemovedBeverageP
 import com.p4zd4n.kebab.responses.promotions.beveragepromotions.UpdatedBeveragePromotionResponse;
 import com.p4zd4n.kebab.utils.mails.PromotionMailUtil;
 import jakarta.mail.MessagingException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class BeveragePromotionsService {
 
-    private final BeveragePromotionsRepository beveragePromotionsRepository;
-    private final BeverageRepository beverageRepository;
-    private final PromotionMailUtil promotionMailUtil;
+  private final BeveragePromotionsRepository beveragePromotionsRepository;
+  private final BeverageRepository beverageRepository;
+  private final PromotionMailUtil promotionMailUtil;
 
-    public BeveragePromotionsService(
-        BeveragePromotionsRepository beveragePromotionsRepository,
-        BeverageRepository beverageRepository,
-        PromotionMailUtil promotionMailUtil
-    ) {
-        this.beveragePromotionsRepository = beveragePromotionsRepository;
-        this.beverageRepository = beverageRepository;
-        this.promotionMailUtil = promotionMailUtil;
+  public BeveragePromotionsService(
+      BeveragePromotionsRepository beveragePromotionsRepository,
+      BeverageRepository beverageRepository,
+      PromotionMailUtil promotionMailUtil) {
+    this.beveragePromotionsRepository = beveragePromotionsRepository;
+    this.beverageRepository = beverageRepository;
+    this.promotionMailUtil = promotionMailUtil;
+  }
+
+  public List<BeveragePromotionResponse> getBeveragePromotions() {
+
+    log.info("Started retrieving beverage promotions");
+
+    List<BeveragePromotion> promotions = beveragePromotionsRepository.findAll();
+
+    List<BeveragePromotionResponse> response =
+        promotions.stream().map(this::mapToResponse).collect(Collectors.toList());
+
+    log.info("Successfully retrieved beverage promotions");
+
+    return response;
+  }
+
+  public BeveragePromotionResponse mapToResponse(BeveragePromotion beveragePromotion) {
+
+    Map<String, List<BigDecimal>> beveragesWithCapacities =
+        beveragePromotion.getBeverages().stream()
+            .collect(
+                Collectors.groupingBy(
+                    Beverage::getName,
+                    Collectors.mapping(Beverage::getCapacity, Collectors.toList())));
+
+    return BeveragePromotionResponse.builder()
+        .id(beveragePromotion.getId())
+        .description(beveragePromotion.getDescription())
+        .discountPercentage(beveragePromotion.getDiscountPercentage())
+        .beveragesWithCapacities(beveragesWithCapacities)
+        .build();
+  }
+
+  public NewBeveragePromotionResponse addBeveragePromotion(NewBeveragePromotionRequest request)
+      throws MessagingException {
+
+    BeveragePromotion beveragePromotion =
+        BeveragePromotion.builder()
+            .description(request.description())
+            .discountPercentage(request.discountPercentage())
+            .build();
+
+    if (request.beveragesWithCapacities() != null) {
+      List<Beverage> beverages =
+          beverageRepository.findAll().stream()
+              .filter(beverage -> request.beveragesWithCapacities().containsKey(beverage.getName()))
+              .toList();
+      beveragePromotion.getBeverages().addAll(beverages);
     }
 
-    public List<BeveragePromotionResponse> getBeveragePromotions() {
+    BeveragePromotion savedBeveragePromotion = beveragePromotionsRepository.save(beveragePromotion);
+    savedBeveragePromotion.registerObserver(promotionMailUtil);
 
-        log.info("Started retrieving beverage promotions");
-
-        List<BeveragePromotion> promotions = beveragePromotionsRepository.findAll();
-
-        List<BeveragePromotionResponse> response = promotions.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-
-        log.info("Successfully retrieved beverage promotions");
-
-        return response;
-    }
-
-    public BeveragePromotionResponse mapToResponse(BeveragePromotion beveragePromotion) {
-
-        Map<String, List<BigDecimal>> beveragesWithCapacities = beveragePromotion.getBeverages().stream()
-                .collect(Collectors.groupingBy(
-                        Beverage::getName,
-                        Collectors.mapping(Beverage::getCapacity, Collectors.toList())
-                ));
-
-        return BeveragePromotionResponse.builder()
-                .id(beveragePromotion.getId())
-                .description(beveragePromotion.getDescription())
-                .discountPercentage(beveragePromotion.getDiscountPercentage())
-                .beveragesWithCapacities(beveragesWithCapacities)
-                .build();
-    }
-
-    public NewBeveragePromotionResponse addBeveragePromotion(NewBeveragePromotionRequest request) throws MessagingException {
-
-        BeveragePromotion beveragePromotion = BeveragePromotion.builder()
-                .description(request.description())
-                .discountPercentage(request.discountPercentage())
-                .build();
-
-        if (request.beveragesWithCapacities() != null) {
-            List<Beverage> beverages = beverageRepository.findAll().stream()
-                    .filter(beverage -> request.beveragesWithCapacities().containsKey(beverage.getName()))
-                    .toList();
-            beveragePromotion.getBeverages().addAll(beverages);
-        }
-
-        BeveragePromotion savedBeveragePromotion = beveragePromotionsRepository.save(beveragePromotion);
-        savedBeveragePromotion.registerObserver(promotionMailUtil);
-
-        if (request.beveragesWithCapacities() != null)
-            beverageRepository.findAll().stream()
-                .filter(beverage -> {
-                    return request.beveragesWithCapacities().containsKey(beverage.getName()) &&
-                            request.beveragesWithCapacities().get(beverage.getName()).stream()
-                                    .anyMatch(capacity -> capacity.compareTo(beverage.getCapacity()) == 0);
-                })
-                .forEach(beverage -> {
-                    beverage.setPromotion(beveragePromotion);
-                    beverageRepository.save(beverage);
-                });
-
-        savedBeveragePromotion.notifyObservers();
-
-        return NewBeveragePromotionResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully added new beverage promotion with id '" + savedBeveragePromotion.getId() + "'")
-                .build();
-    }
-
-    public BeveragePromotion findBeveragePromotionById(Long id) {
-
-        log.info("Started finding beverage promotion with id '{}'", id);
-
-        BeveragePromotion beveragePromotion = beveragePromotionsRepository.findById(id)
-                .orElseThrow(() -> new BeveragePromotionNotFoundException(id));
-
-        log.info("Successfully found beverage promotion with id '{}'", id);
-
-        return beveragePromotion;
-    }
-
-    public UpdatedBeveragePromotionResponse updateBeveragePromotion(
-            BeveragePromotion beveragePromotion, UpdatedBeveragePromotionRequest request
-    ) {
-        UpdatedBeveragePromotionResponse response = UpdatedBeveragePromotionResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully updated beverage promotion with id '" + beveragePromotion.getId() + "'")
-                .build();
-
-        if (request.updatedDescription() != null)
-            beveragePromotion.setDescription(request.updatedDescription());
-
-        if (request.updatedBeveragesWithCapacities() != null) {
-            List<Beverage> updatedBeverages = beverageRepository.findAll().stream()
-                    .filter(beverage -> {
-                        return request.updatedBeveragesWithCapacities().containsKey(beverage.getName()) &&
-                                request.updatedBeveragesWithCapacities().get(beverage.getName()).contains(beverage.getCapacity().stripTrailingZeros());
-                    }).toList();
-            List<Beverage> existingBeverages = new ArrayList<>(beveragePromotion.getBeverages());
-
-            existingBeverages.forEach(beverage -> {
-                beverage.setPromotion(null);
-                beverageRepository.save(beverage);
-            });
-
-            updatedBeverages.forEach(beverage -> {
+    if (request.beveragesWithCapacities() != null)
+      beverageRepository.findAll().stream()
+          .filter(
+              beverage -> {
+                return request.beveragesWithCapacities().containsKey(beverage.getName())
+                    && request.beveragesWithCapacities().get(beverage.getName()).stream()
+                        .anyMatch(capacity -> capacity.compareTo(beverage.getCapacity()) == 0);
+              })
+          .forEach(
+              beverage -> {
                 beverage.setPromotion(beveragePromotion);
                 beverageRepository.save(beverage);
-            });
+              });
 
-            beveragePromotion.getBeverages().clear();
-            beveragePromotion.getBeverages().addAll(updatedBeverages);
-        }
+    savedBeveragePromotion.notifyObservers();
 
-        if (request.updatedDiscountPercentage() != null)
-            beveragePromotion.setDiscountPercentage(request.updatedDiscountPercentage());
+    return NewBeveragePromotionResponse.builder()
+        .statusCode(HttpStatus.OK.value())
+        .message(
+            "Successfully added new beverage promotion with id '"
+                + savedBeveragePromotion.getId()
+                + "'")
+        .build();
+  }
 
-        beveragePromotionsRepository.save(beveragePromotion);
+  public BeveragePromotion findBeveragePromotionById(Long id) {
 
-        return response;
-    }
+    log.info("Started finding beverage promotion with id '{}'", id);
 
-    public RemovedBeveragePromotionResponse removeBeveragePromotion(BeveragePromotion beveragePromotion) {
+    BeveragePromotion beveragePromotion =
+        beveragePromotionsRepository
+            .findById(id)
+            .orElseThrow(() -> new BeveragePromotionNotFoundException(id));
 
-        log.info("Started removing beverage promotion with id '{}'", beveragePromotion.getId());
+    log.info("Successfully found beverage promotion with id '{}'", id);
 
-        beveragePromotion.getBeverages().forEach(beverage -> {
+    return beveragePromotion;
+  }
+
+  public UpdatedBeveragePromotionResponse updateBeveragePromotion(
+      BeveragePromotion beveragePromotion, UpdatedBeveragePromotionRequest request) {
+    UpdatedBeveragePromotionResponse response =
+        UpdatedBeveragePromotionResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message(
+                "Successfully updated beverage promotion with id '"
+                    + beveragePromotion.getId()
+                    + "'")
+            .build();
+
+    if (request.updatedDescription() != null)
+      beveragePromotion.setDescription(request.updatedDescription());
+
+    if (request.updatedBeveragesWithCapacities() != null) {
+      List<Beverage> updatedBeverages =
+          beverageRepository.findAll().stream()
+              .filter(
+                  beverage -> {
+                    return request.updatedBeveragesWithCapacities().containsKey(beverage.getName())
+                        && request
+                            .updatedBeveragesWithCapacities()
+                            .get(beverage.getName())
+                            .contains(beverage.getCapacity().stripTrailingZeros());
+                  })
+              .toList();
+      List<Beverage> existingBeverages = new ArrayList<>(beveragePromotion.getBeverages());
+
+      existingBeverages.forEach(
+          beverage -> {
             beverage.setPromotion(null);
             beverageRepository.save(beverage);
-        });
+          });
 
-        beveragePromotionsRepository.delete(beveragePromotion);
+      updatedBeverages.forEach(
+          beverage -> {
+            beverage.setPromotion(beveragePromotion);
+            beverageRepository.save(beverage);
+          });
 
-        RemovedBeveragePromotionResponse response = RemovedBeveragePromotionResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Successfully removed beverage promotion with id '" + beveragePromotion.getId() + "'")
-                .build();
-
-        log.info("Successfully removed beverage promotion with id '{}'", beveragePromotion.getId());
-
-        return response;
+      beveragePromotion.getBeverages().clear();
+      beveragePromotion.getBeverages().addAll(updatedBeverages);
     }
+
+    if (request.updatedDiscountPercentage() != null)
+      beveragePromotion.setDiscountPercentage(request.updatedDiscountPercentage());
+
+    beveragePromotionsRepository.save(beveragePromotion);
+
+    return response;
+  }
+
+  public RemovedBeveragePromotionResponse removeBeveragePromotion(
+      BeveragePromotion beveragePromotion) {
+
+    log.info("Started removing beverage promotion with id '{}'", beveragePromotion.getId());
+
+    beveragePromotion
+        .getBeverages()
+        .forEach(
+            beverage -> {
+              beverage.setPromotion(null);
+              beverageRepository.save(beverage);
+            });
+
+    beveragePromotionsRepository.delete(beveragePromotion);
+
+    RemovedBeveragePromotionResponse response =
+        RemovedBeveragePromotionResponse.builder()
+            .statusCode(HttpStatus.OK.value())
+            .message(
+                "Successfully removed beverage promotion with id '"
+                    + beveragePromotion.getId()
+                    + "'")
+            .build();
+
+    log.info("Successfully removed beverage promotion with id '{}'", beveragePromotion.getId());
+
+    return response;
+  }
 }

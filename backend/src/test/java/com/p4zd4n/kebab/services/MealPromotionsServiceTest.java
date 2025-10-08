@@ -1,5 +1,8 @@
 package com.p4zd4n.kebab.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.p4zd4n.kebab.entities.MealPromotion;
 import com.p4zd4n.kebab.enums.Size;
 import com.p4zd4n.kebab.exceptions.notfound.MealPromotionNotFoundException;
@@ -13,6 +16,8 @@ import com.p4zd4n.kebab.responses.promotions.mealpromotions.RemovedMealPromotion
 import com.p4zd4n.kebab.responses.promotions.mealpromotions.UpdatedMealPromotionResponse;
 import com.p4zd4n.kebab.services.promotions.MealPromotionsService;
 import jakarta.mail.MessagingException;
+import java.math.BigDecimal;
+import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,161 +25,161 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 public class MealPromotionsServiceTest {
 
-    @Mock
-    private MealPromotionsRepository mealPromotionsRepository;
+  @Mock private MealPromotionsRepository mealPromotionsRepository;
 
-    @Mock
-    private MealRepository mealRepository;
+  @Mock private MealRepository mealRepository;
 
-    @InjectMocks
-    private MealPromotionsService mealPromotionsService;
+  @InjectMocks private MealPromotionsService mealPromotionsService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  public void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    public void getMealPromotions_ShouldReturnMealPromotions_WhenCalled() {
+  @Test
+  public void getMealPromotions_ShouldReturnMealPromotions_WhenCalled() {
 
-        List<MealPromotion> mealPromotionsList = Arrays.asList(
-                MealPromotion.builder()
-                        .description("Large -20%")
-                        .sizes(Set.of(Size.LARGE))
-                        .discountPercentage(BigDecimal.valueOf(20))
-                        .build(),
-                MealPromotion.builder()
-                        .description("Small and medium -10%")
-                        .sizes(Set.of(Size.SMALL, Size.MEDIUM))
-                        .discountPercentage(BigDecimal.valueOf(10))
-                        .build()
-        );
-
-        when(mealPromotionsRepository.findAll()).thenReturn(mealPromotionsList);
-
-        List<MealPromotionResponse> result = mealPromotionsService.getMealPromotions();
-
-        assertEquals(2, result.size());
-
-        assertEquals("Large -20%", result.getFirst().description());
-        assertEquals(BigDecimal.valueOf(10), result.getLast().discountPercentage());
-
-        verify(mealPromotionsRepository, times(1)).findAll();
-    }
-
-    @Test
-    public void addMealPromotion_ShouldAddMeal_WhenValidRequest() throws MessagingException {
-
-        NewMealPromotionRequest request = NewMealPromotionRequest.builder()
-                .description("-10%")
-                .sizes(Set.of(Size.SMALL))
+    List<MealPromotion> mealPromotionsList =
+        Arrays.asList(
+            MealPromotion.builder()
+                .description("Large -20%")
+                .sizes(Set.of(Size.LARGE))
+                .discountPercentage(BigDecimal.valueOf(20))
+                .build(),
+            MealPromotion.builder()
+                .description("Small and medium -10%")
+                .sizes(Set.of(Size.SMALL, Size.MEDIUM))
                 .discountPercentage(BigDecimal.valueOf(10))
-                .mealNames(List.of("Pita"))
-                .build();
+                .build());
 
-        MealPromotion newMealPromotion = MealPromotion.builder()
-                .description(request.description())
-                .sizes(request.sizes())
-                .discountPercentage(request.discountPercentage())
-                .build();
-        newMealPromotion.setId(1L);
+    when(mealPromotionsRepository.findAll()).thenReturn(mealPromotionsList);
 
-        when(mealPromotionsRepository.save(any(MealPromotion.class))).thenReturn(newMealPromotion);
+    List<MealPromotionResponse> result = mealPromotionsService.getMealPromotions();
 
-        NewMealPromotionResponse response = mealPromotionsService.addMealPromotion(request);
+    assertEquals(2, result.size());
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully added new meal promotion with id '1'", response.message());
+    assertEquals("Large -20%", result.getFirst().description());
+    assertEquals(BigDecimal.valueOf(10), result.getLast().discountPercentage());
 
-        verify(mealPromotionsRepository, times(1)).save(any(MealPromotion.class));
-    }
+    verify(mealPromotionsRepository, times(1)).findAll();
+  }
 
-    @Test
-    public void findMealPromotionById_ShouldReturnMealPromotion_IfExists() {
+  @Test
+  public void addMealPromotion_ShouldAddMeal_WhenValidRequest() throws MessagingException {
 
-        MealPromotion mealPromotion = MealPromotion.builder()
-                .description("Large -20%")
-                .sizes(Set.of(Size.LARGE))
-                .discountPercentage(BigDecimal.valueOf(20))
-                .build();
+    NewMealPromotionRequest request =
+        NewMealPromotionRequest.builder()
+            .description("-10%")
+            .sizes(Set.of(Size.SMALL))
+            .discountPercentage(BigDecimal.valueOf(10))
+            .mealNames(List.of("Pita"))
+            .build();
 
-        when(mealPromotionsRepository.findById(1L)).thenReturn(Optional.of(mealPromotion));
+    MealPromotion newMealPromotion =
+        MealPromotion.builder()
+            .description(request.description())
+            .sizes(request.sizes())
+            .discountPercentage(request.discountPercentage())
+            .build();
+    newMealPromotion.setId(1L);
 
-        MealPromotion foundMealPromotion = mealPromotionsService.findMealPromotionById(1L);
+    when(mealPromotionsRepository.save(any(MealPromotion.class))).thenReturn(newMealPromotion);
 
-        assertNotNull(foundMealPromotion);
-        assertEquals("Large -20%", foundMealPromotion.getDescription());
-        assertEquals(1, foundMealPromotion.getSizes().size());
+    NewMealPromotionResponse response = mealPromotionsService.addMealPromotion(request);
 
-        verify(mealPromotionsRepository, times(1)).findById(1L);
-    }
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully added new meal promotion with id '1'", response.message());
 
-    @Test
-    public void findMealPromotionById_ShouldThrowMealPromotionsNotFoundException_IfDoesNotExists() {
+    verify(mealPromotionsRepository, times(1)).save(any(MealPromotion.class));
+  }
 
-        when(mealPromotionsRepository.findById(100L)).thenThrow(new MealPromotionNotFoundException(100L));
+  @Test
+  public void findMealPromotionById_ShouldReturnMealPromotion_IfExists() {
 
-        MealPromotionNotFoundException exception = assertThrows(MealPromotionNotFoundException.class, () -> {
-            mealPromotionsService.findMealPromotionById(100L);
-        });
+    MealPromotion mealPromotion =
+        MealPromotion.builder()
+            .description("Large -20%")
+            .sizes(Set.of(Size.LARGE))
+            .discountPercentage(BigDecimal.valueOf(20))
+            .build();
 
-        assertEquals("Meal promotion with id '100' not found!", exception.getMessage());
+    when(mealPromotionsRepository.findById(1L)).thenReturn(Optional.of(mealPromotion));
 
-        verify(mealPromotionsRepository, times(1)).findById(100L);
-    }
+    MealPromotion foundMealPromotion = mealPromotionsService.findMealPromotionById(1L);
 
-    @Test
-    public void updateMealPromotion_ShouldUpdateMealPromotion_WhenValidRequest() {
+    assertNotNull(foundMealPromotion);
+    assertEquals("Large -20%", foundMealPromotion.getDescription());
+    assertEquals(1, foundMealPromotion.getSizes().size());
 
-        MealPromotion mealPromotion = MealPromotion.builder()
-                .description("Large -20%")
-                .sizes(Set.of(Size.LARGE))
-                .discountPercentage(BigDecimal.valueOf(20))
-                .build();
-        mealPromotion.setId(1L);
+    verify(mealPromotionsRepository, times(1)).findById(1L);
+  }
 
-        UpdatedMealPromotionRequest request = UpdatedMealPromotionRequest.builder()
-                .id(1L)
-                .updatedDescription("Siema")
-                .build();
+  @Test
+  public void findMealPromotionById_ShouldThrowMealPromotionsNotFoundException_IfDoesNotExists() {
 
-        when(mealPromotionsRepository.save(any(MealPromotion.class))).thenReturn(mealPromotion);
+    when(mealPromotionsRepository.findById(100L))
+        .thenThrow(new MealPromotionNotFoundException(100L));
 
-        UpdatedMealPromotionResponse response = mealPromotionsService.updateMealPromotion(mealPromotion, request);
+    MealPromotionNotFoundException exception =
+        assertThrows(
+            MealPromotionNotFoundException.class,
+            () -> {
+              mealPromotionsService.findMealPromotionById(100L);
+            });
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully updated meal promotion with id '1'", response.message());
-        assertEquals("Siema", mealPromotion.getDescription());
+    assertEquals("Meal promotion with id '100' not found!", exception.getMessage());
 
-        verify(mealPromotionsRepository, times(1)).save(mealPromotion);
-    }
+    verify(mealPromotionsRepository, times(1)).findById(100L);
+  }
 
-    @Test
-    public void removeMealPromotion_ShouldRemoveMealPromotion_WhenValidRequest() {
+  @Test
+  public void updateMealPromotion_ShouldUpdateMealPromotion_WhenValidRequest() {
 
-        MealPromotion mealPromotion = MealPromotion.builder()
-                .description("Large -20%")
-                .sizes(Set.of(Size.LARGE))
-                .discountPercentage(BigDecimal.valueOf(20))
-                .build();
-        mealPromotion.setId(2L);
+    MealPromotion mealPromotion =
+        MealPromotion.builder()
+            .description("Large -20%")
+            .sizes(Set.of(Size.LARGE))
+            .discountPercentage(BigDecimal.valueOf(20))
+            .build();
+    mealPromotion.setId(1L);
 
-        doNothing().when(mealPromotionsRepository).delete(mealPromotion);
+    UpdatedMealPromotionRequest request =
+        UpdatedMealPromotionRequest.builder().id(1L).updatedDescription("Siema").build();
 
-        RemovedMealPromotionResponse response = mealPromotionsService.removeMealPromotion(mealPromotion);
+    when(mealPromotionsRepository.save(any(MealPromotion.class))).thenReturn(mealPromotion);
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK.value(), response.statusCode());
-        assertEquals("Successfully removed meal promotion with id '2'", response.message());
-    }
+    UpdatedMealPromotionResponse response =
+        mealPromotionsService.updateMealPromotion(mealPromotion, request);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully updated meal promotion with id '1'", response.message());
+    assertEquals("Siema", mealPromotion.getDescription());
+
+    verify(mealPromotionsRepository, times(1)).save(mealPromotion);
+  }
+
+  @Test
+  public void removeMealPromotion_ShouldRemoveMealPromotion_WhenValidRequest() {
+
+    MealPromotion mealPromotion =
+        MealPromotion.builder()
+            .description("Large -20%")
+            .sizes(Set.of(Size.LARGE))
+            .discountPercentage(BigDecimal.valueOf(20))
+            .build();
+    mealPromotion.setId(2L);
+
+    doNothing().when(mealPromotionsRepository).delete(mealPromotion);
+
+    RemovedMealPromotionResponse response =
+        mealPromotionsService.removeMealPromotion(mealPromotion);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.statusCode());
+    assertEquals("Successfully removed meal promotion with id '2'", response.message());
+  }
 }

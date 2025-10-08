@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class EmployeeAlreadyExistsException extends RuntimeException {
 
-    private final String email;
+  private final String email;
 
-    public EmployeeAlreadyExistsException(String email) {
-        super("Employee with email '" + email + "' already exists!");
-        this.email = email;
-    }
+  public EmployeeAlreadyExistsException(String email) {
+    super("Employee with email '" + email + "' already exists!");
+    this.email = email;
+  }
 }

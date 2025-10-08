@@ -5,7 +5,9 @@ import jakarta.mail.MessagingException;
 
 public interface Observable {
 
-    void registerObserver(Observer observer);
-    void unregisterObserver(Observer observer);
-    void notifyObservers() throws MessagingException;
+  void registerObserver(Observer observer);
+
+  void unregisterObserver(Observer observer);
+
+  void notifyObservers() throws MessagingException;
 }

@@ -23,91 +23,87 @@ import java.util.List;
 @Slf4j
 public class EmployeesController {
 
-    private final EmployeesService employeesService;
+  private final EmployeesService employeesService;
 
-    public EmployeesController(EmployeesService employeesService) {
-        this.employeesService = employeesService;
-    }
+  public EmployeesController(EmployeesService employeesService) {
+    this.employeesService = employeesService;
+  }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<EmployeeResponse>> getEmployees() {
-        log.info("Received get employees request");
-        return ResponseEntity.ok(employeesService.getEmployees());
-    }
-    
-    @GetMapping("/current")
-    public ResponseEntity<EmployeeResponse> getCurrentEmployee(
-            @RequestHeader(value = "Accept-Language") String language
-    ) {
-        LanguageValidator.validateLanguage(language);
+  @GetMapping("/all")
+  public ResponseEntity<List<EmployeeResponse>> getEmployees() {
+    log.info("Received get employees request");
+    return ResponseEntity.ok(employeesService.getEmployees());
+  }
 
-        log.info("Received get current employee request");
+  @GetMapping("/current")
+  public ResponseEntity<EmployeeResponse> getCurrentEmployee(
+      @RequestHeader(value = "Accept-Language") String language) {
+    LanguageValidator.validateLanguage(language);
 
-        EmployeeResponse response = employeesService.getCurrentEmployee();
+    log.info("Received get current employee request");
 
-        return ResponseEntity.ok(response);
-    }
+    EmployeeResponse response = employeesService.getCurrentEmployee();
 
-    @PostMapping("/add-employee")
-    public ResponseEntity<NewEmployeeResponse> addEmployee(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody NewEmployeeRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+    return ResponseEntity.ok(response);
+  }
 
-        log.info("Received add employee request");
+  @PostMapping("/add-employee")
+  public ResponseEntity<NewEmployeeResponse> addEmployee(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody NewEmployeeRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        NewEmployeeResponse response = employeesService.addEmployee(request);
+    log.info("Received add employee request");
 
-        log.info("Successfully added new employee with email: {}", request.email());
+    NewEmployeeResponse response = employeesService.addEmployee(request);
 
-        return ResponseEntity.ok(response);
-    }
+    log.info("Successfully added new employee with email: {}", request.email());
 
-    @PutMapping("/update-employee")
-    public ResponseEntity<UpdatedEmployeeResponse> updateEmployee(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody UpdatedEmployeeRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+    return ResponseEntity.ok(response);
+  }
 
-        log.info("Received update job employee request");
+  @PutMapping("/update-employee")
+  public ResponseEntity<UpdatedEmployeeResponse> updateEmployee(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody UpdatedEmployeeRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        Employee existingEmployee = employeesService.findEmployeeByEmail(request.employeeEmail());
-        UpdatedEmployeeResponse response = employeesService.updateEmployee(existingEmployee, request);
+    log.info("Received update job employee request");
 
-        log.info("Successfully updated employee with email: {}", request.employeeEmail());
+    Employee existingEmployee = employeesService.findEmployeeByEmail(request.employeeEmail());
+    UpdatedEmployeeResponse response = employeesService.updateEmployee(existingEmployee, request);
 
-        return ResponseEntity.ok(response);
-    }
+    log.info("Successfully updated employee with email: {}", request.employeeEmail());
 
-    @PatchMapping("/update-credentials")
-    public ResponseEntity<UpdatedCredentialsResponse> updateCurrentEmployeeCredentials(
-            @RequestHeader(value = "Accept-Language") String language,
-            @Valid @RequestBody UpdatedCredentialsRequest request
-    ) {
-        LanguageValidator.validateLanguage(language);
+    return ResponseEntity.ok(response);
+  }
 
-        log.info("Received update current employee credentials request");
+  @PatchMapping("/update-credentials")
+  public ResponseEntity<UpdatedCredentialsResponse> updateCurrentEmployeeCredentials(
+      @RequestHeader(value = "Accept-Language") String language,
+      @Valid @RequestBody UpdatedCredentialsRequest request) {
+    LanguageValidator.validateLanguage(language);
 
-        UpdatedCredentialsResponse response = employeesService.updateCurrentEmployeeCredentials(request);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String authenticatedEmail = authentication.getName();
+    log.info("Received update current employee credentials request");
 
-        log.info("Successfully updated current employee ({}) credentials", authenticatedEmail);
+    UpdatedCredentialsResponse response =
+        employeesService.updateCurrentEmployeeCredentials(request);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String authenticatedEmail = authentication.getName();
 
-        return ResponseEntity.ok(response);
-    }
+    log.info("Successfully updated current employee ({}) credentials", authenticatedEmail);
 
-    @DeleteMapping("/remove-employee")
-    public ResponseEntity<RemovedEmployeeResponse> removeOrder(
-            @Valid @RequestBody RemovedEmployeeRequest request
-    ) {
-        log.info("Received remove employee request");
+    return ResponseEntity.ok(response);
+  }
 
-        Employee existingEmployee = employeesService.findEmployeeByEmail(request.email());
-        RemovedEmployeeResponse response = employeesService.removeEmployee(existingEmployee);
+  @DeleteMapping("/remove-employee")
+  public ResponseEntity<RemovedEmployeeResponse> removeOrder(
+      @Valid @RequestBody RemovedEmployeeRequest request) {
+    log.info("Received remove employee request");
 
-        return ResponseEntity.ok(response);
-    }
+    Employee existingEmployee = employeesService.findEmployeeByEmail(request.email());
+    RemovedEmployeeResponse response = employeesService.removeEmployee(existingEmployee);
+
+    return ResponseEntity.ok(response);
+  }
 }

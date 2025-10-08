@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class InvalidPhoneException extends RuntimeException {
 
-    private final String phone;
+  private final String phone;
 
-    public InvalidPhoneException(String invalidPhone) {
-      super("Invalid phone: " + invalidPhone + ". Valid phone format: 123456789");
-      phone = invalidPhone;
-    }
+  public InvalidPhoneException(String invalidPhone) {
+    super("Invalid phone: " + invalidPhone + ". Valid phone format: 123456789");
+    phone = invalidPhone;
+  }
 }
