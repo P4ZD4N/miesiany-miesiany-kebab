@@ -10,6 +10,7 @@ import {
 import { Subscription } from 'rxjs';
 import { EmployeeService } from '../../../services/employees/employee.service';
 import { WorkScheduleService } from '../../../services/work-schedule/work-schedule.service';
+import { TranslationHelperService } from '../../../services/translation-helper/translation-helper.service';
 
 @Component({
   selector: 'app-payments',
@@ -20,12 +21,16 @@ import { WorkScheduleService } from '../../../services/work-schedule/work-schedu
 })
 export class PaymentsComponent implements OnInit {
   days: string[] = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
-  scheduleDate: string = '';
-  currentMonth: number = new Date().getMonth() + 1;
-  currentYear: number = new Date().getFullYear();
   daysInSchedule: string[] = [];
+
   employees: EmployeeResponse[] = [];
   workScheduleEntries: WorkScheduleEntryResponse[] = [];
+
+  scheduleDate: string = '';
+
+  currentMonth: number = new Date().getMonth() + 1;
+  currentYear: number = new Date().getFullYear();
+
   languageChangeSubscription: Subscription;
 
   constructor(
@@ -33,7 +38,8 @@ export class PaymentsComponent implements OnInit {
     private langService: LangService,
     private employeeService: EmployeeService,
     private workScheduleService: WorkScheduleService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private translationHelper: TranslationHelperService
   ) {
     this.languageChangeSubscription =
       this.langService.languageChanged$.subscribe(() => {
@@ -53,14 +59,14 @@ export class PaymentsComponent implements OnInit {
     }
   }
 
-  loadWorkScheduleEntries(): void {
+  private loadWorkScheduleEntries(): void {
     this.workScheduleService.getWorkScheduleEntries().subscribe(
       (entries) => (this.workScheduleEntries = entries),
       (err) => console.error(err)
     );
   }
 
-  loadEmployees(): void {
+  private loadEmployees(): void {
     this.employeeService.getEmployees().subscribe(
       (data: EmployeeResponse[]) =>
         (this.employees = data
@@ -71,7 +77,7 @@ export class PaymentsComponent implements OnInit {
     );
   }
 
-  setDays(): void {
+  private setDays(): void {
     if (this.langService.currentLang === 'pl') {
       this.days = [
         'Poniedzialek',
@@ -95,23 +101,11 @@ export class PaymentsComponent implements OnInit {
     }
   }
 
-  isManager(): boolean {
+  protected isManager(): boolean {
     return this.authenticationService.isManager();
   }
 
-  previousMonth(): void {
-    if (this.currentMonth === 1) {
-      this.currentMonth = 12;
-      this.currentYear--;
-    } else {
-      this.currentMonth--;
-    }
-
-    this.daysInSchedule = this.generateMonthDays();
-    this.scheduleDate = this.getScheduleDate();
-  }
-
-  generateMonthDays(): string[] {
+  private generateMonthDays(): string[] {
     const daysInMonth = new Date(
       this.currentYear,
       this.currentMonth - 1,
@@ -143,7 +137,7 @@ export class PaymentsComponent implements OnInit {
     return monthDays;
   }
 
-  getScheduleDate(): string {
+  private getScheduleDate(): string {
     let lastDayOfCurrentMonth = new Date(
       this.currentYear,
       this.currentMonth,
@@ -156,7 +150,7 @@ export class PaymentsComponent implements OnInit {
     return `01.${monthFormatted}.${this.currentYear} - ${lastDayOfCurrentMonth}.${monthFormatted}.${this.currentYear}`;
   }
 
-  nextMonth(): void {
+  protected nextMonth(): void {
     if (this.currentMonth === 12) {
       this.currentMonth = 1;
       this.currentYear++;
@@ -168,7 +162,19 @@ export class PaymentsComponent implements OnInit {
     this.scheduleDate = this.getScheduleDate();
   }
 
-  getHoursFromCurrentMonth(employee: EmployeeResponse): number {
+  protected previousMonth(): void {
+    if (this.currentMonth === 1) {
+      this.currentMonth = 12;
+      this.currentYear--;
+    } else {
+      this.currentMonth--;
+    }
+
+    this.daysInSchedule = this.generateMonthDays();
+    this.scheduleDate = this.getScheduleDate();
+  }
+
+  protected getHoursFromCurrentMonth(employee: EmployeeResponse): number {
     const entries = this.workScheduleEntries.filter(
       (entry) =>
         entry.employee_email === employee.email &&
@@ -193,7 +199,7 @@ export class PaymentsComponent implements OnInit {
     return hours + minutes / 60 + seconds / 3600;
   }
 
-  getTotalFromCurrentMonth(employee: EmployeeResponse): number {
+  protected getTotalFromCurrentMonth(employee: EmployeeResponse): number {
     const entries = this.workScheduleEntries.filter(
       (entry) =>
         entry.employee_email === employee.email &&
@@ -207,7 +213,7 @@ export class PaymentsComponent implements OnInit {
     }, 0);
   }
 
-  getHourlyWageFromCurrentMonth(employee: EmployeeResponse): number | null {
+  protected getHourlyWageFromCurrentMonth(employee: EmployeeResponse): number | null {
     const entries = this.workScheduleEntries
       .filter(
         (entry) =>
@@ -220,23 +226,11 @@ export class PaymentsComponent implements OnInit {
     return entries.length > 0 ? entries[0].hourly_wage : null;
   }
 
-  getTranslatedJobName(jobName: string): string {
-    let jobNameTranslated = this.translate.instant('employee-management.jobs.' + jobName);
-
-    if (jobNameTranslated === 'employee-management.jobs.' + jobName) {
-      jobNameTranslated = jobName;
-    }
-    
-    return jobNameTranslated;
+  protected getTranslatedJobName(jobName: string): string {
+    return this.translationHelper.getTranslatedJobName(jobName);
   }
 
-  getTranslatedEmploymentType(employmentType: string): string {
-    let employmentTypeTranslated = this.translate.instant('employee-management.employment_types.' + employmentType);
-
-    if (employmentTypeTranslated === 'employee-management.employment_types.' + employmentType) {
-      employmentTypeTranslated = employmentType;
-    }
-    
-    return employmentTypeTranslated;
+  protected getTranslatedEmploymentType(employmentType: string): string {
+    return this.translationHelper.getTranslatedEmploymentType(employmentType);
   }
 }
