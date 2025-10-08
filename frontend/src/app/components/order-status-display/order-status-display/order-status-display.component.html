@@ -1,28 +1,30 @@
 <section class="order-status-display" *ngIf="isEmployee() || isManager()">
-    <section class="status-section">
-        <section class="in-preparation-section">
-            <h1>W przygotowaniu</h1>
+  <section class="status-section">
+    <section class="in-preparation-section">
+      <h1>W przygotowaniu</h1>
 
-            <div *ngFor="let order of ordersInPreparation.slice(0, 9)">
-                <p>{{ order.id % 100 }}</p>
-            </div>
-        </section>
-
-        <section class="ready-section">
-            <h1>Gotowe</h1>
-            <div *ngFor="let order of ordersReady.slice(0, 9)">
-                <p>{{ order.id % 100 }}</p>
-            </div>
-        </section>
+      <div *ngFor="let order of ordersInPreparation.slice(0, 9)">
+        <p>{{ order.id % 100 }}</p>
+      </div>
     </section>
 
-    <section class="logo-section">
-            <img src="assets/images/logo.png" alt="Logo">
+    <section class="ready-section">
+      <h1>Gotowe</h1>
+      <div *ngFor="let order of ordersReady.slice(0, 9)">
+        <p>{{ order.id % 100 }}</p>
+      </div>
     </section>
+  </section>
+
+  <section class="logo-section">
+    <img src="assets/images/logo.png" alt="Logo" />
+  </section>
 </section>
 
 <section class="verification-required" *ngIf="!isEmployee() && !isManager()">
-    <h1>{{ 'verification_required.headline' | translate }}</h1>
-    <p>{{ 'verification_required.paragraph' | translate }}</p>
-    <button class="btn btn-success" [routerLink]="['/']">{{ 'verification_required.button' | translate }}</button>
+  <h1>{{ "verification_required.headline" | translate }}</h1>
+  <p>{{ "verification_required.paragraph" | translate }}</p>
+  <button class="btn btn-success" [routerLink]="['/']">
+    {{ "verification_required.button" | translate }}
+  </button>
 </section>
