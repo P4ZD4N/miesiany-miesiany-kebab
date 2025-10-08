@@ -4,13 +4,16 @@ import { LangService } from '../lang/lang.service';
 import {
   AuthenticationRequest,
   NewJobOfferRequest,
+  UpdatedOrderRequest,
 } from '../../requests/requests';
 import {
   EmployeeResponse,
   JobOfferGeneralResponse,
+  OrderResponse,
 } from '../../responses/responses';
 import { TranslationHelperService } from '../translation-helper/translation-helper.service';
 import { JobApplicationFormData } from '../../util-types/util-types';
+import { OrderStatus } from '../../enums/order-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -848,8 +851,6 @@ export class AlertService {
     });
   }
 
-  //
-
   showRemoveIngredientAlert(
     ingredientNameTranslated: string,
     mealsWithThisIngredient: string
@@ -957,6 +958,289 @@ export class AlertService {
         this.langService.currentLang === 'pl'
           ? `Pomyslnie zapisano godziny otwarcia w ${translatedDayOfWeek}!`
           : `Successfully saved opening hours on ${translatedDayOfWeek}!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveOrderAlert(order: OrderResponse): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac zamowienie z id '${order.id}'?`
+          : `Are you sure you want to remove order with id '${order.id}'?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulOrderRemoveAlert(order: OrderResponse): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto zamowienie z id '${order.id}'!`
+          : `Successfully removed order with id '${order.id}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showUpdateOrderAlert(order: OrderResponse): Promise<any> {
+    const hasAddress =
+      order.street && order.house_number && order.postal_code && order.city;
+
+    const confirmButtonText =
+      this.langService.currentLang === 'pl' ? 'Zapisz' : 'Save';
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+
+    const streetPlaceholder =
+      this.langService.currentLang === 'pl' ? 'Ulica' : 'Street';
+    const houseNumberPlaceholder =
+      this.langService.currentLang === 'pl' ? 'Numer domu' : 'House number';
+    const postalCodePlaceholder =
+      this.langService.currentLang === 'pl' ? 'Kod pocztowy' : 'Postal code';
+    const cityPlaceholder =
+      this.langService.currentLang === 'pl' ? 'Miasto' : 'City';
+    const additionalCommentsPlaceholder =
+      this.langService.currentLang === 'pl'
+        ? 'Dodatkowe komentarze'
+        : 'Additional comments';
+
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? `<span style="color: red;">Aktualizuj zamowienie</span>`
+          : `<span style="color: red;">Update order</span>`,
+      background: '#141414',
+      color: 'white',
+      html: `
+            <style>
+              .form-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                max-width: 400px;
+                margin: 10px auto;
+              }
+    
+              .form-group label {
+                color: white;
+                margin-bottom: 5px;
+                text-align:center;
+              }
+    
+              input[type="text"], input[type="number"], textarea {
+                color: white;
+                text-align: center;
+                background-color: inherit;
+                width: 100%; 
+                max-width: 400px; 
+                padding: 10px; 
+                margin: 10px 0; 
+                border: 1px solid #ccc; 
+                border-radius: 5px;
+                transition: border 0.3s ease;
+                outline: none;
+              }
+    
+              input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+                  border: 1px solid red; 
+              }
+    
+              select {
+                  width: 100%;
+                  text-align: center;
+                  color: white;
+                  border: none;
+                  border-bottom: 1px solid white;
+                  outline: none;
+                  background: inherit;
+                  transition: border-bottom 0.3s ease;
+                  cursor: pointer;
+    
+                  &:focus {
+                      border-bottom: 1px solid red;
+                  }
+              }
+    
+              option {
+                  text-align: center;
+                  background: black;
+              }
+            </style>
+    
+            <div class="form-group">
+              <label>Status</label>
+              <select id="status">
+                ${Object.values(OrderStatus)
+                  .map(
+                    (status) =>
+                      `<option value="${status}" ${
+                        order.order_status === status ? 'selected' : ''
+                      }>${this.translationHelper.getTranslatedOrderStatus(status)}</option>`
+                  )
+                  .join('')}
+              </select>
+            </div>
+    
+            ${
+              hasAddress
+                ? `
+              <div class="form-group">
+                <label>${streetPlaceholder}</label>
+                <input type="text" id="street" maxlength="25" value="${
+                  order.street || ''
+                }" placeholder="${streetPlaceholder}">
+              </div>
+    
+              <div class="form-group">
+                <label>${houseNumberPlaceholder}</label>
+                <input type="number" id="house_number" value="${
+                  order.house_number || ''
+                }" placeholder="${houseNumberPlaceholder}">
+              </div>
+    
+              <div class="form-group">
+                <label>${postalCodePlaceholder}</label>
+                <input type="text" id="postal_code" maxlength="6" value="${
+                  order.postal_code || ''
+                }" placeholder="${postalCodePlaceholder}">
+              </div>
+    
+              <div class="form-group">
+                <label>${cityPlaceholder}</label>
+                <input type="text" id="city" maxlength="25" value="${
+                  order.city || ''
+                }" placeholder="${cityPlaceholder}">
+              </div>
+            `
+                : ''
+            }
+    
+            <div class="form-group">
+              <label>${additionalCommentsPlaceholder}</label>
+              <textarea id="comments">${
+                order.additional_comments || ''
+              }</textarea>
+            </div>
+            
+          `,
+      focusConfirm: false,
+      showCancelButton: true,
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+      confirmButtonText: confirmButtonText,
+      confirmButtonColor: '#198754',
+      customClass: {
+        validationMessage: 'custom-validation-message',
+      },
+      preConfirm: () => {
+        const street = (document.getElementById('street') as HTMLInputElement)
+          ?.value;
+        const houseNumber = Number(
+          (document.getElementById('house_number') as HTMLInputElement)?.value
+        );
+        const postalCode = (
+          document.getElementById('postal_code') as HTMLInputElement
+        )?.value;
+        const city = (document.getElementById('city') as HTMLInputElement)
+          ?.value;
+
+        if (hasAddress) {
+          if (!street || !houseNumber || !postalCode || !city) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Wszystkie pola sa wymagane'
+                : 'All fields are required'
+            );
+            return null;
+          }
+
+          if (street.length > 25) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Niepoprawna ulica!'
+                : 'Invalid street!'
+            );
+            return null;
+          }
+
+          if (Number(houseNumber) < 1) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Niepoprawny numer domu!'
+                : 'Invalid house number!'
+            );
+            return null;
+          }
+
+          const postalCodeRegex = /^[0-9]{2}-[0-9]{3}$/;
+          if (!postalCodeRegex.test(postalCode)) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Niepoprawny kod pocztowy!'
+                : 'Invalid postal code!'
+            );
+            return null;
+          }
+
+          if (city.length > 25) {
+            Swal.showValidationMessage(
+              this.langService.currentLang === 'pl'
+                ? 'Niepoprawne miasto!'
+                : 'Invalid city!'
+            );
+            return null;
+          }
+        }
+
+        const updatedOrder: UpdatedOrderRequest = {
+          id: order.id,
+          updated_order_status: (
+            document.getElementById('status') as HTMLSelectElement
+          )?.value as OrderStatus,
+          updated_street: street || null,
+          updated_house_number: Number(houseNumber) || null,
+          updated_postal_code: postalCode || null,
+          updated_city: city || null,
+          updated_additional_comments:
+            (document.getElementById('comments') as HTMLTextAreaElement)
+              ?.value || null,
+        };
+
+        return updatedOrder;
+      },
+    }).then((result) => result);
+  }
+
+  showSuccessfulOrderUpdateAlert(order: OrderResponse): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zaktualizowano zamowienie z id '${order.id}'!`
+          : `Successfully updated order with id '${order.id}'!`,
       icon: 'success',
       iconColor: 'green',
       confirmButtonColor: 'green',

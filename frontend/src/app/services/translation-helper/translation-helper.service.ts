@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ContactType } from '../../enums/contact-type.enum';
 import { TranslateService } from '@ngx-translate/core';
+import { OrderStatus } from '../../enums/order-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -104,5 +105,20 @@ export class TranslationHelperService {
     }
 
     return ingredientNameTranslated;
+  }
+
+  getTranslatedOrderStatus(orderStatus: OrderStatus): string {
+    let orderStatusTranslated = this.translate.instant(
+      'order-management.order_status.' + orderStatus
+    );
+
+    if (
+      orderStatusTranslated ===
+      'order-management.order_status.' + orderStatus
+    ) {
+      orderStatusTranslated = orderStatus;
+    }
+
+    return orderStatusTranslated;
   }
 }
