@@ -1,435 +1,721 @@
 <section class="menu">
-    <h1>Menu</h1>
+  <h1>Menu</h1>
 
-    <p *ngIf="isManager()">{{ 'menu.ingredients.headline' | translate }}</p>
-    <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showAddIngredientTable()">{{ 'menu.ingredients.button_add' | translate }}</button>
+  <p *ngIf="isManager()">{{ "menu.ingredients.headline" | translate }}</p>
+  <button
+    class="btn btn-success"
+    *ngIf="isManager() && !isEditing && !isAdding"
+    (click)="showAddIngredientTable()"
+  >
+    {{ "menu.ingredients.button_add" | translate }}
+  </button>
 
-    <p *ngIf="errorMessages['newIngredientName']" class="error">{{ errorMessages['newIngredientName'] }}</p>
-    <p *ngIf="errorMessages['newIngredientType']" class="error">{{ errorMessages['newIngredientType'] }}</p>
-    <p *ngIf="errorMessages['itemType'] === 'ingredient'" class="error">{{ errorMessages['message'] }}</p>
+  <p *ngIf="errorMessages['newIngredientName']" class="error">
+    {{ errorMessages["newIngredientName"] }}
+  </p>
+  <p *ngIf="errorMessages['newIngredientType']" class="error">
+    {{ errorMessages["newIngredientType"] }}
+  </p>
+  <p *ngIf="errorMessages['itemType'] === 'ingredient'" class="error">
+    {{ errorMessages["message"] }}
+  </p>
 
-    <table class="add-ingredient-table" *ngIf="isAddingIngredient">
-        <tr>
-            <td>
-                <button class="button-accept" (click)="addIngredient()">{{ 'common.buttons.accept' | translate }}</button>
-                <button class="button-cancel" (click)="hideAddIngredientTable()">{{ 'common.buttons.cancel' | translate }}</button>
-            </td>
-            <td>
-                <input type="text" placeholder="{{ 'menu.ingredients.ingredient' | translate }}"  [(ngModel)]="newIngredient.new_ingredient_name" />
-            </td>
-            <td>
-                <select [(ngModel)]="newIngredient.new_ingredient_type">
-                    <option value="" disabled selected>{{ 'menu.ingredients.ingredient_type' | translate }}</option>
-                    <option *ngFor="let type of ingredientTypes" [value]="type">
-                        {{ 'menu.ingredients.' + type | translate }}
-                    </option>
-                </select>
-            </td>
-        </tr>
-    </table>
+  <table class="add-ingredient-table" *ngIf="isAddingIngredient">
+    <tr>
+      <td>
+        <button class="button-accept" (click)="addIngredient()">
+          {{ "common.buttons.accept" | translate }}
+        </button>
+        <button class="button-cancel" (click)="hideAddIngredientTable()">
+          {{ "common.buttons.cancel" | translate }}
+        </button>
+      </td>
+      <td>
+        <input
+          type="text"
+          placeholder="{{ 'menu.ingredients.ingredient' | translate }}"
+          [(ngModel)]="newIngredient.new_ingredient_name"
+        />
+      </td>
+      <td>
+        <select [(ngModel)]="newIngredient.new_ingredient_type">
+          <option value="" disabled selected>
+            {{ "menu.ingredients.ingredient_type" | translate }}
+          </option>
+          <option *ngFor="let type of ingredientTypes" [value]="type">
+            {{ "menu.ingredients." + type | translate }}
+          </option>
+        </select>
+      </td>
+    </tr>
+  </table>
 
-    <table class="table-ingredients" *ngIf="isManager()">
-        <thead>
-            <th>{{ 'menu.ingredients.breads' | translate }}</th>
-            <th>{{ 'menu.ingredients.meats' | translate }}</th>
-            <th>{{ 'menu.ingredients.vegetables' | translate }}</th>
-            <th>{{ 'menu.ingredients.sauces' | translate }}</th>
-            <th>{{ 'menu.ingredients.other' | translate }}</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
-                        <label *ngIf="ingredient.ingredient_type === 'BREAD'">
-                            <i class="fa-solid fa-bread-slice"></i>
-                            {{ getTranslatedIngredientName(ingredient.name) }}
-                            <button *ngIf="!isEditing && !isAdding" class="button-remove" (click)="removeIngredient(ingredient)">X</button>
-                        </label>
-                    </div>
-                </td>
+  <table class="table-ingredients" *ngIf="isManager()">
+    <thead>
+      <th>{{ "menu.ingredients.breads" | translate }}</th>
+      <th>{{ "menu.ingredients.meats" | translate }}</th>
+      <th>{{ "menu.ingredients.vegetables" | translate }}</th>
+      <th>{{ "menu.ingredients.sauces" | translate }}</th>
+      <th>{{ "menu.ingredients.other" | translate }}</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
+            <label *ngIf="ingredient.ingredient_type === 'BREAD'">
+              <i class="fa-solid fa-bread-slice"></i>
+              {{ getTranslatedIngredientName(ingredient.name) }}
+              <button
+                *ngIf="!isEditing && !isAdding"
+                class="button-remove"
+                (click)="removeIngredient(ingredient)"
+              >
+                X
+              </button>
+            </label>
+          </div>
+        </td>
 
-                
-                <td>
-                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
-                        <label *ngIf="ingredient.ingredient_type === 'MEAT'">
-                            <i class="fa-solid fa-drumstick-bite"></i>
-                            {{ getTranslatedIngredientName(ingredient.name) }}
-                            <button *ngIf="!isEditing && !isAdding" class="button-remove" (click)="removeIngredient(ingredient)">X</button>
-                        </label>
-                    </div>
-                </td>
+        <td>
+          <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
+            <label *ngIf="ingredient.ingredient_type === 'MEAT'">
+              <i class="fa-solid fa-drumstick-bite"></i>
+              {{ getTranslatedIngredientName(ingredient.name) }}
+              <button
+                *ngIf="!isEditing && !isAdding"
+                class="button-remove"
+                (click)="removeIngredient(ingredient)"
+              >
+                X
+              </button>
+            </label>
+          </div>
+        </td>
 
-                <td>
-                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
-                        <label *ngIf="ingredient.ingredient_type === 'VEGETABLE'">
-                            <i class="fa-solid fa-carrot"></i>
-                            {{ getTranslatedIngredientName(ingredient.name) }}
-                            <button *ngIf="!isEditing && !isAdding" class="button-remove" (click)="removeIngredient(ingredient)">X</button>
-                        </label>
-                    </div>
-                </td>
+        <td>
+          <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
+            <label *ngIf="ingredient.ingredient_type === 'VEGETABLE'">
+              <i class="fa-solid fa-carrot"></i>
+              {{ getTranslatedIngredientName(ingredient.name) }}
+              <button
+                *ngIf="!isEditing && !isAdding"
+                class="button-remove"
+                (click)="removeIngredient(ingredient)"
+              >
+                X
+              </button>
+            </label>
+          </div>
+        </td>
 
-                <td>
-                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
-                        <label *ngIf="ingredient.ingredient_type === 'SAUCE'">
-                            <i class="fas fa-wine-bottle"></i>
-                            {{ getTranslatedIngredientName(ingredient.name) }}
-                            <button *ngIf="!isEditing && !isAdding" class="button-remove" (click)="removeIngredient(ingredient)">X</button>
-                        </label>
-                    </div>
-                </td>
+        <td>
+          <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
+            <label *ngIf="ingredient.ingredient_type === 'SAUCE'">
+              <i class="fas fa-wine-bottle"></i>
+              {{ getTranslatedIngredientName(ingredient.name) }}
+              <button
+                *ngIf="!isEditing && !isAdding"
+                class="button-remove"
+                (click)="removeIngredient(ingredient)"
+              >
+                X
+              </button>
+            </label>
+          </div>
+        </td>
 
-                <td>
-                    <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
-                        <label *ngIf="ingredient.ingredient_type === 'OTHER'">
-                            <i class="fa-solid fa-plus"></i> 
-                            {{ getTranslatedIngredientName(ingredient.name) }}
-                            <button *ngIf="!isEditing && !isAdding" class="button-remove" (click)="removeIngredient(ingredient)">X</button>
-                        </label>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <td>
+          <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
+            <label *ngIf="ingredient.ingredient_type === 'OTHER'">
+              <i class="fa-solid fa-plus"></i>
+              {{ getTranslatedIngredientName(ingredient.name) }}
+              <button
+                *ngIf="!isEditing && !isAdding"
+                class="button-remove"
+                (click)="removeIngredient(ingredient)"
+              >
+                X
+              </button>
+            </label>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-    <p>{{ 'menu.meals.paragraph_meals' | translate }}</p>
-    <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showAddMealTable()">{{ 'menu.meals.button_add' | translate }}</button>
-    
-    <p *ngIf="errorMessages['newMealName']" class="error">{{ errorMessages['newMealName'] }}</p>
-    <p *ngIf="errorMessages['prices']" class="error">{{ errorMessages['prices'] }}</p>
-    <p *ngIf="errorMessages['ingredients']" class="error">{{ errorMessages['ingredients'] }}</p>
-    <p *ngIf="errorMessages['itemType'] === 'meal'" class="error">{{ errorMessages['message'] }}</p>
+  <p>{{ "menu.meals.paragraph_meals" | translate }}</p>
+  <button
+    class="btn btn-success"
+    *ngIf="isManager() && !isEditing && !isAdding"
+    (click)="showAddMealTable()"
+  >
+    {{ "menu.meals.button_add" | translate }}
+  </button>
 
-    <table class="add-meal-table" *ngIf="isAddingMeal">
-        <tr>
-            <td>
-                <button class="button-accept" (click)="addMeal()">{{ 'common.buttons.accept' | translate }}</button>
-                <button class="button-cancel" (click)="hideAddMealTable()">{{ 'common.buttons.cancel' | translate }}</button>
-            </td>
-            <td>
-                <input type="text" placeholder="{{ 'menu.meals.meal' | translate }}"  [(ngModel)]="newMeal.new_meal_name" />
-            </td>
-            <td>
-                <div *ngFor="let size of sizeOrder">
-                    <label>
-                      <input type="checkbox" [(ngModel)]="newMeal.new_meal_prices[size]" />
-                      {{ 'menu.meals.sizes.' + size | translate }}
-                    </label>
-                    <label *ngIf="newMeal.new_meal_prices[size]">
+  <p *ngIf="errorMessages['newMealName']" class="error">
+    {{ errorMessages["newMealName"] }}
+  </p>
+  <p *ngIf="errorMessages['prices']" class="error">
+    {{ errorMessages["prices"] }}
+  </p>
+  <p *ngIf="errorMessages['ingredients']" class="error">
+    {{ errorMessages["ingredients"] }}
+  </p>
+  <p *ngIf="errorMessages['itemType'] === 'meal'" class="error">
+    {{ errorMessages["message"] }}
+  </p>
+
+  <table class="add-meal-table" *ngIf="isAddingMeal">
+    <tr>
+      <td>
+        <button class="button-accept" (click)="addMeal()">
+          {{ "common.buttons.accept" | translate }}
+        </button>
+        <button class="button-cancel" (click)="hideAddMealTable()">
+          {{ "common.buttons.cancel" | translate }}
+        </button>
+      </td>
+      <td>
+        <input
+          type="text"
+          placeholder="{{ 'menu.meals.meal' | translate }}"
+          [(ngModel)]="newMeal.new_meal_name"
+        />
+      </td>
+      <td>
+        <div *ngFor="let size of sizeOrder">
+          <label>
+            <input
+              type="checkbox"
+              [(ngModel)]="newMeal.new_meal_prices[size]"
+            />
+            {{ "menu.meals.sizes." + size | translate }}
+          </label>
+          <label *ngIf="newMeal.new_meal_prices[size]">
+            <input
+              type="number"
+              [(ngModel)]="newMeal.new_meal_prices[size]"
+              placeholder="{{ 'menu.meals.price' | translate }}"
+              min="0"
+            />zl
+          </label>
+        </div>
+      </td>
+      <td>
+        <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
+          <label *ngIf="ingredient.ingredient_type === 'BREAD'">
+            <i class="fa-solid fa-bread-slice"></i>
+            {{ getTranslatedIngredientName(ingredient.name) }}
+            <input
+              type="checkbox"
+              [checked]="selectedBread === ingredient.name"
+              [disabled]="
+                selectedBread !== null && selectedBread !== ingredient.name
+              "
+              (change)="onIngredientCheckboxChange(ingredient)"
+            />
+          </label>
+        </div>
+      </td>
+      <td>
+        <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
+          <label *ngIf="ingredient.ingredient_type === 'VEGETABLE'">
+            <i class="fa-solid fa-carrot"></i>
+            {{ getTranslatedIngredientName(ingredient.name) }}
+            <input
+              type="checkbox"
+              [checked]="selectedVegetables.has(ingredient.name)"
+              (change)="onIngredientCheckboxChange(ingredient)"
+            />
+          </label>
+        </div>
+      </td>
+      <td>
+        <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
+          <label *ngIf="ingredient.ingredient_type === 'OTHER'">
+            <i class="fa-solid fa-plus"></i>
+            {{ getTranslatedIngredientName(ingredient.name) }}
+            <input
+              type="checkbox"
+              [checked]="selectedOthers.has(ingredient.name)"
+              (change)="onIngredientCheckboxChange(ingredient)"
+            />
+          </label>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="table-meals">
+    <thead>
+      <th *ngIf="isManager()"></th>
+      <th>{{ "menu.meals.meal" | translate }}</th>
+      <th>{{ "menu.meals.prices" | translate }}</th>
+      <th>{{ "menu.meals.base_ingredients" | translate }}</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let meal of sortMealsByName(meals)">
+        <td *ngIf="isManager()" class="manager">
+          <button
+            class="button-update"
+            *ngIf="!meal.isEditing && !isEditing && !isAdding"
+            (click)="editMealRow(meal)"
+          >
+            {{ "common.buttons.update" | translate }}
+          </button>
+          <button
+            class="button-accept"
+            *ngIf="meal.isEditing"
+            (click)="saveMealRow(meal)"
+          >
+            {{ "common.buttons.accept" | translate }}
+          </button>
+          <button
+            class="button-cancel"
+            *ngIf="meal.isEditing"
+            (click)="hideEditableMealRow(meal)"
+          >
+            {{ "common.buttons.cancel" | translate }}
+          </button>
+          <button
+            class="button-remove"
+            *ngIf="!meal.isEditing && !isEditing && !isAdding"
+            (click)="removeMeal(meal)"
+          >
+            {{ "common.buttons.remove" | translate }}
+          </button>
+        </td>
+
+        <td>
+          <span class="meal-name">{{ getTranslatedMealName(meal.name) }}</span>
+        </td>
+
+        <td>
+          <table>
+            <thead *ngIf="!meal.isEditing">
+              <tr>
+                <th>{{ "menu.meals.size" | translate }}</th>
+                <th>{{ "menu.meals.price" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container
+                *ngIf="!meal.isEditing && meal.meal_promotions.length == 0"
+              >
+                <tr *ngFor="let price of meal.prices | keyvalue : sortSizes">
+                  <td>{{ "menu.meals.sizes." + price.key | translate }}</td>
+                  <td>{{ price.value | price }}</td>
+                </tr>
+              </ng-container>
+              <ng-container
+                *ngIf="!meal.isEditing && meal.meal_promotions.length != 0"
+              >
+                <tr *ngFor="let price of meal.prices | keyvalue : sortSizes">
+                  <td>{{ "menu.meals.sizes." + price.key | translate }}</td>
+                  <td>
+                    <del
+                      *ngIf="
+                        hasPromotionToThisSize(meal, price.key).hasPromotion
+                      "
+                    >
+                      {{ price.value | price }}
+                    </del>
+                    <span
+                      class="span-without-style"
+                      *ngIf="
+                        hasPromotionToThisSize(meal, price.key).hasPromotion
+                      "
+                    >
+                      {{
+                        price.value *
+                          (1 -
+                            hasPromotionToThisSize(meal, price.key)
+                              .discountPercentage /
+                              100) | price
+                      }}
+                    </span>
+                    <span
+                      class="span-without-style"
+                      *ngIf="
+                        !hasPromotionToThisSize(meal, price.key).hasPromotion
+                      "
+                    >
+                      {{ price.value | price }}
+                    </span>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="meal.isEditing">
+                <tr [formGroup]="mealForms[meal.name]">
+                  <td colspan="2">
+                    <div *ngFor="let size of sizeOrder">
+                      <label>
                         <input
+                          type="checkbox"
+                          [checked]="
+                            mealForms[meal.name].get('prices.' + size)?.value !=
+                            null
+                          "
+                          (change)="onSizeCheckboxChange(meal, size, $event)"
+                          #checkBox
+                        />
+                        {{ "menu.meals.sizes." + size | translate }}
+                      </label>
+                      <label *ngIf="checkBox.checked">
+                        <div formGroupName="prices">
+                          <input
                             type="number"
-                            [(ngModel)]="newMeal.new_meal_prices[size]"
+                            formControlName="{{ size }}"
                             placeholder="{{ 'menu.meals.price' | translate }}"
                             min="0"
-                        />zl
-                    </label>
-                  </div>
-            </td>
-            <td>
-                <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
-                    <label *ngIf="ingredient.ingredient_type === 'BREAD'">
-                        <i class="fa-solid fa-bread-slice"></i>
-                        {{ getTranslatedIngredientName(ingredient.name) }}
-                        <input type="checkbox" 
-                            [checked]="selectedBread === ingredient.name" 
-                            [disabled]="selectedBread !== null && selectedBread !== ingredient.name" 
-                            (change)="onIngredientCheckboxChange(ingredient)" 
-                        />
-                    </label>
-                </div>
-            </td>
-            <td>
-                <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
-                    <label *ngIf="ingredient.ingredient_type === 'VEGETABLE'">
-                        <i class="fa-solid fa-carrot"></i>
-                        {{ getTranslatedIngredientName(ingredient.name) }}
-                        <input type="checkbox" 
-                            [checked]="selectedVegetables.has(ingredient.name)" 
-                            (change)="onIngredientCheckboxChange(ingredient)" 
-                        />
-                    </label>
-                </div>
-            </td>
-            <td>
-                <div *ngFor="let ingredient of sortIngredientsByName(ingredients)">
-                    <label *ngIf="ingredient.ingredient_type === 'OTHER'">
-                        <i class="fa-solid fa-plus"></i> 
-                        {{ getTranslatedIngredientName(ingredient.name) }}
-                        <input type="checkbox" 
-                            [checked]="selectedOthers.has(ingredient.name)" 
-                            (change)="onIngredientCheckboxChange(ingredient)" 
-                        />
-                    </label>
-                </div>
-            </td>
-        </tr>
-    </table>
-    
-    <table class="table-meals">
-        <thead>
-            <th *ngIf="isManager()"></th>
-            <th>{{ 'menu.meals.meal' | translate }}</th>
-            <th>{{ 'menu.meals.prices' | translate }}</th>
-            <th>{{ 'menu.meals.base_ingredients' | translate }}</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let meal of sortMealsByName(meals)">
-
-                <td *ngIf="isManager()" class="manager">
-                    <button class="button-update" *ngIf="!meal.isEditing && !isEditing && !isAdding" (click)="editMealRow(meal)">{{ 'common.buttons.update' | translate }}</button>
-                    <button class="button-accept" *ngIf="meal.isEditing" (click)="saveMealRow(meal)">{{ 'common.buttons.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="meal.isEditing" (click)="hideEditableMealRow(meal)">{{ 'common.buttons.cancel' | translate }}</button>
-                    <button class="button-remove" *ngIf="!meal.isEditing && !isEditing && !isAdding" (click)="removeMeal(meal)">{{ 'common.buttons.remove' | translate }}</button>
-                </td>
-
-                <td>
-                    <span class="meal-name">{{ getTranslatedMealName(meal.name) }}</span>
-                </td>
-
-                <td>
-                    <table>
-                        <thead *ngIf="!meal.isEditing">
-                            <tr>
-                                <th>{{ 'menu.meals.size' | translate }}</th>
-                                <th>{{ 'menu.meals.price' | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ng-container *ngIf="!meal.isEditing && meal.meal_promotions.length == 0">
-                                <tr *ngFor="let price of meal.prices | keyvalue: sortSizes">
-                                    <td>{{ 'menu.meals.sizes.' + price.key | translate }}</td>
-                                    <td>{{ formatPrice(price.value) }}</td>
-                                </tr>
-                            </ng-container>
-                            <ng-container *ngIf="!meal.isEditing && meal.meal_promotions.length != 0">
-                                <tr *ngFor="let price of meal.prices | keyvalue: sortSizes">
-                                    <td>{{ 'menu.meals.sizes.' + price.key | translate }}</td>
-                                    <td>
-                                        <del *ngIf="hasPromotionToThisSize(meal, price.key).hasPromotion">
-                                            {{ formatPrice(price.value) }}
-                                        </del>
-                                        <span class="span-without-style" *ngIf="hasPromotionToThisSize(meal, price.key).hasPromotion">
-                                            {{ formatPrice(price.value * (1 - hasPromotionToThisSize(meal, price.key).discountPercentage / 100)) }}
-                                        </span>
-                                        <span class="span-without-style" *ngIf="!hasPromotionToThisSize(meal, price.key).hasPromotion">
-                                            {{ formatPrice(price.value) }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                            <ng-container *ngIf="meal.isEditing">
-                                <tr [formGroup]="mealForms[meal.name]">
-                                    <td colspan="2">
-                                    <div *ngFor="let size of sizeOrder">
-                                        <label>
-                                          <input 
-                                            type="checkbox" 
-                                            [checked]="mealForms[meal.name].get('prices.' + size)?.value  != null"
-                                            (change)="onSizeCheckboxChange(meal, size, $event)"
-                                            #checkBox
-                                          />
-                                          {{ 'menu.meals.sizes.' + size | translate }}
-                                        </label>
-                                        <label *ngIf="checkBox.checked">
-                                            <div formGroupName="prices">
-                                            <input
-                                                type="number"
-                                                formControlName="{{ size }}"
-                                                placeholder="{{ 'menu.meals.price' | translate }}"
-                                                min="0"
-                                            />zl
-                                        </div>
-                                        </label>
-                                      </div>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                        </tbody>
-                    </table>
-                </td>
-                <td *ngIf="!meal.isEditing">
-                    <ul *ngFor="let ingredient of sortIngredientsByType(meal.ingredients)">
-                        <li>
-                            <i *ngIf="ingredient.ingredient_type === 'BREAD'" class="fa-solid fa-bread-slice"></i>
-                            <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
-                            <i *ngIf="ingredient.ingredient_type === 'OTHER'" class="fa-solid fa-plus"></i> 
-                            {{ getTranslatedIngredientName(ingredient.name) }}
-                        </li>
-                    </ul>
-                </td>
-
-                <td *ngIf="meal.isEditing">
-                    <ul *ngFor="let ingredient of ingredients">
-                        <div *ngIf="ingredient.ingredient_type === 'VEGETABLE' || ingredient.ingredient_type === 'OTHER'">
-                            <li>
-                                <i *ngIf="ingredient.ingredient_type === 'VEGETABLE'" class="fa-solid fa-carrot"></i>
-                                <i *ngIf="ingredient.ingredient_type === 'OTHER'" class="fa-solid fa-plus"></i> 
-                                {{ getTranslatedIngredientName(ingredient.name) }}
-                                <label>
-                                        <input 
-                                        (change)="onUpdateIngredientCheckboxChange(meal, ingredient, $event)"
-                                        type="checkbox" 
-                                        [checked]="mealContainsIngredient(meal, ingredient)"
-                                        />
-                                </label>
-                            </li>
+                          />zl
                         </div>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </td>
+        <td *ngIf="!meal.isEditing">
+          <ul
+            *ngFor="let ingredient of sortIngredientsByType(meal.ingredients)"
+          >
+            <li>
+              <i
+                *ngIf="ingredient.ingredient_type === 'BREAD'"
+                class="fa-solid fa-bread-slice"
+              ></i>
+              <i
+                *ngIf="ingredient.ingredient_type === 'VEGETABLE'"
+                class="fa-solid fa-carrot"
+              ></i>
+              <i
+                *ngIf="ingredient.ingredient_type === 'OTHER'"
+                class="fa-solid fa-plus"
+              ></i>
+              {{ getTranslatedIngredientName(ingredient.name) }}
+            </li>
+          </ul>
+        </td>
 
-    <h3>{{ 'menu.meats.paragraph_meats' | translate }}</h3>
-    <span>
-        {{ getMeats() }}
-    </span>
-
-    <h3>{{ 'menu.sauces.paragraph_sauces' | translate }}</h3>
-    <span>
-        {{ getSauces() }}
-    </span>
-    
-    <p>{{ 'menu.addons.paragraph_addons' | translate }}</p>
-    <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showAddAddonTable()">{{ 'menu.addons.button_add' | translate }}</button>
-    
-    <p *ngIf="errorMessages['newAddonName']" class="error">{{ errorMessages['newAddonName'] }}</p>
-    <p *ngIf="errorMessages['newAddonPrice']" class="error">{{ errorMessages['newAddonPrice'] }}</p>
-
-    <p *ngIf="errorMessages['updatedAddonPrice']" class="error">{{ errorMessages['updatedAddonPrice'] }}</p>
-
-    <p *ngIf="errorMessages['itemType'] === 'addon'" class="error">{{ errorMessages['message'] }}</p>
-
-    <table class="add-addon-table" *ngIf="isAddingAddon">
-        <tr>
-            <td>
-                <button class="button-accept" (click)="addAddon()">{{ 'common.buttons.accept' | translate }}</button>
-                <button class="button-cancel" (click)="hideAddAddonTable()">{{ 'common.buttons.cancel' | translate }}</button>
-            </td>
-            <td>
-                <input type="text" placeholder="{{ 'menu.addons.addon' | translate }}"  [(ngModel)]="newAddon.new_addon_name" />
-            </td>
-            <td>
-                <input type="number" placeholder="{{ 'menu.addons.price' | translate }}" [(ngModel)]="newAddon.new_addon_price" step="0.5" /> zl
-            </td>
-        </tr>
-    </table>
-    
-    <table class="table-addons">
-        <thead>
-            <th *ngIf="isManager()"></th>
-            <th>{{ 'menu.addons.addon' | translate }}</th>
-            <th>{{ 'menu.addons.price' | translate }}</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let addon of sortAddonsByName(addons)"
-                [formGroup]="addonForms[addon.name]"
+        <td *ngIf="meal.isEditing">
+          <ul *ngFor="let ingredient of ingredients">
+            <div
+              *ngIf="
+                ingredient.ingredient_type === 'VEGETABLE' ||
+                ingredient.ingredient_type === 'OTHER'
+              "
             >
-                <td *ngIf="isManager()" class="manager">
-                    <button class="button-update" *ngIf="!addon.isEditing && !isEditing && !isAdding" (click)="editAddonRow(addon)">{{ 'common.buttons.update' | translate }}</button>
-                    <button class="button-accept" *ngIf="addon.isEditing" (click)="saveAddonRow(addon)">{{ 'common.buttons.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="addon.isEditing" (click)="hideEditableAddonRow(addon)">{{ 'common.buttons.cancel' | translate }}</button>
-                    <button class="button-remove" *ngIf="!addon.isEditing && !isEditing && !isAdding" (click)="removeAddon(addon)">{{ 'common.buttons.remove' | translate }}</button>
-                </td>
-                
-                <td>
-                    {{ getTranslatedAddonName(addon.name) }}
-                </td>
+              <li>
+                <i
+                  *ngIf="ingredient.ingredient_type === 'VEGETABLE'"
+                  class="fa-solid fa-carrot"
+                ></i>
+                <i
+                  *ngIf="ingredient.ingredient_type === 'OTHER'"
+                  class="fa-solid fa-plus"
+                ></i>
+                {{ getTranslatedIngredientName(ingredient.name) }}
+                <label>
+                  <input
+                    (change)="
+                      onUpdateIngredientCheckboxChange(meal, ingredient, $event)
+                    "
+                    type="checkbox"
+                    [checked]="mealContainsIngredient(meal, ingredient)"
+                  />
+                </label>
+              </li>
+            </div>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-                <ng-container *ngIf="!addon.isEditing && addon.promotion === null">
-                    <td *ngIf="!addon.isEditing">{{ formatPrice(addon.price) }}</td>
-                </ng-container>
-                <ng-container *ngIf="!addon.isEditing && addon.promotion !== null">
-                    <td>
-                        <del>
-                            {{ formatPrice(addon.price) }}
-                        </del>
-                        <span class="span-without-style">
-                            {{ formatPrice(addon.price * (1 - addon.promotion.discount_percentage / 100)) }}
-                        </span>
-                    </td>
-                </ng-container>
-                <td *ngIf="addon.isEditing">
-                    <input type="number" formControlName="price" step="0.01" />
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <h3>{{ "menu.meats.paragraph_meats" | translate }}</h3>
+  <span>
+    {{ getMeats() }}
+  </span>
 
-    <p>{{ 'menu.beverages.paragraph_beverages' | translate }}</p>
-    <button class="btn btn-success" *ngIf="isManager() && !isEditing && !isAdding" (click)="showAddBeverageTable()">{{ 'menu.beverages.button_add' | translate }}</button>
-    
-    <p *ngIf="errorMessages['newBeverageName']" class="error">{{ errorMessages['newBeverageName'] }}</p>
-    <p *ngIf="errorMessages['newBeverageCapacity']" class="error">{{ errorMessages['newBeverageCapacity'] }}</p>
-    <p *ngIf="errorMessages['newBeveragePrice']" class="error">{{ errorMessages['newBeveragePrice'] }}</p>
-    
-    <p *ngIf="errorMessages['updatedBeverageName']" class="error">{{ errorMessages['updatedBeverageName'] }}</p>
-    <p *ngIf="errorMessages['updatedBeverageOldCapacity']" class="error">{{ errorMessages['updatedBeverageOldCapacity'] }}</p>
-    <p *ngIf="errorMessages['updatedBeverageNewCapacity']" class="error">{{ errorMessages['updatedBeverageNewCapacity'] }}</p>
-    <p *ngIf="errorMessages['updatedBeveragePrice']" class="error">{{ errorMessages['updatedBeveragePrice'] }}</p>
+  <h3>{{ "menu.sauces.paragraph_sauces" | translate }}</h3>
+  <span>
+    {{ getSauces() }}
+  </span>
 
-    <p *ngIf="errorMessages['itemType'] === 'beverage'" class="error">{{ errorMessages['message'] }}</p>
-    <table class="add-beverage-table" *ngIf="isAddingBeverage">
-        <tr>
-            <td>
-                <button class="button-accept" (click)="addBeverage()">{{ 'common.buttons.accept' | translate }}</button>
-                <button class="button-cancel" (click)="hideAddBeverageTable()">{{ 'common.buttons.cancel' | translate }}</button>
-            </td>
-            <td>
-                <input type="text" placeholder="{{ 'menu.beverages.beverage' | translate }}"  [(ngModel)]="newBeverage.new_beverage_name" />
-            </td>
-            <td>
-                <input type="number" placeholder="{{ 'menu.beverages.capacity' | translate }}" [(ngModel)]="newBeverage.new_beverage_capacity" step="0.05" /> L
-            </td>
-            <td>
-                <input type="number" placeholder="{{ 'menu.beverages.price' | translate }}" [(ngModel)]="newBeverage.new_beverage_price" /> zl
-            </td>
-        </tr>
-    </table>
-    <table class="table-beverages">
-        <thead>
-            <th *ngIf="isManager()"></th>
-            <th>{{ 'menu.beverages.beverage' | translate }}</th>
-            <th>{{ 'menu.beverages.capacity' | translate }}</th>
-            <th>{{ 'menu.beverages.price' | translate }}</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let beverage of sortBeveragesByName(beverages)"
-                [formGroup]="beverageForms[beverage.name]"
-            >
-                <td *ngIf="isManager()" class="manager">
-                    <button class="button-update" *ngIf="!beverage.isEditing && !isEditing && !isAdding" (click)="editBeverageRow(beverage)">{{ 'common.buttons.update' | translate }}</button>
-                    <button class="button-accept" *ngIf="beverage.isEditing" (click)="saveBeverageRow(beverage)">{{ 'common.buttons.accept' | translate }}</button>
-                    <button class="button-cancel" *ngIf="beverage.isEditing" (click)="hideEditableBeverageRow(beverage)">{{ 'common.buttons.cancel' | translate }}</button>
-                    <button class="button-remove" *ngIf="!beverage.isEditing && !isEditing && !isAdding" (click)="removeBeverage(beverage)">{{ 'common.buttons.remove' | translate }}</button>
-                </td>
+  <p>{{ "menu.addons.paragraph_addons" | translate }}</p>
+  <button
+    class="btn btn-success"
+    *ngIf="isManager() && !isEditing && !isAdding"
+    (click)="showAddAddonTable()"
+  >
+    {{ "menu.addons.button_add" | translate }}
+  </button>
 
-                <td>
-                    {{ getTranslatedBeverageName(beverage.name) }}
-                </td>
+  <p *ngIf="errorMessages['newAddonName']" class="error">
+    {{ errorMessages["newAddonName"] }}
+  </p>
+  <p *ngIf="errorMessages['newAddonPrice']" class="error">
+    {{ errorMessages["newAddonPrice"] }}
+  </p>
 
-                <td *ngIf="!beverage.isEditing">{{ formatCapacity(beverage.capacity) }}</td>
-                <td *ngIf="beverage.isEditing">
-                    <input type="number" formControlName="capacity" />
-                </td>
+  <p *ngIf="errorMessages['updatedAddonPrice']" class="error">
+    {{ errorMessages["updatedAddonPrice"] }}
+  </p>
 
-                <ng-container *ngIf="!beverage.isEditing && beverage.promotion === null">
-                    <td *ngIf="!beverage.isEditing">{{ formatPrice(beverage.price) }}</td>
-                </ng-container>
-                <ng-container *ngIf="!beverage.isEditing && beverage.promotion !== null">
-                    <td>
-                        <del>
-                            {{ formatPrice(beverage.price) }}
-                        </del>
-                        <span class="span-without-style">
-                            {{ formatPrice(beverage.price * (1 - beverage.promotion.discount_percentage / 100)) }}
-                        </span>
-                    </td>
-                </ng-container>
-                <td *ngIf="beverage.isEditing">
-                    <input type="number" formControlName="price" step="0.01" />
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <p *ngIf="errorMessages['itemType'] === 'addon'" class="error">
+    {{ errorMessages["message"] }}
+  </p>
+
+  <table class="add-addon-table" *ngIf="isAddingAddon">
+    <tr>
+      <td>
+        <button class="button-accept" (click)="addAddon()">
+          {{ "common.buttons.accept" | translate }}
+        </button>
+        <button class="button-cancel" (click)="hideAddAddonTable()">
+          {{ "common.buttons.cancel" | translate }}
+        </button>
+      </td>
+      <td>
+        <input
+          type="text"
+          placeholder="{{ 'menu.addons.addon' | translate }}"
+          [(ngModel)]="newAddon.new_addon_name"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          placeholder="{{ 'menu.addons.price' | translate }}"
+          [(ngModel)]="newAddon.new_addon_price"
+          step="0.5"
+        />
+        zl
+      </td>
+    </tr>
+  </table>
+
+  <table class="table-addons">
+    <thead>
+      <th *ngIf="isManager()"></th>
+      <th>{{ "menu.addons.addon" | translate }}</th>
+      <th>{{ "menu.addons.price" | translate }}</th>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let addon of sortAddonsByName(addons)"
+        [formGroup]="addonForms[addon.name]"
+      >
+        <td *ngIf="isManager()" class="manager">
+          <button
+            class="button-update"
+            *ngIf="!addon.isEditing && !isEditing && !isAdding"
+            (click)="editAddonRow(addon)"
+          >
+            {{ "common.buttons.update" | translate }}
+          </button>
+          <button
+            class="button-accept"
+            *ngIf="addon.isEditing"
+            (click)="saveAddonRow(addon)"
+          >
+            {{ "common.buttons.accept" | translate }}
+          </button>
+          <button
+            class="button-cancel"
+            *ngIf="addon.isEditing"
+            (click)="hideEditableAddonRow(addon)"
+          >
+            {{ "common.buttons.cancel" | translate }}
+          </button>
+          <button
+            class="button-remove"
+            *ngIf="!addon.isEditing && !isEditing && !isAdding"
+            (click)="removeAddon(addon)"
+          >
+            {{ "common.buttons.remove" | translate }}
+          </button>
+        </td>
+
+        <td>
+          {{ getTranslatedAddonName(addon.name) }}
+        </td>
+
+        <ng-container *ngIf="!addon.isEditing && addon.promotion === null">
+          <td *ngIf="!addon.isEditing">{{ addon.price | price }}</td>
+        </ng-container>
+        <ng-container *ngIf="!addon.isEditing && addon.promotion !== null">
+          <td>
+            <del>
+              {{ addon.price | price }}
+            </del>
+            <span class="span-without-style">
+              {{
+                addon.price * (1 - addon.promotion.discount_percentage / 100)
+                  | price
+              }}
+            </span>
+          </td>
+        </ng-container>
+        <td *ngIf="addon.isEditing">
+          <input type="number" formControlName="price" step="0.01" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>{{ "menu.beverages.paragraph_beverages" | translate }}</p>
+  <button
+    class="btn btn-success"
+    *ngIf="isManager() && !isEditing && !isAdding"
+    (click)="showAddBeverageTable()"
+  >
+    {{ "menu.beverages.button_add" | translate }}
+  </button>
+
+  <p *ngIf="errorMessages['newBeverageName']" class="error">
+    {{ errorMessages["newBeverageName"] }}
+  </p>
+  <p *ngIf="errorMessages['newBeverageCapacity']" class="error">
+    {{ errorMessages["newBeverageCapacity"] }}
+  </p>
+  <p *ngIf="errorMessages['newBeveragePrice']" class="error">
+    {{ errorMessages["newBeveragePrice"] }}
+  </p>
+
+  <p *ngIf="errorMessages['updatedBeverageName']" class="error">
+    {{ errorMessages["updatedBeverageName"] }}
+  </p>
+  <p *ngIf="errorMessages['updatedBeverageOldCapacity']" class="error">
+    {{ errorMessages["updatedBeverageOldCapacity"] }}
+  </p>
+  <p *ngIf="errorMessages['updatedBeverageNewCapacity']" class="error">
+    {{ errorMessages["updatedBeverageNewCapacity"] }}
+  </p>
+  <p *ngIf="errorMessages['updatedBeveragePrice']" class="error">
+    {{ errorMessages["updatedBeveragePrice"] }}
+  </p>
+
+  <p *ngIf="errorMessages['itemType'] === 'beverage'" class="error">
+    {{ errorMessages["message"] }}
+  </p>
+  <table class="add-beverage-table" *ngIf="isAddingBeverage">
+    <tr>
+      <td>
+        <button class="button-accept" (click)="addBeverage()">
+          {{ "common.buttons.accept" | translate }}
+        </button>
+        <button class="button-cancel" (click)="hideAddBeverageTable()">
+          {{ "common.buttons.cancel" | translate }}
+        </button>
+      </td>
+      <td>
+        <input
+          type="text"
+          placeholder="{{ 'menu.beverages.beverage' | translate }}"
+          [(ngModel)]="newBeverage.new_beverage_name"
+        />
+      </td>
+      <td>
+        <input
+          type="number"
+          placeholder="{{ 'menu.beverages.capacity' | translate }}"
+          [(ngModel)]="newBeverage.new_beverage_capacity"
+          step="0.05"
+        />
+        L
+      </td>
+      <td>
+        <input
+          type="number"
+          placeholder="{{ 'menu.beverages.price' | translate }}"
+          [(ngModel)]="newBeverage.new_beverage_price"
+        />
+        zl
+      </td>
+    </tr>
+  </table>
+  <table class="table-beverages">
+    <thead>
+      <th *ngIf="isManager()"></th>
+      <th>{{ "menu.beverages.beverage" | translate }}</th>
+      <th>{{ "menu.beverages.capacity" | translate }}</th>
+      <th>{{ "menu.beverages.price" | translate }}</th>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let beverage of sortBeveragesByName(beverages)"
+        [formGroup]="beverageForms[beverage.name]"
+      >
+        <td *ngIf="isManager()" class="manager">
+          <button
+            class="button-update"
+            *ngIf="!beverage.isEditing && !isEditing && !isAdding"
+            (click)="editBeverageRow(beverage)"
+          >
+            {{ "common.buttons.update" | translate }}
+          </button>
+          <button
+            class="button-accept"
+            *ngIf="beverage.isEditing"
+            (click)="saveBeverageRow(beverage)"
+          >
+            {{ "common.buttons.accept" | translate }}
+          </button>
+          <button
+            class="button-cancel"
+            *ngIf="beverage.isEditing"
+            (click)="hideEditableBeverageRow(beverage)"
+          >
+            {{ "common.buttons.cancel" | translate }}
+          </button>
+          <button
+            class="button-remove"
+            *ngIf="!beverage.isEditing && !isEditing && !isAdding"
+            (click)="removeBeverage(beverage)"
+          >
+            {{ "common.buttons.remove" | translate }}
+          </button>
+        </td>
+
+        <td>
+          {{ getTranslatedBeverageName(beverage.name) }}
+        </td>
+
+        <td *ngIf="!beverage.isEditing">
+          {{ beverage.capacity | capacity }}
+        </td>
+        <td *ngIf="beverage.isEditing">
+          <input type="number" formControlName="capacity" />
+        </td>
+
+        <ng-container
+          *ngIf="!beverage.isEditing && beverage.promotion === null"
+        >
+          <td *ngIf="!beverage.isEditing">{{ beverage.price | price }}</td>
+        </ng-container>
+        <ng-container
+          *ngIf="!beverage.isEditing && beverage.promotion !== null"
+        >
+          <td>
+            <del>
+              {{ beverage.price | price }}
+            </del>
+            <span class="span-without-style">
+              {{
+                beverage.price *
+                  (1 - beverage.promotion.discount_percentage / 100) | price
+              }}
+            </span>
+          </td>
+        </ng-container>
+        <td *ngIf="beverage.isEditing">
+          <input type="number" formControlName="price" step="0.01" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </section>

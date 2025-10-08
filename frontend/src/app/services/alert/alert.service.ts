@@ -657,7 +657,7 @@ export class AlertService {
         this.langService.currentLang === 'pl'
           ? 'Potwierdzenie'
           : 'Confirmation',
-      text: 
+      text:
         this.langService.currentLang === 'pl'
           ? `Czy na pewno chcesz usunac aplikacje?`
           : `Are you sure you want to remove job application?`,
@@ -671,7 +671,7 @@ export class AlertService {
       confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
       cancelButtonText:
         this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
-    }).then((result) =>  result.isConfirmed);
+    }).then((result) => result.isConfirmed);
   }
 
   showSuccessfulJobApplicationRemoveAlert(position: string): void {
@@ -680,6 +680,268 @@ export class AlertService {
         this.langService.currentLang === 'pl'
           ? `Pomyslnie usunieto aplikacje na oferte pracy na pozycji '${position}'!`
           : `Successfully removed job application to job offer on '${position}' position!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulBeverageUpdateAlert(beverageNameTranslated: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zaktualizowano napoj '${beverageNameTranslated}'!`
+          : `Successfully updated beverage '${beverageNameTranslated}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulAddonUpdateAlert(addonNameTranslated: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zaktualizowano dodatek '${addonNameTranslated}'!`
+          : `Successfully updated addon '${addonNameTranslated}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulMealUpdateAlert(mealNameTranslated: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zaktualizowano danie '${mealNameTranslated}'!`
+          : `Successfully updated meal '${mealNameTranslated}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveBeverageAlert(beverageNameTranslated: string): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac napoj ${beverageNameTranslated}?`
+          : `Are you sure you want to remove beverage ${beverageNameTranslated}?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulBeverageRemoveAlert(beverageNameTranslated: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto napoj '${beverageNameTranslated}'!`
+          : `Successfully removed beverage '${beverageNameTranslated}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveAddonAlert(addonNameTranslated: string): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac dodatek ${addonNameTranslated}?`
+          : `Are you sure you want to remove addon ${addonNameTranslated}?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulAddonRemoveAlert(addonNameTranslated: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto dodatek '${addonNameTranslated}'!`
+          : `Successfully removed addon '${addonNameTranslated}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveMealAlert(mealNameTranslated: string): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac danie ${mealNameTranslated}?`
+          : `Are you sure you want to remove meal ${mealNameTranslated}?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulMealRemoveAlert(mealNameTranslated: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto danie '${mealNameTranslated}'!`
+          : `Successfully removed meal '${mealNameTranslated}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  //
+
+  showRemoveIngredientAlert(
+    ingredientNameTranslated: string,
+    mealsWithThisIngredient: string
+  ): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac skladnik ${ingredientNameTranslated}? Nastepujace dania zawieraja ten skladnik: ${mealsWithThisIngredient}`
+          : `Are you sure you want to remove ingredient ${ingredientNameTranslated}? Following meals contains this ingredient: ${mealsWithThisIngredient}`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulIngredientRemoveAlert(ingredientNameTranslated: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto skladnik '${ingredientNameTranslated}'!`
+          : `Successfully removed ingredient '${ingredientNameTranslated}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulBeverageAddAlert(beverageName: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie dodano napoj '${beverageName}'!`
+          : `Successfully added beverage '${beverageName}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulAddonAddAlert(addonName: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie dodano dodatek '${addonName}'!`
+          : `Successfully added addon '${addonName}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulMealAddAlert(mealName: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie dodano danie '${mealName}'!`
+          : `Successfully added meal '${mealName}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulIngredientAddAlert(ingredientName: string): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie dodano skladnik '${ingredientName}'!`
+          : `Successfully added ingredient '${ingredientName}'!`,
       icon: 'success',
       iconColor: 'green',
       confirmButtonColor: 'green',

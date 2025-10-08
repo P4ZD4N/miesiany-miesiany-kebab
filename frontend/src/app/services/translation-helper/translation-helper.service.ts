@@ -56,4 +56,53 @@ export class TranslationHelperService {
 
     return positionTranslated;
   }
+
+  getTranslatedMealName(mealName: string): string {
+    let mealNameTranslated = this.translate.instant('menu.meals.' + mealName);
+
+    if (mealNameTranslated === 'menu.meals.' + mealName) {
+      mealNameTranslated = mealName;
+    }
+
+    return mealNameTranslated;
+  }
+
+  getTranslatedBeverageName(beverageName: string): string {
+    let beverageNameTranslated = this.translate.instant(
+      'menu.beverages.' + beverageName
+    );
+
+    if (beverageNameTranslated === 'menu.addons.' + beverageName) {
+      beverageNameTranslated = beverageName;
+    }
+
+    return beverageNameTranslated;
+  }
+
+  getTranslatedAddonName(addonName: string): string {
+    let addonNameTranslated = this.translate.instant(
+      'menu.addons.' + addonName
+    );
+
+    if (addonNameTranslated === 'menu.addons.' + addonName) {
+      addonNameTranslated = addonName;
+    }
+
+    return addonNameTranslated;
+  }
+
+  getTranslatedIngredientName(ingredientName: string): string {
+    let ingredientNameTranslated = this.translate.instant(
+      'menu.meals.ingredients.' + ingredientName
+    );
+
+    if (
+      ingredientNameTranslated ===
+      'menu.meals.ingredients.' + ingredientName
+    ) {
+      ingredientNameTranslated = ingredientName;
+    }
+
+    return ingredientNameTranslated;
+  }
 }
