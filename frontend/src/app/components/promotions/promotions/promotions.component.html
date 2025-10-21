@@ -1,418 +1,644 @@
 <section class="promotions">
-    <h1>{{ 'promotions.headline' | translate }}</h1>
-    <p class="main-paragraph">{{ 'promotions.paragraph_top' | translate }}</p>
+  <h1>{{ "promotions.headline" | translate }}</h1>
+  <p class="main-paragraph">{{ "promotions.paragraph_top" | translate }}</p>
 
-    <p class="x-promotions" *ngIf="mealPromotions.length !== 0 || isManager()">{{ 'promotions.paragraph_meal_promotions' | translate }}</p>
+  <p class="x-promotions" *ngIf="mealPromotions.length !== 0 || isManager()">
+    {{ "promotions.paragraph_meal_promotions" | translate }}
+  </p>
 
-    <button class="btn btn-success" *ngIf="isManager() && !isAdding && !isEditing" (click)="showAddMealPromotionTable()">{{ 'promotions.buttons.add_meal_promotion' | translate }}</button>
+  <button
+    class="btn btn-success"
+    *ngIf="isManager() && !isAdding && !isEditing"
+    (click)="showAddMealPromotionTable()"
+  >
+    {{ "promotions.buttons.add_meal_promotion" | translate }}
+  </button>
 
-    <table class="add-meal-table" *ngIf="isAddingMealPromotion">
-        <tr>
-            <h1>{{ 'promotions.new_meal_promotion' | translate }}</h1>
-        </tr>
-        <tr>
-            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="newMealPromotion.description" />
-        </tr>
-        <tr>
-            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="newMealPromotion.discount_percentage" />%
-        </tr>
-        <tr>
-            <div *ngFor="let mealName of mealNames">
-                <label>
-                    <input 
-                        type="checkbox" 
-                        [value]="mealName" 
-                        (change)="toggleMealNameAdd(mealName, $event)" 
-                        [checked]="newMealPromotion.meal_names.includes(mealName)" />
-                    {{ getTranslatedMealName(mealName) }}
-                </label>
-            </div>
-        </tr>
-        <tr>
-            <div *ngFor="let size of sizeOrder">
-                <label>
-                    <input 
-                        type="checkbox" 
-                        [value]="size" 
-                        (change)="toggleSize(size, $event)" 
-                        [checked]="newMealPromotion.sizes.includes(size)" />
-                    {{ 'menu.meals.sizes.' + size | translate }}
-                </label>
-            </div>
-        </tr>
-        <tr>
-            <button class="button-accept" (click)="addMealPromotion()">{{ 'common.buttons.accept' | translate }}</button>
-            <button class="button-cancel" (click)="hideAddMealPromotionTable()">{{ 'common.buttons.cancel' | translate }}</button>
-        </tr>
-        <tr *ngIf="errorMessages" class="error">
-            {{ errorMessages['message'] }}
-        </tr>
-        <tr *ngIf="errorMessages['description']" class="error">
-            {{ errorMessages['description'] }}
-        </tr>
-        <tr *ngIf="errorMessages['discountPercentage']" class="error">
-            {{ errorMessages['discountPercentage'] }}
-        </tr>
-    </table>
+  <table class="add-meal-table" *ngIf="isAddingMealPromotion">
+    <tr>
+      <h1>{{ "promotions.new_meal_promotion" | translate }}</h1>
+    </tr>
+    <tr>
+      <input
+        type="text"
+        placeholder="{{ 'promotions.promotion_description' | translate }}"
+        [(ngModel)]="newMealPromotion.description"
+      />
+    </tr>
+    <tr>
+      {{
+        "promotions.discount_percentage" | translate
+      }}:
+      <input
+        type="number"
+        min="0"
+        max="100"
+        [(ngModel)]="newMealPromotion.discount_percentage"
+      />%
+    </tr>
+    <tr>
+      <div *ngFor="let mealName of mealNames">
+        <label>
+          <input
+            type="checkbox"
+            [value]="mealName"
+            (change)="toggleMealNameAdd(mealName, $event)"
+            [checked]="newMealPromotion.meal_names.includes(mealName)"
+          />
+          {{ getTranslatedMealName(mealName) }}
+        </label>
+      </div>
+    </tr>
+    <tr>
+      <div *ngFor="let size of sizeOrder">
+        <label>
+          <input
+            type="checkbox"
+            [value]="size"
+            (change)="toggleSize(size, $event)"
+            [checked]="newMealPromotion.sizes.includes(size)"
+          />
+          {{ "menu.meals.sizes." + size | translate }}
+        </label>
+      </div>
+    </tr>
+    <tr>
+      <button class="button-accept" (click)="addMealPromotion()">
+        {{ "common.buttons.accept" | translate }}
+      </button>
+      <button class="button-cancel" (click)="hideAddMealPromotionTable()">
+        {{ "common.buttons.cancel" | translate }}
+      </button>
+    </tr>
+    <tr *ngIf="errorMessages" class="error">
+      {{
+        errorMessages["message"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['description']" class="error">
+      {{
+        errorMessages["description"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['discountPercentage']" class="error">
+      {{
+        errorMessages["discountPercentage"]
+      }}
+    </tr>
+  </table>
 
-    <table class="update-meal-table" *ngIf="isEditingMealPromotion">
-        <tr>
-            <h1>{{ 'promotions.update_meal_promotion' | translate }}</h1>
-        </tr>
-        <tr>
-            <input 
-                type="text" 
-                placeholder="{{ 'promotions.promotion_description' | translate }}"
-                [(ngModel)]="updatedMealPromotion!.updated_description" />
-        </tr>
-        <tr>
-            {{ 'promotions.discount_percentage' | translate }}: 
-            <input 
-                type="number" 
-                min="0" 
-                max="100" 
-                [(ngModel)]="updatedMealPromotion!.updated_discount_percentage" />%
-        </tr>
-        <tr>
-            <div *ngFor="let mealName of mealNames">
-                <label>
-                    <input 
-                        type="checkbox" 
-                        [value]="mealName" 
-                        (change)="toggleMealNameEdit(mealName, $event)" 
-                        [checked]="updatedMealPromotion!.updated_meal_names.includes(mealName)" />
-                    {{ getTranslatedMealName(mealName) }}
-                </label>
-            </div>
-        </tr>
-        <tr>
-            <div *ngFor="let size of sizeOrder">
-                <label>
-                    <input 
-                        type="checkbox" 
-                        [value]="size" 
-                        (change)="toggleSizeEdit(size, $event)" 
-                        [checked]="updatedMealPromotion!.updated_sizes.includes(size)" />
-                    {{ 'menu.meals.sizes.' + size | translate }}
-                </label>
-            </div>
-        </tr>
-        <tr>
-            <button class="button-accept" *ngIf="updatedMealPromotion" (click)="updateMealPromotion(updatedMealPromotion)">
-                {{ 'common.buttons.accept' | translate }}
-            </button>
-            <button class="button-cancel" (click)="hideUpdatePromotionTable()">
-                {{ 'common.buttons.cancel' | translate }}
-            </button>
-        </tr>
-        <tr *ngIf="errorMessages" class="error">
-            {{ errorMessages['message'] }}
-        </tr>
-        <tr *ngIf="errorMessages['updatedDescription']" class="error">
-            {{ errorMessages['updatedDescription'] }}
-        </tr>
-        <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
-            {{ errorMessages['updatedDiscountPercentage'] }}
-        </tr>
-    </table>
+  <table class="update-meal-table" *ngIf="isEditingMealPromotion">
+    <tr>
+      <h1>{{ "promotions.update_meal_promotion" | translate }}</h1>
+    </tr>
+    <tr>
+      <input
+        type="text"
+        placeholder="{{ 'promotions.promotion_description' | translate }}"
+        [(ngModel)]="updatedMealPromotion!.updated_description"
+      />
+    </tr>
+    <tr>
+      {{
+        "promotions.discount_percentage" | translate
+      }}:
+      <input
+        type="number"
+        min="0"
+        max="100"
+        [(ngModel)]="updatedMealPromotion!.updated_discount_percentage"
+      />%
+    </tr>
+    <tr>
+      <div *ngFor="let mealName of mealNames">
+        <label>
+          <input
+            type="checkbox"
+            [value]="mealName"
+            (change)="toggleMealNameEdit(mealName, $event)"
+            [checked]="
+              updatedMealPromotion!.updated_meal_names.includes(mealName)
+            "
+          />
+          {{ getTranslatedMealName(mealName) }}
+        </label>
+      </div>
+    </tr>
+    <tr>
+      <div *ngFor="let size of sizeOrder">
+        <label>
+          <input
+            type="checkbox"
+            [value]="size"
+            (change)="toggleSizeEdit(size, $event)"
+            [checked]="updatedMealPromotion!.updated_sizes.includes(size)"
+          />
+          {{ "menu.meals.sizes." + size | translate }}
+        </label>
+      </div>
+    </tr>
+    <tr>
+      <button
+        class="button-accept"
+        *ngIf="updatedMealPromotion"
+        (click)="updateMealPromotion(updatedMealPromotion)"
+      >
+        {{ "common.buttons.accept" | translate }}
+      </button>
+      <button class="button-cancel" (click)="hideUpdatePromotionTable()">
+        {{ "common.buttons.cancel" | translate }}
+      </button>
+    </tr>
+    <tr *ngIf="errorMessages" class="error">
+      {{
+        errorMessages["message"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['updatedDescription']" class="error">
+      {{
+        errorMessages["updatedDescription"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
+      {{
+        errorMessages["updatedDiscountPercentage"]
+      }}
+    </tr>
+  </table>
 
-    <table *ngIf="mealPromotions.length != 0" class="meal-promotions-table">
-        <thead>
-            <th *ngIf="isManager()"></th>
-            <th>{{ 'promotions.promotion_description' | translate }}</th>
-            <th>{{ 'promotions.discount_percentage' | translate }}</th>
-            <th>{{ 'promotions.meals' | translate }}</th>
-            <th>{{ 'promotions.sizes' | translate }}</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let mealPromotion of mealPromotions">
-                <td *ngIf="isManager()">
-                    <button class="button-update" *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding" (click)="editMealPromotionRow(mealPromotion)">{{ 'common.buttons.update' | translate }}</button>
-                    <button class="button-remove" *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding" (click)="removeMealPromotion(mealPromotion)">{{ 'common.buttons.remove' | translate }}</button>
-                </td>
-                <td>{{ mealPromotion.description }}</td>
-                <td>{{ mealPromotion.discount_percentage }}%</td>
-                <td>
-                    <ul *ngFor="let mealName of mealPromotion.meal_names">
-                        <li>
-                            <i class="fa-solid fa-utensils"></i> {{ getTranslatedMealName(mealName) }}
-                        </li>
-                    </ul>
-                </td>
-                <td>
-                    <ul *ngFor="let size of mealPromotion.sizes">
-                        <li>{{ 'promotions.sizes_list.' + size | translate }}</li>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <table *ngIf="mealPromotions.length != 0" class="meal-promotions-table">
+    <thead>
+      <th *ngIf="isManager()"></th>
+      <th>{{ "promotions.promotion_description" | translate }}</th>
+      <th>{{ "promotions.discount_percentage" | translate }}</th>
+      <th>{{ "promotions.meals" | translate }}</th>
+      <th>{{ "promotions.sizes" | translate }}</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mealPromotion of mealPromotions">
+        <td *ngIf="isManager()">
+          <button
+            class="button-update"
+            *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding"
+            (click)="editMealPromotionRow(mealPromotion)"
+          >
+            {{ "common.buttons.update" | translate }}
+          </button>
+          <button
+            class="button-remove"
+            *ngIf="!mealPromotion.isEditing && !isEditing && !isAdding"
+            (click)="removeMealPromotion(mealPromotion)"
+          >
+            {{ "common.buttons.remove" | translate }}
+          </button>
+        </td>
+        <td>{{ mealPromotion.description }}</td>
+        <td>{{ mealPromotion.discount_percentage }}%</td>
+        <td>
+          <ul *ngFor="let mealName of mealPromotion.meal_names">
+            <li>
+              <i class="fa-solid fa-utensils"></i>
+              {{ getTranslatedMealName(mealName) }}
+            </li>
+          </ul>
+        </td>
+        <td>
+          <ul *ngFor="let size of mealPromotion.sizes">
+            <li>{{ "promotions.sizes_list." + size | translate }}</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-    <p class="x-promotions" *ngIf="beveragePromotions.length !== 0 || isManager()">{{ 'promotions.paragraph_beverage_promotions' | translate }}</p>
+  <p
+    class="x-promotions"
+    *ngIf="beveragePromotions.length !== 0 || isManager()"
+  >
+    {{ "promotions.paragraph_beverage_promotions" | translate }}
+  </p>
 
-    <button class="btn btn-success" *ngIf="isManager() && !isAdding && !isEditing" (click)="showAddBeveragePromotionTable()">{{ 'promotions.buttons.add_beverage_promotion' | translate }}</button>
+  <button
+    class="btn btn-success"
+    *ngIf="isManager() && !isAdding && !isEditing"
+    (click)="showAddBeveragePromotionTable()"
+  >
+    {{ "promotions.buttons.add_beverage_promotion" | translate }}
+  </button>
 
-    <table class="add-beverage-table" *ngIf="isAddingBeveragePromotion">
-        <tr>
-            <h1>{{ 'promotions.new_beverage_promotion' | translate }}</h1>
-        </tr>
-        <tr>
-            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="newBeveragePromotion.description" />
-        </tr>
-        <tr>
-            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="newBeveragePromotion.discount_percentage" />%
-        </tr>
-        <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
-            <span>
-                <i class="fa-solid fa-martini-glass"></i> {{ getTranslatedBeverageName(beverage[0]) }}
-            </span>
+  <table class="add-beverage-table" *ngIf="isAddingBeveragePromotion">
+    <tr>
+      <h1>{{ "promotions.new_beverage_promotion" | translate }}</h1>
+    </tr>
+    <tr>
+      <input
+        type="text"
+        placeholder="{{ 'promotions.promotion_description' | translate }}"
+        [(ngModel)]="newBeveragePromotion.description"
+      />
+    </tr>
+    <tr>
+      {{
+        "promotions.discount_percentage" | translate
+      }}:
+      <input
+        type="number"
+        min="0"
+        max="100"
+        [(ngModel)]="newBeveragePromotion.discount_percentage"
+      />%
+    </tr>
+    <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
+      <span>
+        <i class="fa-solid fa-martini-glass"></i>
+        {{ getTranslatedBeverageName(beverage[0]) }}
+      </span>
 
-            <ul *ngFor="let capacity of beverage[1]">
-                <li>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            [value]="capacity" 
-                            (change)="toggleCapacityAdd(beverage[0], capacity, $event)" 
-                            [checked]="newBeveragePromotion.beverages_with_capacities[beverage[0]].includes(capacity)" />
-                            {{ capacity }} L
-                    </label>
-                </li>
-            </ul>
-        </tr>
-        <tr>
-            <button class="button-accept" (click)="addBeveragePromotion()">{{ 'common.buttons.accept' | translate }}</button>
-            <button class="button-cancel" (click)="hideAddBeveragePromotionTable()">{{ 'common.buttons.cancel' | translate }}</button>
-        </tr>
-        <tr *ngIf="errorMessages" class="error">
-            {{ errorMessages['message'] }}
-        </tr>
-        <tr *ngIf="errorMessages['description']" class="error">
-            {{ errorMessages['description'] }}
-        </tr>
-        <tr *ngIf="errorMessages['discountPercentage']" class="error">
-            {{ errorMessages['discountPercentage'] }}
-        </tr>
-    </table>
+      <ul *ngFor="let capacity of beverage[1]">
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              [value]="capacity"
+              (change)="toggleCapacityAdd(beverage[0], capacity, $event)"
+              [checked]="
+                newBeveragePromotion.beverages_with_capacities[
+                  beverage[0]
+                ]?.includes(capacity)
+              "
+            />
+            {{ capacity }} L
+          </label>
+        </li>
+      </ul>
+    </tr>
+    <tr>
+      <button class="button-accept" (click)="addBeveragePromotion()">
+        {{ "common.buttons.accept" | translate }}
+      </button>
+      <button class="button-cancel" (click)="hideAddBeveragePromotionTable()">
+        {{ "common.buttons.cancel" | translate }}
+      </button>
+    </tr>
+    <tr *ngIf="errorMessages" class="error">
+      {{
+        errorMessages["message"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['description']" class="error">
+      {{
+        errorMessages["description"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['discountPercentage']" class="error">
+      {{
+        errorMessages["discountPercentage"]
+      }}
+    </tr>
+  </table>
 
-    <table class="update-beverage-table" *ngIf="isEditingBeveragePromotion">
-        <tr>
-            <h1>{{ 'promotions.update_beverage_promotion' | translate }}</h1>
-        </tr>
-        <tr>
-            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="updatedBeveragePromotion!.updated_description" />
-        </tr>
-        <tr>
-            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="updatedBeveragePromotion!.updated_discount_percentage" />%
-        </tr>
-        <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
-            <span>
-                <i class="fa-solid fa-martini-glass"></i> {{ getTranslatedBeverageName(beverage[0]) }}
-            </span>
-            
+  <table class="update-beverage-table" *ngIf="isEditingBeveragePromotion">
+    <tr>
+      <h1>{{ "promotions.update_beverage_promotion" | translate }}</h1>
+    </tr>
+    <tr>
+      <input
+        type="text"
+        placeholder="{{ 'promotions.promotion_description' | translate }}"
+        [(ngModel)]="updatedBeveragePromotion!.updated_description"
+      />
+    </tr>
+    <tr>
+      {{
+        "promotions.discount_percentage" | translate
+      }}:
+      <input
+        type="number"
+        min="0"
+        max="100"
+        [(ngModel)]="updatedBeveragePromotion!.updated_discount_percentage"
+      />%
+    </tr>
+    <tr *ngFor="let beverage of beveragesWithCapacitiesEntries">
+      <span>
+        <i class="fa-solid fa-martini-glass"></i>
+        {{ getTranslatedBeverageName(beverage[0]) }}
+      </span>
+
+      <ng-template #defaultName>
+        <span>
+          <i class="fa-solid fa-martini-glass"></i> {{ beverage[0] }}
+        </span>
+      </ng-template>
+
+      <ul *ngFor="let capacity of beverage[1]">
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              [value]="capacity"
+              (change)="toggleCapacityEdit(beverage[0], capacity, $event)"
+              [checked]="
+                updatedBeveragePromotion!.updated_beverages_with_capacities[
+                  beverage[0]
+                ]?.includes(capacity)
+              "
+            />
+            {{ capacity }} L
+          </label>
+        </li>
+      </ul>
+    </tr>
+    <tr>
+      <button
+        class="button-accept"
+        *ngIf="updatedBeveragePromotion"
+        (click)="updateBeveragePromotion(updatedBeveragePromotion)"
+      >
+        {{ "common.buttons.accept" | translate }}
+      </button>
+      <button class="button-cancel" (click)="hideUpdatePromotionTable()">
+        {{ "common.buttons.cancel" | translate }}
+      </button>
+    </tr>
+    <tr *ngIf="errorMessages" class="error">
+      {{
+        errorMessages["message"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['updatedDescription']" class="error">
+      {{
+        errorMessages["updatedDescription"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
+      {{
+        errorMessages["updatedDiscountPercentage"]
+      }}
+    </tr>
+  </table>
+
+  <table
+    *ngIf="beveragePromotions.length !== 0"
+    class="beverage-promotions-table"
+  >
+    <thead>
+      <th *ngIf="isManager()"></th>
+      <th>{{ "promotions.promotion_description" | translate }}</th>
+      <th>{{ "promotions.discount_percentage" | translate }}</th>
+      <th>{{ "promotions.beverages" | translate }}</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let beveragePromotion of beveragePromotions">
+        <td *ngIf="isManager()">
+          <button
+            class="button-update"
+            *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding"
+            (click)="editBeveragePromotionRow(beveragePromotion)"
+          >
+            {{ "common.buttons.update" | translate }}
+          </button>
+          <button
+            class="button-remove"
+            *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding"
+            (click)="removeBeveragePromotion(beveragePromotion)"
+          >
+            {{ "common.buttons.remove" | translate }}
+          </button>
+        </td>
+        <td>{{ beveragePromotion.description }}</td>
+        <td>{{ beveragePromotion.discount_percentage }}%</td>
+        <td>
+          <ul
+            *ngFor="
+              let beverageWithCapacities of beveragePromotion.beverages_with_capacities
+                | keyvalue
+            "
+          >
+            <li style="white-space: nowrap">
+              <i class="fa-solid fa-martini-glass"></i>
+              {{ getTranslatedBeverageName(beverageWithCapacities.key) }}
+              <ul *ngFor="let capacity of beverageWithCapacities.value">
+                <li>• {{ capacity }} L</li>
+              </ul>
+            </li>
+
             <ng-template #defaultName>
-                <span>
-                    <i class="fa-solid fa-martini-glass"></i> {{ beverage[0] }}
-                </span>
+              <li>
+                <i class="fa-solid fa-martini-glass"></i>
+                {{ beverageWithCapacities.key }}
+              </li>
             </ng-template>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-            <ul *ngFor="let capacity of beverage[1]">
-                <li>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            [value]="capacity" 
-                            (change)="toggleCapacityEdit(beverage[0], capacity, $event)" 
-                            [checked]="updatedBeveragePromotion!.updated_beverages_with_capacities[beverage[0]].includes(capacity)" />
-                            {{ capacity }} L
-                    </label>
-                </li>
-            </ul>
-        </tr>
-        <tr>
-            <button class="button-accept" *ngIf="updatedBeveragePromotion" (click)="updateBeveragePromotion(updatedBeveragePromotion)">{{ 'common.buttons.accept' | translate }}</button>
-            <button class="button-cancel" (click)="hideUpdatePromotionTable()">{{ 'common.buttons.cancel' | translate }}</button>
-        </tr>
-        <tr *ngIf="errorMessages" class="error">
-            {{ errorMessages['message'] }}
-        </tr>
-        <tr *ngIf="errorMessages['updatedDescription']" class="error">
-            {{ errorMessages['updatedDescription'] }}
-        </tr>
-        <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
-            {{ errorMessages['updatedDiscountPercentage'] }}
-        </tr>
-    </table>
+  <p class="x-promotions" *ngIf="addonPromotions.length !== 0 || isManager()">
+    {{ "promotions.paragraph_addon_promotions" | translate }}
+  </p>
 
-    <table *ngIf="beveragePromotions.length !== 0" class="beverage-promotions-table">
-        <thead>
-            <th *ngIf="isManager()"></th>
-            <th>{{ 'promotions.promotion_description' | translate }}</th>
-            <th>{{ 'promotions.discount_percentage' | translate }}</th>
-            <th>{{ 'promotions.beverages' | translate }}</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let beveragePromotion of beveragePromotions">
-                <td *ngIf="isManager()">
-                    <button class="button-update" *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding" (click)="editBeveragePromotionRow(beveragePromotion)">{{ 'common.buttons.update' | translate }}</button>
-                    <button class="button-remove" *ngIf="!beveragePromotion.isEditing && !isEditing && !isAdding" (click)="removeBeveragePromotion(beveragePromotion)">{{ 'common.buttons.remove' | translate }}</button>
-                </td>
-                <td>{{ beveragePromotion.description }}</td>
-                <td>{{ beveragePromotion.discount_percentage }}%</td>
-                <td>
-                    <ul *ngFor="let beverageWithCapacities of beveragePromotion.beverages_with_capacities | keyvalue">
-                        <li style="white-space: nowrap;" >
-                            <i class="fa-solid fa-martini-glass"></i> {{ getTranslatedBeverageName(beverageWithCapacities.key) }}
-                            <ul *ngFor="let capacity of beverageWithCapacities.value">
-                                <li>• {{ capacity }} L</li>
-                            </ul>
-                        </li>
-                        
-                        <ng-template #defaultName>
-                            <li>
-                                <i class="fa-solid fa-martini-glass"></i> {{ beverageWithCapacities.key }}
-                            </li>
-                        </ng-template>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <button
+    class="btn btn-success"
+    *ngIf="isManager() && !isAdding && !isEditing"
+    (click)="showAddAddonPromotionTable()"
+  >
+    {{ "promotions.buttons.add_addon_promotion" | translate }}
+  </button>
 
-    <p class="x-promotions" *ngIf="addonPromotions.length !== 0 || isManager()">{{ 'promotions.paragraph_addon_promotions' | translate }}</p>
+  <table class="add-addon-table" *ngIf="isAddingAddonPromotion">
+    <tr>
+      <h1>{{ "promotions.new_addon_promotion" | translate }}</h1>
+    </tr>
+    <tr>
+      <input
+        type="text"
+        placeholder="{{ 'promotions.promotion_description' | translate }}"
+        [(ngModel)]="newAddonPromotion.description"
+      />
+    </tr>
+    <tr>
+      {{
+        "promotions.discount_percentage" | translate
+      }}:
+      <input
+        type="number"
+        min="0"
+        max="100"
+        [(ngModel)]="newAddonPromotion.discount_percentage"
+      />%
+    </tr>
+    <tr>
+      <div *ngFor="let addonName of addonNames">
+        <label>
+          <input
+            type="checkbox"
+            [value]="addonName"
+            (change)="toggleAddonNameAdd(addonName, $event)"
+            [checked]="newAddonPromotion.addon_names.includes(addonName)"
+          />
+          {{ getTranslatedAddonName(addonName) }}
+        </label>
+      </div>
+    </tr>
+    <tr>
+      <button class="button-accept" (click)="addAddonPromotion()">
+        {{ "common.buttons.accept" | translate }}
+      </button>
+      <button class="button-cancel" (click)="hideAddAddonPromotionTable()">
+        {{ "common.buttons.cancel" | translate }}
+      </button>
+    </tr>
+    <tr *ngIf="errorMessages" class="error">
+      {{
+        errorMessages["message"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['description']" class="error">
+      {{
+        errorMessages["description"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['discountPercentage']" class="error">
+      {{
+        errorMessages["discountPercentage"]
+      }}
+    </tr>
+  </table>
 
-    <button class="btn btn-success" *ngIf="isManager() && !isAdding && !isEditing" (click)="showAddAddonPromotionTable()">{{ 'promotions.buttons.add_addon_promotion' | translate }}</button>
+  <table class="update-addon-table" *ngIf="isEditingAddonPromotion">
+    <tr>
+      <h1>{{ "promotions.update_addon_promotion" | translate }}</h1>
+    </tr>
+    <tr>
+      <input
+        type="text"
+        placeholder="{{ 'promotions.promotion_description' | translate }}"
+        [(ngModel)]="updatedAddonPromotion!.updated_description"
+      />
+    </tr>
+    <tr>
+      {{
+        "promotions.discount_percentage" | translate
+      }}:
+      <input
+        type="number"
+        min="0"
+        max="100"
+        [(ngModel)]="updatedAddonPromotion!.updated_discount_percentage"
+      />%
+    </tr>
+    <tr>
+      <div *ngFor="let addonName of addonNames">
+        <label>
+          <input
+            type="checkbox"
+            [value]="addonName"
+            (change)="toggleAddonNameEdit(addonName, $event)"
+            [checked]="
+              updatedAddonPromotion!.updated_addon_names.includes(addonName)
+            "
+          />
+          {{ getTranslatedAddonName(addonName) }}
+        </label>
 
-    <table class="add-addon-table" *ngIf="isAddingAddonPromotion">
-        <tr>
-            <h1>{{ 'promotions.new_addon_promotion' | translate }}</h1>
-        </tr>
-        <tr>
-            <input type="text" placeholder="{{ 'promotions.promotion_description' | translate }}"  [(ngModel)]="newAddonPromotion.description" />
-        </tr>
-        <tr>
-            {{ 'promotions.discount_percentage' | translate }}: <input type="number" min="0" max="100" [(ngModel)]="newAddonPromotion.discount_percentage" />%
-        </tr>
-        <tr>
-            <div *ngFor="let addonName of addonNames">
-                <label>
-                    <input 
-                        type="checkbox" 
-                        [value]="addonName" 
-                        (change)="toggleAddonNameAdd(addonName, $event)" 
-                        [checked]="newAddonPromotion.addon_names.includes(addonName)" />
-                    {{ getTranslatedAddonName(addonName) }}
-                </label>
-            </div>
-        </tr>
-        <tr>
-            <button class="button-accept" (click)="addAddonPromotion()">{{ 'common.buttons.accept' | translate }}</button>
-            <button class="button-cancel" (click)="hideAddAddonPromotionTable()">{{ 'common.buttons.cancel' | translate }}</button>
-        </tr>
-        <tr *ngIf="errorMessages" class="error">
-            {{ errorMessages['message'] }}
-        </tr>
-        <tr *ngIf="errorMessages['description']" class="error">
-            {{ errorMessages['description'] }}
-        </tr>
-        <tr *ngIf="errorMessages['discountPercentage']" class="error">
-            {{ errorMessages['discountPercentage'] }}
-        </tr>
-    </table>
+        <ng-template #defaultName>
+          <label>
+            <input
+              type="checkbox"
+              [value]="addonName"
+              (change)="toggleAddonNameEdit(addonName, $event)"
+              [checked]="
+                updatedAddonPromotion!.updated_addon_names.includes(addonName)
+              "
+            />
+            {{ addonName }}
+          </label>
+        </ng-template>
+      </div>
+    </tr>
+    <tr>
+      <button
+        class="button-accept"
+        *ngIf="updatedAddonPromotion"
+        (click)="updateAddonPromotion(updatedAddonPromotion)"
+      >
+        {{ "common.buttons.accept" | translate }}
+      </button>
+      <button class="button-cancel" (click)="hideUpdatePromotionTable()">
+        {{ "common.buttons.cancel" | translate }}
+      </button>
+    </tr>
+    <tr *ngIf="errorMessages" class="error">
+      {{
+        errorMessages["message"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['updatedDescription']" class="error">
+      {{
+        errorMessages["updatedDescription"]
+      }}
+    </tr>
+    <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
+      {{
+        errorMessages["updatedDiscountPercentage"]
+      }}
+    </tr>
+  </table>
 
-    <table class="update-addon-table" *ngIf="isEditingAddonPromotion">
-        <tr>
-            <h1>{{ 'promotions.update_addon_promotion' | translate }}</h1>
-        </tr>
-        <tr>
-            <input 
-                type="text" 
-                placeholder="{{ 'promotions.promotion_description' | translate }}"
-                [(ngModel)]="updatedAddonPromotion!.updated_description" />
-        </tr>
-        <tr>
-            {{ 'promotions.discount_percentage' | translate }}: 
-            <input 
-                type="number" 
-                min="0" 
-                max="100" 
-                [(ngModel)]="updatedAddonPromotion!.updated_discount_percentage" />%
-        </tr>
-        <tr>
-            <div *ngFor="let addonName of addonNames">
-                <label>
-                    <input 
-                        type="checkbox" 
-                        [value]="addonName" 
-                        (change)="toggleAddonNameEdit(addonName, $event)" 
-                        [checked]="updatedAddonPromotion!.updated_addon_names.includes(addonName)" />
-                    {{ getTranslatedAddonName(addonName) }}
-                </label>
+  <table *ngIf="addonPromotions.length !== 0" class="addon-promotions-table">
+    <thead>
+      <th *ngIf="isManager()"></th>
+      <th>{{ "promotions.promotion_description" | translate }}</th>
+      <th>{{ "promotions.discount_percentage" | translate }}</th>
+      <th>{{ "promotions.addons" | translate }}</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let addonPromotion of addonPromotions">
+        <td *ngIf="isManager()">
+          <button
+            class="button-update"
+            *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding"
+            (click)="editAddonPromotionRow(addonPromotion)"
+          >
+            {{ "common.buttons.update" | translate }}
+          </button>
+          <button
+            class="button-remove"
+            *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding"
+            (click)="removeAddonPromotion(addonPromotion)"
+          >
+            {{ "common.buttons.remove" | translate }}
+          </button>
+        </td>
+        <td>{{ addonPromotion.description }}</td>
+        <td>{{ addonPromotion.discount_percentage }}%</td>
+        <td>
+          <ul *ngFor="let addonName of addonPromotion.addon_names">
+            <li>
+              <i class="fa-solid fa-plus"></i>
+              {{ getTranslatedAddonName(addonName) }}
+            </li>
 
-                <ng-template #defaultName>
-                    <label>
-                        <input 
-                            type="checkbox" 
-                            [value]="addonName" 
-                            (change)="toggleAddonNameEdit(addonName, $event)" 
-                            [checked]="updatedAddonPromotion!.updated_addon_names.includes(addonName)" />
-                        {{ addonName }}
-                    </label>
-                </ng-template>
-            </div>
-        </tr>
-        <tr>
-            <button class="button-accept" *ngIf="updatedAddonPromotion" (click)="updateAddonPromotion(updatedAddonPromotion)">
-                {{ 'common.buttons.accept' | translate }}
-            </button>
-            <button class="button-cancel" (click)="hideUpdatePromotionTable()">
-                {{ 'common.buttons.cancel' | translate }}
-            </button>
-        </tr>
-        <tr *ngIf="errorMessages" class="error">
-            {{ errorMessages['message'] }}
-        </tr>
-        <tr *ngIf="errorMessages['updatedDescription']" class="error">
-            {{ errorMessages['updatedDescription'] }}
-        </tr>
-        <tr *ngIf="errorMessages['updatedDiscountPercentage']" class="error">
-            {{ errorMessages['updatedDiscountPercentage'] }}
-        </tr>
-    </table>
+            <ng-template #defaultName>
+              <li><i class="fa-solid fa-plus"></i> {{ addonName }}</li>
+            </ng-template>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-    <table *ngIf="addonPromotions.length !== 0" class="addon-promotions-table">
-        <thead>
-            <th *ngIf="isManager()"></th>
-            <th>{{ 'promotions.promotion_description' | translate }}</th>
-            <th>{{ 'promotions.discount_percentage' | translate }}</th>
-            <th>{{ 'promotions.addons' | translate }}</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let addonPromotion of addonPromotions">
-                <td *ngIf="isManager()">
-                    <button class="button-update" *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding" (click)="editAddonPromotionRow(addonPromotion)">{{ 'common.buttons.update' | translate }}</button>
-                    <button class="button-remove" *ngIf="!addonPromotion.isEditing && !isEditing && !isAdding" (click)="removeAddonPromotion(addonPromotion)">{{ 'common.buttons.remove' | translate }}</button>
-                </td>
-                <td>{{ addonPromotion.description }}</td>
-                <td>{{ addonPromotion.discount_percentage }}%</td>
-                <td>
-                    <ul *ngFor="let addonName of addonPromotion.addon_names">
-                        <li>
-                            <i class="fa-solid fa-plus"></i> {{ getTranslatedAddonName(addonName) }}
-                        </li>
+  <p class="newsletter-paragraph" *ngIf="!isManager()">
+    {{ "promotions.paragraph_bottom" | translate }}
+  </p>
 
-                        <ng-template #defaultName>
-                            <li>
-                                <i class="fa-solid fa-plus"></i> {{ addonName }}
-                            </li>
-                        </ng-template>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <p class="newsletter-paragraph" *ngIf="!isManager()">{{ 'promotions.paragraph_bottom' | translate }}</p>
-
-    <button class="btn btn-success" *ngIf="!isManager()" (click)="startSigningUpToNewsletter()">{{ 'promotions.buttons.sign_up' | translate }}</button>
+  <button
+    class="btn btn-success"
+    *ngIf="!isManager()"
+    (click)="startSigningUpToNewsletter()"
+  >
+    {{ "promotions.buttons.sign_up" | translate }}
+  </button>
 </section>

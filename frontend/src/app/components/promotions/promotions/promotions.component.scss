@@ -1,149 +1,157 @@
 .promotions {
-    padding: 3rem 1rem 3rem 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  padding: 3rem 1rem 3rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.fa-utensils, .fa-plus, .fa-martini-glass {
-    color: red;
+.fa-utensils,
+.fa-plus,
+.fa-martini-glass {
+  color: red;
 }
 
 .main-paragraph {
-    width: 40%;
-    text-align: center;
-    color: white;
-    font-size: 24px;
+  width: 40%;
+  text-align: center;
+  color: white;
+  font-size: 24px;
 }
 
 .newsletter-paragraph {
-    margin-top: 5rem;
-    width: 40%;
-    text-align: center;
-    color: white;
-    font-size: 24px;
+  margin-top: 5rem;
+  width: 40%;
+  text-align: center;
+  color: white;
+  font-size: 24px;
 }
 
 .x-promotions {
-    margin-top: 5rem;
-    width: 40%;
-    text-align: center;
-    color: white;
-    font-size: 32px;
+  margin-top: 5rem;
+  width: 40%;
+  text-align: center;
+  color: white;
+  font-size: 32px;
 }
 
-.button-update,.button-cancel, .button-accept, .button-remove {
-    background: none;
-    border: none;
-    transition: color 0.3s ease;
+.button-update,
+.button-cancel,
+.button-accept,
+.button-remove {
+  background: none;
+  border: none;
+  transition: color 0.3s ease;
 }
 
 .button-update {
-    color: rgb(0, 119, 255);
+  color: rgb(0, 119, 255);
 
-    &:hover {
-        color: rgb(0, 59, 126);
-    }
+  &:hover {
+    color: rgb(0, 59, 126);
+  }
 }
 
 .button-accept {
-    color: rgb(0, 255, 85);
+  color: rgb(0, 255, 85);
 
-    &:hover {
-        color: rgb(0, 102, 34);
-    }
+  &:hover {
+    color: rgb(0, 102, 34);
+  }
 }
 
-.button-remove, .button-cancel {
-    color: rgb(255, 0, 0);
+.button-remove,
+.button-cancel {
+  color: rgb(255, 0, 0);
 
-    &:hover {
-        color: #b90909;
-    }
+  &:hover {
+    color: #b90909;
+  }
 }
 
 .error {
-    font-size: 24px;
-    margin-top: 1rem;
-    color: rgb(126, 15, 15);
+  font-size: 24px;
+  margin-top: 1rem;
+  color: rgb(126, 15, 15);
 }
 
 ::ng-deep .custom-validation-message {
-    background-color: #141414 !important;
-    color: #F27474 !important;
-    padding: 8px !important;
-    margin-top: 10px !important;
+  background-color: #141414 !important;
+  color: #f27474 !important;
+  padding: 8px !important;
+  margin-top: 10px !important;
 }
 
 h1 {
-    color: red;
-    text-align: center;
+  color: red;
+  text-align: center;
 }
 
 thead {
-    border-bottom: 3px solid red;
+  border-bottom: 3px solid red;
 }
 
 table {
-    margin-bottom: 2rem;
-    font-size: 24px;
-    text-align: center;
-    width: 70%;
-    scrollbar-color: #ff0000 #f1f1f1; 
-    scrollbar-width: thin; 
+  margin-bottom: 2rem;
+  font-size: 24px;
+  text-align: center;
+  width: 70%;
+  scrollbar-color: #ff0000 #f1f1f1;
+  scrollbar-width: thin;
 }
 
 th {
-    background-color: black;
-    color: red;
-    padding: 1rem;
+  background-color: black;
+  color: red;
+  padding: 1rem;
 }
 
 tr {
-    color: white;
-    background: none;
-    border-bottom: 1px solid white;
+  color: white;
+  background: none;
+  border-bottom: 1px solid white;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    font-size: 24px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  font-size: 24px;
 }
 
 td {
-    padding: 10px;
+  padding: 10px;
 }
 
 input {
-    color: white;
-    text-align: center;
-    background: inherit;
-    border: none;
-    border-bottom: 1px solid white;
-    outline: none;
-    transition: border-bottom 0.3s ease;
+  color: white;
+  text-align: center;
+  background: inherit;
+  border: none;
+  border-bottom: 1px solid white;
+  outline: none;
+  transition: border-bottom 0.3s ease;
 
-    &:focus {
-        border-bottom: 1px solid red;
-    }
-    &[type=text] {
-        width: 100%;
-    }
-    &[type=number] {
-        max-width: 70px;
-    }
-    &[type=checkbox] {
-        accent-color: red;
-    }
+  &:focus {
+    border-bottom: 1px solid red;
+  }
+  &[type="text"] {
+    width: 100%;
+  }
+  &[type="number"] {
+    max-width: 70px;
+  }
+  &[type="checkbox"] {
+    accent-color: red;
+  }
 }
 
 @media (max-width: 757px) {
-    .meal-promotions-table, .beverage-promotions-table, .addon-promotions-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
+  .meal-promotions-table,
+  .beverage-promotions-table,
+  .addon-promotions-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }

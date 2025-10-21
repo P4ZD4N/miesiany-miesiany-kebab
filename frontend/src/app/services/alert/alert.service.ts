@@ -14,6 +14,7 @@ import {
 import { TranslationHelperService } from '../translation-helper/translation-helper.service';
 import { JobApplicationFormData } from '../../util-types/util-types';
 import { OrderStatus } from '../../enums/order-status.enum';
+import { NewsletterMessagesLanguage } from '../../enums/newsletter-messages-language.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -1099,7 +1100,9 @@ export class AlertService {
                     (status) =>
                       `<option value="${status}" ${
                         order.order_status === status ? 'selected' : ''
-                      }>${this.translationHelper.getTranslatedOrderStatus(status)}</option>`
+                      }>${this.translationHelper.getTranslatedOrderStatus(
+                        status
+                      )}</option>`
                   )
                   .join('')}
               </select>
@@ -1241,6 +1244,430 @@ export class AlertService {
         this.langService.currentLang === 'pl'
           ? `Pomyslnie zaktualizowano zamowienie z id '${order.id}'!`
           : `Successfully updated order with id '${order.id}'!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulMealPromotionAddAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie dodano nowa promocje na dania'!`
+          : `Successfully added new meal promotion!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulBeveragePromotionAddAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie dodano nowa promocje na napoje'!`
+          : `Successfully added new beverage promotion!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulAddonPromotionAddAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie dodano nowa promocje na dodatek'!`
+          : `Successfully added new addon promotion!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulMealPromotionUpdateAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? 'Pomyslnie zaktualizowano promocje na dania!'
+          : 'Successfully updated meal promotion!',
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulBeveragePromotionUpdateAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? 'Pomyslnie zaktualizowano promocje na napoje!'
+          : 'Successfully updated beverage promotion!',
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulAddonPromotionUpdateAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? 'Pomyslnie zaktualizowano promocje na dodatki!'
+          : 'Successfully updated addon promotion!',
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveMealPromotionAlert(): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac ta promocje na dania?`
+          : `Are you sure you want to remove this meal promotion?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulMealPromotionRemoveAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto promocje na dania!`
+          : `Successfully removed meal promotion!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveBeveragePromotionAlert(): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac ta promocje na napoje?`
+          : `Are you sure you want to remove this beverage promotion?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulBeveragePromotionRemoveAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto promocje na napoje!`
+          : `Successfully removed beverage promotion!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveAddonPromotionAlert(): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Potwierdzenie'
+          : 'Confirmation',
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Czy na pewno chcesz usunac ta promocje na dodatki?`
+          : `Are you sure you want to remove this addon promotion?`,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulAddonPromotionRemoveAlert(): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie usunieto promocje na dodatki!`
+          : `Successfully removed addon promotion!`,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  async getNewsletterEmailAlert(firstName: string): Promise<string> {
+    const title =
+      this.langService.currentLang === 'pl'
+        ? `Milo Cie poznac ${firstName}!`
+        : `Nice to meet you ${firstName}!`;
+    const inputLabel =
+      this.langService.currentLang === 'pl'
+        ? `Podaj swoj email`
+        : `Enter your email`;
+    const inputPlaceholder =
+      this.langService.currentLang === 'pl' ? `Twoj email` : `Your email`;
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const errorText =
+      this.langService.currentLang === 'pl'
+        ? 'Podaj poprawny adres email'
+        : 'Please enter a valid email';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const { value: email } = await Swal.fire({
+      title: title,
+      input: 'email',
+      inputLabel: inputLabel,
+      inputPlaceholder: inputPlaceholder,
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: '#198754',
+      showCancelButton: true,
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+      customClass: {
+        validationMessage: 'custom-validation-message',
+      },
+      inputValidator: (value) => {
+        if (!value || !emailRegex.test(value)) {
+          return errorText;
+        }
+
+        return null;
+      },
+    });
+
+    return email;
+  }
+
+  async getNewsletterFirstNameAlert(): Promise<string> {
+    const title = this.langService.currentLang === 'pl' ? `Czesc!` : `Hi!`;
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Podaj swoje imie :)`
+        : `Enter your name :)`;
+    const inputPlaceholder =
+      this.langService.currentLang === 'pl'
+        ? `Podaj swoje imie :)`
+        : `Enter your name :)`;
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+
+    const { value: firstName } = await Swal.fire({
+      title: title,
+      text: text,
+      input: 'text',
+      inputPlaceholder: inputPlaceholder,
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: '#198754',
+      showCancelButton: true,
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+    });
+
+    return firstName;
+  }
+
+  async getNewsletterLanguageAlert(
+    firstName: string
+  ): Promise<NewsletterMessagesLanguage> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Wybierz jezyk, w jakim chcesz otrzymywac wiadomosci!`
+        : `Choose language, in which you would like to receive messages!`;
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const errorText =
+      this.langService.currentLang === 'pl'
+        ? 'Prosze wybrac jezyk'
+        : 'Please select a language';
+
+    const inputOptions = new Promise((resolve) => {
+      resolve({
+        POLISH:
+          this.langService.currentLang === 'pl' ? `🇵🇱 Polski` : `🇵🇱 Polish`,
+        ENGLISH:
+          this.langService.currentLang === 'pl' ? `🇺🇸 Angielski` : `🇺🇸 English`,
+      });
+    });
+
+    const { value: language } = await Swal.fire({
+      title: `${firstName}!`,
+      text: text,
+      input: 'radio',
+      inputOptions,
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: '#198754',
+      showCancelButton: true,
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+      customClass: {
+        validationMessage: 'custom-validation-message',
+        input: 'swal-radio-container',
+      },
+      inputValidator: (value) => {
+        if (!value) {
+          return errorText;
+        }
+        return null;
+      },
+    });
+
+    return language;
+  }
+
+  async getNewsletterOtpAlert(
+    title: string,
+    text: string
+  ): Promise<any> {
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const regenerateButtonText =
+      this.langService.currentLang === 'pl' ? 'Nowy kod' : 'New code';
+    const inputPlaceholder =
+          this.langService.currentLang === 'pl'
+            ? `6-cyfrowy kod`
+            : `6-digit code`;
+
+    return await Swal.fire({
+      allowOutsideClick: false,
+      title: title,
+      input: 'text',
+      text: text,
+      inputPlaceholder: inputPlaceholder,
+      confirmButtonColor: 'green',
+      showCancelButton: true,
+      cancelButtonText: cancelButtonText,
+      cancelButtonColor: 'red',
+      showDenyButton: true,
+      denyButtonText: regenerateButtonText,
+      denyButtonColor: '#007bff',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+      inputValidator: (value) => {
+        if (!value) {
+          return this.langService.currentLang === 'pl'
+            ? 'Musisz wprowadzic kod!'
+            : 'You need to enter the code!';
+        }
+
+        if (value.length !== 6) {
+          return this.langService.currentLang === 'pl'
+            ? 'Kod musi miec dokladnie 6 cyfr!'
+            : 'Code must be exactly 6 digits!';
+        }
+
+        if (!/^\d+$/.test(value)) {
+          return this.langService.currentLang === 'pl'
+            ? 'Kod moze zawierac tylko cyfry!'
+            : 'Code can only contain digits!';
+        }
+
+        return null;
+      },
+      customClass: {
+        validationMessage: 'custom-validation-message',
+      },
+    });
+  }
+
+  showSubscribeNewsletterErrorAlert(error: any): void {
+    const title =
+      this.langService.currentLang === 'pl' ? 'Wystapil blad' : 'Error occured';
+
+    Swal.fire({
+      title: title,
+      text: error.errorMessages.message,
+      icon: 'error',
+      iconColor: 'red',
+      confirmButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showSuccessfulNewsletterSubscribeAlert(): void {
+    const title =
+      this.langService.currentLang === 'pl'
+        ? 'Subskrypcja potwierdzona!'
+        : 'Subscription confirmed!';
+    const text =
+      this.langService.currentLang === 'pl'
+        ? 'Dziekujemy, ze chcesz byc czescia kebabowej spolecznosci! Mamy nadzieje, ze przyszle promocje Cie zainteresuja :)'
+        : 'Thank you for your desire to be part of the kebab community! We hope that future promotions will be interesting for you :)';
+
+    Swal.fire({
+      title: title,
+      text: text,
       icon: 'success',
       iconColor: 'green',
       confirmButtonColor: 'green',
