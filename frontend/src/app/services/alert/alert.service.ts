@@ -1686,4 +1686,45 @@ export class AlertService {
       confirmButtonText: 'Ok',
     });
   }
+
+  showUnsubscribeAlert(): Promise<boolean> {
+    const title =
+      this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation';
+    const confirmationMessage =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz odsubskrybowac?`
+        : `Are you sure you want to sign out?`;
+
+    return Swal.fire({
+      title: title,
+      text: confirmationMessage,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulUnsubscribeAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie odsubskrybowano!`
+        : `Successfully signed out!`;
+        
+    Swal.fire({
+      text: text,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
 }
