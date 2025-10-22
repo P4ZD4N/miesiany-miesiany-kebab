@@ -74,11 +74,11 @@ export class WorkScheduleComponent implements OnInit {
     this.days =
       this.langService.currentLang === 'pl'
         ? [
-            'Poniedziałek',
+            'Poniedzialek',
             'Wtorek',
-            'Środa',
+            'Sroda',
             'Czwartek',
-            'Piątek',
+            'Piatek',
             'Sobota',
             'Niedziela',
           ]
@@ -212,13 +212,13 @@ export class WorkScheduleComponent implements OnInit {
     this.alertService
       .showAddWorkScheduleEntryAlert(employee, day)
       .then((result) => {
-        if (!(result.isConfirmed && result.value)) return;
+        if (!result) return;
 
-        const startTime = result.value.startTime;
-        const endTime = result.value.endTime;
-        const employee = result.value.employee;
+        const startTime = result.startTime;
+        const endTime = result.endTime;
+        const employee = result.employee;
 
-        const parts = result.value.day.split(' ');
+        const parts = result.day.split(' ');
         const day = parts[0];
         const dayIndex = this.days.indexOf(day);
         const openingHourAtChosenDay = this.openingHours[dayIndex].opening_time;
