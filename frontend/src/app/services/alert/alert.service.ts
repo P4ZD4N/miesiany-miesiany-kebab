@@ -1716,7 +1716,238 @@ export class AlertService {
       this.langService.currentLang === 'pl'
         ? `Pomyslnie odsubskrybowano!`
         : `Successfully signed out!`;
-        
+
+    Swal.fire({
+      text: text,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showAddWorkScheduleEntryAlert(
+    employee: EmployeeResponse,
+    day: string
+  ): Promise<any> {
+    let employeeTranslated =
+      this.langService.currentLang === 'pl' ? 'Pracownik' : 'Employee';
+    let dateTranslated =
+      this.langService.currentLang === 'pl' ? 'Data' : 'Date';
+    let startTimeTranslated =
+      this.langService.currentLang === 'pl'
+        ? 'Godzina rozpoczecia'
+        : 'Start time';
+    let endTimeTranslated =
+      this.langService.currentLang === 'pl'
+        ? 'Godzina zakonczenia'
+        : 'End time';
+    let nullValidationMessage =
+      this.langService.currentLang === 'pl'
+        ? 'Obie godziny powinny byc uzupelnione!'
+        : 'Both start and end time should be fulfilled!';
+    let invalidValidationMessage =
+      this.langService.currentLang === 'pl'
+        ? 'Godzina zakonczenia musi byc po godzinie rozpoczecia!'
+        : 'End hour must be after start hour!';
+
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Dodaj wpis do grafiku'
+          : 'Add work schedule entry',
+      showCancelButton: true,
+      confirmButtonColor: '#198754',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText:
+        this.langService.currentLang === 'pl' ? 'Dodaj' : 'Add',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      customClass: {
+        validationMessage: 'custom-validation-message',
+        title: 'swal2-title-red',
+      },
+      html: `
+            <span style="display:block; margin-bottom: 1rem;">
+              <span style="color: red;">${employeeTranslated}:</span>
+              ${employee.first_name} ${employee.last_name}
+            </span>
+    
+            <span style="display:block; margin-bottom: 1rem;">
+              <span style="color: red;">Email:</span> ${employee.email}
+            </span>
+    
+            <span style="display:block; margin-bottom: 1rem;">
+              <span style="color: red;">${dateTranslated}:</span> ${day}
+            </span>
+    
+            <label style="display:block; margin-top: 2rem;">${startTimeTranslated}</label>
+            <input id="start-time" type="time" class="swal2-input">
+    
+            <label style="display:block; margin-top: 1rem;">${endTimeTranslated}</label>
+            <input id="end-time" type="time" class="swal2-input">
+          `,
+      preConfirm: () => {
+        const startTime = (
+          document.getElementById('start-time') as HTMLInputElement
+        ).value;
+        const endTime = (
+          document.getElementById('end-time') as HTMLInputElement
+        ).value;
+
+        if (!startTime || !endTime) {
+          Swal.showValidationMessage(nullValidationMessage);
+          return false;
+        }
+
+        if (startTime >= endTime) {
+          Swal.showValidationMessage(invalidValidationMessage);
+          return false;
+        }
+
+        return { startTime, endTime, employee, day };
+      },
+    }).then((result) => (result.isConfirmed ? result.value : null));
+  }
+
+  showConfirmWorkScheduleEntryAlert(
+    day: string,
+    openingHourAtChosenDay: string,
+    closingHourAtChosenDay: string,
+    startTime: string,
+    endTime: string
+  ): Promise<boolean> {
+    return Swal.fire({
+      title:
+        this.langService.currentLang === 'pl'
+          ? 'Czy napewno dodac taki wpis?'
+          : 'Are you sure you want to add such entry?',
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      html: `
+        <span style="display:block; margin-bottom: 1rem;">
+          ${
+            this.langService.currentLang === 'pl'
+              ? 'Rozwaz godziny otwarcia w '
+              : 'Consider opening hours at '
+          }<span style="color: red;">${day}</span>
+        </span>
+
+        <span style="display:block; margin-bottom: 1rem;">
+          ${
+            this.langService.currentLang === 'pl'
+              ? 'Otwarcie o '
+              : 'Opening at '
+          }<span style="color: red;">${openingHourAtChosenDay}</span>
+        </span>
+
+        <span style="display:block; margin-bottom: 1rem;">
+          ${
+            this.langService.currentLang === 'pl'
+              ? 'Zamkniecie o '
+              : 'Closing at '
+          }<span style="color: red;">${closingHourAtChosenDay}</span>
+        </span>
+
+        <span style="display:block; margin-bottom: 1rem;">
+          ${
+            this.langService.currentLang === 'pl'
+              ? 'Twoje dane dotyczace nowego wpisu'
+              : 'Your data about new entry'
+          }
+        </span>
+
+        <span style="display:block; margin-bottom: 1rem;">
+          ${
+            this.langService.currentLang === 'pl'
+              ? 'Poczatek zmiany o '
+              : 'Beginning of shift at '
+          }<span style="color: red;">${startTime}</span>
+        </span>
+
+        <span style="display:block; margin-bottom: 1rem;">
+          ${
+            this.langService.currentLang === 'pl'
+              ? 'Koniec zmiany o '
+              : 'End of shift at '
+          }<span style="color: red;">${endTime}</span>
+        </span>
+      `,
+      customClass: { title: 'swal2-title-red' },
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulAddWorkScheduleEntryAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano nowy wpis do grafiku!`
+        : `Successfully added new work schedule entry!`;
+
+    Swal.fire({
+      text: text,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showAddWorkScheduleEntryErrorAlert(error: any): void {
+    Swal.fire({
+      text: error.errorMessages.message,
+      icon: 'error',
+      iconColor: 'red',
+      confirmButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showRemoveWorkScheduleEntryAlert(): Promise<boolean> {
+    const title =
+      this.langService.currentLang === 'pl' ? 'Potwierdzenie' : 'Confirmation';
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ten wpis?`
+        : `Are you sure you want to remove this entry?`;
+
+    return Swal.fire({
+      title: title,
+      text: text,
+      icon: 'warning',
+      iconColor: 'red',
+      showCancelButton: true,
+      confirmButtonColor: '#0077ff',
+      cancelButtonColor: 'red',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+    }).then((result) => result.isConfirmed);
+  }
+
+  showSuccessfulWorkScheduleEntryRemoveAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto wpis do grafiku!`
+        : `Successfully removed work schedule entry!`;
+
     Swal.fire({
       text: text,
       icon: 'success',

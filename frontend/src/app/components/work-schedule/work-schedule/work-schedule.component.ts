@@ -9,7 +9,6 @@ import {
   OpeningHoursResponse,
   WorkScheduleEntryResponse,
 } from '../../../responses/responses';
-import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 import { WorkScheduleService } from '../../../services/work-schedule/work-schedule.service';
 import {
@@ -17,6 +16,7 @@ import {
   RemovedWorkScheduleEntryRequest,
 } from '../../../requests/requests';
 import { OpeningHoursService } from '../../../services/opening-hours/opening-hours.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
 @Component({
   selector: 'app-work-schedule',
@@ -28,23 +28,27 @@ import { OpeningHoursService } from '../../../services/opening-hours/opening-hou
 export class WorkScheduleComponent implements OnInit {
   days: string[] = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
   daysInSchedule: string[] = [];
+  scheduleDate: string = '';
+
   employees: EmployeeResponse[] = [];
   openingHours: OpeningHoursResponse[] = [];
   workScheduleEntries: WorkScheduleEntryResponse[] = [];
+  currentEmployeeData: EmployeeResponse | null = null;
+
   firstDayOfCurrentMonth: number = 0;
   lastDayOfCurrentMonth: number = 0;
   currentMonth: number = new Date().getMonth() + 1;
   currentYear: number = new Date().getFullYear();
-  scheduleDate: string = '';
+
   languageChangeSubscription: Subscription;
-  currentEmployeeData: EmployeeResponse | null = null;
 
   constructor(
     private authenticationService: AuthenticationService,
     private langService: LangService,
     private employeeService: EmployeeService,
     private workScheduleService: WorkScheduleService,
-    private openingHoursService: OpeningHoursService
+    private openingHoursService: OpeningHoursService,
+    private alertService: AlertService
   ) {
     this.languageChangeSubscription =
       this.langService.languageChanged$.subscribe(() => {
@@ -66,71 +70,30 @@ export class WorkScheduleComponent implements OnInit {
     }
   }
 
-  setDays(): void {
-    if (this.langService.currentLang === 'pl') {
-      this.days = [
-        'Poniedzialek',
-        'Wtorek',
-        'Sroda',
-        'Czwartek',
-        'Piatek',
-        'Sobota',
-        'Niedziela',
-      ];
-    } else {
-      this.days = [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-      ];
-    }
+  private setDays(): void {
+    this.days =
+      this.langService.currentLang === 'pl'
+        ? [
+            'Poniedziałek',
+            'Wtorek',
+            'Środa',
+            'Czwartek',
+            'Piątek',
+            'Sobota',
+            'Niedziela',
+          ]
+        : [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday',
+          ];
   }
 
-  loadEmployees(): void {
-    this.employeeService.getEmployees().subscribe(
-      (data: EmployeeResponse[]) =>
-        (this.employees = data
-          .filter((emp) => emp.job.toLowerCase() !== 'manager')
-          .filter((emp) => emp.is_active === true)
-          .sort((a, b) => a.last_name.localeCompare(b.last_name))),
-      (error) => console.log('Error loading employees', error)
-    );
-  }
-
-  loadCurrentEmployeeDetails(): void {
-    this.employeeService.getCurrentEmployee().subscribe(
-      (data: EmployeeResponse) => (this.currentEmployeeData = data),
-      (error) => console.log('Error loading current employee data')
-    );
-  }
-
-  loadWorkScheduleEntries(): void {
-    this.workScheduleService.getWorkScheduleEntries().subscribe(
-      (data: WorkScheduleEntryResponse[]) => (this.workScheduleEntries = data),
-      (error) => console.log('Error loading work schedule entries', error)
-    );
-  }
-
-  loadOpeningHours(): void {
-    this.openingHoursService.getOpeningHours().subscribe(
-      (data: OpeningHoursResponse[]) => (this.openingHours = data),
-      (error) => console.log('Error loading opening hours', error)
-    );
-  }
-
-  isManager(): boolean {
-    return this.authenticationService.isManager();
-  }
-
-  isEmployee(): boolean {
-    return this.authenticationService.isEmployee();
-  }
-
-  generateMonthDays(): string[] {
+  private generateMonthDays(): string[] {
     const daysInMonth = new Date(
       this.currentYear,
       this.currentMonth - 1,
@@ -162,7 +125,50 @@ export class WorkScheduleComponent implements OnInit {
     return monthDays;
   }
 
-  getScheduleDate(): string {
+  private loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe({
+      next: (data: EmployeeResponse[]) =>
+        (this.employees = data
+          .filter((emp) => emp.job.toLowerCase() !== 'manager')
+          .filter((emp) => emp.is_active === true)
+          .sort((a, b) => a.last_name.localeCompare(b.last_name))),
+      error: (error) => console.log('Error loading employees', error),
+    });
+  }
+
+  private loadCurrentEmployeeDetails(): void {
+    this.employeeService.getCurrentEmployee().subscribe({
+      next: (data: EmployeeResponse) => (this.currentEmployeeData = data),
+      error: (error) =>
+        console.log('Error loading current employee data', error),
+    });
+  }
+
+  private loadWorkScheduleEntries(): void {
+    this.workScheduleService.getWorkScheduleEntries().subscribe({
+      next: (data: WorkScheduleEntryResponse[]) =>
+        (this.workScheduleEntries = data),
+      error: (error) =>
+        console.log('Error loading work schedule entries', error),
+    });
+  }
+
+  private loadOpeningHours(): void {
+    this.openingHoursService.getOpeningHours().subscribe({
+      next: (data: OpeningHoursResponse[]) => (this.openingHours = data),
+      error: (error) => console.log('Error loading opening hours', error),
+    });
+  }
+
+  protected isManager(): boolean {
+    return this.authenticationService.isManager();
+  }
+
+  protected isEmployee(): boolean {
+    return this.authenticationService.isEmployee();
+  }
+
+  private getScheduleDate(): string {
     let lastDayOfCurrentMonth = new Date(
       this.currentYear,
       this.currentMonth,
@@ -175,7 +181,7 @@ export class WorkScheduleComponent implements OnInit {
     return `01.${monthFormatted}.${this.currentYear} - ${lastDayOfCurrentMonth}.${monthFormatted}.${this.currentYear}`;
   }
 
-  nextMonth(): void {
+  protected nextMonth(): void {
     if (this.currentMonth === 12) {
       this.currentMonth = 1;
       this.currentYear++;
@@ -187,7 +193,7 @@ export class WorkScheduleComponent implements OnInit {
     this.scheduleDate = this.getScheduleDate();
   }
 
-  previousMonth(): void {
+  protected previousMonth(): void {
     if (this.currentMonth === 1) {
       this.currentMonth = 12;
       this.currentYear--;
@@ -199,88 +205,15 @@ export class WorkScheduleComponent implements OnInit {
     this.scheduleDate = this.getScheduleDate();
   }
 
-  startAddingWorkScheduleEntry(employee: EmployeeResponse, day: string) {
-    let employeeTranslated =
-      this.langService.currentLang === 'pl' ? 'Pracownik' : 'Employee';
-    let dateTranslated =
-      this.langService.currentLang === 'pl' ? 'Data' : 'Date';
-    let startTimeTranslated =
-      this.langService.currentLang === 'pl'
-        ? 'Godzina rozpoczecia'
-        : 'Start time';
-    let endTimeTranslated =
-      this.langService.currentLang === 'pl'
-        ? 'Godzina zakonczenia'
-        : 'End time';
-    let nullValidationMessage =
-      this.langService.currentLang === 'pl'
-        ? 'Obie godziny powinny byc uzupelnione!'
-        : 'Both start and end time should be fulfilled!';
-    let invalidValidationMessage =
-      this.langService.currentLang === 'pl'
-        ? 'Godzina zakonczenia musi byc po godzinie rozpoczecia!'
-        : 'End hour must be after start hour!';
+  protected startAddingWorkScheduleEntry(
+    employee: EmployeeResponse,
+    day: string
+  ) {
+    this.alertService
+      .showAddWorkScheduleEntryAlert(employee, day)
+      .then((result) => {
+        if (!(result.isConfirmed && result.value)) return;
 
-    Swal.fire({
-      title:
-        this.langService.currentLang === 'pl'
-          ? 'Dodaj wpis do grafiku'
-          : 'Add work schedule entry',
-      showCancelButton: true,
-      confirmButtonColor: '#198754',
-      cancelButtonColor: 'red',
-      background: '#141414',
-      color: 'white',
-      confirmButtonText:
-        this.langService.currentLang === 'pl' ? 'Dodaj' : 'Add',
-      cancelButtonText:
-        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
-      customClass: {
-        validationMessage: 'custom-validation-message',
-        title: 'swal2-title-red',
-      },
-      html: `
-        <span style="display:block; margin-bottom: 1rem;">
-          <span style="color: red;">${employeeTranslated}:</span>
-          ${employee.first_name} ${employee.last_name}
-        </span>
-
-        <span style="display:block; margin-bottom: 1rem;">
-          <span style="color: red;">Email:</span> ${employee.email}
-        </span>
-
-        <span style="display:block; margin-bottom: 1rem;">
-          <span style="color: red;">${dateTranslated}:</span> ${day}
-        </span>
-
-        <label style="display:block; margin-top: 2rem;">${startTimeTranslated}</label>
-        <input id="start-time" type="time" class="swal2-input">
-
-        <label style="display:block; margin-top: 1rem;">${endTimeTranslated}</label>
-        <input id="end-time" type="time" class="swal2-input">
-      `,
-      preConfirm: () => {
-        const startTime = (
-          document.getElementById('start-time') as HTMLInputElement
-        ).value;
-        const endTime = (
-          document.getElementById('end-time') as HTMLInputElement
-        ).value;
-
-        if (!startTime || !endTime) {
-          Swal.showValidationMessage(nullValidationMessage);
-          return false;
-        }
-
-        if (startTime >= endTime) {
-          Swal.showValidationMessage(invalidValidationMessage);
-          return false;
-        }
-
-        return { startTime, endTime, employee, day };
-      },
-    }).then((result) => {
-      if (result.isConfirmed && result.value) {
         const startTime = result.value.startTime;
         const endTime = result.value.endTime;
         const employee = result.value.employee;
@@ -298,82 +231,24 @@ export class WorkScheduleComponent implements OnInit {
           startTime < openingHourAtChosenDay ||
           endTime > closingHourAtChosenDay
         ) {
-          Swal.fire({
-            title:
-              this.langService.currentLang === 'pl'
-                ? 'Czy napewno dodac taki wpis?'
-                : 'Are you sure you want to add such entry?',
-            icon: 'warning',
-            iconColor: 'red',
-            showCancelButton: true,
-            confirmButtonColor: '#0077ff',
-            cancelButtonColor: 'red',
-            background: '#141414',
-            color: 'white',
-            confirmButtonText:
-              this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
-            cancelButtonText:
-              this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
-            html: `
-              <span style="display:block; margin-bottom: 1rem;">
-                ${
-                  this.langService.currentLang === 'pl'
-                    ? 'Rozwaz godziny otwarcia w '
-                    : 'Consider opening hours at '
-                }<span style="color: red;">${day}</span>
-              </span>
+          this.alertService
+            .showConfirmWorkScheduleEntryAlert(
+              day,
+              openingHourAtChosenDay,
+              closingHourAtChosenDay,
+              startTime,
+              endTime
+            )
+            .then((confirmed) => {
+              if (!confirmed) return;
 
-              <span style="display:block; margin-bottom: 1rem;">
-                ${
-                  this.langService.currentLang === 'pl'
-                    ? 'Otwarcie o '
-                    : 'Opening at '
-                }<span style="color: red;">${openingHourAtChosenDay}</span>
-              </span>
-
-              <span style="display:block; margin-bottom: 1rem;">
-                ${
-                  this.langService.currentLang === 'pl'
-                    ? 'Zamkniecie o '
-                    : 'Closing at '
-                }<span style="color: red;">${closingHourAtChosenDay}</span>
-              </span>
-
-              <span style="display:block; margin-bottom: 1rem;">
-                ${
-                  this.langService.currentLang === 'pl'
-                    ? 'Twoje dane dotyczace nowego wpisu'
-                    : 'Your data about new entry'
-                }
-              </span>
-
-              <span style="display:block; margin-bottom: 1rem;">
-                ${
-                  this.langService.currentLang === 'pl'
-                    ? 'Poczatek zmiany o '
-                    : 'Beginning of shift at '
-                }<span style="color: red;">${startTime}</span>
-              </span>
-
-              <span style="display:block; margin-bottom: 1rem;">
-                ${
-                  this.langService.currentLang === 'pl'
-                    ? 'Koniec zmiany o '
-                    : 'End of shift at '
-                }<span style="color: red;">${endTime}</span>
-              </span>
-            `,
-            customClass: { title: 'swal2-title-red' },
-          }).then((result) => {
-            if (result.isConfirmed) {
               this.addWorkScheduleEntry({
                 employee_email: employee.email,
                 date: formattedDate,
                 start_time: startTime,
                 end_time: endTime,
               });
-            }
-          });
+            });
 
           return;
         }
@@ -384,42 +259,46 @@ export class WorkScheduleComponent implements OnInit {
           start_time: startTime,
           end_time: endTime,
         });
-      }
+      });
+  }
+
+  private addWorkScheduleEntry(request: NewWorkScheduleEntryRequest): void {
+    this.workScheduleService.addWorkScheduleEntry(request).subscribe({
+      next: () => {
+        this.alertService.showSuccessfulAddWorkScheduleEntryAlert();
+        this.loadWorkScheduleEntries();
+      },
+      error: (err) => this.alertService.showAddWorkScheduleEntryErrorAlert(err),
     });
   }
 
-  addWorkScheduleEntry(request: NewWorkScheduleEntryRequest) {
-    this.workScheduleService.addWorkScheduleEntry(request).subscribe(
-      () => {
-        Swal.fire({
-          text:
-            this.langService.currentLang === 'pl'
-              ? `Pomyslnie dodano nowy wpis do grafiku!`
-              : `Successfully added new work schedule entry!`,
-          icon: 'success',
-          iconColor: 'green',
-          confirmButtonColor: 'green',
-          background: '#141414',
-          color: 'white',
-          confirmButtonText: 'Ok',
-        });
-        this.loadWorkScheduleEntries();
-      },
-      (err) => {
-        Swal.fire({
-          text: err.errorMessages.message,
-          icon: 'error',
-          iconColor: 'red',
-          confirmButtonColor: 'red',
-          background: '#141414',
-          color: 'white',
-          confirmButtonText: 'Ok',
-        });
-      }
+  protected removeWorkScheduleEntry(
+    employeeEmail: string,
+    day: string,
+    startTime: string,
+    endTime: string
+  ): void {
+    let matchingEntries = this.getMatchingEntries(employeeEmail, day).filter(
+      (entry) => entry.start_time === startTime && entry.end_time === endTime
     );
+
+    if (matchingEntries.length !== 1) return;
+
+    this.alertService.showRemoveWorkScheduleEntryAlert().then((confirmed) => {
+      if (!confirmed) return;
+
+      this.workScheduleService
+        .removeWorkScheduleEntry({
+          id: matchingEntries[0].id,
+        } as RemovedWorkScheduleEntryRequest)
+        .subscribe(() => {
+          this.alertService.showSuccessfulWorkScheduleEntryRemoveAlert();
+          this.loadWorkScheduleEntries();
+        });
+    });
   }
 
-  getMatchingEntries(
+  protected getMatchingEntries(
     employeeEmail: string,
     day: string
   ): WorkScheduleEntryResponse[] {
@@ -435,63 +314,7 @@ export class WorkScheduleComponent implements OnInit {
     });
   }
 
-  removeWorkScheduleEntry(
-    employeeEmail: string,
-    day: string,
-    startTime: string,
-    endTime: string
-  ): void {
-    let matchingEntries = this.getMatchingEntries(employeeEmail, day).filter(
-      (entry) => entry.start_time === startTime && entry.end_time === endTime
-    );
-
-    if (matchingEntries.length !== 1) return;
-
-    Swal.fire({
-      title:
-        this.langService.currentLang === 'pl'
-          ? 'Potwierdzenie'
-          : 'Confirmation',
-      text:
-        this.langService.currentLang === 'pl'
-          ? `Czy na pewno chcesz usunac ten wpis?`
-          : `Are you sure you want to remove this entry?`,
-      icon: 'warning',
-      iconColor: 'red',
-      showCancelButton: true,
-      confirmButtonColor: '#0077ff',
-      cancelButtonColor: 'red',
-      background: '#141414',
-      color: 'white',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak' : 'Yes',
-      cancelButtonText:
-        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.workScheduleService
-          .removeWorkScheduleEntry({
-            id: matchingEntries[0].id,
-          } as RemovedWorkScheduleEntryRequest)
-          .subscribe(() => {
-            Swal.fire({
-              text:
-                this.langService.currentLang === 'pl'
-                  ? `Pomyslnie usunieto wpis do grafiku!`
-                  : `Successfully removed work schedule entry!`,
-              icon: 'success',
-              iconColor: 'green',
-              confirmButtonColor: 'green',
-              background: '#141414',
-              color: 'white',
-              confirmButtonText: 'Ok',
-            });
-            this.loadWorkScheduleEntries();
-          });
-      }
-    });
-  }
-
-  downloadWorkSchedule(): void {
+  protected downloadWorkSchedule(): void {
     let lastDayOfCurrentMonth = new Date(
       this.currentYear,
       this.currentMonth,
@@ -509,13 +332,12 @@ export class WorkScheduleComponent implements OnInit {
         const url = window.URL.createObjectURL(response);
         window.open(url);
       },
-      error: (error) => {
-        console.error('Error previewing work schedule: ', error);
-      },
+      error: (error) =>
+        console.error('Error previewing work schedule: ', error),
     });
   }
 
-  shouldHighlight(employee: EmployeeResponse): boolean {
+  protected shouldHighlight(employee: EmployeeResponse): boolean {
     return employee.email === this.currentEmployeeData?.email;
   }
 }
