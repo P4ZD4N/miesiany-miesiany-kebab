@@ -1583,18 +1583,13 @@ export class AlertService {
     return language;
   }
 
-  async getNewsletterOtpAlert(
-    title: string,
-    text: string
-  ): Promise<any> {
+  async getNewsletterOtpAlert(title: string, text: string): Promise<any> {
     const cancelButtonText =
       this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
     const regenerateButtonText =
       this.langService.currentLang === 'pl' ? 'Nowy kod' : 'New code';
     const inputPlaceholder =
-          this.langService.currentLang === 'pl'
-            ? `6-cyfrowy kod`
-            : `6-digit code`;
+      this.langService.currentLang === 'pl' ? `6-cyfrowy kod` : `6-digit code`;
 
     return await Swal.fire({
       allowOutsideClick: false,
@@ -1668,6 +1663,21 @@ export class AlertService {
     Swal.fire({
       title: title,
       text: text,
+      icon: 'success',
+      iconColor: 'green',
+      confirmButtonColor: 'green',
+      background: '#141414',
+      color: 'white',
+      confirmButtonText: 'Ok',
+    });
+  }
+
+  showStopTrackingOrderAlert(id: number | null): void {
+    Swal.fire({
+      text:
+        this.langService.currentLang === 'pl'
+          ? `Pomyslnie zaprzestano sledzic zamowienie z id '${id}'!`
+          : `Successfully stopped tracking order with id '${id}'!`,
       icon: 'success',
       iconColor: 'green',
       confirmButtonColor: 'green',
