@@ -61,31 +61,29 @@ export class DiscountCodeManagementComponent implements OnInit {
     if (this.isManager()) this.loadDiscountCodes();
   }
 
-  loadDiscountCodes(): void {
-    this.discountCodesService.getDiscountCodes().subscribe(
-      (data: DiscountCodeResponse[]) => {
+  private loadDiscountCodes(): void {
+    this.discountCodesService.getDiscountCodes().subscribe({
+      next: (data: DiscountCodeResponse[]) => {
         this.discountCodes = data.sort((a, b) => a.code.localeCompare(b.code));
       },
-      (error) => {
-        console.log('Error loading discount codes', error);
-      }
-    );
+      error: (error) => console.log('Error loading discount codes', error),
+    });
   }
 
-  isManager(): boolean {
+  protected isManager(): boolean {
     return this.authenticationService.isManager();
   }
 
-  isEmployee(): boolean {
+  protected isEmployee(): boolean {
     return this.authenticationService.isEmployee();
   }
 
-  showAddDiscountCodeTable(): void {
+  protected showAddDiscountCodeTable(): void {
     this.hideErrorMessages();
     this.isAdding = true;
   }
 
-  showUpdateDiscountCodeTable(discountCode: DiscountCodeResponse): void {
+  protected showUpdateDiscountCodeTable(discountCode: DiscountCodeResponse): void {
     if (this.isEditing) {
       return;
     }
@@ -102,18 +100,18 @@ export class DiscountCodeManagementComponent implements OnInit {
     };
   }
 
-  hideAddDiscountCodeTable(): void {
+  protected hideAddDiscountCodeTable(): void {
     this.hideErrorMessages();
     this.isAdding = false;
     this.resetNewDiscountCode();
   }
 
-  hideUpdateDiscountCodeTable(): void {
+  protected hideUpdateDiscountCodeTable(): void {
     this.isEditing = false;
     this.hideErrorMessages();
   }
 
-  addDiscountCode(): void {
+  protected addDiscountCode(): void {
     if (this.newDiscountCode.code === '') {
       this.newDiscountCode.code = null;
     }
@@ -132,7 +130,7 @@ export class DiscountCodeManagementComponent implements OnInit {
     });
   }
 
-  updateDiscountCode(discountCode: UpdatedDiscountCodeRequest): void {
+  protected updateDiscountCode(discountCode: UpdatedDiscountCodeRequest): void {
     this.discountCodesService.updateDiscountCode(discountCode).subscribe({
       next: () => {
         this.alertService.showSuccessfulDiscountCodeUpdateAlert();
@@ -145,7 +143,7 @@ export class DiscountCodeManagementComponent implements OnInit {
     });
   }
 
-  removeDiscountCode(discountCode: DiscountCodeResponse): void {
+  protected removeDiscountCode(discountCode: DiscountCodeResponse): void {
     this.alertService.showRemoveDiscountCodeAlert().then((confirmed) => {
       if (!confirmed) return;
 
@@ -160,7 +158,7 @@ export class DiscountCodeManagementComponent implements OnInit {
     });
   }
 
-  resetNewDiscountCode(): void {
+  private resetNewDiscountCode(): void {
     this.newDiscountCode = {
       code: '',
       discount_percentage: 0,
@@ -169,11 +167,11 @@ export class DiscountCodeManagementComponent implements OnInit {
     };
   }
 
-  hideErrorMessages(): void {
+  private hideErrorMessages(): void {
     this.errorMessages = {};
   }
 
-  handleError(error: any): void {
+  private handleError(error: any): void {
     error.errorMessages
       ? (this.errorMessages = error.errorMessages)
       : (this.errorMessages = { general: 'An unexpected error occurred' });

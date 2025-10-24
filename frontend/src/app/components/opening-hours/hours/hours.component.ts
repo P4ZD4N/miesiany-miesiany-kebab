@@ -12,7 +12,6 @@ import {
 import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import { OpeningHoursResponse } from '../../../responses/responses';
-import Swal from 'sweetalert2';
 import { TimeFormatPipe } from '../../../pipes/time-format.pipe';
 import { AlertService } from '../../../services/alert/alert.service';
 
@@ -51,13 +50,13 @@ export class HoursComponent implements OnInit {
   }
 
   private loadOpeningHours(): void {
-    this.openingHoursService.getOpeningHours().subscribe(
-      (data: OpeningHoursResponse[]) => {
+    this.openingHoursService.getOpeningHours().subscribe({
+      next: (data: OpeningHoursResponse[]) => {
         this.openingHours = data;
         this.initializeForms(data);
       },
-      (error) => this.handleError(error)
-    );
+      error: (error) => this.handleError(error),
+    });
   }
 
   protected isManager(): boolean {
@@ -115,10 +114,9 @@ export class HoursComponent implements OnInit {
       'SATURDAY',
     ];
     const currentDayIndex = new Date().getDay();
-    
+
     return daysOfWeek[currentDayIndex];
   }
-
 
   private convertToMinutes(time: string): number {
     const [hours, minutes] = time.split(':').map(Number);
@@ -142,7 +140,7 @@ export class HoursComponent implements OnInit {
     hour.isEditing = true;
 
     const form = this.hourForms[hour.day_of_week];
-    
+
     form.patchValue({
       opening_time: hour.opening_time,
       closing_time: hour.closing_time,
@@ -160,13 +158,15 @@ export class HoursComponent implements OnInit {
       closing_time: newClosingTime,
     };
 
-    this.openingHoursService.updateOpeningHour(updatedHour).subscribe(
-      () => {
+    this.openingHoursService.updateOpeningHour(updatedHour).subscribe({
+      next: () => {
         const translatedDayOfWeek = this.translate
-              .instant('opening-hours.days.' + updatedHour.day_of_week)
-              .toLowerCase();
+          .instant('opening-hours.days.' + updatedHour.day_of_week)
+          .toLowerCase();
 
-        this.alertService.showSuccessfulOpeningHourUpdateAlert(translatedDayOfWeek);
+        this.alertService.showSuccessfulOpeningHourUpdateAlert(
+          translatedDayOfWeek
+        );
 
         hour.isEditing = false;
         this.isEditing = false;
@@ -174,8 +174,8 @@ export class HoursComponent implements OnInit {
         this.hideErrorMessages();
         this.loadOpeningHours();
       },
-      (error) => this.handleError(error)
-    );
+      error: (error) => this.handleError(error),
+    });
   }
 
   protected stopUpdatingOpeningHour(hour: OpeningHoursResponse): void {

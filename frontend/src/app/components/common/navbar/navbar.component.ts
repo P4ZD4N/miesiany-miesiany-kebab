@@ -39,15 +39,27 @@ export class NavbarComponent implements OnInit {
     this.currentFlag = this.langService.currentLang === 'pl' ? '🇺🇸' : '🇵🇱';
   }
 
-  isManager(): boolean {
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      if (window.scrollY > 30) {
+        navbar.classList.add('shrink');
+      } else {
+        navbar.classList.remove('shrink');
+      }
+    }
+  }
+
+  protected isManager(): boolean {
     return this.authenticationService.isManager();
   }
 
-  isEmployee(): boolean {
+  protected isEmployee(): boolean {
     return this.authenticationService.isEmployee();
   }
 
-  switchLanguage() {
+  protected switchLanguage(): void {
     if (this.translate.currentLang === 'pl') {
       this.translate.use('en');
       this.currentFlag = '🇵🇱';
@@ -61,19 +73,7 @@ export class NavbarComponent implements OnInit {
     this.langService.notifyLanguageChange();
   }
 
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
-      if (window.scrollY > 30) {
-        navbar.classList.add('shrink');
-      } else {
-        navbar.classList.remove('shrink');
-      }
-    }
-  }
-
-  doesOrderExist(): boolean {
+  protected doesOrderExist(): boolean {
     const orderData = this.orderService.getOrderData();
     return orderData?.total_price !== undefined && orderData?.total_price > 0;
   }

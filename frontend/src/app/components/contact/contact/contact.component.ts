@@ -5,7 +5,7 @@ import { ContactResponse } from '../../../responses/responses';
 import { ContactService } from '../../../services/contact/contact.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { UpdatedContactRequest } from '../../../requests/requests';
@@ -64,19 +64,17 @@ export class ContactComponent implements OnInit {
     this.loadContacts();
   }
 
-  loadContacts(): void {
-    this.contactService.getContacts().subscribe(
-      (data: ContactResponse[]) => {
+  private loadContacts(): void {
+    this.contactService.getContacts().subscribe({
+      next: (data: ContactResponse[]) => {
         this.contacts = data;
         this.initPhoneAndEmailValues();
       },
-      (error) => {
-        console.log('Error loading contacts', error);
-      }
-    );
+      error: (error) => console.log('Error loading contacts', error),
+    });
   }
 
-  initPhoneAndEmailValues(): void {
+  private initPhoneAndEmailValues(): void {
     const phoneContact = this.contacts.find(
       (contact) => contact.contact_type === 'TELEPHONE'
     );
@@ -88,7 +86,7 @@ export class ContactComponent implements OnInit {
     this.emailValue = emailContact?.value ?? '';
   }
 
-  updatePhone(): void {
+  protected updatePhone(): void {
     let contactTypeTranslated: string =
       this.translationHelper.getTranslatedContactType(ContactType.TELEPHONE);
     let updatedPhone: UpdatedContactRequest = {
@@ -113,7 +111,7 @@ export class ContactComponent implements OnInit {
     });
   }
 
-  updateEmail(): void {
+  protected updateEmail(): void {
     let contactTypeTranslated: string =
       this.translationHelper.getTranslatedContactType(ContactType.EMAIL);
     let updatedEmail: UpdatedContactRequest = {
@@ -138,51 +136,51 @@ export class ContactComponent implements OnInit {
     });
   }
 
-  toggleEditPhone(): void {
+  protected toggleEditPhone(): void {
     this.isEditing = true;
     this.isEditingPhone = !this.isEditingPhone;
   }
 
-  toggleEditEmail(): void {
+  protected toggleEditEmail(): void {
     this.isEditing = true;
     this.isEditingEmail = !this.isEditingEmail;
   }
 
-  hideEditPhoneForm(): void {
+  protected hideEditPhoneForm(): void {
     this.hideErrorMessages();
     this.isEditingPhone = false;
     this.isEditing = false;
     this.initPhoneAndEmailValues();
   }
 
-  hideEditEmailForm(): void {
+  protected hideEditEmailForm(): void {
     this.hideErrorMessages();
     this.isEditingEmail = false;
     this.isEditing = false;
     this.initPhoneAndEmailValues();
   }
 
-  getTelephone(): ContactResponse[] {
+  protected getTelephone(): ContactResponse[] {
     return this.contacts.filter(
       (contact) => contact.contact_type === 'TELEPHONE'
     );
   }
 
-  getEmail(): ContactResponse[] {
+  protected getEmail(): ContactResponse[] {
     return this.contacts.filter((contact) => contact.contact_type === 'EMAIL');
   }
 
-  isManager(): boolean {
+  protected isManager(): boolean {
     return this.authenticationService.isManager();
   }
 
-  handleError(error: any) {
+  private handleError(error: any): void {
     error.errorMessages
       ? (this.errorMessages = error.errorMessages)
       : (this.errorMessages = { general: 'An unexpected error occurred' });
   }
 
-  hideErrorMessages(): void {
+  private hideErrorMessages(): void {
     this.errorMessages = {};
   }
 }

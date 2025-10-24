@@ -36,7 +36,7 @@ export class AuthenticationComponent {
       });
   }
 
-  authenticate(): void {
+  protected authenticate(): void {
     const authData: AuthenticationRequest = {
       email: this.email,
       password: this.password,
@@ -52,7 +52,7 @@ export class AuthenticationComponent {
     });
   }
 
-  handleError(error: any): void {
+  private handleError(error: any): void {
     error.errorMessages
       ? (this.errorMessages = error.errorMessages)
       : (this.errorMessages = {

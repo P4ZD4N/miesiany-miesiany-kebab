@@ -111,6 +111,495 @@ export class AlertService {
     }).then((result) => result.isConfirmed);
   }
 
+  showSuccessfulLoginAlert(authData: AuthenticationRequest): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Zalogowano pomyslnie uzytkownika z emailem ${authData.email}!`
+        : `Successfully logged in user with ${authData.email} email!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulLogoutAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Wylogowano pomyslnie!`
+        : `Successfully logged out!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulContactUpdateAlert(contactTypeTranslated: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaktualizowano kontakt typu '${contactTypeTranslated}'!`
+        : `Successfully updated contact of type '${contactTypeTranslated}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulDiscountCodeAddAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano nowy kod rabatowy'!`
+        : `Successfully added new discount code!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulDiscountCodeUpdateAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? 'Pomyslnie zaktualizowano kod rabatowy!'
+        : 'Successfully updated discount code!';
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulDiscountCodeRemoveAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto kod rabatowy!`
+        : `Successfully removed discount code!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulEmployeeUpdateAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? 'Pomyslnie zaktualizowano pracownika!'
+        : 'Successfully updated employee!';
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulEmployeeRemoveAlert(employee: EmployeeResponse): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto pracownika z emailem '${employee.email}'!`
+        : `Successfully removed employee with email '${employee.email}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulEmployeeAddAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano nowego pracownika'!`
+        : `Successfully added new employee!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulCredentialUpdateAlert(isEmail: boolean) {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaktualizowano ${isEmail ? 'email' : 'haslo'}!`
+        : `Successfully updated ${isEmail ? 'email' : 'password'}!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showCredentialUpdateErrorAlert(error: any) {
+    const text =
+      error.errorMessages.message ||
+      error.errorMessages.updatedEmail ||
+      error.errorMessages.updated_password;
+    this.showErrorAlertWithText(text);
+  }
+
+  showSuccessfulJobOfferAddAlert(newJobOffer: NewJobOfferRequest): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano oferte pracy na stanowisko '${newJobOffer.position_name}'!`
+        : `Successfully added job offer for position '${newJobOffer.position_name}'!;`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulJobOfferUpdateAlert(position: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaktualizowano oferte pracy na pozycji '${position}'!`
+        : `Successfully updated job offer on '${position}' position!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulJobOfferRemoveAlert(position: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto oferte pracy na stanowisku '${position}'!`
+        : `Successfully removed job offer on '${position}' position!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulJobOfferApplyAlert(jobOffer: JobOfferGeneralResponse): void {
+    const positionNameTranslated = this.translationHelper.getTranslatedPosition(
+      jobOffer.position_name
+    );
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaaplikowano na pozycje '${positionNameTranslated}'!`
+        : `Successfully applied for a '${positionNameTranslated}' position!`;
+
+    this.showSuccessAlertWithText(text);
+  }
+
+  showJobOfferApplyErrorAlert(errorMessages: { [key: string]: string }): void {
+    this.showErrorAlertWithText(errorMessages['message']);
+  }
+
+  showSuccessfulJobApplicationRemoveAlert(position: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto aplikacje na oferte pracy na pozycji '${position}'!`
+        : `Successfully removed job application to job offer on '${position}' position!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulBeverageUpdateAlert(beverageNameTranslated: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaktualizowano napoj '${beverageNameTranslated}'!`
+        : `Successfully updated beverage '${beverageNameTranslated}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulAddonUpdateAlert(addonNameTranslated: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaktualizowano dodatek '${addonNameTranslated}'!`
+        : `Successfully updated addon '${addonNameTranslated}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulMealUpdateAlert(mealNameTranslated: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaktualizowano danie '${mealNameTranslated}'!`
+        : `Successfully updated meal '${mealNameTranslated}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulBeverageRemoveAlert(beverageNameTranslated: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto napoj '${beverageNameTranslated}'!`
+        : `Successfully removed beverage '${beverageNameTranslated}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulAddonRemoveAlert(addonNameTranslated: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto dodatek '${addonNameTranslated}'!`
+        : `Successfully removed addon '${addonNameTranslated}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulMealRemoveAlert(mealNameTranslated: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto danie '${mealNameTranslated}'!`
+        : `Successfully removed meal '${mealNameTranslated}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulOrderUpdateAlert(order: OrderResponse): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaktualizowano zamowienie z id '${order.id}'!`
+        : `Successfully updated order with id '${order.id}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulMealPromotionAddAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano nowa promocje na dania'!`
+        : `Successfully added new meal promotion!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulBeveragePromotionAddAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano nowa promocje na napoje'!`
+        : `Successfully added new beverage promotion!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulAddonPromotionAddAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano nowa promocje na dodatek'!`
+        : `Successfully added new addon promotion!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulMealPromotionUpdateAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? 'Pomyslnie zaktualizowano promocje na dania!'
+        : 'Successfully updated meal promotion!';
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulBeveragePromotionUpdateAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? 'Pomyslnie zaktualizowano promocje na napoje!'
+        : 'Successfully updated beverage promotion!';
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulAddonPromotionUpdateAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? 'Pomyslnie zaktualizowano promocje na dodatki!'
+        : 'Successfully updated addon promotion!';
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulIngredientRemoveAlert(ingredientNameTranslated: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto skladnik '${ingredientNameTranslated}'!`
+        : `Successfully removed ingredient '${ingredientNameTranslated}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulBeverageAddAlert(beverageName: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano napoj '${beverageName}'!`
+        : `Successfully added beverage '${beverageName}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulAddonAddAlert(addonName: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano dodatek '${addonName}'!`
+        : `Successfully added addon '${addonName}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulMealAddAlert(mealName: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano danie '${mealName}'!`
+        : `Successfully added meal '${mealName}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulIngredientAddAlert(ingredientName: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano skladnik '${ingredientName}'!`
+        : `Successfully added ingredient '${ingredientName}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulOpeningHourUpdateAlert(translatedDayOfWeek: string): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zapisano godziny otwarcia w ${translatedDayOfWeek}!`
+        : `Successfully saved opening hours on ${translatedDayOfWeek}!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulMealPromotionRemoveAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto promocje na dania!`
+        : `Successfully removed meal promotion!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulOrderRemoveAlert(order: OrderResponse): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto zamowienie z id '${order.id}'!`
+        : `Successfully removed order with id '${order.id}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulBeveragePromotionRemoveAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto promocje na napoje!`
+        : `Successfully removed beverage promotion!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulAddonPromotionRemoveAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto promocje na dodatki!`
+        : `Successfully removed addon promotion!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSubscribeNewsletterErrorAlert(error: any): void {
+    const title =
+      this.langService.currentLang === 'pl' ? 'Wystapil blad' : 'Error occured';
+    this.showErrorAlertWithTextAndTitle(error.errorMessages.message, title);
+  }
+
+  showSuccessfulNewsletterSubscribeAlert(): void {
+    const title =
+      this.langService.currentLang === 'pl'
+        ? 'Subskrypcja potwierdzona!'
+        : 'Subscription confirmed!';
+    const text =
+      this.langService.currentLang === 'pl'
+        ? 'Dziekujemy, ze chcesz byc czescia kebabowej spolecznosci! Mamy nadzieje, ze przyszle promocje Cie zainteresuja :)'
+        : 'Thank you for your desire to be part of the kebab community! We hope that future promotions will be interesting for you :)';
+    this.showSuccessAlertWithTextAndTitle(text, title);
+  }
+
+  showStopTrackingOrderAlert(id: number | null): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie zaprzestano sledzic zamowienie z id '${id}'!`
+        : `Successfully stopped tracking order with id '${id}'!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulUnsubscribeAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie odsubskrybowano!`
+        : `Successfully signed out!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showSuccessfulAddWorkScheduleEntryAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie dodano nowy wpis do grafiku!`
+        : `Successfully added new work schedule entry!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showAddWorkScheduleEntryErrorAlert(error: any): void {
+    this.showErrorAlertWithText(error.errorMessages.message);
+  }
+
+  showSuccessfulWorkScheduleEntryRemoveAlert(): void {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Pomyslnie usunieto wpis do grafiku!`
+        : `Successfully removed work schedule entry!`;
+    this.showSuccessAlertWithText(text);
+  }
+
+  showRemoveDiscountCodeAlert(): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ten kod rabatowy?`
+        : `Are you sure you want to remove this discount code?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveEmployeeAlert(employee: EmployeeResponse): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac pracownika z emailem '${employee.email}'?`
+        : `Are you sure you want to remove employee with email '${employee.email}'?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveJobOfferAlert(position: string): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac oferte pracy na stanowisku '${position}'?`
+        : `Are you sure you want to remove job offer on '${position}' position?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveJobApplicationAlert(): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac aplikacje?`
+        : `Are you sure you want to remove job application?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveBeverageAlert(beverageNameTranslated: string): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac napoj ${beverageNameTranslated}?`
+        : `Are you sure you want to remove beverage ${beverageNameTranslated}?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveAddonAlert(addonNameTranslated: string): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac dodatek ${addonNameTranslated}?`
+        : `Are you sure you want to remove addon ${addonNameTranslated}?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveMealAlert(mealNameTranslated: string): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac danie ${mealNameTranslated}?`
+        : `Are you sure you want to remove meal ${mealNameTranslated}?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showUnsubscribeAlert(): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz odsubskrybowac?`
+        : `Are you sure you want to sign out?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveIngredientAlert(
+    ingredientNameTranslated: string,
+    mealsWithThisIngredient: string
+  ): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac skladnik ${ingredientNameTranslated}? Nastepujace dania zawieraja ten skladnik: ${mealsWithThisIngredient}`
+        : `Are you sure you want to remove ingredient ${ingredientNameTranslated}? Following meals contains this ingredient: ${mealsWithThisIngredient}`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveOrderAlert(order: OrderResponse): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac zamowienie z id '${order.id}'?`
+        : `Are you sure you want to remove order with id '${order.id}'?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveMealPromotionAlert(): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ta promocje na dania?`
+        : `Are you sure you want to remove this meal promotion?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveBeveragePromotionAlert(): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ta promocje na napoje?`
+        : `Are you sure you want to remove this beverage promotion?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveAddonPromotionAlert(): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ta promocje na dodatki?`
+        : `Are you sure you want to remove this addon promotion?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
+  showRemoveWorkScheduleEntryAlert(): Promise<boolean> {
+    const text =
+      this.langService.currentLang === 'pl'
+        ? `Czy na pewno chcesz usunac ten wpis?`
+        : `Are you sure you want to remove this entry?`;
+    return this.showRemoveAlertWithText(text);
+  }
+
   async showUpdateEmailAlert(currentEmployeeData: EmployeeResponse | null) {
     const confirmButtonText =
       this.langService.currentLang === 'pl' ? 'Zapisz' : 'Save';
@@ -995,494 +1484,5 @@ export class AlertService {
       `,
       customClass: { title: 'swal2-title-red' },
     }).then((result) => result.isConfirmed);
-  }
-
-  showSuccessfulLoginAlert(authData: AuthenticationRequest): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Zalogowano pomyslnie uzytkownika z emailem ${authData.email}!`
-        : `Successfully logged in user with ${authData.email} email!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulLogoutAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Wylogowano pomyslnie!`
-        : `Successfully logged out!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulContactUpdateAlert(contactTypeTranslated: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaktualizowano kontakt typu '${contactTypeTranslated}'!`
-        : `Successfully updated contact of type '${contactTypeTranslated}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulDiscountCodeAddAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano nowy kod rabatowy'!`
-        : `Successfully added new discount code!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulDiscountCodeUpdateAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? 'Pomyslnie zaktualizowano kod rabatowy!'
-        : 'Successfully updated discount code!';
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulDiscountCodeRemoveAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto kod rabatowy!`
-        : `Successfully removed discount code!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulEmployeeUpdateAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? 'Pomyslnie zaktualizowano pracownika!'
-        : 'Successfully updated employee!';
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulEmployeeRemoveAlert(employee: EmployeeResponse): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto pracownika z emailem '${employee.email}'!`
-        : `Successfully removed employee with email '${employee.email}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulEmployeeAddAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano nowego pracownika'!`
-        : `Successfully added new employee!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulCredentialUpdateAlert(isEmail: boolean) {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaktualizowano ${isEmail ? 'email' : 'haslo'}!`
-        : `Successfully updated ${isEmail ? 'email' : 'password'}!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showCredentialUpdateErrorAlert(error: any) {
-    const text =
-      error.errorMessages.message ||
-      error.errorMessages.updatedEmail ||
-      error.errorMessages.updated_password;
-    this.showErrorAlertWithText(text);
-  }
-
-  showSuccessfulJobOfferAddAlert(newJobOffer: NewJobOfferRequest): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano oferte pracy na stanowisko '${newJobOffer.position_name}'!`
-        : `Successfully added job offer for position '${newJobOffer.position_name}'!;`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulJobOfferUpdateAlert(position: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaktualizowano oferte pracy na pozycji '${position}'!`
-        : `Successfully updated job offer on '${position}' position!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulJobOfferRemoveAlert(position: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto oferte pracy na stanowisku '${position}'!`
-        : `Successfully removed job offer on '${position}' position!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulJobOfferApplyAlert(jobOffer: JobOfferGeneralResponse): void {
-    const positionNameTranslated = this.translationHelper.getTranslatedPosition(
-      jobOffer.position_name
-    );
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaaplikowano na pozycje '${positionNameTranslated}'!`
-        : `Successfully applied for a '${positionNameTranslated}' position!`;
-
-    this.showSuccessAlertWithText(text);
-  }
-
-  showJobOfferApplyErrorAlert(errorMessages: { [key: string]: string }): void {
-    this.showErrorAlertWithText(errorMessages['message']);
-  }
-
-  showSuccessfulJobApplicationRemoveAlert(position: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto aplikacje na oferte pracy na pozycji '${position}'!`
-        : `Successfully removed job application to job offer on '${position}' position!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulBeverageUpdateAlert(beverageNameTranslated: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaktualizowano napoj '${beverageNameTranslated}'!`
-        : `Successfully updated beverage '${beverageNameTranslated}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulAddonUpdateAlert(addonNameTranslated: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaktualizowano dodatek '${addonNameTranslated}'!`
-        : `Successfully updated addon '${addonNameTranslated}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulMealUpdateAlert(mealNameTranslated: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaktualizowano danie '${mealNameTranslated}'!`
-        : `Successfully updated meal '${mealNameTranslated}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulBeverageRemoveAlert(beverageNameTranslated: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto napoj '${beverageNameTranslated}'!`
-        : `Successfully removed beverage '${beverageNameTranslated}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulAddonRemoveAlert(addonNameTranslated: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto dodatek '${addonNameTranslated}'!`
-        : `Successfully removed addon '${addonNameTranslated}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulMealRemoveAlert(mealNameTranslated: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto danie '${mealNameTranslated}'!`
-        : `Successfully removed meal '${mealNameTranslated}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulOrderUpdateAlert(order: OrderResponse): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaktualizowano zamowienie z id '${order.id}'!`
-        : `Successfully updated order with id '${order.id}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulMealPromotionAddAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano nowa promocje na dania'!`
-        : `Successfully added new meal promotion!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulBeveragePromotionAddAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano nowa promocje na napoje'!`
-        : `Successfully added new beverage promotion!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulAddonPromotionAddAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano nowa promocje na dodatek'!`
-        : `Successfully added new addon promotion!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulMealPromotionUpdateAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? 'Pomyslnie zaktualizowano promocje na dania!'
-        : 'Successfully updated meal promotion!';
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulBeveragePromotionUpdateAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? 'Pomyslnie zaktualizowano promocje na napoje!'
-        : 'Successfully updated beverage promotion!';
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulAddonPromotionUpdateAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? 'Pomyslnie zaktualizowano promocje na dodatki!'
-        : 'Successfully updated addon promotion!';
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulIngredientRemoveAlert(ingredientNameTranslated: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto skladnik '${ingredientNameTranslated}'!`
-        : `Successfully removed ingredient '${ingredientNameTranslated}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulBeverageAddAlert(beverageName: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano napoj '${beverageName}'!`
-        : `Successfully added beverage '${beverageName}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulAddonAddAlert(addonName: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano dodatek '${addonName}'!`
-        : `Successfully added addon '${addonName}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulMealAddAlert(mealName: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano danie '${mealName}'!`
-        : `Successfully added meal '${mealName}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulIngredientAddAlert(ingredientName: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano skladnik '${ingredientName}'!`
-        : `Successfully added ingredient '${ingredientName}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulOpeningHourUpdateAlert(translatedDayOfWeek: string): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zapisano godziny otwarcia w ${translatedDayOfWeek}!`
-        : `Successfully saved opening hours on ${translatedDayOfWeek}!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulMealPromotionRemoveAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto promocje na dania!`
-        : `Successfully removed meal promotion!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulOrderRemoveAlert(order: OrderResponse): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto zamowienie z id '${order.id}'!`
-        : `Successfully removed order with id '${order.id}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulBeveragePromotionRemoveAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto promocje na napoje!`
-        : `Successfully removed beverage promotion!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulAddonPromotionRemoveAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto promocje na dodatki!`
-        : `Successfully removed addon promotion!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSubscribeNewsletterErrorAlert(error: any): void {
-    const title =
-      this.langService.currentLang === 'pl' ? 'Wystapil blad' : 'Error occured';
-    this.showErrorAlertWithTextAndTitle(error.errorMessages.message, title);
-  }
-
-  showSuccessfulNewsletterSubscribeAlert(): void {
-    const title =
-      this.langService.currentLang === 'pl'
-        ? 'Subskrypcja potwierdzona!'
-        : 'Subscription confirmed!';
-    const text =
-      this.langService.currentLang === 'pl'
-        ? 'Dziekujemy, ze chcesz byc czescia kebabowej spolecznosci! Mamy nadzieje, ze przyszle promocje Cie zainteresuja :)'
-        : 'Thank you for your desire to be part of the kebab community! We hope that future promotions will be interesting for you :)';
-    this.showSuccessAlertWithTextAndTitle(text, title);
-  }
-
-  showStopTrackingOrderAlert(id: number | null): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie zaprzestano sledzic zamowienie z id '${id}'!`
-        : `Successfully stopped tracking order with id '${id}'!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulUnsubscribeAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie odsubskrybowano!`
-        : `Successfully signed out!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showSuccessfulAddWorkScheduleEntryAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie dodano nowy wpis do grafiku!`
-        : `Successfully added new work schedule entry!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showAddWorkScheduleEntryErrorAlert(error: any): void {
-    this.showErrorAlertWithText(error.errorMessages.message);
-  }
-
-  showSuccessfulWorkScheduleEntryRemoveAlert(): void {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Pomyslnie usunieto wpis do grafiku!`
-        : `Successfully removed work schedule entry!`;
-    this.showSuccessAlertWithText(text);
-  }
-
-  showRemoveDiscountCodeAlert(): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac ten kod rabatowy?`
-        : `Are you sure you want to remove this discount code?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveEmployeeAlert(employee: EmployeeResponse): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac pracownika z emailem '${employee.email}'?`
-        : `Are you sure you want to remove employee with email '${employee.email}'?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveJobOfferAlert(position: string): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac oferte pracy na stanowisku '${position}'?`
-        : `Are you sure you want to remove job offer on '${position}' position?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveJobApplicationAlert(): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac aplikacje?`
-        : `Are you sure you want to remove job application?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveBeverageAlert(beverageNameTranslated: string): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac napoj ${beverageNameTranslated}?`
-        : `Are you sure you want to remove beverage ${beverageNameTranslated}?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveAddonAlert(addonNameTranslated: string): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac dodatek ${addonNameTranslated}?`
-        : `Are you sure you want to remove addon ${addonNameTranslated}?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveMealAlert(mealNameTranslated: string): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac danie ${mealNameTranslated}?`
-        : `Are you sure you want to remove meal ${mealNameTranslated}?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showUnsubscribeAlert(): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz odsubskrybowac?`
-        : `Are you sure you want to sign out?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveIngredientAlert(
-    ingredientNameTranslated: string,
-    mealsWithThisIngredient: string
-  ): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac skladnik ${ingredientNameTranslated}? Nastepujace dania zawieraja ten skladnik: ${mealsWithThisIngredient}`
-        : `Are you sure you want to remove ingredient ${ingredientNameTranslated}? Following meals contains this ingredient: ${mealsWithThisIngredient}`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveOrderAlert(order: OrderResponse): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac zamowienie z id '${order.id}'?`
-        : `Are you sure you want to remove order with id '${order.id}'?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveMealPromotionAlert(): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac ta promocje na dania?`
-        : `Are you sure you want to remove this meal promotion?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveBeveragePromotionAlert(): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac ta promocje na napoje?`
-        : `Are you sure you want to remove this beverage promotion?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveAddonPromotionAlert(): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac ta promocje na dodatki?`
-        : `Are you sure you want to remove this addon promotion?`;
-    return this.showRemoveAlertWithText(text);
-  }
-
-  showRemoveWorkScheduleEntryAlert(): Promise<boolean> {
-    const text =
-      this.langService.currentLang === 'pl'
-        ? `Czy na pewno chcesz usunac ten wpis?`
-        : `Are you sure you want to remove this entry?`;
-    return this.showRemoveAlertWithText(text);
   }
 }

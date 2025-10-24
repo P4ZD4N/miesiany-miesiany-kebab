@@ -38,7 +38,6 @@ export class PaymentsComponent implements OnInit {
     private langService: LangService,
     private employeeService: EmployeeService,
     private workScheduleService: WorkScheduleService,
-    private translate: TranslateService,
     private translationHelper: TranslationHelperService
   ) {
     this.languageChangeSubscription =
@@ -60,21 +59,21 @@ export class PaymentsComponent implements OnInit {
   }
 
   private loadWorkScheduleEntries(): void {
-    this.workScheduleService.getWorkScheduleEntries().subscribe(
-      (entries) => (this.workScheduleEntries = entries),
-      (err) => console.error(err)
-    );
+    this.workScheduleService.getWorkScheduleEntries().subscribe({
+      next: (entries) => (this.workScheduleEntries = entries),
+      error: (err) => console.error(err),
+    });
   }
 
   private loadEmployees(): void {
-    this.employeeService.getEmployees().subscribe(
-      (data: EmployeeResponse[]) =>
+    this.employeeService.getEmployees().subscribe({
+      next: (data: EmployeeResponse[]) =>
         (this.employees = data
           .filter((emp) => emp.job.toLowerCase() !== 'manager')
           .filter((emp) => emp.is_active === true)
           .sort((a, b) => a.last_name.localeCompare(b.last_name))),
-      (error) => console.log('Error loading employees', error)
-    );
+      error: (error) => console.log('Error loading employees', error),
+    });
   }
 
   private setDays(): void {
@@ -213,7 +212,9 @@ export class PaymentsComponent implements OnInit {
     }, 0);
   }
 
-  protected getHourlyWageFromCurrentMonth(employee: EmployeeResponse): number | null {
+  protected getHourlyWageFromCurrentMonth(
+    employee: EmployeeResponse
+  ): number | null {
     const entries = this.workScheduleEntries
       .filter(
         (entry) =>

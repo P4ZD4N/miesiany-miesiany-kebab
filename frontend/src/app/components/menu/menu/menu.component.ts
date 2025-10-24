@@ -124,46 +124,46 @@ export class MenuComponent implements OnInit {
     this.loadIngredients();
   }
 
-  loadBeverages(): void {
-    this.menuService.getBeverages().subscribe(
-      (data: BeverageResponse[]) => {
+  private loadBeverages(): void {
+    this.menuService.getBeverages().subscribe({
+      next: (data: BeverageResponse[]) => {
         this.beverages = data;
         this.initializeBeverageForms(data);
       },
-      (error) => console.log('Error loading beverages', error)
-    );
+      error: (error) => console.log('Error loading beverages', error),
+    });
   }
 
-  loadAddons(): void {
-    this.menuService.getAddons().subscribe(
-      (data: AddonResponse[]) => {
+  private loadAddons(): void {
+    this.menuService.getAddons().subscribe({
+      next: (data: AddonResponse[]) => {
         this.addons = data;
         this.initializeAddonForms(data);
       },
-      (error) => console.log('Error loading addons', error)
-    );
+      error: (error) => console.log('Error loading addons', error),
+    });
   }
 
-  loadMeals(): void {
-    this.menuService.getMeals().subscribe(
-      (data: MealResponse[]) => {
+  private loadMeals(): void {
+    this.menuService.getMeals().subscribe({
+      next: (data: MealResponse[]) => {
         this.meals = data;
         this.initializeMealForms(data);
       },
-      (error) => console.log('Error loading meals', error)
-    );
+      error: (error) => console.log('Error loading meals', error),
+    });
   }
 
-  loadIngredients(): void {
-    this.menuService.getIngredients().subscribe(
-      (data: IngredientResponse[]) => {
+  private loadIngredients(): void {
+    this.menuService.getIngredients().subscribe({
+      next: (data: IngredientResponse[]) => {
         this.ingredients = data;
       },
-      (error) => console.log('Error loading ingredients', error)
-    );
+      error: (error) => console.log('Error loading ingredients', error),
+    });
   }
 
-  initializeBeverageForms(beverages: BeverageResponse[]): void {
+  private initializeBeverageForms(beverages: BeverageResponse[]): void {
     beverages.forEach((beverage) => {
       this.beverageForms[beverage.name] = this.formBuilder.group({
         capacity: new FormControl(beverage.capacity),
@@ -172,7 +172,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  initializeAddonForms(addons: AddonResponse[]): void {
+  private initializeAddonForms(addons: AddonResponse[]): void {
     addons.forEach((addon) => {
       this.addonForms[addon.name] = this.formBuilder.group({
         price: new FormControl(addon.price),
@@ -180,7 +180,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  initializeMealForms(meals: MealResponse[]): void {
+  private initializeMealForms(meals: MealResponse[]): void {
     meals.forEach((meal) => {
       this.mealForms[meal.name] = this.formBuilder.group({
         prices: this.formBuilder.group({
@@ -201,27 +201,27 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  isManager(): boolean {
+  protected isManager(): boolean {
     return this.authenticationService.isManager();
   }
 
-  getTranslatedMealName(mealName: string): string {
+  protected getTranslatedMealName(mealName: string): string {
     return this.translationHelper.getTranslatedMealName(mealName);
   }
 
-  getTranslatedBeverageName(beverageName: string): string {
+  protected getTranslatedBeverageName(beverageName: string): string {
     return this.translationHelper.getTranslatedBeverageName(beverageName);
   }
 
-  getTranslatedAddonName(addonName: string): string {
+  protected getTranslatedAddonName(addonName: string): string {
     return this.translationHelper.getTranslatedAddonName(addonName);
   }
 
-  getTranslatedIngredientName(ingredientName: string): string {
+  protected getTranslatedIngredientName(ingredientName: string): string {
     return this.translationHelper.getTranslatedIngredientName(ingredientName);
   }
 
-  editBeverageRow(beverage: BeverageResponse): void {
+  protected editBeverageRow(beverage: BeverageResponse): void {
     if (this.isEditing) return;
 
     this.hideErrorMessages();
@@ -236,7 +236,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  editAddonRow(addon: AddonResponse): void {
+  protected editAddonRow(addon: AddonResponse): void {
     if (this.isEditing) return;
 
     this.hideErrorMessages();
@@ -250,7 +250,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  editMealRow(meal: MealResponse): void {
+  protected editMealRow(meal: MealResponse): void {
     if (this.isEditing) {
       return;
     }
@@ -274,7 +274,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  saveBeverageRow(beverage: BeverageResponse): void {
+  protected saveBeverageRow(beverage: BeverageResponse): void {
     let beverageNameTranslated = this.getTranslatedBeverageName(beverage.name);
 
     const formGroup = this.beverageForms[beverage.name];
@@ -302,7 +302,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  saveAddonRow(addon: AddonResponse): void {
+  protected saveAddonRow(addon: AddonResponse): void {
     let addonNameTranslated = this.getTranslatedAddonName(addon.name);
 
     const formGroup = this.addonForms[addon.name];
@@ -327,7 +327,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  saveMealRow(meal: MealResponse): void {
+  protected saveMealRow(meal: MealResponse): void {
     let mealNameTranslated = this.getTranslatedMealName(meal.name);
 
     const formGroup = this.mealForms[meal.name];
@@ -353,7 +353,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  removeBeverage(beverage: BeverageResponse): void {
+  protected removeBeverage(beverage: BeverageResponse): void {
     let beverageNameTranslated = this.getTranslatedBeverageName(beverage.name);
 
     this.alertService
@@ -375,7 +375,7 @@ export class MenuComponent implements OnInit {
       });
   }
 
-  removeAddon(addon: AddonResponse): void {
+  protected removeAddon(addon: AddonResponse): void {
     let addonNameTranslated = this.getTranslatedAddonName(addon.name);
 
     this.alertService
@@ -394,7 +394,7 @@ export class MenuComponent implements OnInit {
       });
   }
 
-  removeMeal(meal: MealResponse): void {
+  protected removeMeal(meal: MealResponse): void {
     let mealNameTranslated = this.getTranslatedMealName(meal.name);
 
     this.alertService
@@ -411,7 +411,7 @@ export class MenuComponent implements OnInit {
       });
   }
 
-  removeIngredient(ingredient: IngredientResponse): void {
+  protected removeIngredient(ingredient: IngredientResponse): void {
     let ingredientNameTranslated = this.getTranslatedIngredientName(
       ingredient.name
     );
@@ -443,7 +443,7 @@ export class MenuComponent implements OnInit {
       });
   }
 
-  addBeverage(): void {
+  protected addBeverage(): void {
     this.menuService.addBeverage(this.newBeverage).subscribe({
       next: () => {
         this.alertService.showSuccessfulBeverageAddAlert(
@@ -458,7 +458,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  addAddon(): void {
+  protected addAddon(): void {
     this.menuService.addAddon(this.newAddon).subscribe({
       next: () => {
         this.alertService.showSuccessfulAddonAddAlert(
@@ -473,7 +473,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  addMeal(): void {
+  protected addMeal(): void {
     this.newMeal.new_meal_prices = this.getFilteredPrices(
       this.newMeal.new_meal_prices
     );
@@ -503,7 +503,7 @@ export class MenuComponent implements OnInit {
       }, {} as { [key: string]: number });
   }
 
-  addIngredient(): void {
+  protected addIngredient(): void {
     this.menuService.addIngredient(this.newIngredient).subscribe({
       next: () => {
         this.alertService.showSuccessfulIngredientAddAlert(
@@ -518,7 +518,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  showAddBeverageTable(): void {
+  protected showAddBeverageTable(): void {
     if (this.isEditing) return;
 
     this.hideErrorMessages();
@@ -526,7 +526,7 @@ export class MenuComponent implements OnInit {
     this.isAdding = true;
   }
 
-  showAddAddonTable(): void {
+  protected showAddAddonTable(): void {
     if (this.isEditing) return;
 
     this.hideErrorMessages();
@@ -534,7 +534,7 @@ export class MenuComponent implements OnInit {
     this.isAdding = true;
   }
 
-  showAddMealTable(): void {
+  protected showAddMealTable(): void {
     if (this.isEditing) return;
 
     this.hideErrorMessages();
@@ -542,7 +542,7 @@ export class MenuComponent implements OnInit {
     this.isAdding = true;
   }
 
-  showAddIngredientTable(): void {
+  protected showAddIngredientTable(): void {
     if (this.isEditing) return;
 
     this.hideErrorMessages();
@@ -550,49 +550,49 @@ export class MenuComponent implements OnInit {
     this.isAdding = true;
   }
 
-  hideAddBeverageTable(): void {
+  protected hideAddBeverageTable(): void {
     this.hideErrorMessages();
     this.isAddingBeverage = false;
     this.isAdding = false;
   }
 
-  hideAddAddonTable(): void {
+  protected hideAddAddonTable(): void {
     this.hideErrorMessages();
     this.isAddingAddon = false;
     this.isAdding = false;
   }
 
-  hideAddMealTable(): void {
+  protected hideAddMealTable(): void {
     this.hideErrorMessages();
     this.isAddingMeal = false;
     this.isAdding = false;
   }
 
-  hideAddIngredientTable(): void {
+  protected hideAddIngredientTable(): void {
     this.hideErrorMessages();
     this.isAddingIngredient = false;
     this.isAdding = false;
   }
 
-  hideEditableBeverageRow(beverage: BeverageResponse): void {
+  protected hideEditableBeverageRow(beverage: BeverageResponse): void {
     beverage.isEditing = false;
     this.isEditing = false;
     this.hideErrorMessages();
   }
 
-  hideEditableAddonRow(addon: AddonResponse): void {
+  protected hideEditableAddonRow(addon: AddonResponse): void {
     addon.isEditing = false;
     this.isEditing = false;
     this.hideErrorMessages();
   }
 
-  hideEditableMealRow(meal: MealResponse): void {
+  protected hideEditableMealRow(meal: MealResponse): void {
     meal.isEditing = false;
     this.isEditing = false;
     this.hideErrorMessages();
   }
 
-  resetNewBeverage(): void {
+  protected resetNewBeverage(): void {
     this.newBeverage = {
       new_beverage_name: '',
       new_beverage_capacity: 0,
@@ -600,14 +600,14 @@ export class MenuComponent implements OnInit {
     };
   }
 
-  resetNewAddon(): void {
+  protected resetNewAddon(): void {
     this.newAddon = {
       new_addon_name: '',
       new_addon_price: 0,
     };
   }
 
-  resetNewMeal(): void {
+  protected resetNewMeal(): void {
     this.newMeal = {
       new_meal_name: '',
       new_meal_prices: {},
@@ -618,14 +618,14 @@ export class MenuComponent implements OnInit {
     this.selectedOthers.clear();
   }
 
-  resetNewIngredient(): void {
+  protected resetNewIngredient(): void {
     this.newIngredient = {
       new_ingredient_name: '',
       new_ingredient_type: null,
     };
   }
 
-  onIngredientCheckboxChange(ingredient: IngredientResponse): void {
+  protected onIngredientCheckboxChange(ingredient: IngredientResponse): void {
     if (ingredient.ingredient_type === 'BREAD') {
       this.handleBreadIngredientCheckboxChange(ingredient);
     } else if (ingredient.ingredient_type === 'VEGETABLE') {
@@ -635,7 +635,7 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  handleBreadIngredientCheckboxChange(ingredient: IngredientResponse): void {
+  private handleBreadIngredientCheckboxChange(ingredient: IngredientResponse): void {
     if (this.selectedBread === ingredient.name) {
       this.selectedBread = null;
       this.removeIngredientFromNewMeal(ingredient);
@@ -645,7 +645,7 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  handleVegetableIngredientCheckboxChange(
+  private handleVegetableIngredientCheckboxChange(
     ingredient: IngredientResponse
   ): void {
     if (this.selectedVegetables.has(ingredient.name)) {
@@ -657,7 +657,7 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  handleOtherIngredientCheckboxChange(ingredient: IngredientResponse): void {
+  private handleOtherIngredientCheckboxChange(ingredient: IngredientResponse): void {
     if (this.selectedOthers.has(ingredient.name)) {
       this.selectedOthers.delete(ingredient.name);
       this.removeIngredientFromNewMeal(ingredient);
@@ -667,7 +667,7 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  onSizeCheckboxChange(meal: MealResponse, size: Size, event: Event): void {
+  protected onSizeCheckboxChange(meal: MealResponse, size: Size, event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const priceControl = this.mealForms[meal.name].get(
       'prices.' + size
@@ -678,7 +678,7 @@ export class MenuComponent implements OnInit {
       : priceControl.setValue(null);
   }
 
-  onUpdateIngredientCheckboxChange(
+  protected onUpdateIngredientCheckboxChange(
     meal: MealResponse,
     ingredient: IngredientResponse,
     event: Event
@@ -706,7 +706,7 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  addIngredientToNewMeal(ingredient: IngredientResponse): void {
+  private addIngredientToNewMeal(ingredient: IngredientResponse): void {
     const exists = this.newMeal.new_meal_ingredients.find(
       (i) =>
         i.name === ingredient.name &&
@@ -721,7 +721,7 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  removeIngredientFromNewMeal(ingredient: IngredientResponse): void {
+  private removeIngredientFromNewMeal(ingredient: IngredientResponse): void {
     this.newMeal.new_meal_ingredients =
       this.newMeal.new_meal_ingredients.filter(
         (ingr) =>
@@ -732,7 +732,7 @@ export class MenuComponent implements OnInit {
       );
   }
 
-  mealContainsIngredient(
+  protected mealContainsIngredient(
     meal: MealResponse,
     ingredient: IngredientResponse
   ): boolean {
@@ -741,25 +741,25 @@ export class MenuComponent implements OnInit {
     );
   }
 
-  getSauces(): string {
+  protected getSauces(): string {
     return this.ingredients
       .filter((ingredient) => ingredient.ingredient_type === 'SAUCE')
       .map((ingredient) => this.getTranslatedIngredientName(ingredient.name))
       .join(', ');
   }
 
-  getMeats(): string {
+  protected getMeats(): string {
     return this.ingredients
       .filter((ingredient) => ingredient.ingredient_type === 'MEAT')
       .map((ingredient) => this.getTranslatedIngredientName(ingredient.name))
       .join(', ');
   }
 
-  sortSizes = (a: any, b: any): number => {
+  protected sortSizes = (a: any, b: any): number => {
     return this.sizeOrder.indexOf(a.key) - this.sizeOrder.indexOf(b.key);
   };
 
-  sortIngredientsByType(
+  protected sortIngredientsByType(
     ingredients: IngredientResponse[]
   ): IngredientResponse[] {
     return ingredients.sort((a, b) => {
@@ -770,7 +770,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  sortIngredientsByName(
+  protected sortIngredientsByName(
     ingredients: IngredientResponse[]
   ): IngredientResponse[] {
     return ingredients.sort((a, b) => {
@@ -787,7 +787,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  sortMealsByName(meals: MealResponse[]): MealResponse[] {
+  protected sortMealsByName(meals: MealResponse[]): MealResponse[] {
     return meals.sort((a, b) => {
       let firstMealNameTranslated = this.getTranslatedMealName(a.name);
       let secondMealNameTranslated = this.getTranslatedMealName(b.name);
@@ -796,7 +796,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  sortAddonsByName(addons: AddonResponse[]): AddonResponse[] {
+  protected sortAddonsByName(addons: AddonResponse[]): AddonResponse[] {
     return addons.sort((a, b) => {
       let firstAddonNameTranslated = this.getTranslatedAddonName(a.name);
       let secondAddonNameTranslated = this.getTranslatedAddonName(b.name);
@@ -805,7 +805,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  sortBeveragesByName(beverages: BeverageResponse[]): BeverageResponse[] {
+  protected sortBeveragesByName(beverages: BeverageResponse[]): BeverageResponse[] {
     return beverages.sort((a, b) => {
       let firstBeverageNameTranslated = this.getTranslatedBeverageName(a.name);
       let secondBeverageNameTranslated = this.getTranslatedBeverageName(b.name);
@@ -816,7 +816,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  hasPromotionToThisSize(
+  protected hasPromotionToThisSize(
     meal: MealResponse,
     size: string
   ): { hasPromotion: boolean; discountPercentage: number } {
@@ -835,13 +835,13 @@ export class MenuComponent implements OnInit {
     return { hasPromotion: false, discountPercentage: 0 };
   }
 
-  handleError(error: any): void {
+  private handleError(error: any): void {
     error.errorMessages
       ? (this.errorMessages = error.errorMessages)
       : (this.errorMessages = { general: 'An unexpected error occurred' });
   }
 
-  hideErrorMessages(): void {
+  private hideErrorMessages(): void {
     this.errorMessages = {};
   }
 }

@@ -3,7 +3,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import { LangService } from '../../../services/lang/lang.service';
 import { EmployeeService } from '../../../services/employees/employee.service';
 import { Subscription } from 'rxjs';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeResponse } from '../../../responses/responses';
 import {
@@ -13,7 +13,6 @@ import {
 } from '../../../requests/requests';
 import { EmploymentType } from '../../../enums/employment-type.enum';
 import { FormsModule } from '@angular/forms';
-import Swal from 'sweetalert2';
 import { TranslationHelperService } from '../../../services/translation-helper/translation-helper.service';
 import { AlertService } from '../../../services/alert/alert.service';
 
@@ -68,34 +67,34 @@ export class EmployeeManagementComponent implements OnInit {
     if (this.isManager()) this.loadEmployees();
   }
 
-  loadEmployees(): void {
-    this.employeeService.getEmployees().subscribe(
-      (data: EmployeeResponse[]) =>
+  private loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe({
+      next: (data: EmployeeResponse[]) =>
         (this.employees = data.sort((a, b) =>
           a.last_name.localeCompare(b.last_name)
         )),
-      (error) => console.log('Error loading employees', error)
-    );
+      error: (error) => console.log('Error loading employees', error),
+    });
   }
 
-  isManager(): boolean {
+  protected isManager(): boolean {
     return this.authenticationService.isManager();
   }
 
-  getTranslatedJobName(jobName: string): string {
+  protected getTranslatedJobName(jobName: string): string {
     return this.translationHelper.getTranslatedJobName(jobName);
   }
 
-  getTranslatedEmploymentType(employmentType: string): string {
+  protected getTranslatedEmploymentType(employmentType: string): string {
     return this.translationHelper.getTranslatedEmploymentType(employmentType);
   }
 
-  showAddEmployeeTable(): void {
+  protected showAddEmployeeTable(): void {
     this.hideErrorMessages();
     this.isAdding = true;
   }
 
-  showUpdateEmployeeTable(employee: EmployeeResponse): void {
+  protected showUpdateEmployeeTable(employee: EmployeeResponse): void {
     if (this.isEditing) {
       return;
     }
@@ -120,18 +119,18 @@ export class EmployeeManagementComponent implements OnInit {
     };
   }
 
-  hideAddEmployeeTable(): void {
+  protected hideAddEmployeeTable(): void {
     this.hideErrorMessages();
     this.isAdding = false;
     this.resetNewEmployee();
   }
 
-  hideUpdateEmployeeTable(): void {
+  protected hideUpdateEmployeeTable(): void {
     this.isEditing = false;
     this.hideErrorMessages();
   }
 
-  addEmployee(): void {
+  protected addEmployee(): void {
     this.newEmployee.first_name = this.capitalize(this.newEmployee.first_name);
     this.newEmployee.last_name = this.capitalize(this.newEmployee.last_name);
     this.newEmployee.job = this.capitalize(this.newEmployee.job);
@@ -150,7 +149,7 @@ export class EmployeeManagementComponent implements OnInit {
     });
   }
 
-  updateEmployee(request: UpdatedEmployeeRequest): void {
+  protected updateEmployee(request: UpdatedEmployeeRequest): void {
     this.employeeService.updateEmployee(request).subscribe({
       next: () => {
         this.alertService.showSuccessfulEmployeeUpdateAlert();
@@ -163,7 +162,7 @@ export class EmployeeManagementComponent implements OnInit {
     });
   }
 
-  removeEmployee(employee: EmployeeResponse): void {
+  protected removeEmployee(employee: EmployeeResponse): void {
     this.alertService.showRemoveEmployeeAlert(employee).then((confirmed) => {
       if (!confirmed) return;
 
@@ -178,12 +177,12 @@ export class EmployeeManagementComponent implements OnInit {
     });
   }
 
-  capitalize(value: string | null | undefined): string {
+  private capitalize(value: string | null | undefined): string {
     if (!value) return '';
     return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
 
-  resetNewEmployee(): void {
+  protected resetNewEmployee(): void {
     this.newEmployee = {
       first_name: '',
       last_name: '',
@@ -198,11 +197,11 @@ export class EmployeeManagementComponent implements OnInit {
     };
   }
 
-  hideErrorMessages(): void {
+  private hideErrorMessages(): void {
     this.errorMessages = {};
   }
 
-  handleError(error: any): void {
+  private handleError(error: any): void {
     error.errorMessages
       ? (this.errorMessages = error.errorMessages)
       : (this.errorMessages = { general: 'An unexpected error occurred' });

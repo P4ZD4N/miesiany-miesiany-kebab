@@ -62,11 +62,11 @@ export class OrderManagementComponent implements OnInit {
   }
 
   private loadOrders(): void {
-    this.ordersService.getOrders().subscribe(
-      (data: OrderResponse[]) =>
+    this.ordersService.getOrders().subscribe({
+      next: (data: OrderResponse[]) =>
         (this.orders = data.sort((a, b) => a.id - b.id)),
-      (error) => console.log('Error loading orders', error)
-    );
+      error: (error) => console.log('Error loading orders', error),
+    });
   }
 
   protected isManager(): boolean {

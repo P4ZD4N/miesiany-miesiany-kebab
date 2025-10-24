@@ -97,29 +97,29 @@ export class JobsComponent implements OnInit {
     }
   }
 
-  isManager(): boolean {
+  protected isManager(): boolean {
     return this.authenticationService.isManager();
   }
 
-  isEmployee(): boolean {
+  protected isEmployee(): boolean {
     return this.authenticationService.isEmployee();
   }
 
-  loadJobsWithGeneralDetails(): void {
-    this.jobsService.getJobOffersForOtherUsers().subscribe(
-      (data: JobOfferGeneralResponse[]) => (this.jobs = data),
-      (error) => console.log('Error loading jobs for other users')
-    );
+  private loadJobsWithGeneralDetails(): void {
+    this.jobsService.getJobOffersForOtherUsers().subscribe({
+      next: (data: JobOfferGeneralResponse[]) => (this.jobs = data),
+      error: () => console.log('Error loading jobs for other users'),
+    });
   }
 
-  loadJobsWithManagerDetails(): void {
-    this.jobsService.getJobOffersForManager().subscribe(
-      (data: JobOfferManagerResponse[]) => (this.jobs = data),
-      (error) => console.log('Error loading jobs for manager')
-    );
+  private loadJobsWithManagerDetails(): void {
+    this.jobsService.getJobOffersForManager().subscribe({
+      next: (data: JobOfferManagerResponse[]) => (this.jobs = data),
+      error: () => console.log('Error loading jobs for manager'),
+    });
   }
 
-  getMandatoryRequirements(
+  protected getMandatoryRequirements(
     jobOffer: JobOfferGeneralResponse
   ): JobRequirement[] {
     return jobOffer.job_requirements.filter(
@@ -128,7 +128,7 @@ export class JobsComponent implements OnInit {
     );
   }
 
-  getNiceToHaveRequirements(
+  protected getNiceToHaveRequirements(
     jobOffer: JobOfferGeneralResponse
   ): JobRequirement[] {
     return jobOffer.job_requirements.filter(
@@ -137,7 +137,7 @@ export class JobsComponent implements OnInit {
     );
   }
 
-  getAvailableEmploymentTypes(jobOffer: {
+  protected getAvailableEmploymentTypes(jobOffer: {
     job_employment_types: JobEmploymentType[];
   }): EmploymentType[] {
     return this.employmentTypes.filter(
@@ -149,15 +149,15 @@ export class JobsComponent implements OnInit {
     );
   }
 
-  getEmploymentTypes(jobOffer: JobOfferGeneralResponse): JobEmploymentType[] {
+  protected getEmploymentTypes(jobOffer: JobOfferGeneralResponse): JobEmploymentType[] {
     return jobOffer.job_employment_types;
   }
 
-  getTranslatedPosition(position: string): string {
+  protected getTranslatedPosition(position: string): string {
     return this.translationHelper.getTranslatedPosition(position);
   }
 
-  getCv(cvId: number): void {
+  protected getCv(cvId: number): void {
     this.jobsService.getCv(cvId).subscribe({
       next: (response: Blob) => {
         const url = window.URL.createObjectURL(response);
@@ -167,12 +167,12 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  showAddJobOfferTable(): void {
+  protected showAddJobOfferTable(): void {
     this.hideErrorMessages();
     this.isAdding = true;
   }
 
-  showApplications(
+  protected showApplications(
     jobOffer: JobOfferGeneralResponse | JobOfferManagerResponse
   ): void {
     const managerOffer = jobOffer as JobOfferManagerResponse;
@@ -180,7 +180,7 @@ export class JobsComponent implements OnInit {
     this.showingApplicationsTable = true;
   }
 
-  hideAddJobOfferTable(): void {
+  protected hideAddJobOfferTable(): void {
     this.hideErrorMessages();
     this.isAdding = false;
     this.newJobOffer = {
@@ -194,7 +194,7 @@ export class JobsComponent implements OnInit {
     this.jobOfferEmploymentType = { employment_type: null };
   }
 
-  addJobOffer(): void {
+  protected addJobOffer(): void {
     this.jobsService.addNewJobOffer(this.newJobOffer).subscribe({
       next: () => {
         this.alertService.showSuccessfulJobOfferAddAlert(this.newJobOffer);
@@ -213,7 +213,7 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  addRequirementToJobOffer(jobOffer: {
+  protected addRequirementToJobOffer(jobOffer: {
     job_requirements: JobRequirement[];
   }): void {
     if (this.jobOfferRequirement.requirement_type === null) {
@@ -243,7 +243,7 @@ export class JobsComponent implements OnInit {
     this.hideErrorMessages();
   }
 
-  addEmploymentTypeToJobOffer(jobOffer: {
+  protected addEmploymentTypeToJobOffer(jobOffer: {
     job_employment_types: JobEmploymentType[];
   }): void {
     if (this.jobOfferEmploymentType.employment_type === null) {
@@ -262,7 +262,7 @@ export class JobsComponent implements OnInit {
     this.hideErrorMessages();
   }
 
-  updateJob(): void {
+  protected updateJob(): void {
     let positionTranslated = this.getTranslatedPosition(
       this.currentlyUpdatedJobOfferPositionName
     );
@@ -291,7 +291,7 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  removeJobOffer(jobOffer: JobOfferGeneralResponse): void {
+  protected removeJobOffer(jobOffer: JobOfferGeneralResponse): void {
     let positionNameTranslated = this.getTranslatedPosition(
       jobOffer.position_name
     );
@@ -314,7 +314,7 @@ export class JobsComponent implements OnInit {
       });
   }
 
-  removeJobApplication(
+  protected removeJobApplication(
     positionName: string | undefined,
     applicationId: number
   ): void {
@@ -346,7 +346,7 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  removeRequirementFromJobOffer(
+  protected removeRequirementFromJobOffer(
     jobOffer: { job_requirements: JobRequirement[] },
     requirement: JobRequirement
   ): void {
@@ -359,7 +359,7 @@ export class JobsComponent implements OnInit {
     if (index !== -1) jobOffer.job_requirements.splice(index, 1);
   }
 
-  removeEmploymentTypeFromJobOffer(
+  protected removeEmploymentTypeFromJobOffer(
     jobOffer: { job_employment_types: JobEmploymentType[] },
     employmentType: JobEmploymentType
   ): void {
@@ -370,7 +370,7 @@ export class JobsComponent implements OnInit {
     if (index !== -1) jobOffer.job_employment_types.splice(index, 1);
   }
 
-  checkIfEmploymentTypeAlreadyExistInJobOffer(
+  protected checkIfEmploymentTypeAlreadyExistInJobOffer(
     jobOffer: { job_employment_types: JobEmploymentType[] },
     employmentType: EmploymentType
   ): boolean {
@@ -379,14 +379,14 @@ export class JobsComponent implements OnInit {
     );
   }
 
-  startUpdating(jobOffer: JobOfferGeneralResponse): void {
+  protected startUpdating(jobOffer: JobOfferGeneralResponse): void {
     this.isEditing = true;
     this.currentlyUpdatedJobOfferPositionName = jobOffer.position_name;
     this.currentlyUpdatedJobOffer = { ...jobOffer };
     this.originalJobOffer = { ...jobOffer };
   }
 
-  stopUpdating(): void {
+  protected stopUpdating(): void {
     this.isEditing = false;
     this.currentlyUpdatedJobOfferPositionName = '';
     this.currentlyUpdatedJobOffer = null;
@@ -394,7 +394,7 @@ export class JobsComponent implements OnInit {
     this.loadJobsWithManagerDetails();
   }
 
-  startApplying(jobOffer: JobOfferGeneralResponse): void {
+  protected startApplying(jobOffer: JobOfferGeneralResponse): void {
     this.alertService.showApplyToJobOfferAlert(jobOffer).then((result) => {
       if (!result) return;
 
@@ -435,11 +435,11 @@ export class JobsComponent implements OnInit {
       });
   }
 
-  hideErrorMessages(): void {
+  private hideErrorMessages(): void {
     this.errorMessages = {};
   }
 
-  handleError(error: any) {
+  private handleError(error: any) {
     if (error.errorMessages) this.errorMessages = error.errorMessages;
     else this.errorMessages = { general: 'An unexpected error occurred' };
   }
