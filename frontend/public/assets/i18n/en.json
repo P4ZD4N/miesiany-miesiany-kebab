@@ -408,5 +408,9 @@
     "hours": "Working hours",
     "is_student": "Is student?",
     "total": "Total"
+  },
+  "not-found": {
+    "headline": "404",
+    "paragraph": "Page not found!"
   }
 }

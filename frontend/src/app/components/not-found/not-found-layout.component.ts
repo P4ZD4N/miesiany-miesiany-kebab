@@ -4,7 +4,7 @@ import { NavbarComponent } from '../common/navbar/navbar.component';
 import { FooterComponent } from '../common/footer/footer.component';
 
 @Component({
-  selector: 'app-opening-hours-layout',
+  selector: 'app-not-found-layout',
   standalone: true,
   imports: [
     RouterOutlet,
@@ -17,6 +17,6 @@ import { FooterComponent } from '../common/footer/footer.component';
       <app-footer></app-footer>
     `
 })
-export class OpeningHoursLayoutComponent {
+export class NotFoundLayoutComponent {
 
 }

@@ -48,3 +48,26 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   width: 80% !important; 
   padding: 10px !important;
 }
+
+.verification-required {
+  min-height: 50vh;
+  padding: 3rem 1rem 3rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+
+  h1 {
+    color: red;
+    text-align: center;
+  }
+
+  p {
+    text-align: center;
+    color: white;
+    font-size: 24px;
+    width: 80%;
+    margin-bottom: 0.2em;
+  }
+}

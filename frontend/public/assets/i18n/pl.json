@@ -411,5 +411,9 @@
     "hours": "Godziny pracy",
     "is_student": "Czy student?",
     "total": "Lacznie"
+  },
+  "not-found": {
+    "headline": "404",
+    "paragraph": "Strona nie istnieje!"
   }
 }
