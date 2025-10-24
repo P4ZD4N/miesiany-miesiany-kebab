@@ -96,7 +96,7 @@ export class WorkScheduleComponent implements OnInit {
   private generateMonthDays(): string[] {
     const daysInMonth = new Date(
       this.currentYear,
-      this.currentMonth - 1,
+      this.currentMonth,
       0
     ).getDate();
     const firstDay = new Date(
@@ -121,6 +121,8 @@ export class WorkScheduleComponent implements OnInit {
 
       monthDays.push(dateString);
     }
+
+    console.log(monthDays);
 
     return monthDays;
   }
