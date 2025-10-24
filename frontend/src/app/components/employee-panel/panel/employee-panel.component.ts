@@ -25,6 +25,10 @@ export class EmployeePanelComponent extends StaffPanelComponent {
     super(authenticationService, employeeService, alertService, router);
   }
 
+  override ngOnInit(): void {
+    if (this.isEmployee()) super.ngOnInit();
+  }
+
   protected isEmployee(): boolean {
     return this.authenticationService.isEmployee();
   }

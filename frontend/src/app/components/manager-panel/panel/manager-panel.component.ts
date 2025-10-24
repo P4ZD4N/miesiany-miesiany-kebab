@@ -19,9 +19,13 @@ export class ManagerPanelComponent extends StaffPanelComponent {
     authenticationService: AuthenticationService,
     employeeService: EmployeeService,
     alertService: AlertService,
-    router: Router,
+    router: Router
   ) {
-    super(authenticationService, employeeService, alertService, router)
+    super(authenticationService, employeeService, alertService, router);
+  }
+
+  override ngOnInit(): void {
+    if (this.isManager()) super.ngOnInit();
   }
 
   protected isManager(): boolean {
