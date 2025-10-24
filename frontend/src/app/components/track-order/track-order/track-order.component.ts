@@ -90,7 +90,7 @@ export class TrackOrderComponent implements OnInit {
     if (discountPercentage) this.discountPercentage = discountPercentage;
     if (id && phone) {
       this.trackOrderRequest = { id, customer_phone: phone };
-      this.putTrackOrderDataInSessionStorage(this.trackOrderRequest);
+      this.putTrackOrderDataInLocalStorage(this.trackOrderRequest);
       this.startTrackingOrder();
     }
   }
@@ -99,7 +99,7 @@ export class TrackOrderComponent implements OnInit {
     this.ordersService.trackOrder(this.trackOrderRequest).subscribe({
       next: (response) => {
         this.initOrder(response);
-        this.putTrackOrderDataInSessionStorage(this.trackOrderRequest);
+        this.putTrackOrderDataInLocalStorage(this.trackOrderRequest);
       },
       error: (error) => this.handleError(error),
     });
@@ -127,7 +127,7 @@ export class TrackOrderComponent implements OnInit {
 
   protected stopTrackingOrder(): void {
     this.alertService.showStopTrackingOrderAlert(this.trackOrderRequest.id);
-    this.removeTrackOrderDataFromSessionStorage();
+    this.removeTrackOrderDataFromLocalStorage();
 
     this.trackOrderRequest = {
       id: null,
@@ -174,16 +174,16 @@ export class TrackOrderComponent implements OnInit {
     };
   }
 
-  private removeTrackOrderDataFromSessionStorage(): void {
-    sessionStorage.removeItem(this.storageKey);
+  private removeTrackOrderDataFromLocalStorage(): void {
+    localStorage.removeItem(this.storageKey);
   }
 
-  private putTrackOrderDataInSessionStorage(request: TrackOrderRequest): void {
-    sessionStorage.setItem(this.storageKey, JSON.stringify(request));
+  private putTrackOrderDataInLocalStorage(request: TrackOrderRequest): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(request));
   }
 
   private getTrackOrderData(): TrackOrderRequest | null {
-    const data = sessionStorage.getItem(this.storageKey);
+    const data = localStorage.getItem(this.storageKey);
     return data ? JSON.parse(data) : null;
   }
 

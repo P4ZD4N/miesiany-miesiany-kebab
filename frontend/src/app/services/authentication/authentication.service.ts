@@ -17,7 +17,7 @@ export class AuthenticationService {
     private http: HttpClient,
     private langService: LangService
   ) {
-    const storedRole = sessionStorage.getItem('userRole');
+    const storedRole = localStorage.getItem('userRole');
     if (storedRole) {
       this.userRole = storedRole as Role;
     }
@@ -31,7 +31,7 @@ export class AuthenticationService {
     return this.http.post<AuthenticationResponse>(`${this.apiUrl}/login`, request, { headers, withCredentials: true }).pipe(
       map(response => {
         this.userRole = response.role;
-        sessionStorage.setItem('userRole', response.role);
+        localStorage.setItem('userRole', response.role);
         return response;
       }),
       catchError(this.handleError)
@@ -42,7 +42,7 @@ export class AuthenticationService {
     return this.http.post<void>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
         this.userRole = null;
-        sessionStorage.removeItem('userRole');
+        localStorage.removeItem('userRole');
       }),
       catchError(this.handleError)
     );
