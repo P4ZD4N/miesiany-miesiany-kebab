@@ -237,3 +237,9 @@ export interface NewEmployeeResponse extends CommonResponse {}
 export interface UpdatedEmployeeResponse extends CommonResponse {}
 export interface RemovedEmployeeResponse extends CommonResponse {}
 export interface UpdatedCredentialsResponse extends CommonResponse {}
+
+export interface SessionCheckResponse {
+  authenticated: boolean;
+  email: string;
+  role: Role;
+}

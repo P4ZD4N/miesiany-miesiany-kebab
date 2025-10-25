@@ -1,13 +1,16 @@
 package com.p4zd4n.kebab.controllers;
 
+import com.p4zd4n.kebab.enums.Role;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
 import com.p4zd4n.kebab.responses.auth.LogoutResponse;
+import com.p4zd4n.kebab.responses.auth.SessionCheckResponse;
 import com.p4zd4n.kebab.services.auth.AuthenticationService;
 import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,5 +48,11 @@ public class AuthenticationController {
     LogoutResponse response = authenticationService.logout(session);
 
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/check-session")
+  public ResponseEntity<SessionCheckResponse> checkSession(HttpSession session) {
+    log.info("Received check-session request");
+    return ResponseEntity.ok(authenticationService.getCheckSessionResponse(session));
   }
 }

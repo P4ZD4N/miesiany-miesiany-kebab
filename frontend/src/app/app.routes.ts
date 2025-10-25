@@ -34,9 +34,13 @@ import { PaymentsComponent } from './components/payments/payments/payments.compo
 import { PaymentsLayoutComponent } from './components/payments/payments-layout.component';
 import { NotFoundComponent } from './components/not-found/not-found/not-found.component';
 import { NotFoundLayoutComponent } from './components/not-found/not-found-layout.component';
+import { AuthResolverService } from './services/authentication/authentication.resolver';
 
-export const routes: Routes = [
-  { path: '', component: HomeLayoutComponent },
+const originalRoutes: Routes = [
+  {
+    path: '',
+    component: HomeLayoutComponent,
+  },
   {
     path: 'login',
     component: AuthLayoutComponent,
@@ -128,3 +132,19 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
 ];
+
+function addResolverToRoutes(routes: Routes): Routes {
+  return routes.map((route) => {
+    if (route.redirectTo) return route;
+
+    return {
+      ...route,
+      resolve: {
+        ...(route.resolve || {}),
+        session: AuthResolverService,
+      },
+    };
+  });
+}
+
+export const routes: Routes = addResolverToRoutes(originalRoutes);
