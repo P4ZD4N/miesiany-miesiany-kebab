@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LangService } from '../lang/lang.service';
 import { MenuService } from '../menu/menu.service';
-import { AddonResponse, BeverageResponse, IngredientResponse, MealResponse } from '../../responses/responses';
+import {
+  AddonResponse,
+  BeverageResponse,
+  IngredientResponse,
+  MealResponse,
+} from '../../responses/responses';
 import Swal from 'sweetalert2';
 import { Size } from '../../enums/size.enum';
 import { NewOrderRequest } from '../../requests/requests';
@@ -15,10 +20,9 @@ import { AuthenticationService } from '../authentication/authentication.service'
 import { MealPromotion } from '../../util-types/util-types';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrderService {
-
   storageKey = 'orderData';
 
   beverages: BeverageResponse[] = [];
@@ -29,11 +33,11 @@ export class OrderService {
   trackOrderData = {
     orderId: 0,
     customerPhone: '',
-    discountPercentage: 0
-  }
+    discountPercentage: 0,
+  };
 
   order: NewOrderRequest = {
-    order_type: null, 
+    order_type: null,
     order_status: null,
     customer_phone: '',
     customer_email: '',
@@ -41,7 +45,7 @@ export class OrderService {
     beverages: {},
     addons: {},
     total_price: 0,
-    discount_code: ''
+    discount_code: '',
   };
 
   constructor(
@@ -52,7 +56,7 @@ export class OrderService {
     private discountCodesService: DiscountCodesService,
     private authenticationService: AuthenticationService,
     private router: Router
-  ) { }
+  ) {}
 
   loadBeverages(): void {
     this.menuService.getBeverages().subscribe(
@@ -107,49 +111,63 @@ export class OrderService {
   }
 
   selectNextOrderItem(isNewOrder = false): void {
-
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Co dodac do zamowienia?</span>` : 
-        `<span style="color: red;">What to add to the order?</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`;
-    const textForCustomers = this.langService.currentLang === 'pl' ? `Co chcesz zamowic?` : `What do you want to order?`;
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Co dodac do zamowienia?</span>`
+        : `<span style="color: red;">What to add to the order?</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Szanowny Kliencie</span>`
+        : `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `Co chcesz zamowic?`
+        : `What do you want to order?`;
 
     if (!isNewOrder) {
       const order = this.getOrderData();
 
       if (order && order.total_price > 0) {
-          this.askWhetherReturnToPreviousOrder();
-          return;
+        this.askWhetherReturnToPreviousOrder();
+        return;
       }
     }
-  
+
     this.initRequiredData();
 
     let forceClose = false;
     Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff  : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
       background: '#141414',
       color: 'white',
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? '🥤 Napoje' : '🥤 Beverages',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? '🥤 Napoje' : '🥤 Beverages',
       denyButtonColor: '#33acff',
       showCancelButton: true,
-      cancelButtonText: this.langService.currentLang === 'pl' ? '🧂 Dodatki' : '🧂 Addons',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? '🧂 Dodatki' : '🧂 Addons',
       cancelButtonColor: '#198754',
-      confirmButtonText: this.langService.currentLang === 'pl' ? '🍽️ Dania' : '🍽️ Meals',
+      confirmButtonText:
+        this.langService.currentLang === 'pl' ? '🍽️ Dania' : '🍽️ Meals',
       confirmButtonColor: 'red',
       footer: `<button id="swal-exit-btn" class="swal2-styled" style="color: white; background-color: #555; margin-top: 10px; border: none; outline: none; box-shadow: none;">
-        ❌ ${this.langService.currentLang === 'pl' ? 'Wroc pozniej' : 'Come back later'}
+        ❌ ${
+          this.langService.currentLang === 'pl'
+            ? 'Wroc pozniej'
+            : 'Come back later'
+        }
       </button>`,
       customClass: {
         actions: 'swal-actions-vertical',
         confirmButton: 'swal-confirm-btn',
         denyButton: 'swal-deny-btn',
-        cancelButton: 'swal-cancel-btn'
+        cancelButton: 'swal-cancel-btn',
       },
       didRender: () => {
         const exitBtn = document.getElementById('swal-exit-btn');
@@ -159,57 +177,68 @@ export class OrderService {
             Swal.close();
           });
         }
-      }
+      },
     }).then((result) => {
       if (forceClose) return;
       if (result.isConfirmed) {
-        this.startChoosingMeal()
+        this.startChoosingMeal();
       } else if (result.isDenied) {
         this.startChoosingBeverage();
       } else if (result.isDismissed) {
         this.startChoosingAddonProperties();
       }
-    });;
+    });
   }
 
   askWhetherReturnToPreviousOrder(): void {
-
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Przywrocic poprzednie zamowienie?</span>` : 
-        `<span style="color: red;">Restore previous order?</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`;
-    const textForCustomers = this.langService.currentLang === 'pl' 
-        ? `Czy chcesz wrocic do poprzedniego zamowienia?` 
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Przywrocic poprzednie zamowienie?</span>`
+        : `<span style="color: red;">Restore previous order?</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Szanowny Kliencie</span>`
+        : `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `Czy chcesz wrocic do poprzedniego zamowienia?`
         : `Do you want to return to your previous order?`;
 
     this.initRequiredData();
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
       background: '#141414',
       color: 'white',
       showCancelButton: true,
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Nie, zloz nowe zamowienie' : 'No, place new order',
+      cancelButtonText:
+        this.langService.currentLang === 'pl'
+          ? 'Nie, zloz nowe zamowienie'
+          : 'No, place new order',
       cancelButtonColor: 'red',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Tak, chce kontynuowac' : 'Yes, I want to continue',
+      confirmButtonText:
+        this.langService.currentLang === 'pl'
+          ? 'Tak, chce kontynuowac'
+          : 'Yes, I want to continue',
       confirmButtonColor: '#198754',
       customClass: {
-        actions: 'swal-actions-vertical',  
+        actions: 'swal-actions-vertical',
         confirmButton: 'swal-confirm-btn',
         denyButton: 'swal-deny-btn',
-        cancelButton: 'swal-cancel-btn'
-      }
+        cancelButton: 'swal-cancel-btn',
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         const existingOrder = this.getOrderData();
-  
+
         if (existingOrder) {
           this.order = {
-            order_type: existingOrder.order_type ?? null, 
+            order_type: existingOrder.order_type ?? null,
             order_status: existingOrder.order_status ?? null,
             customer_phone: existingOrder.customer_phone ?? '',
             customer_email: existingOrder.customer_email ?? '',
@@ -217,15 +246,15 @@ export class OrderService {
             beverages: existingOrder.beverages ?? {},
             addons: existingOrder.addons ?? {},
             total_price: existingOrder.total_price ?? 0,
-            discount_code: ''
+            discount_code: '',
           };
         }
-        
+
         this.askWhetherOrderComplete();
       } else if (result.isDismissed) {
         this.clearOrderData();
         this.order = {
-          order_type: null, 
+          order_type: null,
           order_status: null,
           customer_phone: '',
           customer_email: '',
@@ -233,7 +262,7 @@ export class OrderService {
           beverages: {},
           addons: {},
           total_price: 0,
-          discount_code: ''
+          discount_code: '',
         };
 
         this.selectNextOrderItem(true);
@@ -245,29 +274,44 @@ export class OrderService {
     if (this.beverages.length === 0) this.loadBeverages();
     if (this.addons.length === 0) this.loadAddons();
     if (this.meals.length === 0) this.loadMeals();
-    if (this.ingredients.length === 0)this.loadIngredients();
+    if (this.ingredients.length === 0) this.loadIngredients();
   }
 
   async startChoosingMeal(): Promise<void> {
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Wybierz danie</span>`
+        : `<span style="color: red;">Choose meal</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Szanowny Kliencie</span>`
+        : `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `Wybierz interesujace Cie danie`
+        : `Choose interesting meal`;
 
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Wybierz danie</span>` : 
-        `<span style="color: red;">Choose meal</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`;
-    const textForCustomers = this.langService.currentLang === 'pl' ? `Wybierz interesujace Cie danie` : `Choose interesting meal`;
-
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-    const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac danie' : 'Please select meal';
-    const mealNamesOriginal = this.meals.map(meal => meal.name).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
-    const mealNamesTranslated = this.meals.map(meal => this.getTranslatedMealName(meal.name)).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const errorText =
+      this.langService.currentLang === 'pl'
+        ? 'Prosze wybrac danie'
+        : 'Please select meal';
+    const mealNamesOriginal = this.meals
+      .map((meal) => meal.name)
+      .sort((a, b) => a.localeCompare(b, this.langService.currentLang));
+    const mealNamesTranslated = this.meals
+      .map((meal) => this.getTranslatedMealName(meal.name))
+      .sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
-      input: "radio",
+      input: 'radio',
       inputOptions: mealNamesTranslated,
       background: '#141414',
       color: 'white',
@@ -277,11 +321,12 @@ export class OrderService {
       cancelButtonText: cancelButtonText,
       cancelButtonColor: 'red',
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
       denyButtonColor: '#33acff',
       customClass: {
         validationMessage: 'custom-validation-message',
-        input: 'swal-radio-container-orders'
+        input: 'swal-radio-container-orders',
       },
       inputValidator: (value) => {
         if (!value) {
@@ -290,19 +335,19 @@ export class OrderService {
         return null;
       },
     });
-    
+
     if (isDenied) {
       this.selectNextOrderItem(true);
     }
 
     if (choice) {
-      this.startChoosingMealProperties(mealNamesOriginal[choice])
+      this.startChoosingMealProperties(mealNamesOriginal[choice]);
     }
   }
 
   async startChoosingMealProperties(mealName: string): Promise<void> {
-
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
     let mealNameTranslated = this.getTranslatedMealName(mealName);
 
     const ingredientIcons: { [key: string]: string } = {
@@ -310,63 +355,94 @@ export class OrderService {
       MEAT: 'fa-solid fa-drumstick-bite',
       VEGETABLE: 'fa-solid fa-carrot',
       SAUCE: 'fas fa-wine-bottle',
-      OTHER: 'fa-solid fa-plus'
+      OTHER: 'fa-solid fa-plus',
     };
 
-    const meal = this.meals.filter(meal => meal.name === mealName)[0];
+    const meal = this.meals.filter((meal) => meal.name === mealName)[0];
 
-    const mealIngredients = meal.ingredients.map(ingredient => {
-      let ingredientNameTranslated = this.getTranslatedIngredientName(ingredient.name);
-      const icon = ingredientIcons[ingredient.ingredient_type] || 'fa-solid fa-question';
-  
-      return `<li style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+    const mealIngredients = meal.ingredients
+      .map((ingredient) => {
+        let ingredientNameTranslated = this.getTranslatedIngredientName(
+          ingredient.name
+        );
+        const icon =
+          ingredientIcons[ingredient.ingredient_type] || 'fa-solid fa-question';
+
+        return `<li style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                 <i class="${icon}" style="color: red;"></i> ${ingredientNameTranslated}
               </li>`;
-    }).join('');
+      })
+      .join('');
 
     const mealSizes = Object.entries(meal.prices)
       .filter(([size, price]) => price)
       .map(([size, price]) => {
         let sizeTranslated = this.translate.instant('menu.meals.sizes.' + size);
         return `<option value="${size}" data-price="${price}">${sizeTranslated}</option>`;
-      }).join('');;
+      })
+      .join('');
 
     const meats = this.ingredients
-      .filter(ingredient => ingredient.ingredient_type === 'MEAT')
-      .map(ingredient => {
-        let ingredientNameTranslated = this.getTranslatedIngredientName(ingredient.name);
+      .filter((ingredient) => ingredient.ingredient_type === 'MEAT')
+      .map((ingredient) => {
+        let ingredientNameTranslated = this.getTranslatedIngredientName(
+          ingredient.name
+        );
         return `<option value="${ingredient.name}">${ingredientNameTranslated}</option>`;
-      }).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
+      })
+      .sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
     const sauces = this.ingredients
-      .filter(ingredient => ingredient.ingredient_type === 'SAUCE')
-      .map(ingredient => {
-        let ingredientNameTranslated = this.getTranslatedIngredientName(ingredient.name);
+      .filter((ingredient) => ingredient.ingredient_type === 'SAUCE')
+      .map((ingredient) => {
+        let ingredientNameTranslated = this.getTranslatedIngredientName(
+          ingredient.name
+        );
         return `<option value="${ingredient.name}">${ingredientNameTranslated}</option>`;
-    }).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
+      })
+      .sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
-    const ingredientsHeading = this.langService.currentLang === 'pl' ? `<h3>Skladniki</h3>` : `<h3>Ingredients</h3>`;
-    const selectSizeHeading = this.langService.currentLang === 'pl' ? `<h3>Wybierz rozmiar</h3>` : `<h3>Select size</h3>`;
-    const selectMeatHeading = this.langService.currentLang === 'pl' ? `<h3>Wybierz mieso</h3>` : `<h3>Select meat</h3>`;
-    const selectSauceHeading = this.langService.currentLang === 'pl' ? `<h3>Wybierz sos</h3>` : `<h3>Select sauce</h3>`;
-    const howManyHeading = this.langService.currentLang === 'pl' ? `<h3>Jaka ilosc?</h3>` : `<h3>How many?</h3>`;
+    const ingredientsHeading =
+      this.langService.currentLang === 'pl'
+        ? `<h3>Skladniki</h3>`
+        : `<h3>Ingredients</h3>`;
+    const selectSizeHeading =
+      this.langService.currentLang === 'pl'
+        ? `<h3>Wybierz rozmiar</h3>`
+        : `<h3>Select size</h3>`;
+    const selectMeatHeading =
+      this.langService.currentLang === 'pl'
+        ? `<h3>Wybierz mieso</h3>`
+        : `<h3>Select meat</h3>`;
+    const selectSauceHeading =
+      this.langService.currentLang === 'pl'
+        ? `<h3>Wybierz sos</h3>`
+        : `<h3>Select sauce</h3>`;
+    const howManyHeading =
+      this.langService.currentLang === 'pl'
+        ? `<h3>Jaka ilosc?</h3>`
+        : `<h3>How many?</h3>`;
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
       title: `<span style="color: red;">${mealNameTranslated}</span>`,
       background: '#141414',
       color: 'white',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Dodaj do zamowienia' : 'Add to order',
+      confirmButtonText:
+        this.langService.currentLang === 'pl'
+          ? 'Dodaj do zamowienia'
+          : 'Add to order',
       confirmButtonColor: '#198754',
       showCancelButton: true,
       cancelButtonText: cancelButtonText,
       cancelButtonColor: 'red',
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
       denyButtonColor: '#33acff',
       customClass: {
         validationMessage: 'custom-validation-message',
-        input: 'swal-radio-container-orders'
+        input: 'swal-radio-container-orders',
       },
       html: `
         <style>
@@ -431,26 +507,31 @@ export class OrderService {
       `,
       didOpen: () => {
         const updatePrice = () => {
-          const sizeSelect = document.getElementById('sizeSelection') as HTMLSelectElement;
-          const quantityInput = document.getElementById('kebabQuantity') as HTMLInputElement;
-          
+          const sizeSelect = document.getElementById(
+            'sizeSelection'
+          ) as HTMLSelectElement;
+          const quantityInput = document.getElementById(
+            'kebabQuantity'
+          ) as HTMLInputElement;
+
           const selectedSize = sizeSelect.value as Size;
           const baseUnitPrice = meal.prices[selectedSize];
           const quantity = parseInt(quantityInput.value) || 1;
-          
+
           let finalUnitPrice = baseUnitPrice;
           let activePromotion: MealPromotion | null = null;
 
-          meal.meal_promotions.forEach(promotion => {
+          meal.meal_promotions.forEach((promotion) => {
             if (promotion.sizes.includes(selectedSize)) {
-                finalUnitPrice = baseUnitPrice * (1 - promotion.discount_percentage / 100);
-                activePromotion = promotion;
+              finalUnitPrice =
+                baseUnitPrice * (1 - promotion.discount_percentage / 100);
+              activePromotion = promotion;
             }
           });
 
           const totalPrice = (finalUnitPrice * quantity).toFixed(2);
           const priceDisplay = document.getElementById('mealPrice');
-          
+
           if (priceDisplay) {
             if (activePromotion) {
               priceDisplay.innerHTML = `
@@ -464,10 +545,14 @@ export class OrderService {
             } else priceDisplay.textContent = `${totalPrice} zl`;
           }
         };
-    
-        const sizeSelect = document.getElementById('sizeSelection') as HTMLSelectElement;
-        const quantityInput = document.getElementById('kebabQuantity') as HTMLInputElement;
-        
+
+        const sizeSelect = document.getElementById(
+          'sizeSelection'
+        ) as HTMLSelectElement;
+        const quantityInput = document.getElementById(
+          'kebabQuantity'
+        ) as HTMLInputElement;
+
         sizeSelect.addEventListener('change', updatePrice);
         quantityInput.addEventListener('change', updatePrice);
         quantityInput.addEventListener('input', updatePrice);
@@ -475,69 +560,99 @@ export class OrderService {
         updatePrice();
       },
       preConfirm: () => {
-        const sizeSelect = document.getElementById('sizeSelection') as HTMLSelectElement;
-        const meatSelect = document.getElementById('meatSelection') as HTMLSelectElement;
-        const sauceSelect = document.getElementById('sauceSelection') as HTMLSelectElement;
-        const quantityInput = document.getElementById('kebabQuantity') as HTMLInputElement;
+        const sizeSelect = document.getElementById(
+          'sizeSelection'
+        ) as HTMLSelectElement;
+        const meatSelect = document.getElementById(
+          'meatSelection'
+        ) as HTMLSelectElement;
+        const sauceSelect = document.getElementById(
+          'sauceSelection'
+        ) as HTMLSelectElement;
+        const quantityInput = document.getElementById(
+          'kebabQuantity'
+        ) as HTMLInputElement;
         let quantity = parseInt(quantityInput.value);
-        const mealKey = mealName + '_' + meatSelect.value + '_' + sauceSelect.value;
-    
+        const mealKey =
+          mealName + '_' + meatSelect.value + '_' + sauceSelect.value;
+
         if (isNaN(quantity) || quantity > 20) {
-            const quantityErrorText = this.langService.currentLang === 'pl' 
+          const quantityErrorText =
+            this.langService.currentLang === 'pl'
               ? `Nie mozna dodac wiecej niz 20 porcji tego dania!`
               : `You can't add more than 20 portions of this meal!`;
-    
-            Swal.showValidationMessage(quantityErrorText);
-            return false;
-        }
 
-        if (isNaN(quantity) || quantity < 1) {
-          const quantityErrorText = this.langService.currentLang === 'pl' 
-            ? `Nie mozna dodac mniej niz 1 porcji tego dania!`
-            : `You can't add less than 1 portion of this meal!`;
-  
           Swal.showValidationMessage(quantityErrorText);
           return false;
         }
 
-        if (this.order.meals[mealKey] && this.order.meals[mealKey][sizeSelect.value as Size] + quantity > 20) {
-            const errorText = this.langService.currentLang === 'pl'
-              ? `Nie mozna dodac wiecej niz 20 porcji tego dania (obecnie juz wybrano ${this.order.meals[mealKey][sizeSelect.value as Size]})!`
-              : `You can't add more than 20 portions of this meal (already selected: ${this.order.meals[mealKey][sizeSelect.value as Size]})!`;
-      
-            Swal.showValidationMessage(errorText);
-            return false;
+        if (isNaN(quantity) || quantity < 1) {
+          const quantityErrorText =
+            this.langService.currentLang === 'pl'
+              ? `Nie mozna dodac mniej niz 1 porcji tego dania!`
+              : `You can't add less than 1 portion of this meal!`;
+
+          Swal.showValidationMessage(quantityErrorText);
+          return false;
         }
 
-        return { quantity }; 
-      }
+        if (
+          this.order.meals[mealKey] &&
+          this.order.meals[mealKey][sizeSelect.value as Size] + quantity > 20
+        ) {
+          const errorText =
+            this.langService.currentLang === 'pl'
+              ? `Nie mozna dodac wiecej niz 20 porcji tego dania (obecnie juz wybrano ${
+                  this.order.meals[mealKey][sizeSelect.value as Size]
+                })!`
+              : `You can't add more than 20 portions of this meal (already selected: ${
+                  this.order.meals[mealKey][sizeSelect.value as Size]
+                })!`;
+
+          Swal.showValidationMessage(errorText);
+          return false;
+        }
+
+        return { quantity };
+      },
     });
 
     if (isDenied) {
       this.startChoosingMeal();
     }
-    
+
     if (choice) {
-      const sizeSelect = document.getElementById('sizeSelection') as HTMLSelectElement;
-      const meatSelect = document.getElementById('meatSelection') as HTMLSelectElement;
-      const sauceSelect = document.getElementById('sauceSelection') as HTMLSelectElement;
-      const quantityInput = document.getElementById('kebabQuantity') as HTMLInputElement;
+      const sizeSelect = document.getElementById(
+        'sizeSelection'
+      ) as HTMLSelectElement;
+      const meatSelect = document.getElementById(
+        'meatSelection'
+      ) as HTMLSelectElement;
+      const sauceSelect = document.getElementById(
+        'sauceSelection'
+      ) as HTMLSelectElement;
+      const quantityInput = document.getElementById(
+        'kebabQuantity'
+      ) as HTMLInputElement;
       const selectedSize = sizeSelect.value as Size;
       const baseUnitPrice = meal.prices[selectedSize];
       const quantity = parseInt(quantityInput.value);
-      const activePromotion = meal.meal_promotions.find(p => p.sizes.includes(selectedSize));
-      const finalUnitPrice = activePromotion 
-        ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100) 
+      const activePromotion = meal.meal_promotions.find((p) =>
+        p.sizes.includes(selectedSize)
+      );
+      const finalUnitPrice = activePromotion
+        ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100)
         : baseUnitPrice;
       const finalTotalPrice = (finalUnitPrice * quantity).toFixed(2);
-      const mealKey = mealName + '_' + meatSelect.value + '_' + sauceSelect.value;
+      const mealKey =
+        mealName + '_' + meatSelect.value + '_' + sauceSelect.value;
 
       if (!this.order.meals[mealKey]) {
         this.order.meals[mealKey] = {
           [Size.SMALL]: 0,
           [Size.MEDIUM]: 0,
           [Size.LARGE]: 0,
-          [Size.XL]: 0
+          [Size.XL]: 0,
         };
       }
 
@@ -550,26 +665,36 @@ export class OrderService {
   }
 
   async startChoosingBeverage(): Promise<void> {
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Wybierz napoj</span>`
+        : `<span style="color: red;">Choose beverage</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Szanowny Kliencie</span>`
+        : `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `Wybierz interesujacy Cie napoj`
+        : `Choose interesting beverage`;
 
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Wybierz napoj</span>` : 
-        `<span style="color: red;">Choose beverage</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`;
-    const textForCustomers = this.langService.currentLang === 'pl' ? `Wybierz interesujacy Cie napoj` : `Choose interesting beverage`;
-
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-    const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac napoj' : 'Please select beverage';
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const errorText =
+      this.langService.currentLang === 'pl'
+        ? 'Prosze wybrac napoj'
+        : 'Please select beverage';
 
     const beverageNamesOriginal = this.beverages
-      .map(beverage => beverage.name)
+      .map((beverage) => beverage.name)
       .sort((a, b) => a.localeCompare(b, this.langService.currentLang))
       .filter((value, index, self) => self.indexOf(value) === index);
 
     const beverageNamesTranslated = this.beverages
-      .map(beverage => {
-        let beverageNameTranslated = this.getTranslatedBeverageName(beverage.name);
+      .map((beverage) => {
+        let beverageNameTranslated = this.getTranslatedBeverageName(
+          beverage.name
+        );
         return beverageNameTranslated;
       })
       .sort((a, b) => a.localeCompare(b, this.langService.currentLang))
@@ -577,9 +702,12 @@ export class OrderService {
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
-      input: "radio",
+      input: 'radio',
       inputOptions: beverageNamesTranslated,
       background: '#141414',
       color: 'white',
@@ -589,11 +717,12 @@ export class OrderService {
       cancelButtonText: cancelButtonText,
       cancelButtonColor: 'red',
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
       denyButtonColor: '#33acff',
       customClass: {
         validationMessage: 'custom-validation-message',
-        input: 'swal-radio-container-orders'
+        input: 'swal-radio-container-orders',
       },
       inputValidator: (value) => {
         if (!value) {
@@ -602,45 +731,59 @@ export class OrderService {
         return null;
       },
     });
-    
+
     if (isDenied) {
       this.selectNextOrderItem(true);
     }
 
     if (choice) {
-      this.startChoosingBeverageProperties(beverageNamesOriginal[choice])
+      this.startChoosingBeverageProperties(beverageNamesOriginal[choice]);
     }
   }
 
   async startChoosingBeverageProperties(beverageName: string): Promise<void> {
-
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
     let beverageNameTranslated = this.getTranslatedBeverageName(beverageName);
 
-    const beverages = this.beverages.filter(beverage => beverage.name === beverageName);
-    const beverageCapacities = beverages.map(beverage => {
+    const beverages = this.beverages.filter(
+      (beverage) => beverage.name === beverageName
+    );
+    const beverageCapacities = beverages
+      .map((beverage) => {
         return `<option value="${beverage.capacity}">${beverage.capacity} L</option>`;
-    }).join('');
+      })
+      .join('');
 
-    const selectCapacityHeading = this.langService.currentLang === 'pl' ? `<h3>Wybierz pojemnosc</h3>` : `<h3>Select capacity</h3>`;
-    const howManyHeading = this.langService.currentLang === 'pl' ? `<h3>Jaka ilosc?</h3>` : `<h3>How many?</h3>`;
+    const selectCapacityHeading =
+      this.langService.currentLang === 'pl'
+        ? `<h3>Wybierz pojemnosc</h3>`
+        : `<h3>Select capacity</h3>`;
+    const howManyHeading =
+      this.langService.currentLang === 'pl'
+        ? `<h3>Jaka ilosc?</h3>`
+        : `<h3>How many?</h3>`;
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
       title: `<span style="color: red;">${beverageNameTranslated}</span>`,
       background: '#141414',
       color: 'white',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Dodaj do zamowienia' : 'Add to order',
+      confirmButtonText:
+        this.langService.currentLang === 'pl'
+          ? 'Dodaj do zamowienia'
+          : 'Add to order',
       confirmButtonColor: '#198754',
       showCancelButton: true,
       cancelButtonText: cancelButtonText,
       cancelButtonColor: 'red',
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
       denyButtonColor: '#33acff',
       customClass: {
         validationMessage: 'custom-validation-message',
-        input: 'swal-radio-container-orders'
+        input: 'swal-radio-container-orders',
       },
       html: `
         <style>
@@ -684,34 +827,42 @@ export class OrderService {
       `,
       didOpen: () => {
         const updatePrice = () => {
-          const capacitySelect = document.getElementById('capacitySelection') as HTMLSelectElement;
-          const quantityInput = document.getElementById('beverageQuantity') as HTMLInputElement;
-          
+          const capacitySelect = document.getElementById(
+            'capacitySelection'
+          ) as HTMLSelectElement;
+          const quantityInput = document.getElementById(
+            'beverageQuantity'
+          ) as HTMLInputElement;
+
           const selectedCapacity = capacitySelect.value;
-          const beverage = beverages.find(b => b.capacity.toString() === selectedCapacity);
-          
+          const beverage = beverages.find(
+            (b) => b.capacity.toString() === selectedCapacity
+          );
+
           if (!beverage) {
-              console.error('Beverage with this capacity not found!');
-              return;
+            console.error('Beverage with this capacity not found!');
+            return;
           }
-      
+
           const baseUnitPrice = beverage.price;
           const quantity = parseInt(quantityInput.value) || 1;
 
           let finalUnitPrice = baseUnitPrice;
           let activePromotion = null;
-      
+
           if (beverage.promotion) {
-              finalUnitPrice = baseUnitPrice * (1 - beverage.promotion.discount_percentage / 100);
-              activePromotion = beverage.promotion;
+            finalUnitPrice =
+              baseUnitPrice *
+              (1 - beverage.promotion.discount_percentage / 100);
+            activePromotion = beverage.promotion;
           }
-      
+
           const totalPrice = (finalUnitPrice * quantity).toFixed(2);
           const priceDisplay = document.getElementById('beveragePrice');
-      
+
           if (priceDisplay) {
-              if (activePromotion) {
-                  priceDisplay.innerHTML = `
+            if (activePromotion) {
+              priceDisplay.innerHTML = `
                       <span style="text-decoration: line-through; color: red; margin-right: 10px;">
                           ${(baseUnitPrice * quantity).toFixed(2)} zl
                       </span>
@@ -719,13 +870,17 @@ export class OrderService {
                           ${totalPrice} zl
                       </span>
                   `;
-              } else priceDisplay.textContent = `${totalPrice} zl`;
+            } else priceDisplay.textContent = `${totalPrice} zl`;
           }
         };
-    
-        const capacitySelect = document.getElementById('capacitySelection') as HTMLSelectElement;
-        const quantityInput = document.getElementById('beverageQuantity') as HTMLInputElement;
-        
+
+        const capacitySelect = document.getElementById(
+          'capacitySelection'
+        ) as HTMLSelectElement;
+        const quantityInput = document.getElementById(
+          'beverageQuantity'
+        ) as HTMLInputElement;
+
         capacitySelect.addEventListener('change', updatePrice);
         quantityInput.addEventListener('change', updatePrice);
         quantityInput.addEventListener('input', updatePrice);
@@ -733,62 +888,79 @@ export class OrderService {
         updatePrice();
       },
       preConfirm: () => {
-        const capacitySelect = document.getElementById('capacitySelection') as HTMLSelectElement;
+        const capacitySelect = document.getElementById(
+          'capacitySelection'
+        ) as HTMLSelectElement;
         const selectedCapacity = capacitySelect.value;
-        const quantityInput = document.getElementById('beverageQuantity') as HTMLInputElement;
+        const quantityInput = document.getElementById(
+          'beverageQuantity'
+        ) as HTMLInputElement;
         let quantity = parseInt(quantityInput.value);
-        const beverage = beverages.find(b => b.capacity.toString() === selectedCapacity);
-    
+        const beverage = beverages.find(
+          (b) => b.capacity.toString() === selectedCapacity
+        );
+
         if (!beverage) {
           console.error('Beverage with this capacity not found!');
           return;
         }
 
         if (isNaN(quantity) || quantity > 10) {
-            const quantityErrorText = this.langService.currentLang === 'pl' 
+          const quantityErrorText =
+            this.langService.currentLang === 'pl'
               ? `Nie mozna dodac wiecej niz 10 sztuk tego napoju!`
               : `You can't add more than 10 units of this beverage!`;
 
-
-            Swal.showValidationMessage(quantityErrorText);
-            return false;
+          Swal.showValidationMessage(quantityErrorText);
+          return false;
         }
-        
-        if (isNaN(quantity) || quantity < 1 ) {
-          const quantityErrorText = this.langService.currentLang === 'pl' 
-            ? `Nie mozna dodac mniej niz 1 sztuk tego napoju!`
-            : `You can't add less than 1 units of this beverage!`;
 
+        if (isNaN(quantity) || quantity < 1) {
+          const quantityErrorText =
+            this.langService.currentLang === 'pl'
+              ? `Nie mozna dodac mniej niz 1 sztuk tego napoju!`
+              : `You can't add less than 1 units of this beverage!`;
 
           Swal.showValidationMessage(quantityErrorText);
           return false;
         }
 
         if (
-          this.order.beverages[beverage.name] && 
+          this.order.beverages[beverage.name] &&
           this.order.beverages[beverage.name][beverage.capacity] + quantity > 10
         ) {
-          const errorText = this.langService.currentLang === 'pl'
-          ? `Nie mozna dodac wiecej niz 10 sztuk tego napoju (obecnie juz wybrano ${this.order.beverages[beverage.name][beverage.capacity]})!`
-          : `You can't add more than 10 units of this beverage (already selected: ${this.order.beverages[beverage.name][beverage.capacity]})!`;
-    
+          const errorText =
+            this.langService.currentLang === 'pl'
+              ? `Nie mozna dodac wiecej niz 10 sztuk tego napoju (obecnie juz wybrano ${
+                  this.order.beverages[beverage.name][beverage.capacity]
+                })!`
+              : `You can't add more than 10 units of this beverage (already selected: ${
+                  this.order.beverages[beverage.name][beverage.capacity]
+                })!`;
+
           Swal.showValidationMessage(errorText);
           return false;
         }
-    
-        return { quantity }; 
-      }
+
+        return { quantity };
+      },
     });
-    
+
     if (isDenied) {
       this.startChoosingBeverage();
     }
 
     if (choice) {
-      const capacitySelect = document.getElementById('capacitySelection') as HTMLSelectElement;
-      const quantityInput = document.getElementById('beverageQuantity') as HTMLInputElement;
+      const capacitySelect = document.getElementById(
+        'capacitySelection'
+      ) as HTMLSelectElement;
+      const quantityInput = document.getElementById(
+        'beverageQuantity'
+      ) as HTMLInputElement;
       const selectedCapacity = capacitySelect.value;
-      const beverage = beverages.find(b => b.capacity.toString() === selectedCapacity);
+      const beverage = beverages.find(
+        (b) => b.capacity.toString() === selectedCapacity
+      );
 
       if (!beverage) {
         console.error('Beverage with this capacity not found!');
@@ -798,15 +970,15 @@ export class OrderService {
       const baseUnitPrice = beverage.price;
       const quantity = parseInt(quantityInput.value);
       const activePromotion = beverage.promotion;
-      const finalUnitPrice = activePromotion 
-        ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100) 
+      const finalUnitPrice = activePromotion
+        ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100)
         : baseUnitPrice;
       const finalTotalPrice = (finalUnitPrice * quantity).toFixed(2);
 
       if (!this.order.beverages[beverage.name]) {
-        this.order.beverages[beverage.name] = {}; 
+        this.order.beverages[beverage.name] = {};
       }
-      
+
       if (!this.order.beverages[beverage.name][beverage.capacity]) {
         this.order.beverages[beverage.name][beverage.capacity] = 0;
       }
@@ -817,43 +989,60 @@ export class OrderService {
       this.setOrderData(this.order);
       this.askWhetherOrderComplete(beverageNameTranslated);
     }
-  } 
+  }
 
   async startChoosingAddonProperties(): Promise<void> {
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Wybierz dodatek</span>`
+        : `<span style="color: red;">Choose addon</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Szanowny Kliencie</span>`
+        : `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `Wybierz interesujacy Cie dodatek`
+        : `Choose interesting addon`;
 
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Wybierz dodatek</span>` : 
-        `<span style="color: red;">Choose addon</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`;
-    const textForCustomers = this.langService.currentLang === 'pl' ? `Wybierz interesujacy Cie dodatek` : `Choose interesting addon`;
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-
-    const addonNames = this.addons.map(addon => {
+    const addonNames = this.addons
+      .map((addon) => {
         let addonNameTranslated = this.getTranslatedAddonName(addon.name);
         return `<option value="${addon.name}">${addonNameTranslated}</option>`;
-      }).sort((a, b) => a.localeCompare(b, this.langService.currentLang));
+      })
+      .sort((a, b) => a.localeCompare(b, this.langService.currentLang));
 
-    const howManyHeading = this.langService.currentLang === 'pl' ? `<h3>Jaka ilosc?</h3>` : `<h3>How many?</h3>`;
+    const howManyHeading =
+      this.langService.currentLang === 'pl'
+        ? `<h3>Jaka ilosc?</h3>`
+        : `<h3>How many?</h3>`;
 
     const { value: choice, isDenied } = await Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       background: '#141414',
       color: 'white',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Dodaj do zamowienia' : 'Add to order',
+      confirmButtonText:
+        this.langService.currentLang === 'pl'
+          ? 'Dodaj do zamowienia'
+          : 'Add to order',
       confirmButtonColor: '#198754',
       showCancelButton: true,
       cancelButtonText: cancelButtonText,
       cancelButtonColor: 'red',
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
       denyButtonColor: '#33acff',
       customClass: {
         validationMessage: 'custom-validation-message',
-        input: 'swal-radio-container-orders'
+        input: 'swal-radio-container-orders',
       },
       html: `
         <style>
@@ -878,7 +1067,9 @@ export class OrderService {
         </style>
 
         <div style="margin-bottom: 20px;">
-          <span>${this.isManager() || this.isEmployee() ? '' : textForCustomers}</span>
+          <span>${
+            this.isManager() || this.isEmployee() ? '' : textForCustomers
+          }</span>
           <select id="addonSelection" class="swal2-input">
             ${addonNames}
           </select>
@@ -897,32 +1088,39 @@ export class OrderService {
       `,
       didOpen: () => {
         const updatePrice = () => {
-          const addonSelect = document.getElementById('addonSelection') as HTMLSelectElement;
-          const quantityInput = document.getElementById('addonQuantity') as HTMLInputElement;
-          const addon = this.addons.find(addon => addon.name === addonSelect.value);
-          
+          const addonSelect = document.getElementById(
+            'addonSelection'
+          ) as HTMLSelectElement;
+          const quantityInput = document.getElementById(
+            'addonQuantity'
+          ) as HTMLInputElement;
+          const addon = this.addons.find(
+            (addon) => addon.name === addonSelect.value
+          );
+
           if (!addon) {
-              console.error('Addon with this name not found!');
-              return;
+            console.error('Addon with this name not found!');
+            return;
           }
-      
+
           const baseUnitPrice = addon.price;
           const quantity = parseInt(quantityInput.value) || 1;
 
           let finalUnitPrice = baseUnitPrice;
           let activePromotion = null;
-      
+
           if (addon.promotion) {
-              finalUnitPrice = baseUnitPrice * (1 - addon.promotion.discount_percentage / 100);
-              activePromotion = addon.promotion;
+            finalUnitPrice =
+              baseUnitPrice * (1 - addon.promotion.discount_percentage / 100);
+            activePromotion = addon.promotion;
           }
-      
+
           const totalPrice = (finalUnitPrice * quantity).toFixed(2);
           const priceDisplay = document.getElementById('addonPrice');
-      
+
           if (priceDisplay) {
-              if (activePromotion) {
-                  priceDisplay.innerHTML = `
+            if (activePromotion) {
+              priceDisplay.innerHTML = `
                       <span style="text-decoration: line-through; color: red; margin-right: 10px;">
                           ${(baseUnitPrice * quantity).toFixed(2)} zl
                       </span>
@@ -930,13 +1128,17 @@ export class OrderService {
                           ${totalPrice} zl
                       </span>
                   `;
-              } else priceDisplay.textContent = `${totalPrice} zl`;
+            } else priceDisplay.textContent = `${totalPrice} zl`;
           }
         };
-    
-        const addonSelect = document.getElementById('addonSelection') as HTMLSelectElement;
-        const quantityInput = document.getElementById('addonQuantity') as HTMLInputElement;
-        
+
+        const addonSelect = document.getElementById(
+          'addonSelection'
+        ) as HTMLSelectElement;
+        const quantityInput = document.getElementById(
+          'addonQuantity'
+        ) as HTMLInputElement;
+
         addonSelect.addEventListener('change', updatePrice);
         quantityInput.addEventListener('change', updatePrice);
         quantityInput.addEventListener('input', updatePrice);
@@ -944,10 +1146,16 @@ export class OrderService {
         updatePrice();
       },
       preConfirm: () => {
-        const addonSelect = document.getElementById('addonSelection') as HTMLSelectElement;
-        const quantityInput = document.getElementById('addonQuantity') as HTMLInputElement;
+        const addonSelect = document.getElementById(
+          'addonSelection'
+        ) as HTMLSelectElement;
+        const quantityInput = document.getElementById(
+          'addonQuantity'
+        ) as HTMLInputElement;
         let quantity = parseInt(quantityInput.value);
-        const addon = this.addons.find(addon => addon.name === addonSelect.value);
+        const addon = this.addons.find(
+          (addon) => addon.name === addonSelect.value
+        );
 
         if (!addon) {
           console.error('Addon with this name not found!');
@@ -955,44 +1163,60 @@ export class OrderService {
         }
 
         if (isNaN(quantity) || quantity > 10) {
-          const errorText = this.langService.currentLang === 'pl'
-            ? `Nie mozna dodac wiecej niz 10 sztuk tego dodatku!`
-            : `You can't add more than 10 units of this addon!`;
-  
+          const errorText =
+            this.langService.currentLang === 'pl'
+              ? `Nie mozna dodac wiecej niz 10 sztuk tego dodatku!`
+              : `You can't add more than 10 units of this addon!`;
+
           Swal.showValidationMessage(errorText);
           return false;
         }
 
-        if (this.order.addons[addon.name] && this.order.addons[addon.name] + quantity > 10) {
-          const errorText = this.langService.currentLang === 'pl'
-            ? `Nie mozna dodac wiecej niz 10 sztuk tego dodatku (obecnie juz wybrano ${this.order.addons[addon.name]})!`
-            : `You can't add more than 10 units of this beverage (already selected: ${this.order.addons[addon.name]})!`;
-        
-            Swal.showValidationMessage(errorText);
-            return false;
-        }
+        if (
+          this.order.addons[addon.name] &&
+          this.order.addons[addon.name] + quantity > 10
+        ) {
+          const errorText =
+            this.langService.currentLang === 'pl'
+              ? `Nie mozna dodac wiecej niz 10 sztuk tego dodatku (obecnie juz wybrano ${
+                  this.order.addons[addon.name]
+                })!`
+              : `You can't add more than 10 units of this beverage (already selected: ${
+                  this.order.addons[addon.name]
+                })!`;
 
-        if (isNaN(quantity) || quantity < 1 ) {
-          const errorText = this.langService.currentLang === 'pl'
-            ? `Nie mozna dodac mniej niz 1 sztuki tego dodatku!`
-            : `You can't add less than 1 unit of this addon!`;
-  
           Swal.showValidationMessage(errorText);
           return false;
         }
-    
-        return { quantity }; 
-      }
+
+        if (isNaN(quantity) || quantity < 1) {
+          const errorText =
+            this.langService.currentLang === 'pl'
+              ? `Nie mozna dodac mniej niz 1 sztuki tego dodatku!`
+              : `You can't add less than 1 unit of this addon!`;
+
+          Swal.showValidationMessage(errorText);
+          return false;
+        }
+
+        return { quantity };
+      },
     });
 
     if (isDenied) {
       this.selectNextOrderItem(true);
     }
-    
+
     if (choice) {
-      const addonSelect = document.getElementById('addonSelection') as HTMLSelectElement;
-      const quantityInput = document.getElementById('addonQuantity') as HTMLInputElement;
-      const addon = this.addons.find(addon => addon.name === addonSelect.value);
+      const addonSelect = document.getElementById(
+        'addonSelection'
+      ) as HTMLSelectElement;
+      const quantityInput = document.getElementById(
+        'addonQuantity'
+      ) as HTMLInputElement;
+      const addon = this.addons.find(
+        (addon) => addon.name === addonSelect.value
+      );
 
       if (!addon) {
         console.error('Addon with this name not found!');
@@ -1002,13 +1226,13 @@ export class OrderService {
       const baseUnitPrice = addon.price;
       const quantity = parseInt(quantityInput.value) || 1;
       const activePromotion = addon.promotion;
-      const finalUnitPrice = activePromotion 
-        ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100) 
+      const finalUnitPrice = activePromotion
+        ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100)
         : baseUnitPrice;
       const finalTotalPrice = (finalUnitPrice * quantity).toFixed(2);
 
       if (!this.order.addons[addon.name]) {
-        this.order.addons[addon.name] = 0; 
+        this.order.addons[addon.name] = 0;
       }
 
       this.order.addons[addon.name] += quantity;
@@ -1019,37 +1243,43 @@ export class OrderService {
       const addonNameTranslated = this.getTranslatedAddonName(addon.name);
       this.askWhetherOrderComplete(addonNameTranslated);
     }
-  } 
+  }
 
   askWhetherOrderComplete(itemName?: string): void {
+    let orderMealsList = Object.keys(this.order.meals)
+      .map((mealNameWithDetails) => {
+        const parts = mealNameWithDetails.split('_');
 
-    let orderMealsList = Object.keys(this.order.meals).map(mealNameWithDetails => {
-      const parts = mealNameWithDetails.split('_');
+        const mealName = this.getTranslatedMealName(parts[0]);
+        const meatName = this.getTranslatedIngredientName(parts[1]);
+        const sauceName = this.getTranslatedIngredientName(parts[2]);
 
-      const mealName = this.getTranslatedMealName(parts[0]);
-      const meatName = this.getTranslatedIngredientName(parts[1]);
-      const sauceName = this.getTranslatedIngredientName(parts[2]);
-
-      const mealSizes = Object.entries(this.order.meals[mealNameWithDetails])
-        .filter(([size, quantity]) => quantity > 0) 
-        .map(([size, quantity]) => {
-          const meal = this.meals.filter(meal => meal.name === parts[0])[0];
-          const baseUnitPrice = meal.prices[size as Size];
-          const activePromotion = meal.meal_promotions.find(p => p.sizes.includes(size as Size));
-          const finalUnitPrice = activePromotion 
-            ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100) 
-            : baseUnitPrice;
-          const translatedSize = this.translate.instant('menu.meals.sizes.' + size);
-          return `
+        const mealSizes = Object.entries(this.order.meals[mealNameWithDetails])
+          .filter(([size, quantity]) => quantity > 0)
+          .map(([size, quantity]) => {
+            const meal = this.meals.filter((meal) => meal.name === parts[0])[0];
+            const baseUnitPrice = meal.prices[size as Size];
+            const activePromotion = meal.meal_promotions.find((p) =>
+              p.sizes.includes(size as Size)
+            );
+            const finalUnitPrice = activePromotion
+              ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100)
+              : baseUnitPrice;
+            const translatedSize = this.translate.instant(
+              'menu.meals.sizes.' + size
+            );
+            return `
             <div class="meal-size-item">${translatedSize}: 
               <span class="quantity">
-                <span class=meal-quantity>${quantity}x ${finalUnitPrice.toFixed(2)} zl</span>
+                <span class=meal-quantity>${quantity}x ${finalUnitPrice.toFixed(
+              2
+            )} zl</span>
                 <button class="meal-plus" meal-name="${mealNameWithDetails}" meal-size="${size}">+</button>
                 <button class="meal-minus" meal-name="${mealNameWithDetails}" meal-size="${size}">−</button>
               </span>
             </div>`;
-        })
-        .join('');
+          })
+          .join('');
 
         return `
           <div class="meal-item">
@@ -1060,86 +1290,112 @@ export class OrderService {
             </div>
             <div class="meal-sizes">${mealSizes}</div>
           </div>`;
-    }).join('');
+      })
+      .join('');
 
-    let orderBeveragesList = Object.keys(this.order.beverages).map(beverageNameWithDetails => {
-      const beverageName = this.getTranslatedBeverageName(beverageNameWithDetails);
-      const beverageCapacities = Object.entries(this.order.beverages[beverageNameWithDetails])
-        .filter(([capacity, quantity]) => quantity > 0) 
-        .map(([capacity, quantity]) => {
-          const beverage = this.beverages.find(b => b.name === beverageNameWithDetails && b.capacity === Number(capacity));
-          if (!beverage) return '';
-          const baseUnitPrice = beverage.price;
-          const finalUnitPrice = beverage.promotion 
-            ? baseUnitPrice * (1 - beverage.promotion.discount_percentage / 100) 
-            : baseUnitPrice;
-          return `
+    let orderBeveragesList = Object.keys(this.order.beverages)
+      .map((beverageNameWithDetails) => {
+        const beverageName = this.getTranslatedBeverageName(
+          beverageNameWithDetails
+        );
+        const beverageCapacities = Object.entries(
+          this.order.beverages[beverageNameWithDetails]
+        )
+          .filter(([capacity, quantity]) => quantity > 0)
+          .map(([capacity, quantity]) => {
+            const beverage = this.beverages.find(
+              (b) =>
+                b.name === beverageNameWithDetails &&
+                b.capacity === Number(capacity)
+            );
+            if (!beverage) return '';
+            const baseUnitPrice = beverage.price;
+            const finalUnitPrice = beverage.promotion
+              ? baseUnitPrice *
+                (1 - beverage.promotion.discount_percentage / 100)
+              : baseUnitPrice;
+            return `
             <div class="beverage-capacity-item">
               ${capacity} L: 
               <span class="quantity">
-                <span class="beverage-quantity">${quantity}x ${finalUnitPrice.toFixed(2)} zl</span>
+                <span class="beverage-quantity">${quantity}x ${finalUnitPrice.toFixed(
+              2
+            )} zl</span>
                 <button class="beverage-plus" beverage-name="${beverageNameWithDetails}" beverage-capacity="${capacity}">+</button>
                 <button class="beverage-minus" beverage-name="${beverageNameWithDetails}" beverage-capacity="${capacity}">−</button>
               </span>
             </div>`;
-        })
-        .join('');
+          })
+          .join('');
 
-      return `
+        return `
         <div class="beverage-item">
           <div class="beverage-name">${beverageName}</div>
           <div class="beverage-capacities">${beverageCapacities}</div>
         </div>`;
-    }).join('');
+      })
+      .join('');
 
     let orderAddonsList = Object.entries(this.order.addons)
       .filter(([addonName, quantity]) => quantity > 0)
       .map(([addonName, quantity]) => {
-        const addon = this.addons.filter(addon => addon.name === addonName)[0];
+        const addon = this.addons.filter(
+          (addon) => addon.name === addonName
+        )[0];
         const baseUnitPrice = addon.price;
-        const finalUnitPrice = addon.promotion 
-        ? baseUnitPrice * (1 - addon.promotion.discount_percentage / 100) 
-        : baseUnitPrice;
+        const finalUnitPrice = addon.promotion
+          ? baseUnitPrice * (1 - addon.promotion.discount_percentage / 100)
+          : baseUnitPrice;
         const addonNameTranslated = this.getTranslatedAddonName(addonName);
 
         return `
           <div class="addon-item">
             ${addonNameTranslated}
             <span class="quantity">
-              <span class="addon-quantity">${quantity}x ${finalUnitPrice.toFixed(2)} zl</span>
+              <span class="addon-quantity">${quantity}x ${finalUnitPrice.toFixed(
+          2
+        )} zl</span>
               <button class="addon-plus" data-addon="${addonName}">+</button>
               <button class="addon-minus" data-addon="${addonName}">−</button>
             </span>
           </div>`;
-      }).join('');
+      })
+      .join('');
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Czy to juz wszystko?</span>` : 
-        `<span style="color: red;">Is that everything?</span>`,
-        text: this.langService.currentLang === 'pl'
-        ? itemName 
-          ? `Pomyslnie dodano '${itemName}' do twojego zamowienia! Co dalej?`
-          : `Produkt został dodany do twojego zamówienia! Co dalej?`
-        : itemName
+      title:
+        this.langService.currentLang === 'pl'
+          ? `<span style="color: red;">Czy to juz wszystko?</span>`
+          : `<span style="color: red;">Is that everything?</span>`,
+      text:
+        this.langService.currentLang === 'pl'
+          ? itemName
+            ? `Pomyslnie dodano '${itemName}' do twojego zamowienia! Co dalej?`
+            : `Produkt został dodany do twojego zamówienia! Co dalej?`
+          : itemName
           ? `Successfully added '${itemName}' to your order! What's next?`
           : `Item has been added to your order! What's next?`,
       color: 'white',
       background: '#141414',
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Przejdz dalej' : 'Next step',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Przejdz dalej' : 'Next step',
       denyButtonColor: '#33acff',
       showCancelButton: true,
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Wroc pozniej' : 'Come back later',
+      cancelButtonText:
+        this.langService.currentLang === 'pl'
+          ? 'Wroc pozniej'
+          : 'Come back later',
       cancelButtonColor: 'red',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Dodaj kolejne' : 'Add more',
+      confirmButtonText:
+        this.langService.currentLang === 'pl' ? 'Dodaj kolejne' : 'Add more',
       confirmButtonColor: '#198754',
       customClass: {
-        actions: 'swal-actions-vertical',  
+        actions: 'swal-actions-vertical',
         confirmButton: 'swal-confirm-btn',
         denyButton: 'swal-deny-btn',
-        cancelButton: 'swal-cancel-btn'
+        cancelButton: 'swal-cancel-btn',
       },
       html: `
         <style>
@@ -1226,34 +1482,51 @@ export class OrderService {
         </style>
 
         <div class="order-summary">
-          ${orderMealsList 
-            ? `<div class="meals-title">${this.langService.currentLang === 'pl' ? 'Dania' : 'Meals'}</div>${orderMealsList}` 
-            : ''}
-          ${orderBeveragesList 
-            ? `<div class="beverages-title">${this.langService.currentLang === 'pl' ? 'Napoje' : 'Beverages'}</div>${orderBeveragesList}` 
-            : ''}
-          ${orderAddonsList 
-            ? `<div class="addons-title">${this.langService.currentLang === 'pl' ? 'Dodatki' : 'Addons'}</div>${orderAddonsList}` 
-            : ''}
+          ${
+            orderMealsList
+              ? `<div class="meals-title">${
+                  this.langService.currentLang === 'pl' ? 'Dania' : 'Meals'
+                }</div>${orderMealsList}`
+              : ''
+          }
+          ${
+            orderBeveragesList
+              ? `<div class="beverages-title">${
+                  this.langService.currentLang === 'pl' ? 'Napoje' : 'Beverages'
+                }</div>${orderBeveragesList}`
+              : ''
+          }
+          ${
+            orderAddonsList
+              ? `<div class="addons-title">${
+                  this.langService.currentLang === 'pl' ? 'Dodatki' : 'Addons'
+                }</div>${orderAddonsList}`
+              : ''
+          }
         </div>
         <div class="total-price" id="total-price">
-          ${this.order.total_price > 0
-            ? `<div class="price"> ${this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: '} ${this.order.total_price.toFixed(2)} zl</div>` 
-            : ''}
+          ${
+            this.order.total_price > 0
+              ? `<div class="price"> ${
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: '
+                } ${this.order.total_price.toFixed(2)} zl</div>`
+              : ''
+          }
         </div>
       `,
     }).then((result) => {
       if (result.isConfirmed) {
         this.selectNextOrderItem(true);
       } else if (result.isDenied) {
-        this.chooseFormOfOrderReceiving()
+        this.chooseFormOfOrderReceiving();
       }
     });
 
     setTimeout(() => {
-      document.querySelectorAll('.addon-plus').forEach(button => {
+      document.querySelectorAll('.addon-plus').forEach((button) => {
         button.addEventListener('click', (event) => {
-          
           const target = event.target as HTMLElement;
           const addonName = target.getAttribute('data-addon');
 
@@ -1261,19 +1534,29 @@ export class OrderService {
             if (this.order.addons[addonName] < 10) {
               this.order.addons[addonName]++;
 
-              const addonQuantityElement = target.closest('.addon-item')?.querySelector('.addon-quantity') as HTMLElement;
+              const addonQuantityElement = target
+                .closest('.addon-item')
+                ?.querySelector('.addon-quantity') as HTMLElement;
               const priceContainer = document.getElementById('total-price');
               if (addonQuantityElement && priceContainer) {
                 const quantity = this.order.addons[addonName];
-                const addon = this.addons.find(addon => addon.name === addonName);  
-                const finalUnitPrice = addon?.promotion 
-                  ? addon.price * (1 - addon.promotion.discount_percentage / 100)
+                const addon = this.addons.find(
+                  (addon) => addon.name === addonName
+                );
+                const finalUnitPrice = addon?.promotion
+                  ? addon.price *
+                    (1 - addon.promotion.discount_percentage / 100)
                   : addon?.price;
-                addonQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(2)} zl`;
+                addonQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(
+                  2
+                )} zl`;
 
                 this.order.total_price += Number(finalUnitPrice);
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
 
@@ -1283,30 +1566,42 @@ export class OrderService {
         });
       });
 
-      document.querySelectorAll('.beverage-plus').forEach(button => {
+      document.querySelectorAll('.beverage-plus').forEach((button) => {
         button.addEventListener('click', (event) => {
-          
           const target = event.target as HTMLElement;
           const beverageName = target.getAttribute('beverage-name');
           const beverageCapacity = target.getAttribute('beverage-capacity');
 
           if (beverageName && beverageCapacity) {
-            if (this.order.beverages[beverageName][Number(beverageCapacity)] < 10) {
+            if (
+              this.order.beverages[beverageName][Number(beverageCapacity)] < 10
+            ) {
               this.order.beverages[beverageName][Number(beverageCapacity)]++;
 
-              const beverageQuantityElement = target.closest('.beverage-capacity-item')?.querySelector('.beverage-quantity') as HTMLElement;
+              const beverageQuantityElement = target
+                .closest('.beverage-capacity-item')
+                ?.querySelector('.beverage-quantity') as HTMLElement;
               const priceContainer = document.getElementById('total-price');
               if (beverageQuantityElement && priceContainer) {
-                const quantity = this.order.beverages[beverageName][Number(beverageCapacity)];
-                const beverage = this.beverages.find(beverage => beverage.name === beverageName);  
-                const finalUnitPrice = beverage?.promotion 
-                  ? beverage.price * (1 - beverage.promotion.discount_percentage / 100)
+                const quantity =
+                  this.order.beverages[beverageName][Number(beverageCapacity)];
+                const beverage = this.beverages.find(
+                  (beverage) => beverage.name === beverageName
+                );
+                const finalUnitPrice = beverage?.promotion
+                  ? beverage.price *
+                    (1 - beverage.promotion.discount_percentage / 100)
                   : beverage?.price;
-                beverageQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(2)} zl`;
+                beverageQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(
+                  2
+                )} zl`;
 
                 this.order.total_price += Number(finalUnitPrice);
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
 
@@ -1316,9 +1611,8 @@ export class OrderService {
         });
       });
 
-      document.querySelectorAll('.meal-plus').forEach(button => {
+      document.querySelectorAll('.meal-plus').forEach((button) => {
         button.addEventListener('click', (event) => {
-          
           const target = event.target as HTMLElement;
           const mealName = target.getAttribute('meal-name');
           const mealSize = target.getAttribute('meal-size');
@@ -1327,23 +1621,34 @@ export class OrderService {
             if (this.order.meals[mealName][mealSize as Size] < 20) {
               this.order.meals[mealName][mealSize as Size]++;
 
-              const mealQuantityElement = target.closest('.meal-size-item')?.querySelector('.meal-quantity') as HTMLElement;
+              const mealQuantityElement = target
+                .closest('.meal-size-item')
+                ?.querySelector('.meal-quantity') as HTMLElement;
               const priceContainer = document.getElementById('total-price');
 
               if (mealQuantityElement && priceContainer) {
                 const quantity = this.order.meals[mealName][mealSize as Size];
-                const meal = this.meals.filter(meal => meal.name === mealName.split("_")[0])[0];
+                const meal = this.meals.filter(
+                  (meal) => meal.name === mealName.split('_')[0]
+                )[0];
                 const baseUnitPrice = meal.prices[mealSize as Size];
-                const activePromotion = meal.meal_promotions.find(p => p.sizes.includes(mealSize as Size));
-                const finalUnitPrice = activePromotion 
-                  ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100)
+                const activePromotion = meal.meal_promotions.find((p) =>
+                  p.sizes.includes(mealSize as Size)
+                );
+                const finalUnitPrice = activePromotion
+                  ? baseUnitPrice *
+                    (1 - activePromotion.discount_percentage / 100)
                   : baseUnitPrice;
-                mealQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(2)} zl`;
-
+                mealQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(
+                  2
+                )} zl`;
 
                 this.order.total_price += Number(finalUnitPrice);
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
 
@@ -1352,33 +1657,38 @@ export class OrderService {
           }
         });
       });
-    
-      document.querySelectorAll('.addon-minus').forEach(button => {
+
+      document.querySelectorAll('.addon-minus').forEach((button) => {
         button.addEventListener('click', (event) => {
-          
           const target = event.target as HTMLElement;
           const addonName = target.getAttribute('data-addon');
           const priceContainer = document.getElementById('total-price');
 
           if (addonName) {
-
-            const addon = this.addons.find(addon => addon.name === addonName); 
-            const finalUnitPrice = addon?.promotion 
+            const addon = this.addons.find((addon) => addon.name === addonName);
+            const finalUnitPrice = addon?.promotion
               ? addon.price * (1 - addon.promotion.discount_percentage / 100)
               : addon?.price;
 
             if (this.order.addons[addonName] > 1) {
               this.order.addons[addonName]--;
-              
-              const addonQuantityElement = target.closest('.addon-item')?.querySelector('.addon-quantity') as HTMLElement;
+
+              const addonQuantityElement = target
+                .closest('.addon-item')
+                ?.querySelector('.addon-quantity') as HTMLElement;
               if (addonQuantityElement && priceContainer) {
                 const quantity = this.order.addons[addonName];
-                
-                addonQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(2)} zl`;
+
+                addonQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(
+                  2
+                )} zl`;
 
                 this.order.total_price -= Number(finalUnitPrice);
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
 
@@ -1387,13 +1697,16 @@ export class OrderService {
             } else {
               this.order.total_price -= Number(finalUnitPrice);
               delete this.order.addons[addonName];
-  
+
               if (priceContainer) {
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
-  
+
               const addonElement = target.closest('.addon-item');
               if (addonElement) {
                 addonElement.remove();
@@ -1402,37 +1715,48 @@ export class OrderService {
               this.setOrderData(this.order);
               this.checkIfOrderIsEmpty();
             }
-          } 
+          }
         });
       });
 
-      document.querySelectorAll('.beverage-minus').forEach(button => {
+      document.querySelectorAll('.beverage-minus').forEach((button) => {
         button.addEventListener('click', (event) => {
-          
           const target = event.target as HTMLElement;
           const beverageName = target.getAttribute('beverage-name');
           const beverageCapacity = target.getAttribute('beverage-capacity');
 
           if (beverageName && beverageCapacity) {
-
-            const beverage = this.beverages.find(beverage => beverage.name === beverageName);  
-            const finalUnitPrice = beverage?.promotion 
-              ? beverage.price * (1 - beverage.promotion.discount_percentage / 100)
+            const beverage = this.beverages.find(
+              (beverage) => beverage.name === beverageName
+            );
+            const finalUnitPrice = beverage?.promotion
+              ? beverage.price *
+                (1 - beverage.promotion.discount_percentage / 100)
               : beverage?.price;
             const priceContainer = document.getElementById('total-price');
 
-            if (this.order.beverages[beverageName][Number(beverageCapacity)] > 1) {
+            if (
+              this.order.beverages[beverageName][Number(beverageCapacity)] > 1
+            ) {
               this.order.beverages[beverageName][Number(beverageCapacity)]--;
 
-              const beverageQuantityElement = target.closest('.beverage-capacity-item')?.querySelector('.beverage-quantity') as HTMLElement;
+              const beverageQuantityElement = target
+                .closest('.beverage-capacity-item')
+                ?.querySelector('.beverage-quantity') as HTMLElement;
 
               if (beverageQuantityElement && priceContainer) {
-                const quantity = this.order.beverages[beverageName][Number(beverageCapacity)];
-                beverageQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(2)} zl`;
+                const quantity =
+                  this.order.beverages[beverageName][Number(beverageCapacity)];
+                beverageQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(
+                  2
+                )} zl`;
 
                 this.order.total_price -= Number(finalUnitPrice);
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
 
@@ -1444,10 +1768,13 @@ export class OrderService {
 
               if (priceContainer) {
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
-  
+
               const beverageElement = target.closest('.beverage-item');
               if (beverageElement) {
                 beverageElement.remove();
@@ -1460,33 +1787,43 @@ export class OrderService {
         });
       });
 
-      document.querySelectorAll('.meal-minus').forEach(button => {
+      document.querySelectorAll('.meal-minus').forEach((button) => {
         button.addEventListener('click', (event) => {
-          
           const target = event.target as HTMLElement;
           const mealName = target.getAttribute('meal-name');
           const mealSize = target.getAttribute('meal-size');
 
           if (mealName && mealSize) {
-            const mealQuantityElement = target.closest('.meal-size-item')?.querySelector('.meal-quantity') as HTMLElement;
+            const mealQuantityElement = target
+              .closest('.meal-size-item')
+              ?.querySelector('.meal-quantity') as HTMLElement;
             const priceContainer = document.getElementById('total-price');
-            const meal = this.meals.filter(meal => meal.name === mealName.split("_")[0])[0];
+            const meal = this.meals.filter(
+              (meal) => meal.name === mealName.split('_')[0]
+            )[0];
             const baseUnitPrice = meal.prices[mealSize as Size];
-            const activePromotion = meal.meal_promotions.find(p => p.sizes.includes(mealSize as Size));
-            const finalUnitPrice = activePromotion 
+            const activePromotion = meal.meal_promotions.find((p) =>
+              p.sizes.includes(mealSize as Size)
+            );
+            const finalUnitPrice = activePromotion
               ? baseUnitPrice * (1 - activePromotion.discount_percentage / 100)
               : baseUnitPrice;
-            
+
             if (this.order.meals[mealName][mealSize as Size] > 1) {
               this.order.meals[mealName][mealSize as Size]--;
 
               if (mealQuantityElement && priceContainer) {
                 const quantity = this.order.meals[mealName][mealSize as Size];
-                mealQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(2)} zl`;
+                mealQuantityElement.innerHTML = `${quantity}x ${finalUnitPrice?.toFixed(
+                  2
+                )} zl`;
 
                 this.order.total_price -= Number(finalUnitPrice);
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
 
@@ -1498,10 +1835,13 @@ export class OrderService {
 
               if (priceContainer) {
                 const total = this.order.total_price.toFixed(2);
-                const label = this.langService.currentLang === 'pl' ? 'Lacznie: ' : 'Total: ';
+                const label =
+                  this.langService.currentLang === 'pl'
+                    ? 'Lacznie: '
+                    : 'Total: ';
                 priceContainer.innerHTML = `<div class="price">${label} ${total} zl</div>`;
               }
-  
+
               const mealElement = target.closest('.meal-item');
               if (mealElement) {
                 mealElement.remove();
@@ -1520,47 +1860,63 @@ export class OrderService {
     const isMealsEmpty = Object.keys(this.order.meals).length === 0;
     const isAddonsEmpty = Object.keys(this.order.addons).length === 0;
     const isBeveragesEmpty = Object.keys(this.order.beverages).length === 0;
-  
+
     if (isMealsEmpty && isAddonsEmpty && isBeveragesEmpty) Swal.close();
   }
 
   chooseFormOfOrderReceiving(): void {
-
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Wybierz sposob odbioru zamowienia</span>` : 
-        `<span style="color: red;">Choose form of order receiving</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`;
-    const textForCustomers = this.langService.currentLang === 'pl' 
-        ? `Jak chcesz odebrac zamowienie? Informujemy, ze zamowienia internetowe sa zawsze traktowane jak na wynos!` 
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Wybierz sposob odbioru zamowienia</span>`
+        : `<span style="color: red;">Choose form of order receiving</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Szanowny Kliencie</span>`
+        : `<span style="color: red;">Dear Customer</span>`;
+    const textForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `Jak chcesz odebrac zamowienie? Informujemy, ze zamowienia internetowe sa zawsze traktowane jak na wynos!`
         : `How do you want to receive order? Please note that online orders are always treated as takeaway!`;
-    const houseButtomForStaff = this.langService.currentLang === 'pl' ? '🚚 W domu' : '🚚 In house';
-    const houseButtomForCustomers = this.langService.currentLang === 'pl' ? '🚚 W  moim domu' : '🚚 In my house';
+    const houseButtomForStaff =
+      this.langService.currentLang === 'pl' ? '🚚 W domu' : '🚚 In house';
+    const houseButtomForCustomers =
+      this.langService.currentLang === 'pl'
+        ? '🚚 W  moim domu'
+        : '🚚 In my house';
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       text: this.isManager() || this.isEmployee() ? '' : textForCustomers,
       background: '#141414',
       color: 'white',
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? '🍽 W restauracji' : '🍽 In restaurant',
+      denyButtonText:
+        this.langService.currentLang === 'pl'
+          ? '🍽 W restauracji'
+          : '🍽 In restaurant',
       denyButtonColor: '#33acff',
       showCancelButton: true,
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go back',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go back',
       cancelButtonColor: 'red',
-      confirmButtonText: this.isManager() || this.isEmployee() ? houseButtomForStaff : houseButtomForCustomers,
+      confirmButtonText:
+        this.isManager() || this.isEmployee()
+          ? houseButtomForStaff
+          : houseButtomForCustomers,
       confirmButtonColor: '#198754',
       customClass: {
-        actions: 'swal-actions-vertical',  
+        actions: 'swal-actions-vertical',
         confirmButton: 'swal-confirm-btn',
         denyButton: 'swal-deny-btn',
-        cancelButton: 'swal-cancel-btn'
-      }
+        cancelButton: 'swal-cancel-btn',
+      },
     }).then((result) => {
       if (result.isConfirmed) {
-        this.startEnteringAddress()
+        this.startEnteringAddress();
       } else if (result.isDenied) {
         this.startEnteringContactData();
       } else if (result.isDismissed) {
@@ -1570,31 +1926,43 @@ export class OrderService {
   }
 
   startEnteringAddress(): void {
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Podaj adres klienta</span>`
+        : `<span style="color: red;">Enter client's address</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Szanowny Kliencie</span>`
+        : `<span style="color: red;">Dear Customer</span>`;
+    const whiteTextForCustomers =
+      this.langService.currentLang === 'pl'
+        ? 'Podaj adres, pod ktory mamy dostarczyc Twoje zamowienie!'
+        : 'Enter address, where we can deliver your order!';
+    const redTextForCustomers =
+      this.langService.currentLang === 'pl'
+        ? 'Dostarczamy zamowienia do 20 km od lokalu. Zamowienie z adresem znajdujacym sie dalej zostanie anulowane. Kazda dostawa kosztuje 15 zl!'
+        : 'We deliver orders up to 20 km from our restaurant. Order with address further away will be canceled. Each delivery costs 15 zl!';
 
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Podaj adres klienta</span>` : 
-        `<span style="color: red;">Enter client's address</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Szanowny Kliencie</span>` : 
-        `<span style="color: red;">Dear Customer</span>`;
-    const whiteTextForCustomers = this.langService.currentLang === 'pl' ? 
-        'Podaj adres, pod ktory mamy dostarczyc Twoje zamowienie!' : 
-        'Enter address, where we can deliver your order!';
-    const redTextForCustomers = this.langService.currentLang === 'pl' ? 
-        'Dostarczamy zamowienia do 20 km od lokalu. Zamowienie z adresem znajdujacym sie dalej zostanie anulowane. Kazda dostawa kosztuje 15 zl!' : 
-        'We deliver orders up to 20 km from our restaurant. Order with address further away will be canceled. Each delivery costs 15 zl!';
+    const confirmButtonText =
+      this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
-    const confirmButtonText = this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-
-    const streetPlaceholder = this.langService.currentLang === 'pl' ? 'Ulica' : 'Street';
-    const houseNumberPlaceholder = this.langService.currentLang === 'pl' ? 'Numer domu' : 'House number';
-    const postalCodePlaceholder = this.langService.currentLang === 'pl' ? 'Kod pocztowy' : 'Postal code';
-    const cityPlaceholder = this.langService.currentLang === 'pl' ? 'Miasto' : 'City';
+    const streetPlaceholder =
+      this.langService.currentLang === 'pl' ? 'Ulica' : 'Street';
+    const houseNumberPlaceholder =
+      this.langService.currentLang === 'pl' ? 'Numer domu' : 'House number';
+    const postalCodePlaceholder =
+      this.langService.currentLang === 'pl' ? 'Kod pocztowy' : 'Postal code';
+    const cityPlaceholder =
+      this.langService.currentLang === 'pl' ? 'Miasto' : 'City';
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       background: '#141414',
       color: 'white',
       html: `
@@ -1657,22 +2025,29 @@ export class OrderService {
       cancelButtonColor: 'red',
       showCancelButton: true,
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
       denyButtonColor: '#33acff',
       focusConfirm: false,
       customClass: {
-        validationMessage: 'custom-validation-message'
+        validationMessage: 'custom-validation-message',
       },
       preConfirm: () => {
-        const street = (document.getElementById('street') as HTMLInputElement).value;
-        const houseNumber = (document.getElementById('houseNumber') as HTMLInputElement).value;
-        const postalCode = (document.getElementById('postalCode') as HTMLInputElement).value;
-        const city = (document.getElementById('city') as HTMLInputElement).value;
+        const street = (document.getElementById('street') as HTMLInputElement)
+          .value;
+        const houseNumber = (
+          document.getElementById('houseNumber') as HTMLInputElement
+        ).value;
+        const postalCode = (
+          document.getElementById('postalCode') as HTMLInputElement
+        ).value;
+        const city = (document.getElementById('city') as HTMLInputElement)
+          .value;
 
         if (!street || !houseNumber || !postalCode || !city) {
           Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' 
-              ? 'Wszystkie pola sa wymagane' 
+            this.langService.currentLang === 'pl'
+              ? 'Wszystkie pola sa wymagane'
               : 'All fields are required'
           );
           return null;
@@ -1680,14 +2055,18 @@ export class OrderService {
 
         if (street.length > 25) {
           Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Niepoprawna ulica!' : 'Invalid street!'
+            this.langService.currentLang === 'pl'
+              ? 'Niepoprawna ulica!'
+              : 'Invalid street!'
           );
           return null;
         }
 
         if (Number(houseNumber) < 1) {
           Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Niepoprawny numer domu!' : 'Invalid house number!'
+            this.langService.currentLang === 'pl'
+              ? 'Niepoprawny numer domu!'
+              : 'Invalid house number!'
           );
           return null;
         }
@@ -1695,22 +2074,25 @@ export class OrderService {
         const postalCodeRegex = /^[0-9]{2}-[0-9]{3}$/;
         if (!postalCodeRegex.test(postalCode)) {
           Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Niepoprawny kod pocztowy!' : 'Invalid postal code!'
+            this.langService.currentLang === 'pl'
+              ? 'Niepoprawny kod pocztowy!'
+              : 'Invalid postal code!'
           );
           return null;
         }
 
         if (city.length > 25) {
           Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Niepoprawne miasto!' : 'Invalid city!'
+            this.langService.currentLang === 'pl'
+              ? 'Niepoprawne miasto!'
+              : 'Invalid city!'
           );
           return null;
         }
-    
-        return { street, houseNumber, postalCode, city };
-      }
-    }).then((result) => {
 
+        return { street, houseNumber, postalCode, city };
+      },
+    }).then((result) => {
       if (result.isDenied) {
         this.chooseFormOfOrderReceiving();
       }
@@ -1728,26 +2110,36 @@ export class OrderService {
   }
 
   startEnteringContactData(): void {
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Podaj dane kontaktowe klienta</span>`
+        : `<span style="color: red;">Enter client's contact data</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Podaj swoje dane kontaktowe!</span>`
+        : `<span style="color: red;">Enter your contact data!</span>`;
+    const textForCustomers =
+      this.langService.currentLang === 'pl'
+        ? 'Podanie adresu email nie jest wymagane, ale zachecamy do jego wpisania. Kazde zamowienie to rownowartosc 1 punktu! Po zebraniu 10 punktow otrzymasz kod rabatowy na kolejne zamowienie!'
+        : 'Providing an email address is optional, but we encourage you to enter it. Each order is equality of 1 point. After collecting 10 points you’ll receive a discount code for your next order!';
 
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Podaj dane kontaktowe klienta</span>` : 
-        `<span style="color: red;">Enter client's contact data</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Podaj swoje dane kontaktowe!</span>` : 
-        `<span style="color: red;">Enter your contact data!</span>`;
-    const textForCustomers = this.langService.currentLang === 'pl' ? 
-      'Podanie adresu email nie jest wymagane, ale zachecamy do jego wpisania. Kazde zamowienie to rownowartosc 1 punktu! Po zebraniu 10 punktow otrzymasz kod rabatowy na kolejne zamowienie!' : 
-      'Providing an email address is optional, but we encourage you to enter it. Each order is equality of 1 point. After collecting 10 points you’ll receive a discount code for your next order!';
+    const confirmButtonText =
+      this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
-    const confirmButtonText = this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-
-    const emailPlaceholder = 'Email'
-    const phonePlaceholder = this.langService.currentLang === 'pl' ? 'Telefon (9 cyfr)' : 'Phone (9 digits)';
+    const emailPlaceholder = 'Email';
+    const phonePlaceholder =
+      this.langService.currentLang === 'pl'
+        ? 'Telefon (9 cyfr)'
+        : 'Phone (9 digits)';
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       background: '#141414',
       color: 'white',
       html: `
@@ -1799,16 +2191,20 @@ export class OrderService {
       cancelButtonColor: 'red',
       showCancelButton: true,
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
       denyButtonColor: '#33acff',
       focusConfirm: false,
       customClass: {
-        validationMessage: 'custom-validation-message'
+        validationMessage: 'custom-validation-message',
       },
       preConfirm: () => {
-        let email: string | null = (document.getElementById('email') as HTMLInputElement).value.trim();
-        let phone: string | null = (document.getElementById('phone') as HTMLInputElement).value.trim();
-
+        let email: string | null = (
+          document.getElementById('email') as HTMLInputElement
+        ).value.trim();
+        let phone: string | null = (
+          document.getElementById('phone') as HTMLInputElement
+        ).value.trim();
 
         const isManagerOrEmployee = this.isManager() || this.isEmployee();
 
@@ -1817,8 +2213,8 @@ export class OrderService {
 
         if (!isManagerOrEmployee && !phone) {
           Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' 
-              ? 'Telefon jest wymagany' 
+            this.langService.currentLang === 'pl'
+              ? 'Telefon jest wymagany'
               : 'Phone is required'
           );
           return null;
@@ -1827,7 +2223,9 @@ export class OrderService {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (email && !emailRegex.test(email)) {
           Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Niepoprawny email!' : 'Invalid email!'
+            this.langService.currentLang === 'pl'
+              ? 'Niepoprawny email!'
+              : 'Invalid email!'
           );
           return null;
         }
@@ -1835,15 +2233,16 @@ export class OrderService {
         const phoneRegex = /^[0-9]{9}$/;
         if (phone && !phoneRegex.test(phone)) {
           Swal.showValidationMessage(
-            this.langService.currentLang === 'pl' ? 'Niepoprawny numer telefonu!' : 'Invalid phone number!'
+            this.langService.currentLang === 'pl'
+              ? 'Niepoprawny numer telefonu!'
+              : 'Invalid phone number!'
           );
           return null;
         }
 
         return { email, phone };
-      }
+      },
     }).then((result) => {
-
       if (result.isDenied) {
         this.chooseFormOfOrderReceiving();
       }
@@ -1859,16 +2258,21 @@ export class OrderService {
   }
 
   startEnteringAdditionalComments(): void {
+    const confirmButtonText =
+      this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
+    const cancelButtonText =
+      this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
 
-    const confirmButtonText = this.langService.currentLang === 'pl' ? 'Dalej' : 'Next step';
-    const cancelButtonText = this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel';
-
-    const additionalCommentsPlaceholder = this.langService.currentLang === 'pl' ? 'Dodatkowe komentarze...' : 'Additional comments...';
+    const additionalCommentsPlaceholder =
+      this.langService.currentLang === 'pl'
+        ? 'Dodatkowe komentarze...'
+        : 'Additional comments...';
     Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Jakies uwagi lub specjalne prosby?</span>` : 
-        `<span style="color: red;">Any comments or special requests?</span>`,
+      title:
+        this.langService.currentLang === 'pl'
+          ? `<span style="color: red;">Jakies uwagi lub specjalne prosby?</span>`
+          : `<span style="color: red;">Any comments or special requests?</span>`,
       background: '#141414',
       color: 'white',
       html: `
@@ -1903,9 +2307,11 @@ export class OrderService {
         </style>
 
         <span style="color: white; margin-bottom: 10px;">
-          ${this.langService.currentLang === 'pl' 
-            ? 'Umiesc je w polu ponizej.' 
-            : 'Place them in the box below.'}
+          ${
+            this.langService.currentLang === 'pl'
+              ? 'Umiesc je w polu ponizej.'
+              : 'Place them in the box below.'
+          }
         </span>
 
         <div>
@@ -1918,20 +2324,22 @@ export class OrderService {
       cancelButtonColor: 'red',
       showCancelButton: true,
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
+      denyButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go Back',
       denyButtonColor: '#33acff',
       focusConfirm: false,
       customClass: {
-        validationMessage: 'custom-validation-message'
-      }
+        validationMessage: 'custom-validation-message',
+      },
     }).then((result) => {
-
       if (result.isDenied) {
         this.startEnteringContactData();
       }
 
       if (result.isConfirmed && result.value) {
-        const additionalComments = (document.getElementById('additionalComments') as HTMLInputElement).value;
+        const additionalComments = (
+          document.getElementById('additionalComments') as HTMLInputElement
+        ).value;
         this.order.additional_comments = additionalComments;
         this.setOrderData(this.order);
         this.enterDiscountCode();
@@ -1940,18 +2348,23 @@ export class OrderService {
   }
 
   enterDiscountCode(): void {
-
-    const titleForStaff = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Czy klient posiada kod rabatowy?</span>` : 
-        `<span style="color: red;">Does client have discount code?</span>`;
-    const titleForCustomers = this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Czy posiadasz kod rabatowy?</span>` : 
-        `<span style="color: red;">Do you have discount code?</span>`;
-    const discountCodePlaceholder = this.langService.currentLang === 'pl' ? 'Kod rabatowy' : 'Discount code';
+    const titleForStaff =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Czy klient posiada kod rabatowy?</span>`
+        : `<span style="color: red;">Does client have discount code?</span>`;
+    const titleForCustomers =
+      this.langService.currentLang === 'pl'
+        ? `<span style="color: red;">Czy posiadasz kod rabatowy?</span>`
+        : `<span style="color: red;">Do you have discount code?</span>`;
+    const discountCodePlaceholder =
+      this.langService.currentLang === 'pl' ? 'Kod rabatowy' : 'Discount code';
 
     Swal.fire({
       allowOutsideClick: false,
-      title: this.isManager() || this.isEmployee() ? titleForStaff : titleForCustomers,
+      title:
+        this.isManager() || this.isEmployee()
+          ? titleForStaff
+          : titleForCustomers,
       background: '#141414',
       color: 'white',
       html: `
@@ -1976,9 +2389,11 @@ export class OrderService {
         </style>
 
         <span style="color: white; margin-bottom: 10px;">
-          ${this.langService.currentLang === 'pl' 
-            ? 'Jesli tak, wpisz go ponizej!' 
-            : 'If yes, enter it below!'}
+          ${
+            this.langService.currentLang === 'pl'
+              ? 'Jesli tak, wpisz go ponizej!'
+              : 'If yes, enter it below!'
+          }
         </span>
         
         <div>
@@ -1986,57 +2401,71 @@ export class OrderService {
         </div>
       `,
       showDenyButton: true,
-      denyButtonText: this.langService.currentLang === 'pl' ? 'Zamow bez kodu' : 'Order without code',
+      denyButtonText:
+        this.langService.currentLang === 'pl'
+          ? 'Zamow bez kodu'
+          : 'Order without code',
       denyButtonColor: '#33acff',
       showCancelButton: true,
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Wroc' : 'Go back',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Wroc' : 'Go back',
       cancelButtonColor: 'red',
-      confirmButtonText: this.langService.currentLang === 'pl' ? 'Sprawdz' : 'Check',
+      confirmButtonText:
+        this.langService.currentLang === 'pl' ? 'Sprawdz' : 'Check',
       confirmButtonColor: '#198754',
       focusConfirm: false,
       customClass: {
         validationMessage: 'custom-validation-message',
-        actions: 'swal-actions-vertical',  
+        actions: 'swal-actions-vertical',
         confirmButton: 'swal-confirm-btn',
         denyButton: 'swal-deny-btn',
-        cancelButton: 'swal-cancel-btn'
+        cancelButton: 'swal-cancel-btn',
       },
       preConfirm: () => {
-        const discountCode = (document.getElementById('discountCode') as HTMLInputElement).value;
-        return this.discountCodesService.getDiscountCode(discountCode)
+        const discountCode = (
+          document.getElementById('discountCode') as HTMLInputElement
+        ).value;
+        return this.discountCodesService
+          .getDiscountCode(discountCode)
           .toPromise()
-          .then(response => {
-            if (response) { 
-              return response; 
+          .then((response) => {
+            if (response) {
+              return response;
             } else {
               return null;
             }
           })
-          .catch(error => {
+          .catch((error) => {
             Swal.showValidationMessage(error.error.message);
           });
-      }
+      },
     }).then((result) => {
       if (result.isDenied) {
         if (this.isEmployee() || this.isManager()) {
-          if (!this.order.street && !this.order.house_number && !this.order.postal_code && !this.order.city) {
+          if (
+            !this.order.street &&
+            !this.order.house_number &&
+            !this.order.postal_code &&
+            !this.order.city
+          ) {
             this.chooseOrderType();
           } else {
             this.order.order_type = OrderType.TAKEAWAY;
-            this.placeOrder()
+            this.placeOrder();
           }
         } else {
-          this.placeOrder()
+          this.placeOrder();
         }
         return;
       }
 
       if (result.isConfirmed) {
         this.order.discount_code = result.value.code;
-        this.order.total_price *= (1 - result.value.discount_percentage / 100);
-        this.trackOrderData.discountPercentage = result.value.discount_percentage;
+        this.order.total_price *= 1 - result.value.discount_percentage / 100;
+        this.trackOrderData.discountPercentage =
+          result.value.discount_percentage;
         this.setOrderData(this.order);
-        
+
         Swal.fire({
           icon: 'success',
           iconColor: 'green',
@@ -2046,60 +2475,71 @@ export class OrderService {
           confirmButtonText: 'Ok',
           html: `
             <span style="color: white;">
-              ${this.langService.currentLang === 'pl' 
-                ? `Pomyslnie zastosowano ${result.value.discount_percentage}% kod rabatowy!`
-                : `Successfully applied ${result.value.discount_percentage}% discount code!`}
+              ${
+                this.langService.currentLang === 'pl'
+                  ? `Pomyslnie zastosowano ${result.value.discount_percentage}% kod rabatowy!`
+                  : `Successfully applied ${result.value.discount_percentage}% discount code!`
+              }
             </span>
           `,
         }).then(() => {
           if (this.isEmployee() || this.isManager()) {
-            if (!this.order.street && !this.order.house_number && !this.order.postal_code && !this.order.city) {
+            if (
+              !this.order.street &&
+              !this.order.house_number &&
+              !this.order.postal_code &&
+              !this.order.city
+            ) {
               this.chooseOrderType();
             } else {
               this.order.order_type = OrderType.TAKEAWAY;
-              this.placeOrder()
+              this.placeOrder();
             }
           } else {
-            this.placeOrder()
+            this.placeOrder();
           }
         });
-      
+
         return;
       }
-      
+
       this.startEnteringAdditionalComments();
     });
   }
 
   async chooseOrderType(): Promise<void> {
-
-    const errorText = this.langService.currentLang === 'pl' ? 'Prosze wybrac typ zamowienia' : 'Please select order type';
+    const errorText =
+      this.langService.currentLang === 'pl'
+        ? 'Prosze wybrac typ zamowienia'
+        : 'Please select order type';
     const orderTypes: OrderType[] = Object.values(OrderType);
 
     const orderTypesTranslated: { [key: string]: string } = {};
     orderTypes.forEach((type) => {
-      const translationKey = 'order-management.order_type.' + type; 
+      const translationKey = 'order-management.order_type.' + type;
       const translated = this.translate.instant(translationKey);
       orderTypesTranslated[type] = this.getTranslatedOrderType(type);
     });
 
     const { value: choice } = await Swal.fire({
       allowOutsideClick: false,
-      title: this.langService.currentLang === 'pl' ? 
-        `<span style="color: red;">Wybierz typ zamowienia</span>` : 
-        `<span style="color: red;">Choose order type</span>`,
-      input: "radio",
+      title:
+        this.langService.currentLang === 'pl'
+          ? `<span style="color: red;">Wybierz typ zamowienia</span>`
+          : `<span style="color: red;">Choose order type</span>`,
+      input: 'radio',
       inputOptions: orderTypesTranslated,
       background: '#141414',
       color: 'white',
       confirmButtonText: 'Ok',
       confirmButtonColor: '#198754',
       showCancelButton: true,
-      cancelButtonText: this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
+      cancelButtonText:
+        this.langService.currentLang === 'pl' ? 'Anuluj' : 'Cancel',
       cancelButtonColor: 'red',
       customClass: {
         validationMessage: 'custom-validation-message',
-        input: 'swal-radio-container-orders'
+        input: 'swal-radio-container-orders',
       },
       inputValidator: (value) => {
         if (!value) {
@@ -2112,26 +2552,24 @@ export class OrderService {
     this.order.order_type = choice as OrderType;
 
     if (choice) {
-      this.placeOrder()
+      this.placeOrder();
     }
   }
 
   placeOrder(): void {
-
     if (!this.isManager() && !this.isEmployee()) {
       this.order.order_type = OrderType.TAKEAWAY;
     }
     this.order.order_status = OrderStatus.IN_PREPARATION;
 
     this.ordersService.addOrder(this.order).subscribe({
-      
       next: (response) => {
-
         if (this.isManager() || this.isEmployee()) {
           Swal.fire({
-            text: this.langService.currentLang === 'pl' 
-              ? `Pomyslnie dodano zamowienie! `
-              : 'Successfully added order!',
+            text:
+              this.langService.currentLang === 'pl'
+                ? `Pomyslnie dodano zamowienie! `
+                : 'Successfully added order!',
             icon: 'success',
             iconColor: 'green',
             confirmButtonColor: 'green',
@@ -2142,7 +2580,7 @@ export class OrderService {
 
           this.clearOrderData();
           this.order = {
-            order_type: null, 
+            order_type: null,
             order_status: null,
             customer_phone: '',
             customer_email: '',
@@ -2150,7 +2588,7 @@ export class OrderService {
             beverages: {},
             addons: {},
             total_price: 0,
-            discount_code: ''
+            discount_code: '',
           };
 
           return;
@@ -2171,17 +2609,19 @@ export class OrderService {
             </style>
 
             <span style="color: white; margin-bottom: 10px;">
-              ${this.langService.currentLang === 'pl' 
-                ? `Pomyslnie zlozono zamowienie! Mozesz teraz sledzic swoje zamowienie przechodzac pod /track-order i wpisujac dane:`
-                : 'Successfully placed order! Now, you can track you order by going to /track-order and entering following details:'}
+              ${
+                this.langService.currentLang === 'pl'
+                  ? `Pomyslnie zlozono zamowienie! Mozesz teraz sledzic swoje zamowienie przechodzac pod /track-order i wpisujac dane:`
+                  : 'Successfully placed order! Now, you can track you order by going to /track-order and entering following details:'
+              }
             </span>
             <ul>
               <li>ID: ${response.id}</li>
               <li>
                 ${
-                  this.langService.currentLang === 'pl' 
-                  ? `Telefon: ${this.order.customer_phone}`
-                  : `Phone: ${this.order.customer_phone}`
+                  this.langService.currentLang === 'pl'
+                    ? `Telefon: ${this.order.customer_phone}`
+                    : `Phone: ${this.order.customer_phone}`
                 }
               </li>
             </ul>
@@ -2190,10 +2630,10 @@ export class OrderService {
 
         this.trackOrderData.orderId = response.id;
         this.trackOrderData.customerPhone = this.order.customer_phone;
-        
+
         this.clearOrderData();
         this.order = {
-          order_type: null, 
+          order_type: null,
           order_status: null,
           customer_phone: '',
           customer_email: '',
@@ -2201,7 +2641,7 @@ export class OrderService {
           beverages: {},
           addons: {},
           total_price: 0,
-          discount_code: ''
+          discount_code: '',
         };
 
         this.router.navigate(['/track-order']);
@@ -2216,7 +2656,7 @@ export class OrderService {
           color: 'white',
           confirmButtonText: 'Ok',
         });
-      }
+      },
     });
   }
 
@@ -2225,40 +2665,54 @@ export class OrderService {
     if (mealNameTranslated === 'menu.meals.' + mealName) {
       mealNameTranslated = mealName;
     }
-    
+
     return mealNameTranslated;
   }
 
   getTranslatedBeverageName(beverageName: string): string {
-    let beverageNameTranslated = this.translate.instant('menu.beverages.' + beverageName);
+    let beverageNameTranslated = this.translate.instant(
+      'menu.beverages.' + beverageName
+    );
     if (beverageNameTranslated === 'menu.addons.' + beverageName) {
       beverageNameTranslated = beverageName;
     }
-    
+
     return beverageNameTranslated;
   }
 
   getTranslatedAddonName(addonName: string): string {
-    let addonNameTranslated = this.translate.instant('menu.addons.' + addonName);
+    let addonNameTranslated = this.translate.instant(
+      'menu.addons.' + addonName
+    );
     if (addonNameTranslated === 'menu.addons.' + addonName) {
       addonNameTranslated = addonName;
     }
-    
+
     return addonNameTranslated;
   }
 
   getTranslatedIngredientName(ingredientName: string): string {
-    let ingredientNameTranslated = this.translate.instant('menu.meals.ingredients.' + ingredientName);
-    if (ingredientNameTranslated === 'menu.meals.ingredients.' + ingredientName) {
+    let ingredientNameTranslated = this.translate.instant(
+      'menu.meals.ingredients.' + ingredientName
+    );
+    if (
+      ingredientNameTranslated ===
+      'menu.meals.ingredients.' + ingredientName
+    ) {
       ingredientNameTranslated = ingredientName;
     }
-    
+
     return ingredientNameTranslated;
   }
 
   getTranslatedOrderStatus(orderStatus: OrderStatus): string {
-    let orderStatusTranslated = this.translate.instant('order-management.order_status.' + orderStatus);
-    if (orderStatusTranslated === 'order-management.order_status.' + orderStatus) {
+    let orderStatusTranslated = this.translate.instant(
+      'order-management.order_status.' + orderStatus
+    );
+    if (
+      orderStatusTranslated ===
+      'order-management.order_status.' + orderStatus
+    ) {
       orderStatusTranslated = orderStatus;
     }
 
@@ -2266,7 +2720,9 @@ export class OrderService {
   }
 
   getTranslatedOrderType(orderType: OrderType): string {
-    let orderTypeTranslated = this.translate.instant('order-management.order_type.' + orderType);
+    let orderTypeTranslated = this.translate.instant(
+      'order-management.order_type.' + orderType
+    );
     if (orderTypeTranslated === 'order-management.order_status.' + orderType) {
       orderTypeTranslated = orderType;
     }

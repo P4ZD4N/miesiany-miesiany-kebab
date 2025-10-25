@@ -89,7 +89,7 @@ export class AuthenticationService {
     return this.sessionCheck$;
   }
 
-  private handleError(error: HttpErrorResponse) {
+  private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessages: { [key: string]: string } = {};
 
     error.error && typeof error.error === 'object'
