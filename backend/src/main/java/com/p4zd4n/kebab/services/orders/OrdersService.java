@@ -23,10 +23,6 @@ import com.p4zd4n.kebab.utils.mails.HighValueOrderRewardMailUtil;
 import com.p4zd4n.kebab.utils.mails.TenOrdersRewardMailUtil;
 import com.p4zd4n.kebab.utils.mails.ThanksForOrderMailUtil;
 import jakarta.mail.MessagingException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -37,6 +33,10 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -52,6 +52,7 @@ public class OrdersService {
   private final TenOrdersRewardMailUtil tenOrdersRewardMailUtil;
   private final HighValueOrderRewardMailUtil highValueOrderRewardMailUtil;
   private final DiscountCodesRepository discountCodesRepository;
+  private final SimpMessagingTemplate messagingTemplate;
 
   public OrdersService(
       OrdersRepository ordersRepository,
@@ -63,7 +64,8 @@ public class OrdersService {
       ThanksForOrderMailUtil thanksForOrderMailUtil,
       TenOrdersRewardMailUtil tenOrdersRewardMailUtil,
       HighValueOrderRewardMailUtil highValueOrderRewardMailUtil,
-      DiscountCodesRepository discountCodesRepository) {
+      DiscountCodesRepository discountCodesRepository,
+      SimpMessagingTemplate simpMessagingTemplate) {
     this.ordersRepository = ordersRepository;
     this.mealRepository = mealRepository;
     this.beverageRepository = beverageRepository;
@@ -74,6 +76,7 @@ public class OrdersService {
     this.tenOrdersRewardMailUtil = tenOrdersRewardMailUtil;
     this.discountCodesRepository = discountCodesRepository;
     this.highValueOrderRewardMailUtil = highValueOrderRewardMailUtil;
+    this.messagingTemplate = simpMessagingTemplate;
   }
 
   public List<OrderResponse> getOrders() {
@@ -278,6 +281,10 @@ public class OrdersService {
 
     savedOrder = ordersRepository.save(savedOrder);
 
+    OrderResponse newOrderResponse = mapToResponse(savedOrder);
+
+    messagingTemplate.convertAndSend("/topic/orders/status", newOrderResponse);
+
     return NewOrderResponse.builder()
         .statusCode(HttpStatus.OK.value())
         .message("Successfully added new order with id '" + savedOrder.getId() + "'")
@@ -451,6 +458,10 @@ public class OrdersService {
 
     ordersRepository.save(order);
 
+    OrderResponse updatedOrderResponse = mapToResponse(order);
+
+    messagingTemplate.convertAndSend("/topic/orders/status", updatedOrderResponse);
+
     return response;
   }
 
@@ -527,6 +538,7 @@ public class OrdersService {
     log.info("Started removing order with id '{}'", order.getId());
 
     ordersRepository.delete(order);
+    messagingTemplate.convertAndSend("/topic/orders/removed", order.getId());
 
     RemovedOrderResponse response =
         RemovedOrderResponse.builder()

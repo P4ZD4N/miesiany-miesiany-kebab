@@ -2576,7 +2576,7 @@ export class OrderService {
             background: 'black',
             color: 'white',
             confirmButtonText: 'Ok',
-          }).then(() => location.reload());
+          });
 
           this.clearOrderData();
           this.order = {

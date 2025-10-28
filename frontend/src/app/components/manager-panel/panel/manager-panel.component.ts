@@ -29,7 +29,6 @@ export class ManagerPanelComponent extends StaffPanelComponent {
   }
 
   protected isManager(): boolean {
-    console.log(this.authenticationService.isManager())
     return this.authenticationService.isManager();
   }
 }

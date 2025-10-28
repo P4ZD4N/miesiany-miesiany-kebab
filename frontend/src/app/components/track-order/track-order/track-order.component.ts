@@ -10,6 +10,7 @@ import { LangService } from '../../../services/lang/lang.service';
 import { Subscription } from 'rxjs';
 import { TranslationHelperService } from '../../../services/translation-helper/translation-helper.service';
 import { AlertService } from '../../../services/alert/alert.service';
+import { WebSocketService } from '../../../services/websocket/websocket.service';
 
 @Component({
   selector: 'app-track-order',
@@ -71,7 +72,8 @@ export class TrackOrderComponent implements OnInit {
     private ordersService: OrdersService,
     private langService: LangService,
     private alertService: AlertService,
-    private translationHelper: TranslationHelperService
+    private translationHelper: TranslationHelperService,
+    private webSocketService: WebSocketService
   ) {
     this.languageChangeSubscription =
       this.langService.languageChanged$.subscribe(() => {
@@ -95,11 +97,40 @@ export class TrackOrderComponent implements OnInit {
     }
   }
 
+  private subscribeToRealTimeUpdates(): void {
+    this.subscribeToOrderUpdates();
+    this.subscribeToOrderRemove();
+  }
+
+  private subscribeToOrderUpdates(): void {
+    this.webSocketService.onOrderStatusUpdate().subscribe({
+      next: (updatedOrder: OrderResponse) => {
+        if (updatedOrder.id === this.order.id) {
+          this.initOrder(updatedOrder);
+        }
+      },
+      error: (error) => console.error('WebSocket update error', error),
+    });
+  }
+
+  private subscribeToOrderRemove(): void {
+    this.webSocketService.onOrderRemoved().subscribe({
+      next: (removedOrderId: number) => {
+        if (removedOrderId === this.order.id) {
+          this.removeTrackOrderDataFromLocalStorage();
+          this.resetTrackedOrderData();
+        }
+      },
+      error: (error) => console.error('WebSocket removal error', error),
+    });
+  }
+
   protected startTrackingOrder(): void {
     this.ordersService.trackOrder(this.trackOrderRequest).subscribe({
       next: (response) => {
         this.initOrder(response);
         this.putTrackOrderDataInLocalStorage(this.trackOrderRequest);
+        this.subscribeToRealTimeUpdates();
       },
       error: (error) => this.handleError(error),
     });
@@ -128,7 +159,10 @@ export class TrackOrderComponent implements OnInit {
   protected stopTrackingOrder(): void {
     this.alertService.showStopTrackingOrderAlert(this.trackOrderRequest.id);
     this.removeTrackOrderDataFromLocalStorage();
+    this.resetTrackedOrderData();
+  }
 
+  private resetTrackedOrderData(): void {
     this.trackOrderRequest = {
       id: null,
       customer_phone: '',

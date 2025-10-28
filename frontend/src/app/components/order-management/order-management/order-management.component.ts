@@ -14,6 +14,7 @@ import {
 import { OrderService } from '../../../services/order/order.service';
 import { TranslationHelperService } from '../../../services/translation-helper/translation-helper.service';
 import { AlertService } from '../../../services/alert/alert.service';
+import { WebSocketService } from '../../../services/websocket/websocket.service';
 
 @Component({
   selector: 'app-order-management',
@@ -49,16 +50,48 @@ export class OrderManagementComponent implements OnInit {
   }
 
   constructor(
-    private langService: LangService,
     private authenticationService: AuthenticationService,
     private orderService: OrderService,
     private ordersService: OrdersService,
     private alertService: AlertService,
-    private translationHelper: TranslationHelperService
+    private translationHelper: TranslationHelperService,
+    private webSocketService: WebSocketService
   ) {}
 
   ngOnInit(): void {
-    if (this.isManager() || this.isEmployee()) this.loadOrders();
+    if (this.isManager() || this.isEmployee()) {
+      this.loadOrders();
+      this.subscribeToRealTimeUpdates();
+    }
+  }
+
+  private subscribeToRealTimeUpdates(): void {
+    this.subscribeToOrderUpdates();
+    this.subscribeToOrderRemove();
+  }
+
+  private subscribeToOrderUpdates(): void {
+    this.webSocketService.onOrderStatusUpdate().subscribe({
+      next: (addedOrder: OrderResponse) => {
+        const index = this.orders.findIndex((o) => o.id === addedOrder.id);
+
+        if (index > -1) {
+          this.orders[index] = addedOrder;
+        } else {
+          this.orders.push(addedOrder);
+          this.orders.sort((a, b) => a.id - b.id);
+        }
+      },
+      error: (error) => console.error('WebSocket update error', error),
+    });
+  }
+
+  private subscribeToOrderRemove(): void {
+    this.webSocketService.onOrderRemoved().subscribe({
+      next: (removedOrderId: number) =>
+        (this.orders = this.orders.filter((o) => o.id !== removedOrderId)),
+      error: (error) => console.error('WebSocket removal error', error),
+    });
   }
 
   private loadOrders(): void {

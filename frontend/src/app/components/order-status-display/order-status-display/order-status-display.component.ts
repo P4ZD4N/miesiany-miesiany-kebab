@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { OrdersService } from '../../../services/orders/orders.service';
 import { OrderResponse } from '../../../responses/responses';
 import { OrderStatus } from '../../../enums/order-status.enum';
+import { WebSocketService } from '../../../services/websocket/websocket.service';
 
 @Component({
   selector: 'app-order-status-display',
@@ -31,16 +32,49 @@ export class OrderStatusDisplayComponent implements OnInit {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private ordersService: OrdersService
+    private ordersService: OrdersService,
+    private webSocketService: WebSocketService
   ) {}
 
   ngOnInit(): void {
     document.body.style.paddingTop = '0';
-    if (this.isManager() || this.isEmployee()) this.loadOrders();
+    if (this.isManager() || this.isEmployee()) {
+      this.loadOrders();
+      this.subscribeToRealTimeUpdates();
+    }
   }
 
   ngOnDestroy(): void {
     document.body.style.paddingTop = '9.2rem';
+  }
+
+  private subscribeToRealTimeUpdates(): void {
+    this.subscribeToOrderUpdates();
+    this.subscribeToOrderRemove();
+  }
+
+  private subscribeToOrderUpdates(): void {
+    this.webSocketService.onOrderStatusUpdate().subscribe({
+      next: (order: OrderResponse) => {
+        const index = this.orders.findIndex((o) => o.id === order.id);
+
+        if (index > -1) {
+          this.orders[index] = order;
+        } else {
+          this.orders.push(order);
+          this.orders.sort((a, b) => a.id - b.id);
+        }
+      },
+      error: (error) => console.error('WebSocket update error', error),
+    });
+  }
+
+  private subscribeToOrderRemove(): void {
+    this.webSocketService.onOrderRemoved().subscribe({
+      next: (removedOrderId: number) =>
+        (this.orders = this.orders.filter((o) => o.id !== removedOrderId)),
+      error: (error) => console.error('WebSocket removal error', error),
+    });
   }
 
   private loadOrders(): void {
