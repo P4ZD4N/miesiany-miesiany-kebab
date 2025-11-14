@@ -5,17 +5,15 @@ import com.p4zd4n.kebab.enums.*;
 import com.p4zd4n.kebab.exceptions.notfound.EmployeeNotFoundException;
 import com.p4zd4n.kebab.exceptions.notfound.IngredientNotFoundException;
 import com.p4zd4n.kebab.repositories.*;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SampleDataInitializer implements CommandLineRunner {
@@ -109,18 +107,18 @@ public class SampleDataInitializer implements CommandLineRunner {
 
     Employee employee1 =
         Employee.builder()
-            .firstName("John")
-            .lastName("Doe")
+            .firstName("James")
+            .lastName("Smith")
             .email("employee1@example.com")
             .password(PasswordEncoder.encodePassword("employee123"))
-            .dateOfBirth(LocalDate.of(1990, 1, 1))
-            .phoneNumber("123456789")
+            .dateOfBirth(LocalDate.of(1995, 8, 15))
+            .phoneNumber("888456832")
             .job("Cashier")
             .employmentType(EmploymentType.PERMANENT)
             .hourlyWage(BigDecimal.valueOf(30))
             .isActive(true)
             .isStudent(false)
-            .hiredAt(LocalDate.now())
+            .hiredAt(LocalDate.now().minusYears(1))
             .build();
 
     Employee employee2 =
@@ -129,34 +127,68 @@ public class SampleDataInitializer implements CommandLineRunner {
             .lastName("Doe")
             .email("employee2@example.com")
             .password(PasswordEncoder.encodePassword("employee123"))
-            .dateOfBirth(LocalDate.of(1990, 1, 1))
+            .dateOfBirth(LocalDate.of(2005, 3, 10))
             .job("Cashier")
-            .phoneNumber("123456789")
-            .employmentType(EmploymentType.PERMANENT)
-            .hourlyWage(BigDecimal.valueOf(32))
+            .phoneNumber("765836900")
+            .employmentType(EmploymentType.MANDATE_CONTRACT)
+            .hourlyWage(BigDecimal.valueOf(30))
             .isActive(true)
             .isStudent(true)
-            .hiredAt(LocalDate.now())
+            .hiredAt(LocalDate.now().minusMonths(2))
+            .build();
+
+    Employee employee3 =
+        Employee.builder()
+            .firstName("Maria")
+            .lastName("Elizabeth")
+            .email("employee3@example.com")
+            .password(PasswordEncoder.encodePassword("employee123"))
+            .dateOfBirth(LocalDate.of(1995, 7, 11))
+            .job("Cook")
+            .phoneNumber("655436785")
+            .employmentType(EmploymentType.PERMANENT)
+            .hourlyWage(BigDecimal.valueOf(33))
+            .isActive(true)
+            .isStudent(false)
+            .hiredAt(LocalDate.now().minusMonths(7))
+            .build();
+
+    Employee employee4 =
+        Employee.builder()
+            .firstName("John")
+            .lastName("David")
+            .email("employee4@example.com")
+            .password(PasswordEncoder.encodePassword("employee123"))
+            .dateOfBirth(LocalDate.of(1988, 12, 10))
+            .job("Cook")
+            .phoneNumber("943555900")
+            .employmentType(EmploymentType.PERMANENT)
+            .hourlyWage(BigDecimal.valueOf(31))
+            .isActive(false)
+            .isStudent(false)
+            .hiredAt(LocalDate.now().minusYears(3))
             .build();
 
     employeeRepository.save(employee1);
     employeeRepository.save(employee2);
+    employeeRepository.save(employee3);
+    employeeRepository.save(employee4);
   }
 
   private void initSampleManagers() {
 
     Manager manager =
         new Manager(
-            "Wiktor",
-            "Chudy",
+            "Robert",
+            "Lewandowski",
             "manager@example.com",
             PasswordEncoder.encodePassword("manager123"),
-            LocalDate.of(2003, 8, 1),
-            "123456798",
+            LocalDate.of(1990, 10, 14),
+            "650800700",
             BigDecimal.valueOf(40),
             true,
             false,
-            LocalDate.now());
+            LocalDate.now().minusYears(5));
 
     employeeRepository.save(manager);
   }
@@ -559,26 +591,15 @@ public class SampleDataInitializer implements CommandLineRunner {
     order1 = ordersRepository.save(order1);
 
     order1.addMeal(meal, Size.XL, 1);
+    order1.setTotalPrice(order1.getTotalPrice().add(meal.getPriceForSize(Size.XL)));
+
     order1.addAddon(addon, 2);
+    order1.setTotalPrice(order1.getTotalPrice().add(addon.getPrice().multiply(BigDecimal.valueOf(2))));
+
     order1.addBeverage(beverage, 1);
+    order1.setTotalPrice(order1.getTotalPrice().add(beverage.getPrice()));
 
     ordersRepository.save(order1);
-
-    Order order2 =
-        Order.builder()
-            .orderType(OrderType.ON_SITE)
-            .orderStatus(OrderStatus.RECEIVED)
-            .customerPhone("123456789")
-            .customerEmail("example@example.com")
-            .build();
-
-    order2 = ordersRepository.save(order2);
-
-    order2.addMeal(meal, Size.XL, 1);
-    order2.addBeverage(beverage, 1);
-    order2.setCreatedAt(LocalDateTime.now().minusMonths(1));
-
-    ordersRepository.save(order2);
   }
 
   private void initDiscountCodes() {
