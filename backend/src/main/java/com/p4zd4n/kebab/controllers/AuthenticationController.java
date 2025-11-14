@@ -1,6 +1,5 @@
 package com.p4zd4n.kebab.controllers;
 
-import com.p4zd4n.kebab.enums.Role;
 import com.p4zd4n.kebab.requests.auth.AuthenticationRequest;
 import com.p4zd4n.kebab.responses.auth.AuthenticationResponse;
 import com.p4zd4n.kebab.responses.auth.LogoutResponse;
@@ -10,7 +9,6 @@ import com.p4zd4n.kebab.utils.LanguageValidator;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

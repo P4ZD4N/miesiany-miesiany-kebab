@@ -59,7 +59,7 @@ public class AuthenticationServiceTest {
     AuthenticationResponse expectedResponse =
         AuthenticationResponse.builder()
             .statusCode(HttpStatus.OK.value())
-            .message("Authenticated employee with email '" + request.email() + "'!")
+            .message("Authentication successful")
             .role(Role.EMPLOYEE)
             .build();
 
