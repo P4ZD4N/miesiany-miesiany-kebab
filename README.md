@@ -1,5 +1,6 @@
 
 
+
 # 💻 Miesiany Miesiany Kebab
 
 ![](./images/logo.png)
@@ -13,11 +14,13 @@
 5. [📋 Requirements](#requirements)
 6. [🌍 Configuration](#configuration)
 7. [▶️ Run](#run)
-8. [⚡ Usage](#usage)
+8. [🧪 Run backend tests](#run-backend-tests)
+9. [⚡ Usage](#usage)
+10. [💳 Example login data](#example-login-data)
 
 ## 👀 About
 
-Gastronomic industry plays an important role in the economy. Nowadays many gastronomic businesses, which exists in both big cities and small villages are often visited by people. For this reason, I decided to create full-stack application, which can solve problems typical for this industry. Based on my own preferences, I chose a kebab restaurant, but all functionalities, which I implemented can be also applied to other types of restaurants. Application is intended to serve as a business card, to reach more customers and to encourage them to stay longer, but also to enable order accomplishment and tracking. It take care of availability of all valuable for customer information in a convenient way. System is also convenient for employees of restaurant. It enable to manage restaurant, handle orders and customers in more efficient way. Majority of components visible on website are easy to customize and update by manager.
+Gastronomic industry plays an important role in the economy. Nowadays many gastronomic businesses, which exists in both big cities and small villages are often visited by people. For this reason, I decided to create full-stack application, which can solve problems typical for this industry. Based on my own preferences, I chose a kebab, but all functionalities, which I implemented can be also applied to other types of restaurants. Application is intended to serve as a business card, to reach more customers and to encourage them to stay longer, but also to enable order accomplishment and tracking. It take care of availability of all valuable for customer information in a convenient way. System is also comfortable for employees of restaurant - it enable to manage restaurant, handle orders and customers more efficiently. Majority of components visible on website are easy to customize and update by manager.
 
 ## 🔧 Tech Stack
 
@@ -37,7 +40,7 @@ Gastronomic industry plays an important role in the economy. Nowadays many gastr
 
 ## 💡 Features
 
-- Session-based authentication system, taking into data security. For this purpose, I implemented storing passwords encrypted with the bcrypt algorithm in database.
+- Session-based authentication system, taking into data security - implemented storing passwords encrypted with the bcrypt algorithm in database.
 - Eye-catching, well-tailored and well-thought user interface.
 - Responsive Web Design to improve accessibility of page at all types of devices,
 - Multilingual pages (Polish or English),
@@ -54,12 +57,14 @@ Gastronomic industry plays an important role in the economy. Nowadays many gastr
 - Multilingual newsletter with email verification implemented with usage of Observer design pattern. Each customer has possibility to sign up to newsletter focused on promotions and choose preffered language of email messages (Polish or English). When manager adds some promotion, then email is sent to all verified subscribers. Some methods were created as asynchronous to enhance application preformance. It is also possibility to unsubscribe newsletter at any time.
 - Discount codes with which customers can reduct price of order. Each discount code has its expiration date and number of remaining uses. Such codes are automatically generated and sending to customers, who provide their email adresse during ordering process - either after every 10 orders or when the order total price exceeds 100 PLN. Manager can add, update and delete discount codes (allowing for manual distribution as well). 
 - Possibility to place order by customers in easy and concise way. Each menu position can be selected and added to such order and partially customized (by choosing size, meat, sauce, quantity or capacity). After adding item, customer may continue adding more items, proceed to the next step, or come back later - all order details are saved in local storage. Next step is choosing preferred delivery method: pickup at the restaurant or home delivery. Depending on the choice, a dedicated panel is shown to collect the necessary information. Finally, the customer has the option to leave additional comments and enter a discount code, if available, to receive a price reduction. Managers and employees can add, update and delete orders.
-- Track order panel, where customers can easily monitor status of their order in real time. Here they can find information such as order id (number of order displayed on the screen in restaurant), total price, delivery address (if home delivery method was selected), payment methods, ordered items details and current order status. Customers can access this panel for up to two hours after the last update to their order.
-- Order status display for in-restaurant screen, which shows numbers of orders currently being prepared (in gray color) and those, that are ready (in green color). This provides clear information to customers waiting in the restaurant, improving communication and overall experience.
+- Real-time panels related to orders (order display, order management and track order) implemented with usage of WebSockets for instant data synchronization.
+- Real-time track order panel, where customers can easily monitor status of their order in real time. Here they can find information such as order id (number of order displayed on the screen in restaurant), total price, delivery address (if home delivery method was selected), payment methods, ordered items details and current order status. Customers can access this panel for up to two hours after the last update to their order.
+- Real-time order status display for in-restaurant screen, which shows numbers of orders currently being prepared (in gray color) and those, that are ready (in green color). This provides clear information to customers waiting in the restaurant, improving communication and overall experience.
 - Work schedule panel which allows managers to assign shifts for all employees for a selected month and year. All employees can display and then download a printable PDF document that clearly displays the shift schedule.
 - Employee management panel where manager can add, update or remove employees.
 - Employee and manager panels which allow authenticated users to view their current contact information and employment details. Each panel includes an actions section with buttons that provide functions available to the particular account type (employee or manager). Both employees and managers can also update their email address and password.
 - Payments panel where manager can clearly check all necessary information about payments related to particular employee for any month: personal data, job, employment type, current hourly wage gross, hourly wage gross in chosen period, working hours in chosen period, student status and total payment amount.
+- Rate limiting applied to public API endpoints to protect system from excessive or malicious traffic.
 
 ## 🔗 API
 
@@ -85,6 +90,11 @@ Authenticates a user if the credentials are valid. Returns proper validation mes
 
 **Description:**  
  Logs out currently logged in user, invalidating his session.
+
+#### GET /api/v1/auth/check-session
+
+**Description:**  
+Checks whether the current user has an active authenticated session.
 
 <br>
 
@@ -360,6 +370,8 @@ Removes existing ingredient.
 }
 ```
 
+<br>
+
 ### ContactController
  
 #### GET /api/v1/contact/contacts
@@ -385,6 +397,8 @@ Updates existing contact. You can update contacts of type EMAIL or TELEPHONE.
   "new_value":  "123456789"
 }
 ```
+
+<br>
 
 ### JobsController
 
@@ -553,6 +567,8 @@ Removes existing job application from job offer.
   "application_id": 1
 }
 ```
+
+<br>
 
 ### PromotionsController
 
@@ -762,6 +778,8 @@ Removes existing addon promotion.
 }
 ```
 
+<br>
+
 ### NewsletterController
  
 #### GET /api/v1/newsletter/subscribers
@@ -839,6 +857,8 @@ Unsubscribe newsletter. Customer can sign out from newsletter at any time.
 }
 ```
 
+<br>
+
 ### DiscountCodesController
  
 #### GET /api/v1/discount-codes/all
@@ -911,6 +931,8 @@ Removes existing discount code.
   "code": "kodzik"
 }
 ```
+
+<br>
 
 ### OrdersController
  
@@ -1040,6 +1062,8 @@ Removes existing order.
 }
 ```
 
+<br>
+
 ### EmployeesController
  
 #### GET /api/v1/employees/all
@@ -1146,6 +1170,8 @@ Removes existing employee.
   "email": "jan.kowalski@example.com"
 }
 ```
+
+<br>
 
 ### WorkScheduleController
  
@@ -1273,6 +1299,20 @@ Run app
 ./start.sh
 ```
 
+## 🧪 Run backend tests
+
+Project contains only backend tests (290 tests). To run all navigate to the backend directory
+
+```bash
+cd /path/to/miesiany-miesiany-kebab/backend
+```
+
+Run tests
+
+```bash
+./mvnw test
+```
+
 ## ⚡ Usage
 
 Navigate to the following URL in your web browser
@@ -1282,4 +1322,26 @@ http://localhost:4200
 ```
 
 That's It! You can start using kebab app :) 
+
+## 💳 Example login data
+
+1. **Manager**
+Login: manager@example.com
+Password: manager123
+
+2. **Employee 1**
+Login: employee1@example.com
+Password: employee123
+
+3. **Employee 2**
+Login: employee2@example.com
+Password: employee123
+
+4. **Employee 3**
+Login: employee3@example.com
+Password: employee123
+
+5. **Employee 4**
+Login: employee4@example.com
+Password: employee123
 
