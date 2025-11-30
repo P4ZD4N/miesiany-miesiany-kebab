@@ -73,7 +73,7 @@ export class TranslationHelperService {
       'menu.beverages.' + beverageName
     );
 
-    if (beverageNameTranslated === 'menu.addons.' + beverageName) {
+    if (beverageNameTranslated === 'menu.beverages.' + beverageName) {
       beverageNameTranslated = beverageName;
     }
 

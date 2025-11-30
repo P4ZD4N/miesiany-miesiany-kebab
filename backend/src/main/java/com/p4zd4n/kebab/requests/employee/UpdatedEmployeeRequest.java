@@ -10,14 +10,20 @@ import lombok.Builder;
 @Builder
 public record UpdatedEmployeeRequest(
     @JsonProperty("employee_email")
+        @NotBlank(message = "{email.notBlank}")
         @Email(message = "{email.invalidFormat}")
-        @Size(max = 35, message = "{email.between1And35}")
+        @Size(min = 1, max = 35, message = "{email.between1And35}")
         String employeeEmail,
-    @JsonProperty("updated_first_name") @Size(max = 20, message = "{firstName.between1And20}")
+    @JsonProperty("updated_first_name")
+        @NotBlank(message = "{firstName.notBlank}")
+        @Size(min = 1, max = 20, message = "{firstName.between1And20}")
         String updatedFirstName,
-    @JsonProperty("updated_last_name") @Size(max = 20, message = "{lastName.between1And20}")
+    @JsonProperty("updated_last_name")
+        @NotBlank(message = "{lastName.notBlank}")
+        @Size(min = 1, max = 20, message = "{lastName.between1And20}")
         String updatedLastName,
     @JsonProperty("updated_email")
+        @NotBlank(message = "{email.notBlank}")
         @Email(message = "{email.invalidFormat}")
         @Size(max = 35, message = "{email.between1And35}")
         String updatedEmail,

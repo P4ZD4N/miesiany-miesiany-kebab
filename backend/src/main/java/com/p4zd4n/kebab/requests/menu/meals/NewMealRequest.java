@@ -2,10 +2,7 @@ package com.p4zd4n.kebab.requests.menu.meals;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.p4zd4n.kebab.responses.menu.meals.SimpleMealIngredient;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.List;
@@ -13,7 +10,9 @@ import lombok.Builder;
 
 @Builder
 public record NewMealRequest(
-    @JsonProperty("new_meal_name") @Size(min = 1, message = "{name.greaterThanZero}")
+    @JsonProperty("new_meal_name")
+        @NotBlank(message = "{name.notBlank}")
+        @Size(min = 1, max = 25, message = "{name.between1And25}")
         String newMealName,
     @JsonProperty("new_meal_prices")
         @NotNull(message = "{prices.notNull}")

@@ -16,7 +16,7 @@
         <span *ngIf="!isEditingPhone">{{
           getTelephone()[0].value | phoneFormat
         }}</span>
-        <input *ngIf="isEditingPhone" type="text" [(ngModel)]="phoneValue" />
+        <input *ngIf="isEditingPhone" maxlength="9" type="text" [(ngModel)]="phoneValue" />
         <button
           class="button-update"
           *ngIf="isManager() && !isEditingPhone && !isEditing"

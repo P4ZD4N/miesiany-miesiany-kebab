@@ -2,6 +2,7 @@ package com.p4zd4n.kebab.requests.menu.beverages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -9,7 +10,9 @@ import lombok.Builder;
 
 @Builder
 public record NewBeverageRequest(
-    @JsonProperty("new_beverage_name") @Size(min = 1, message = "{name.greaterThanZero}")
+    @JsonProperty("new_beverage_name")
+        @NotBlank(message = "{name.notBlank}")
+        @Size(min = 1, max = 25, message = "{name.between1And25}")
         String newBeverageName,
     @JsonProperty("new_beverage_capacity")
         @NotNull(message = "{capacity.notNull}")

@@ -78,7 +78,7 @@
       <td>
         {{ "jobs.description" | translate }}:<textarea
           type="text"
-          maxlength="150"
+          maxlength="250"
           placeholder="{{ 'jobs.description' | translate }}"
           [(ngModel)]="newJobOffer.description"
         ></textarea>
@@ -262,7 +262,7 @@
           <textarea
             *ngIf="isEditing && currentlyUpdatedJobOffer"
             type="text"
-            maxlength="150"
+            maxlength="250"
             [(ngModel)]="currentlyUpdatedJobOffer.description"
           ></textarea>
         </ng-container>

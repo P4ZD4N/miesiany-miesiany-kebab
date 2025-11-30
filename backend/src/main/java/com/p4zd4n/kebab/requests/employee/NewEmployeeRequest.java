@@ -9,16 +9,22 @@ import lombok.Builder;
 
 @Builder
 public record NewEmployeeRequest(
-    @JsonProperty("first_name") @Size(min = 1, max = 20, message = "{firstName.between1And20}")
+    @JsonProperty("first_name")
+        @NotBlank(message = "{firstName.notBlank}")
+        @Size(min = 1, max = 20, message = "{firstName.between1And20}")
         String firstName,
-    @JsonProperty("last_name") @Size(min = 1, max = 20, message = "{lastName.between1And20}")
+    @JsonProperty("last_name")
+        @NotBlank(message = "{lastName.notBlank}")
+        @Size(min = 1, max = 20, message = "{lastName.between1And20}")
         String lastName,
     @Email(message = "{email.invalidFormat}")
+        @NotBlank(message = "{email.notBlank}")
         @Size(min = 1, max = 35, message = "{email.between1And35}")
         String email,
     @Size(min = 5, message = "{password.greaterThan5}") String password,
     @Pattern(regexp = "^[0-9]{9}$", message = "{phone.invalidFormat}") String phone,
-    @Size(min = 1, max = 16, message = "{job.between1And16}") String job,
+    @NotBlank(message = "{job.notBlank}") @Size(min = 1, max = 16, message = "{job.between1And16}")
+        String job,
     @JsonProperty("hourly_wage")
         @DecimalMin(value = "0.0", inclusive = false, message = "{hourlyWage.greaterThanZero}")
         @NotNull(message = "{hourlyWage.notNull}")

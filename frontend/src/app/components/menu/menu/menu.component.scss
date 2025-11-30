@@ -184,6 +184,16 @@ option {
   background: black;
 }
 
+.table-ingredients {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+
+  td {
+    min-width: 300px;
+  }
+}
+
 @media (max-width: 1280px) {
   table {
     font-size: 20px;
@@ -231,7 +241,6 @@ option {
 
 @media (max-width: 522px) {
   .table-meals,
-  .table-ingredients,
   .add-ingredient-table,
   .add-beverage-table {
     display: block;

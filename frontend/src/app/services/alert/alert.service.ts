@@ -803,19 +803,19 @@ export class AlertService {
       </style>
       
       <div>
-        <input type="text" id="firstName" maxlength=25  placeholder="${firstNamePlaceholder}">
+        <input type="text" id="firstName" maxlength=20  placeholder="${firstNamePlaceholder}">
       </div>
       <div>
-        <input type="text" id="lastName" maxlength=25  placeholder="${lastNamePlaceholder}">
+        <input type="text" id="lastName" maxlength=20  placeholder="${lastNamePlaceholder}">
       </div>
       <div>
-        <input type="email" id="email" maxlength=30  placeholder="${emailPlaceholder}">
+        <input type="email" id="email" maxlength=35  placeholder="${emailPlaceholder}">
       </div>
       <div>
         <input type="text" id="telephone" maxlength=9 placeholder="${telephonePlaceholder}">
       </div>
       <div>
-        <textarea id="additionalMessage" maxlength=200 placeholder="${additionalMessagePlaceholder}"></textarea>
+        <textarea id="additionalMessage" maxlength=250 placeholder="${additionalMessagePlaceholder}"></textarea>
       </div>
       <div style="margin-top: 10px;">
         <input type="checkbox" id="isStudent">

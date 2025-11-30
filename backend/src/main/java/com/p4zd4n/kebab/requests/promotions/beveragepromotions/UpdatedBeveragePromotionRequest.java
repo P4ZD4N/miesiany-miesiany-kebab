@@ -1,21 +1,18 @@
 package com.p4zd4n.kebab.requests.promotions.beveragepromotions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Builder;
-
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import lombok.Builder;
 
 @Builder
 public record UpdatedBeveragePromotionRequest(
     @NotNull(message = "{id.notNull}") Long id,
     @JsonProperty("updated_description")
         @Size(min = 1, max = 100, message = "{description.between1And100}")
+        @NotBlank(message = "{description.notBlank}")
         String updatedDescription,
     @JsonProperty("updated_discount_percentage")
         @DecimalMin(value = "0.0", message = "{discountPercentage.min}")

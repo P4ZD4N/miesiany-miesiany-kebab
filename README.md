@@ -36,6 +36,8 @@ Gastronomic industry plays an important role in the economy. Nowadays many resta
 
 **DevOps:** Docker, Bash
 
+**Formatting:** Prettier (Frontend), Google Java Format (Backend)
+
 **Other tools used during development:** Postman, pgAdmin 4
 
 ## 💡 Features
