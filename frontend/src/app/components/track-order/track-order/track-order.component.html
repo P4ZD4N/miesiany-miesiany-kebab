@@ -353,8 +353,7 @@
 
     <section class="email">
       <p *ngIf="order.customer_email">
-        Dziekujemy za podanie swojego emaila! Przypominamy, ze co 10 zamowien
-        otrzymasz kod rabatowy na kolejne zamowienie!
+        {{ "track-order.thanks" | translate }}
       </p>
       <p *ngIf="!order.customer_email">
         {{ "track-order.encourage" | translate }}

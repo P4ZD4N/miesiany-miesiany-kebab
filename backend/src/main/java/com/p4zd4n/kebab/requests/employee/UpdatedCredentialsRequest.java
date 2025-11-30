@@ -9,7 +9,6 @@ import lombok.Builder;
 @Builder
 public record UpdatedCredentialsRequest(
     @JsonProperty("updated_email")
-        @NotBlank(message = "{email.notBlank}")
         @Email(message = "{email.invalidFormat}")
         @Size(min = 1, max = 35, message = "{email.between1And35}")
         String updatedEmail,

@@ -11,12 +11,13 @@
 2. [🔧 Tech Stack](#tech-stack)
 3. [💡 Features](#features)
 4. [🔗 API](#api)
-5. [📋 Requirements](#requirements)
-6. [🌍 Configuration](#configuration)
-7. [▶️ Run](#run)
-8. [🧪 Run backend tests](#run-backend-tests)
-9. [⚡ Usage](#usage)
-10. [💳 Example login data](#example-login-data)
+5. [📺 Demo](#demo)
+6. [📋 Requirements](#requirements)
+7. [🌍 Configuration](#configuration)
+8. [▶️ Run](#run)
+9. [🧪 Run backend tests](#run-backend-tests)
+10. [⚡ Usage](#usage)
+11. [💳 Example login data](#example-login-data)
 
 ## 👀 About
 
@@ -67,6 +68,110 @@ Gastronomic industry plays an important role in the economy. Nowadays many resta
 - Employee and manager panels which allow authenticated users to view their current contact information and employment details. Each panel includes an actions section with buttons that provide functions available to the particular account type (employee or manager). Both employees and managers can also update their email address and password.
 - Payments panel where manager can clearly check all necessary information about payments related to particular employee for any month: personal data, job, employment type, current hourly wage gross, hourly wage gross in chosen period, working hours in chosen period, student status and total payment amount.
 - Rate limiting applied to public API endpoints to protect system from excessive or malicious traffic.
+
+## 📺 Demo
+
+Demonstrates the authentication process for the manager role.
+
+![](./demo/login1.gif)
+
+Displays the main landing page with visible much marketing slogans, restaurant's location map and language toggle function.
+
+![](./demo/home1.png)
+![](./demo/home2.gif)
+
+Shows view for checking opening hours, including a live demonstration of manager updating the schedule for specific day.
+
+![](./demo/openinghours1.png)
+![](./demo/openinghours2.gif)
+
+Presents menu view, detailing all available items for customer ordering.
+
+![](./demo/menu1.gif)
+
+Illustrates the complete user flow for signing up to the promotions newsletter.
+
+![](./demo/newsletter1.gif)
+
+Email containing One-Time Password (OTP) required to complete the newsletter sign-up.
+
+![](./demo/newsletter2.png)
+
+Final email confirming successful subscription and welcoming the user to the community.
+
+![](./demo/newsletter3.png)
+
+Demonstration of manager creating new promotion, followed by the automated notification sent to all newsletter subscribers.
+
+![](./demo/newsletter4.gif)
+
+Email message received by subscribers, detailing the recently added promotion.
+
+![](./demo/newsletter5.png)
+
+Demonstration of a potential employee completing the job application form, including the CV attachment process.
+
+![](./demo/jobs1.gif)
+
+Manager's interface for reviewing applicants, featuring the functionality to download the attached CVs for further assessment.
+
+![](./demo/jobs2.gif)
+
+Displays dedicated page for restaurant contact details and social media accounts.
+
+![](./demo/contact1.png)
+
+Complete placing order process with automatic redirection to live tracking order panel.
+
+![](./demo/order1.gif)
+
+Email sent to the customer post-order, which provides link and instructions for accessing order tracking view.
+
+![](./demo/order2.png)
+
+Step where customer inputs required data to view live status updates for their order.
+
+![](./demo/order3.gif)
+
+Track order panel showing the real-time updates as the manager changes the order status in the order management system.
+
+![](./demo/order4.gif)
+
+Order management panel used by managers and employees to monitor and execute status updates for incoming and pending orders.
+
+![](./demo/ordermanagement1.gif)
+
+Dedicated display for in-restaurant screens for showing order statuses to waiting customers, demonstrating real-time synchronization with employees updates.
+
+![](./demo/orderstatusdisplay1.gif)
+
+View of the manager dashboard, highlighting all available for this role modules and demonstration of email and password update functionality.
+
+![](./demo/managerpanel1.gif)
+
+View of the standard employee panel, showcasing accessible panels.
+
+![](./demo/employeepanel1.gif)
+
+Dedicated panel for creating, viewing and managing promotional discount codes.
+
+![](./demo/discountcodes1.png)
+
+Demonstrates the customer's successful use of a promotional code during the order process.
+
+![](./demo/discountcodes2.gif)
+
+Employee management panel.
+
+![](./demo/employeemanagement1.png)
+
+View for managing and inputting employee work schedule entries with feature for downloading created work schedule.
+
+![](./demo/workschedule1.gif)
+
+Displays payments view, which automatically determines employee compensation based on the recorded working hours from work schedule.
+
+![](./demo/payments1.gif)
 
 ## 🔗 API
 
