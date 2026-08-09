@@ -21,15 +21,20 @@
 
 ## 👀 About
 
-Fullstack application for business from gastronomic industry created with Spring on backend and Angular on frontend. Intended to serve as digital business card to reach more customers, encourage them to stay longer and to solve problems typical for this industry. 
 
-System provides convenient UI (RWD, multilingual pages, eye-catching colors, customizable by manager paragraphs) and all essential information in one place. Offers a set of marketing tools that enhance brand strength, customer engagement and support business growth - marketing slogans, discount codes, newsletter or gamification systems while placing orders. Ensures real impact on repeat visits and building better relationships with customers.
+Full-stack system created for business from gastronomy industry. Designed to go beyond standard CRUD application, it serves as digital business card, marketing hub, and complete internal management system aimed at attracting customers, encouraging them to stay longer and streamlining daily restaurant operations.
 
-Another functionality that distinguishes the system is job board, where manager can add fully customizable job offer with information such as position name, list of Mandatory / Nice to have requirements, employment types or hourly wage gross. Guests can apply to each job offer by fulfilling form with attaching CV in PDF/DOC format. System share possibility to easy candidate selection or download CV attached by candidate.
+What sets project apart?
 
-Also implemented real-time panels with WebSockets to ensure instant data synchronization on views, which really needs it. Good example can be "Order Status Display" view for in-restaurant screens which show numbers of orders currently being prepared (in gray color) and ready (in green color). Tracking order view is also a view of this type.
+— Real-Time Data Synchronization: Implemented WebSockets to handle instant UI updates. This powers the live Order Status Display for in-restaurant screens and allows customers to track their delivery status in real time.
 
-Finally, it is worth mentioning some staff panels - for example work schedule panel which allow to manage shifts in selected month (document can be then displayed or downloaded in PDF format) or payments panel where manager can clearly check all necessary information about payments related to particular employee for any month.
+— Marketing & Customer Engagement: Features like automated discount code generator based on order history, dynamic menu promotions and multilingual newsletter built utilizing the Observer design pattern with asynchronous email processing.
+
+— HR & Employee Management: Includes a Job Board where candidates can apply and attach CVs (PDF/DOC). System also provides a robust employee dashboard for shift scheduling (with PDF export capabilities) and detailed payment calculations.
+
+— Security & Reliability: Session-based authentication with Bcrypt password encryption. Public API endpoints are protected using Rate Limiting to prevent excessive or malicious traffic.
+
+— UX/UI & Integrations: Fully Responsive Web Design (RWD) with multilingual support (English/Polish). Integrated with TomTom Map API to display precise restaurant address.
 
 ## 🔧 Tech Stack
 
